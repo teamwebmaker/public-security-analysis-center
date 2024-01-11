@@ -1,0 +1,35 @@
+:root{
+    /* Black Color */
+    --black-hue: 340;
+    --black-saturation: 5%;
+    --back-lightness: 20%;
+    --back-alfa: 1;
+    --black: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+    /* Gold Color */
+    --gold-hue: 40;
+    --gold-saturation: 30%;
+    --gold-lightness: 50%;
+    --gold-alfa: 1;
+    --gold: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+}
+.response-img{
+    width: 100%;
+    display: block;
+    aspect-ratio: 9 / 6;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.truncate {
+    text-overflow: ellipsis;
+    /* Needed to make it work */
+    overflow: hidden;
+    white-space: nowrap;
+}

@@ -1,6 +1,18 @@
-.wrapper{
+@import "config.css";
+@import "bpg-algeti.css";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+/* 'Roboto', sans-serif; */
+.wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 100vh;
+}
+
+body[data-languge="ka"]{
+    font-family: 'algeti', serif;
+}
+
+body[data-languge="en"]{
+    font-family:'Roboto', sans-serif;
 }

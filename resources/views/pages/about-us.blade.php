@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title',  'Home Page')
+@section('title',  'About us Page')
 
 @section('styles')
     <style>
@@ -13,10 +13,10 @@
 @endsection
 
 @section('main')
-<main>
-    <h1>{{ __('static.page.title') }}</h1>
-    @include('partials.partners')
-</main>
+    <main>
+        <h1>{{ __('static.page.title') }}</h1>
+        @include('partials.partners')
+    </main>
 @endsection
 
 @section('scripts')
