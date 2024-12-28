@@ -22,6 +22,11 @@ return [
         'location' => 'Location',
         'register_date' => 'Registration Date'
     ],
+    'section' => [
+        'articles' => [
+            'title' => 'Center News'
+        ]
+    ],
     'page' => [
       'title' => 'Public Safety Analytic Center',
       'more' => 'View More'

@@ -1,0 +1,24 @@
+{
+    "projects": ["title", "desc", "image", "doc", "link"],
+    "programs": ["category", "title", "desc", "video", "image", "details","modules => many", "mentor", "language"],
+    "modules": ["title", "desc", "file"],
+    "mentor": ["full-name", "image => null => according gender", "desc" , "gender", "video => null"],
+    "services": ["title", "desc", "image", "contact"],
+    "publications": ["category", "title", "desc", "image", "doc"],
+    "home": "publications, projects, programs",
+    "about": "text, video => null , image => null",
+    "links": [
+        "https://www.globalcase.org/ge/page/cyber-and-information-security/",
+        "https://safco.ge/"
+    ],
+    "company": "name, category, password, email, risk level, filials =>  risk level",
+    "partners": [
+        ["AB Security", "partner-slide-03.jpg", "https://absecurity.ge/"],
+        ["MOH", "partner-slide-01.jpg", "https://www.moh.gov.ge/"],
+        ["PROFGLDANI", "partner-slide-08.jpg", "https://www.profgldani.ge/"],
+        ["Victoria Security", "partner-slide-04.jpg", "https://www.victoriasecurity.ge/"],
+        ["GTU", "partner-slide-05.jpg", "https://gtu.ge/"],
+        ["EQE", "partner-slide-07.jpg", "https://eqe.ge/en"],
+        ["Black Sea Group", "partner-slide-02.jpg", "https://bsg.com.ge/"]
+    ]
+}

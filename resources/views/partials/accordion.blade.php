@@ -83,4 +83,22 @@
             </div>
         </div>
     </div>
+    <!-- contacts -->
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#contacts" aria-expanded="true" aria-controls="contacts">
+                <i class="bi bi-envelope"></i>
+                <span class="btn-label">შეტყობინებები</span>
+            </button>
+        </h2>
+        <div id="contacts" class="accordion-collapse collapse @if($routeName == 'contacts.index' || $routeName == 'contacts.show')  show @endif" data-bs-parent="#dashboard">
+            <div class="accordion-body">
+                <ul class="list-group">
+                    <li class="list-group-item @if($routeName == 'contacts.index')  bg-secondary text-white @endif">
+                        <a class="nav-link" href="{{ route('contacts.index') }}">ნახვა</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

@@ -16,9 +16,10 @@ return new class extends Migration
             $table->json('title');
             $table->json('description');
             $table->string('image');
-            $table->date('created');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->date('created')->nullable();
+            $table->string('file');
+            $table->unsignedBigInteger('genre_id');
+            $table->foreign('genre_id')->references('id')->on('genres');
             $table->timestamps();
         });
     }

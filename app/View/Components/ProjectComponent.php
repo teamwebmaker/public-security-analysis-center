@@ -11,12 +11,10 @@ class ProjectComponent extends Component
     /**
      * Create a new component instance.
      */
-    public string $language;
-    public object $project;
-    public function __construct($project, $language)
+
+    public function __construct(public object $project, public string $language)
     {
-        $this -> language = $language;
-        $this -> project = $project;
+
     }
 
     /**

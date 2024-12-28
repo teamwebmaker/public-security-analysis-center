@@ -4,7 +4,7 @@
 @section('styles')
     <style>
         .partners {
-            padding-block: 10px;
+            padding-block: 15px;
         }
         .swiper-pagination {
             --swiper-pagination-bottom: -5px;
@@ -14,24 +14,30 @@
 
 @section('main')
     <main>
-        <h1>{{ __('static.page.title') }}</h1>
-        @include('partials.partners')
+        <div class="container-fluid pt-5">
+            <div class="container-xxl">
+                <div class="row mb-5">
+                    @foreach($projects as $project)
+                        <div class="col-md-4  mb-4">
+                            <x-project-component :project="$project" language="ka"/>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {!! $projects->withQueryString()->links('pagination::bootstrap-5') !!}
+                    </div>
+                </div>
+                <div class="row">
+                    @include('partials.partners')
+                </div>
+            </div>
+        </div>
     </main>
 @endsection
 
 @section('scripts')
     <script>
-        const swiper = new Swiper(".partners", {
-            slidesPerView: 5,
-            speed: 1000,
-            autoplay: {
-                delay: 3000,
-            },
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-        });
+        const swiper = new Swiper(".partners", partnersSliderParams);
     </script>
 @endsection

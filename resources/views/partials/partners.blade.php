@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid pb-3">
     <div class="container">
         <div class="swiper partners">
             <div class="swiper-wrapper">

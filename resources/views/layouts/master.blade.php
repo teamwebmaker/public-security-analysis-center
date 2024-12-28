@@ -3,7 +3,7 @@
 <head>
  @include('partials.head')
 </head>
-<body data-languge="en">
+<body data-languge="ka">
 <div class="wrapper">
     @include('partials.header')
     @yield('main')

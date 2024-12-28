@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Project;
 use App\Models\Publication;
 use App\Models\Partner;
+use App\Models\Contact;
 use Illuminate\Support\Facades\Session;
+
 class AdminController extends Controller
 {
     public object $user;
@@ -21,6 +23,7 @@ class AdminController extends Controller
     }
     public function login()
     {
+        if(Session::has('admin')) return redirect() -> route('admin.dashboard.page');
         return view('admin.login');
     }
 
@@ -49,6 +52,10 @@ class AdminController extends Controller
             'partners' => (object) [
                 'title' => 'პარტნიორები',
                 'count' => Partner::count()
+            ],
+            'contacts' => (object) [
+                'title' => 'შეტყობინებები',
+                'count' => Contact::count()
             ]
         ]);
     }

@@ -14,24 +14,19 @@
 
 @section('main')
     <main>
-        <h1>{{ __('static.page.title') }}</h1>
+        <div class="container-fluid">
+            <div class="container-sm">
+                <div class="row">
+
+                </div>
+            </div>
+        </div>
         @include('partials.partners')
     </main>
 @endsection
 
 @section('scripts')
     <script>
-        const swiper = new Swiper(".partners", {
-            slidesPerView: 5,
-            speed: 1000,
-            autoplay: {
-                delay: 3000,
-            },
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-        });
+        const swiper = new Swiper(".partners", partnersSliderParams);
     </script>
 @endsection

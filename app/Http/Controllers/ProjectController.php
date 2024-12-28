@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
@@ -58,9 +59,15 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(string $id)
     {
-        //
+        $item = Project::findOrFail($id);
+        return view('pages.show', [
+            'language' => App::getLocale(),
+            'item' => $item,
+            'category' => 'projects',
+            'partners' => Partner::all()
+        ]);
     }
 
     /**

@@ -8,10 +8,10 @@
     <div class="container">
         <div class="row justify-content-between mb-4">
             <div class="col-6">
-                <button type="button" class="btn btn-primary">
+                <a type="button" class="btn btn-primary" href="{{ route('admin.dashboard.page') }}">
                     <i class="bi bi-person"></i>
                     <span class="text-label">psac@admin.panel</span>
-                </button>
+                </a>
             </div>
             <div class="col-6">
                 <form method="POST" action="{{ route('admin.logout') }}">

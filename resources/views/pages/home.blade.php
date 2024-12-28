@@ -4,7 +4,7 @@
 @section('styles')
     <style>
         .partners {
-            padding-block: 10px;
+            padding-block: 15px;
         }
         .swiper-pagination {
             --swiper-pagination-bottom: -5px;
@@ -14,24 +14,13 @@
 
 @section('main')
 <main>
-    <h1>{{ __('static.page.title') }}</h1>
+    @include('partials.articles')
     @include('partials.partners')
 </main>
 @endsection
 
 @section('scripts')
     <script>
-        const swiper = new Swiper(".partners", {
-            slidesPerView: 5,
-            speed: 1000,
-            autoplay: {
-                delay: 3000,
-            },
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-        });
+        const swiper = new Swiper(".partners", partnersSliderParams);
     </script>
 @endsection

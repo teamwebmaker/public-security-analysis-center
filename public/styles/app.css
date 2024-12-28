@@ -16,3 +16,59 @@ body[data-languge="ka"]{
 body[data-languge="en"]{
     font-family:'Roboto', sans-serif;
 }
+
+.navbar-toggler{
+    border: 1px solid var(--gold);
+}
+
+.swiper-pagination-bullet{
+    --swiper-pagination-bullet-width: 10px;
+    --swiper-pagination-bullet-height: 10px;
+}
+
+.swiper-pagination-bullet-active{
+    background-color: var(--gold);
+}
+
+.language-switcher{
+    padding: 7px;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: background-color 0.75s, color 0.75s;
+    font-size: 0.75rem;
+}
+
+.language-switcher:hover{
+    background-color: var(--black);
+    color: var(--gold);
+}
+
+.active-language{
+    background-color: var(--black);
+    color: var(--gold);
+}
+.view-more{
+    background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+    color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+
+}
+
+.view-more:hover{
+    background-color:  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+    color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+}
+
+.card-article{
+    border: 1px solid  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+}
+.card-partner{
+    border: 1px solid  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+    height: 100%;
+}
+
+/* Reset Admin Dashboard Page */
+
+button.black-bg.gold-text:hover {
+    background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.7);
+    color: var(--gold);
+}
