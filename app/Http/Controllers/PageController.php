@@ -17,17 +17,17 @@ class PageController extends Controller
     public string $language;
     public function __construct()
     {
-        $this -> language = App::getLocale();
+        $this->language = App::getLocale();
     }
 
     public function home()
     {
-        $projects = DB::table('projects') -> select('id', 'title', 'description','image', DB::raw('"projects" as collection'));
-        $articles = DB::table('publications') -> select('id', 'title', 'description','image', DB::raw('"publications" as collection'))
+        $projects = DB::table('projects')->select('id', 'title', 'description', 'image', DB::raw('"projects" as collection'));
+        $articles = DB::table('publications')->select('id', 'title', 'description', 'image', DB::raw('"publications" as collection'))
             ->union($projects)
             ->paginate(6);
         return view('pages.home', [
-            'language' => $this -> language,
+            'language' => $this->language,
             'articles' => $articles,
             'partners' => Partner::all()
         ]);
@@ -42,11 +42,10 @@ class PageController extends Controller
     public function projects(): view
     {
         return view('pages.projects', [
-            'projects' => Project::orderBy('id', 'DESC') -> paginate(6),
+            'projects' => Project::orderBy('id', 'DESC')->paginate(6),
             'partners' => Partner::all()
         ]);
     }
-
     public function contact(): view
     {
         return view('pages.contact', [
@@ -56,16 +55,16 @@ class PageController extends Controller
 
     public function publications()
     {
-       return view('pages.publications',[
-           'publications' => Publication::paginate(6),
-           'partners' => Partner::all()
-       ]);
+        return view('pages.publications', [
+            'publications' => Publication::paginate(6),
+            'partners' => Partner::all()
+        ]);
     }
 
     public function programs()
     {
-        return view('pages.programs',[
-            'programs' => Program::paginate(6),
+        return view('pages.programs', [
+            'programs' => Program::paginate(perPage: 6),
             'partners' => Partner::all()
         ]);
     }

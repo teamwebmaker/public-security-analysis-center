@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $MainMenu = MainMenu::orderBy('sorted', 'ASC') -> with('subMenu')-> get();
+        $MainMenu = MainMenu::orderBy('sorted', 'ASC')->with('subMenu')->get();
         View::share(['MainMenu' => $MainMenu, 'routeName' => Route::currentRouteName()]);
     }
 }
