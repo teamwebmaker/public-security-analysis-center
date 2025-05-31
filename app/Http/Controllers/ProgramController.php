@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App;
+
 use App\Models\Partner;
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class ProgramController extends Controller
 {
@@ -38,25 +39,27 @@ class ProgramController extends Controller
      */
     public function show(string $id)
     {
-        $mentors = [
-            (object)[
-                'name' => 'Anna Kvirikashvili',
-                'description' => 'Expert in intelligence operations and cybersecurity with over 20 years of experience in government and private sector.',
-                'image' => 'https://robohash.org/mentor1'
-            ],
-            (object)[
-                'name' => 'Levan Toradze',
-                'description' => 'Former diplomat and instructor in international relations, specializing in conflict resolution.',
-                'image' => 'https://robohash.org/mentor2'
-            ],
-            (object)[
-                'name' => 'Nino Makharadze',
-                'description' => 'Trainer in national security policy and law enforcement strategy. Led multiple national seminars.',
-                'image' => 'https://robohash.org/mentor3'
-            ]
-            ];
-        $item = Program::findOrFail($id);
-        // dd(Program::where('id', $id)->first());
+
+        // $mentors = [
+        //     (object)[
+        //         'name' => 'Anna Kvirikashvili',
+        //         'description' => 'Expert in intelligence operations and cybersecurity with over 20 years of experience in government and private sector.',
+        //         'image' => 'https://robohash.org/mentor1'
+        //     ],
+        //     (object)[
+        //         'name' => 'Levan Toradze',
+        //         'description' => 'Former diplomat and instructor in international relations, specializing in conflict resolution.',
+        //         'image' => 'https://robohash.org/mentor2'
+        //     ],
+        //     (object)[
+        //         'name' => 'Nino Makharadze',
+        //         'description' => 'Trainer in national security policy and law enforcement strategy. Led multiple national seminars.',
+        //         'image' => 'https://robohash.org/mentor3'
+        //     ]
+        //     ];
+        // $item = Program::findOrFail($id);
+        $item = Program::with(['syllabuses', 'mentors'])->findOrFail($id);
+        // dd(vars: );
         return view(
             'pages.show-program',
             [
@@ -64,7 +67,7 @@ class ProgramController extends Controller
                 'language' => App::getLocale(),
                 'partners' => Partner::all(),
                 'category' => 'programs',
-                'mentors' => $mentors
+                // 'mentors' => $mentors
             ]
         );
 

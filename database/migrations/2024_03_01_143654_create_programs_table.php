@@ -23,8 +23,6 @@ return new class extends Migration {
             $table->json('hour')->nullable();
             $table->string('duration')->nullable();
             $table->string('address')->nullable();
-            $table->unsignedBigInteger('mentor_id')->nullable();
-            $table->foreign('mentor_id')->references('id')->on('mentors')->onDelete('cascade');
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->tinyInteger('sortable')->default(1);
             $table->timestamps();

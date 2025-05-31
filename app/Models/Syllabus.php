@@ -6,11 +6,11 @@ use App\Casts\JsonConvertCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Info extends Model
+class Syllabus extends Model
 {
-    protected $casts = [
+    protected $table= 'syllabuses';
+    protected  $casts = [
         'title' => JsonConvertCast::class,
-        'description' => JsonConvertCast::class,
     ];
     use HasFactory;
 }

@@ -9,8 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 class Program extends Model
 {
     use HasFactory;
-    protected  $casts = [
+    protected $casts = [
         'title' => JsonConvertCast::class,
-        'description' => JsonConvertCast::class
+        'description' => JsonConvertCast::class,
+        'days' => JsonConvertCast::class,
+        'hour' => JsonConvertCast::class
     ];
+
+    public function mentors()
+    {
+        return $this->belongsToMany(Mentor::class);
+    }
+
+    public function syllabuses()
+    {
+        return $this->hasMany(Syllabus::class);
+    }
 }

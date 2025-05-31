@@ -1,29 +1,31 @@
 @extends('layouts.master')
-@section('title', $item -> title -> $language)
+@section('title', $item->title->$language)
 @section('styles')
     <style>
-        body{
+        body {
             font-family: inherit;
         }
+
         .partners {
             padding-block: 15px;
         }
+
         .swiper-pagination {
             --swiper-pagination-bottom: -5px;
         }
     </style>
 @endsection
 @section('main')
-<div class="container-fluid">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <x-single-item-component :item="$item" :language="$language" :category="$category"/>
+    <div class="container-fluid my-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <x-single-item-component :item="$item" :language="$language" :category="$category" />
+                </div>
             </div>
         </div>
     </div>
-</div>
-@include('partials.partners')
+    @include('partials.partners')
 @endsection
 @section('scripts')
     <script>

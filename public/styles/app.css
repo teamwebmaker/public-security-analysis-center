@@ -65,8 +65,19 @@ body[data-languge="en"]{
     border: 1px solid  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
     height: 100%;
 }
+
+/* ========================== */
 /* Show-program.blade.php */
-/* currency icon img styles */
+
+.register-btn{
+    background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+    color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+}
+
+.register-btn:hover {
+  background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.85);
+  color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.9);
+}
 .icon-currency{
     width:16px;
     margin-bottom: 1px;

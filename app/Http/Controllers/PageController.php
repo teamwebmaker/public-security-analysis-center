@@ -34,8 +34,12 @@ class PageController extends Controller
     }
     public function aboutUs(): view
     {
+        $item = Info::all()->first();
         return view('pages.about-us', [
-            'partners' => Partner::all()
+            'item' => $item,
+            'language' => App::getLocale(),
+            'partners' => Partner::all(),
+            'category' => 'infos',
         ]);
     }
 

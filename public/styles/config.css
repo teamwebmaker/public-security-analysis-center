@@ -52,6 +52,10 @@
     background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
+.gold-bg--light{
+    background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.1);
+}
+
 .black-text{
     color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
 }
