@@ -23,7 +23,7 @@
         {{-- Optional description --}}
         @if($description)
             <p class="card-text fs-6 service-desc">
-                {{ Str::limit($description, 250) }}
+                {{ Str::limit($description, 70) }}
             </p>
         @endif
     </div>

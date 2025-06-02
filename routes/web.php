@@ -9,6 +9,8 @@ use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\ServiceController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,11 +27,17 @@ Route::get('/', [PageController::class, 'home'])->name('home.page');
 Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about.page');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact.page');
 
-Route::get('/services', [PageController::class, 'services'])->name('services.page');
 Route::get('/publications', [PageController::class, 'publications'])->name('publications.page');
 Route::post('/notification', [EmailController::class, 'sendNotification'])->name('send.notification');
 
 // With Resource Controller
+
+Route::get('/services', [PageController::class, 'services'])->name('services.page');
+Route::resource('services', ServiceController::class)->only('show')->parameters([
+    'services' => 'id'
+]);
+
+
 Route::get('/programs', [PageController::class, 'programs'])->name('programs.page');
 Route::resource('programs', ProgramController::class)->only('show')->parameters([
     'programs' => 'id',
