@@ -4,7 +4,7 @@
         <div class="row">
             @foreach($articles as $article)
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <x-article-component :article="$article" :language="$language"/>
+                    <x-article-component :article="$article" :language="$language" />
                 </div>
             @endforeach
         </div>

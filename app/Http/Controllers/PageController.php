@@ -61,7 +61,8 @@ class PageController extends Controller
     {
         return view('pages.publications', [
             'publications' => Publication::paginate(6),
-            'partners' => Partner::all()
+            'partners' => Partner::all(),
+            'language' => App::getLocale()
         ]);
     }
 
@@ -69,7 +70,9 @@ class PageController extends Controller
     {
         return view('pages.programs', [
             'programs' => Program::paginate(perPage: 6),
-            'partners' => Partner::all()
+            'partners' => Partner::all(),
+            'language' => App::getLocale()
+
         ]);
     }
 
@@ -80,7 +83,8 @@ class PageController extends Controller
 
         return view('pages.services', [
             'services' => $services,
-            'partners' => Partner::all()
+            'partners' => Partner::all(),
+            'language' => App::getLocale()
         ]);
     }
 

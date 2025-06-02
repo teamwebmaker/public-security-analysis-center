@@ -6,8 +6,13 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
+
+body {
+    font-family: inherit;
+}
+
 
 body[data-languge="ka"]{
     font-family: 'algeti', serif;
@@ -17,13 +22,26 @@ body[data-languge="en"]{
     font-family:'Roboto', sans-serif;
 }
 
+
+ 
+
 .navbar-toggler{
     border: 1px solid var(--gold);
 }
 
+/* Swiper Slider */
+.partners {
+  padding-block: 25px;
+  }
+ 
+  .swiper-pagination {
+  --swiper-pagination-bottom: -10px;
+  }
+
 .swiper-pagination-bullet{
-    --swiper-pagination-bullet-width: 10px;
-    --swiper-pagination-bullet-height: 10px;
+    --swiper-pagination-bullet-width: 12px;
+    --swiper-pagination-bullet-height: 12px;
+      margin: 5px 6px !important;
 }
 
 .swiper-pagination-bullet-active{
@@ -89,7 +107,9 @@ body[data-languge="en"]{
     align-items: center;
     gap: 5px;
 }
-  
+
+
+
 
 /* Reset Admin Dashboard Page */
 

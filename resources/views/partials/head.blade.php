@@ -9,17 +9,4 @@
 <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 <link rel="shortcut icon" href="{{ asset('images/themes/icon.png') }}" />
 @yield('styles')
-<style>
-  body {
-  font-family: inherit;
-  }
-
-  .partners {
-  padding-block: 15px;
-  }
-
-  .swiper-pagination {
-  --swiper-pagination-bottom: -5px;
-  }
-  </style>
 <title>@yield('title')</title>

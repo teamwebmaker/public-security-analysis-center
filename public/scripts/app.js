@@ -4,7 +4,7 @@ const partnersSliderParams = {
     autoplay: {
         delay: 3000,
     },
-    spaceBetween: 30,
+    spaceBetween: 40,
     pagination: {
         el: ".swiper-pagination",
         clickable: true,

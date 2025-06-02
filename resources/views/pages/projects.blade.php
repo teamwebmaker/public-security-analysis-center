@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title',  'Projects Page')
+@section('title', 'Projects Page')
 
 @section('main')
     <main>
@@ -7,8 +7,8 @@
             <div class="container-xxl">
                 <div class="row mb-5">
                     @foreach($projects as $project)
-                        <div class="col-md-4  mb-4">
-                            <x-project-component :project="$project" language="ka"/>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <x-project-component :project="$project" language="ka" />
                         </div>
                     @endforeach
                 </div>

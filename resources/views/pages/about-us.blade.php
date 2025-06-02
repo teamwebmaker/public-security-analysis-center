@@ -1,39 +1,3 @@
-{{-- @extends('layouts.master')
-@section('title', 'About us Page')
-
-@section('styles')
-<style>
-    .partners {
-        padding-block: 10px;
-    }
-
-    .swiper-pagination {
-        --swiper-pagination-bottom: -5px;
-    }
-</style>
-@endsection
-
-@section('main')
-<main>
-    <div class="container-fluid">
-        <div class="container-sm">
-            <div class="row">
-                <div class="col-12">
-                    <h2 class="gold-text fw-bold mb-4">About Us</h2>
-                </div>
-            </div>
-        </div>
-        @include('partials.partners')
-</main>
-@endsection
-
-@section('scripts')
-<script>
-    const swiper = new Swiper(".partners", partnersSliderParams);
-</script>
-@endsection --}}
-
-
 @extends('layouts.master')
 @section('title', 'About us Page')
 
@@ -88,14 +52,6 @@
             font-size: 1.5rem;
             margin-right: 1rem;
             flex-shrink: 0;
-        }
-
-        .partners {
-            padding-block: 10px;
-        }
-
-        .swiper-pagination {
-            --swiper-pagination-bottom: -5px;
         }
 
         @media (max-width: 768px) {
