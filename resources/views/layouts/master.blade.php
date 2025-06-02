@@ -7,6 +7,7 @@
 <div class="wrapper">
     @include('partials.header')
     @yield('main')
+    @include('partials.partners')
     @include('partials.footer')
 </div>
 
@@ -16,5 +17,8 @@
 <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 <script  src="{{ asset('scripts/app.js') }}"></script>
 @yield('scripts')
+<script>
+    const swiper = new Swiper(".partners", partnersSliderParams);
+  </script>
 </body>
 </html>

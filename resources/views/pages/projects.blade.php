@@ -1,17 +1,6 @@
 @extends('layouts.master')
 @section('title',  'Projects Page')
 
-@section('styles')
-    <style>
-        .partners {
-            padding-block: 15px;
-        }
-        .swiper-pagination {
-            --swiper-pagination-bottom: -5px;
-        }
-    </style>
-@endsection
-
 @section('main')
     <main>
         <div class="container-fluid pt-5">
@@ -28,16 +17,7 @@
                         {!! $projects->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
                 </div>
-                <div class="row">
-                    @include('partials.partners')
-                </div>
             </div>
         </div>
     </main>
-@endsection
-
-@section('scripts')
-    <script>
-        const swiper = new Swiper(".partners", partnersSliderParams);
-    </script>
 @endsection

@@ -3,13 +3,6 @@
 
 @section('styles')
     <style>
-        .partners {
-            padding-block: 15px;
-        }
-        .swiper-pagination {
-            --swiper-pagination-bottom: -5px;
-        }
-
         ::placeholder {
             color: var(--gold) !important;
         }
@@ -78,12 +71,7 @@
                 </div>
             </div>
         </div>
-        @include('partials.partners')
     </main>
 @endsection
 
-@section('scripts')
-    <script>
-        const swiper = new Swiper(".partners", partnersSliderParams);
-    </script>
-@endsection
+ 

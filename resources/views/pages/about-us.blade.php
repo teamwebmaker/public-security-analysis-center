@@ -169,12 +169,8 @@
             </div>
         </section>
 
-        @include('partials.partners')
+        
     </main>
 @endsection
 
-@section('scripts')
-    <script>
-        const swiper = new Swiper(".partners", partnersSliderParams);
-    </script>
-@endsection
+ 

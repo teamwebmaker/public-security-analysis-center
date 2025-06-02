@@ -1,19 +1,6 @@
 @extends('layouts.master')
 @section('title',  'Services Page')
 
-@section('styles')
-    <style>
-        .service-desc {
-            font-size: 14px !important;
-        }
-        .partners {
-            padding-block: 15px;
-        }
-        .swiper-pagination {
-            --swiper-pagination-bottom: -5px;
-        }
-    </style>
-@endsection
 
 @section('main')
     <main>
@@ -31,16 +18,7 @@
                         {!! $services->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
                 </div>
-                <div class="row">
-                    @include('partials.partners')
-                </div>
             </div>
         </div>
     </main>
-@endsection
-
-@section('scripts')
-    <script>
-        const swiper = new Swiper(".partners", partnersSliderParams);
-    </script>
 @endsection

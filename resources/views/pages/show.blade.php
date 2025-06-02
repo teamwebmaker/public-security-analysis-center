@@ -1,20 +1,5 @@
 @extends('layouts.master')
 @section('title', $item->title->$language)
-@section('styles')
-    <style>
-        body {
-            font-family: inherit;
-        }
-
-        .partners {
-            padding-block: 15px;
-        }
-
-        .swiper-pagination {
-            --swiper-pagination-bottom: -5px;
-        }
-    </style>
-@endsection
 @section('main')
     <div class="container-fluid my-4">
         <div class="container">
@@ -25,10 +10,4 @@
             </div>
         </div>
     </div>
-    @include('partials.partners')
-@endsection
-@section('scripts')
-    <script>
-        const swiper = new Swiper(".partners", partnersSliderParams);
-    </script>
 @endsection
