@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->json('title');
             $table->json('description');
             $table->string('image')->nullable();
+            $table->string('certificate_image')->nullable();
             $table->string('video')->nullable();
             $table->string('price')->nullable();
             $table->date('start_date')->nullable();

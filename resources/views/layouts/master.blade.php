@@ -17,7 +17,10 @@
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-  <script src="{{ asset('scripts/app.js') }}"></script>
+
+  {{-- Prevent browser cache by appending last modified date --}}
+  <script src="{{ asset('scripts/app.js') . '?date=' . $modified }}"></script>
+
   @yield('scripts')
   <script>
     const swiper = new Swiper(".partners", partnersSliderParams);

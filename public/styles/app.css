@@ -96,20 +96,6 @@ body[data-languge="en"]{
   background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.85);
   color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.9);
 }
-.icon-currency{
-    width:16px;
-    margin-bottom: 1px;
-    /* height: 17px; */
-    /* height: 24px; */
-}
-.icon-box  {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-
-
 
 /* Reset Admin Dashboard Page */
 

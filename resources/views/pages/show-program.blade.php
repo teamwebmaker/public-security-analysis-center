@@ -2,119 +2,204 @@
 @section('title', $item->title->$language)
 
 @section('main')
-  <!-- Course Header -->
-  <section class="gold-bg border-bottom  border-1 border-gold-bg--light rounded-bottom-4">
-    <div class="container py-5 px-3 px-sm-5">
-    <div class="row g-3 g-sm-5 align-items-center">
+	<!-- Course Header -->
+	<section class="gold-bg border-bottom border-1 border-gold-bg--light rounded-bottom-4">
+		<div class="container py-5 px-3 px-sm-5">
+			<div class="row g-3 g-sm-5 align-items-center">
 
-      <!-- Image Column -->
-      <div class="col-12 col-lg-6">
-      <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+				<!-- Media Column -->
+				<div class="col-12 col-lg-6">
+					<div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+						@if (!empty($item->video))
+							@php
+								preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/', $item->video, $matches);
+								$youtubeId = $matches[1] ?? null;
+							@endphp
+							@if ($youtubeId)
+								<iframe src="https://www.youtube.com/embed/{{ $youtubeId }}" title="Course video" frameborder="0"
+									allowfullscreen class="w-100 h-100">
+								</iframe>
+							@endif
+						@elseif (!empty($item->image))
+							<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"
+								class="w-100 h-100 object-fit-cover" alt="{{ $item->title->$language }}">
+						@endif
+					</div>
+				</div>
+				<!-- Info Column -->
+				<div class="col-12 col-lg-6">
+					<h1 class="fw-bold mb-4 fs-3 gold-black">{{ $item->title->$language }}</h1>
 
-        <img src="{{ asset(implode('/', ['images', $category, $item->image])) }}" class="w-100 h-100 object-fit-cover"
-        alt="{{ $item->title->$language }}">
-      </div>
-      </div>
+					<ul class="list-unstyled fs-6 lh-lg">
+						<li class="d-flex align-items-center mb-2">
+							<i class="bi bi-currency-exchange me-2"></i>
+							<strong class="pe-1">Price:</strong> {{ $item->price }} ₾
+						</li>
+						<li class="d-flex align-items-center mb-2">
+							<i class="bi bi-clock-fill me-2"></i>
+							<strong class="pe-1">Duration:</strong> {{ $item->duration }}
+						</li>
+						<li class="d-flex align-items-center mb-2">
+							<i class="bi bi-calendar-event-fill me-2"></i>
+							<strong class="pe-1">Course Starts:</strong> {{ date('d.m.Y', strtotime($item->start_date)) }}
+						</li>
+						<li class="d-flex align-items-center">
+							<i class="bi bi-calendar-week-fill me-2"></i>
+							<strong class="pe-1">Schedule:</strong>
+							{{ collect($item->days)->map(fn($day) => mb_substr(trim($day), 0, 3))->implode(', ') }}
+							|
+							{{ $item->hour->start }} - {{ $item->hour->end }}
+						</li>
+					</ul>
 
-      <!-- Info Column -->
-      <div class=" col-12 col-lg-6">
-      <h1 class="fw-bold mb-4 fs-3 gold-black">{{ $item->title->$language }}</h1>
+					<div class="mt-4 d-flex flex-wrap gap-3">
+						<a href="#" class="btn register-btn px-4">Register</a>
+						<a href="#" class="btn border-dark px-4">For Companies</a>
+					</div>
+				</div>
 
-      <ul class="list-unstyled fs-6 lh-lg">
-        <li class="d-flex align-items-center mb-2">
-        <img src="/images/icons/gel-currency.png" alt="gel currency icon" class="me-2 icon-currency">
+			</div>
+		</div>
+	</section>
 
-        <strong class="pe-1">Price:</strong> {{ $item->price }}
-        </li>
-        <li class="d-flex align-items-center mb-2">
-        <i class="bi bi-clock-fill me-2"></i>
-        <strong class="pe-1">Duration:</strong> {{ $item->duration }}
-        <li class="d-flex align-items-center mb-2">
-        <i class="bi bi-calendar-event-fill me-2"></i>
-        <strong class="pe-1">Course Starts:</strong> {{ date('d.m.Y', strtotime($item->start_date)) }}
-        </li>
-        <li class="d-flex align-items-center">
-        <i class="bi bi-calendar-week-fill me-2"></i>
-        <strong class="pe-1">Schedule:</strong>
-        {{ collect($item->days)->map(fn($day) => mb_substr(trim($day), 0, 3))->implode(', ') }}
-        |
-        {{ $item->hour->start }} - {{ $item->hour->end }}
-        </li>
-      </ul>
+	<!-- About Section -->
+	<section class="container py-5 px-3 px-sm-5">
+		<h2 class="gold-text fw-bold mb-4">About the Course</h2>
+		<div class="row g-4 align-items-start">
+			<div class="col-md-9">
+				<p class="fs-5 fw-light lh-md">
+					{{ $item->description->$language }}
+				</p>
+			</div>
+			<div class="col-7 col-sm-5 col-md-3 ">
+				<img src="{{ asset(implode('/', ['images', $category, $item->certificate_image])) }}"
+					class="img-fluid rounded shadow" alt="certificate-{{ $item->title->$language }} ">
+			</div>
+		</div>
+	</section>
 
-      <div class="mt-4 d-flex flex-wrap gap-3">
-        <a href="#" class="btn register-btn px-4">Register</a>
-        <a href="#" class="btn border-dark px-4">For Companies</a>
-      </div>
-      </div>
+	<!-- Syllabus Section -->
+	{{-- <section class="border-top border-1 border-gold-bg--light">
+		<div class="container py-5 px-3 px-sm-5">
+			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
+			<div class="accordion" id="syllabusAccordion">
+				@foreach ($item->syllabuses as $index => $syllabus)
+				<div class="accordion-item col-12 col-sm-8 col-lg-5">
+					<h2 class="accordion-header" id="heading{{ $index }}">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+							data-bs-target="#collapse{{ $index }}" aria-expanded="false">
+							{{ $syllabus->title->$language }}
+						</button>
+					</h2>
+					<div id="collapse{{ $index }}" class="accordion-collapse collapse" data-bs-parent="#syllabusAccordion">
+						<div class="accordion-body">
+							<a href="{{ $syllabus->pdf }}" target="_blank" class="btn btn-sm btn-outline-secondary">Download
+								PDF</a>
+						</div>
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+	</section> --}}
+	<!-- Syllabus Section -->
+	{{-- <section class="border-top border-1 border-gold-bg--light">
+		<div class="container py-5 px-3 px-sm-5">
+			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
+			<div class="accordion" id="syllabusAccordion">
+				@foreach ($item->syllabuses as $index => $syllabus)
+				<div class="accordion-item col-12 col-sm-8 col-lg-5">
+					<h2 class="accordion-header" id="heading{{ $index }}">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+							data-bs-target="#collapse{{ $index }}" aria-expanded="false">
+							{{ $syllabus->title->$language }}
+						</button>
+					</h2>
+					<div id="collapse{{ $index }}" class="accordion-collapse collapse" data-bs-parent="#syllabusAccordion">
+						<div class="accordion-body">
+							<!-- View PDF Button -->
+							<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+								data-bs-target="#pdfModal{{ $index }}">
+								View PDF
+							</button>
+						</div>
+					</div>
+				</div>
 
-    </div>
-    </div>
-  </section>
+				<!-- Modal for PDF Viewer -->
+				<div class="modal fade" id="pdfModal{{ $index }}" tabindex="-1" aria-labelledby="pdfModalLabel{{ $index }}"
+					aria-hidden="true">
+					<div class="modal-dialog modal-xl modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="pdfModalLabel{{ $index }}">{{ $syllabus->title->$language }}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body" style="height: 80vh;">
+								<iframe src="{{ asset(implode('/', ['documents', $category, $syllabus->pdf])) }}"
+									class="w-100 h-100 border-0" allowfullscreen></iframe>
+							</div>
+						</div>
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+	</section> --}}
+	<section class="border-top border-1 border-gold-bg--light">
+		<div class="container py-5 px-3 px-sm-5">
+			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
 
-  <!-- About Section -->
-  <section class="container py-5 px-3 px-sm-5">
-    <h2 class="gold-text fw-bold mb-4">About the Course</h2>
-    <div class="row g-4 align-items-start">
-    <div class="col-md-9">
-      <p class="fs-5 fw-light lh-md">
-      {{ $item->description->$language }}
-      </p>
-    </div>
-    <div class="col-7 col-md-3 col-sm-5">
-      <img src="{{ asset(implode('/', ['images', $category, $item->image])) }}" class="img-fluid rounded shadow"
-      alt="{{ $item->title->$language }}">
-    </div>
-    </div>
-  </section>
+			<ul class="list-group">
+				@foreach ($item->syllabuses as $index => $syllabus)
+					<li
+						class="col-12 list-group-item col-sm-8 col-lg-5 mb-3 border rounded   p-3 d-flex justify-content-between align-items-center bg-white ">
+						<a href="#" data-bs-toggle="modal" data-bs-target="#pdfModal{{ $index }}" class="text-decoration-none">
+							{{ $syllabus->title->$language }}
+						</a>
+					</li>
 
-  <!-- Syllabus Section -->
-  <section class="border-top border-1 border-gold-bg--light">
-    <div class="container py-5 px-3 px-sm-5">
-      <h2 class="gold-text fw-bold mb-4">Syllabus</h2>
-      <div class="accordion" id="syllabusAccordion">
-        @foreach ($item->syllabuses as $index => $syllabus)
-        <div class="accordion-item col-12 col-sm-8 col-lg-5 ">
-          <h2 class="accordion-header" id="heading{{ $index }}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapse{{ $index }}" aria-expanded="false">
-              {{ $syllabus->title->$language }}
-            </button>
-          </h2>
-          <div id="collapse{{ $index }}" class="accordion-collapse collapse" data-bs-parent="#syllabusAccordion">
-            <div class="accordion-body">
-              <a href="{{ $syllabus->pdf }}" target="_blank" class="btn btn-sm btn-outline-secondary">Download PDF</a>
-            </div>
-          </div>
-        </div>
-        @endforeach
-      </div>
-    </div>
-  </section>
+					<!-- Modal for PDF Viewer -->
+					<div class="modal fade" id="pdfModal{{ $index }}" tabindex="-1" aria-labelledby="pdfModalLabel{{ $index }}"
+						aria-hidden="true">
+						<div class="modal-dialog modal-xl modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="pdfModalLabel{{ $index }}">{{ $syllabus->title->$language }}</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body" style="height: 80vh;">
+									<iframe src="{{ asset(implode('/', ['documents', $category, $syllabus->pdf])) }}"
+										class="w-100 h-100 border-0" allowfullscreen></iframe>
+								</div>
+							</div>
+						</div>
+					</div>
+				@endforeach
+			</ul>
+		</div>
+	</section>
 
-  <!-- Instructors Section -->
-  <section class="gold-bg--light rounded-top-5">
-    <div class="container-lg mt-5 px-3 px-sm-5">
-    <h2 class="fw-bold mb-4 text-center gold-text">Instructors</h2>
 
-    <div class="row justify-content-center g-4 mb-5">
-      @foreach($item->mentors as $mentor)
-      <div class="col-12 col-md-6 col-lg-4 d-flex">
-      <div class="card w-100 h-100 border-0 shadow-sm text-center p-3">
-      <img src="{{ $mentor->image }}" class="rounded mx-auto mb-3"
-      style="width: 100px; height: 100px; object-fit: cover;" alt="{{ $mentor['full-name'] }}">
-      <div class="card-body">
-      <h5 class="card-title fw-bold mb-1">{{ $mentor['full-name'] }}</h5>
-      <p class="text-muted small mb-1">{{ $mentor->position ?? '' }}</p>
-      <p class="card-text fs-6">{{ $mentor->description }}</p>
-      </div>
-      </div>
-      </div>
-    @endforeach
-    </div>
-    </div>
-  </section>
-
+	<!-- Instructors Section -->
+	<section class="gold-bg--light rounded-top-5">
+		<div class="container-lg mt-5 px-3 px-sm-5">
+			<h2 class="fw-bold mb-4 text-center gold-text">Instructors</h2>
+			<div class="row justify-content-center g-4 mb-5">
+				@foreach($item->mentors as $mentor)
+					<div class="col-12 col-md-6 col-lg-4 d-flex">
+						<div class="card w-100 h-100 border-0 shadow-sm text-center p-3">
+							<img src="{{ $mentor->image }}" class="rounded mx-auto mb-3"
+								style="width: 100px; height: 100px; object-fit: cover;" alt="{{ $mentor['full-name'] }}">
+							<div class="card-body">
+								<h5 class="card-title fw-bold mb-1">{{ $mentor['full-name'] }}</h5>
+								<p class="text-muted small mb-1">{{ $mentor->position ?? '' }}</p>
+								<p class="card-text fs-6">{{ $mentor->description }}</p>
+							</div>
+						</div>
+					</div>
+				@endforeach
+			</div>
+		</div>
+	</section>
 @endsection
-
- 
