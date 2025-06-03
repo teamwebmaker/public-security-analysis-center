@@ -79,107 +79,28 @@
 	</section>
 
 	<!-- Syllabus Section -->
-	{{-- <section class="border-top border-1 border-gold-bg--light">
-		<div class="container py-5 px-3 px-sm-5">
-			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
-			<div class="accordion" id="syllabusAccordion">
-				@foreach ($item->syllabuses as $index => $syllabus)
-				<div class="accordion-item col-12 col-sm-8 col-lg-5">
-					<h2 class="accordion-header" id="heading{{ $index }}">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapse{{ $index }}" aria-expanded="false">
-							{{ $syllabus->title->$language }}
-						</button>
-					</h2>
-					<div id="collapse{{ $index }}" class="accordion-collapse collapse" data-bs-parent="#syllabusAccordion">
-						<div class="accordion-body">
-							<a href="{{ $syllabus->pdf }}" target="_blank" class="btn btn-sm btn-outline-secondary">Download
-								PDF</a>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section> --}}
-	<!-- Syllabus Section -->
-	{{-- <section class="border-top border-1 border-gold-bg--light">
-		<div class="container py-5 px-3 px-sm-5">
-			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
-			<div class="accordion" id="syllabusAccordion">
-				@foreach ($item->syllabuses as $index => $syllabus)
-				<div class="accordion-item col-12 col-sm-8 col-lg-5">
-					<h2 class="accordion-header" id="heading{{ $index }}">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#collapse{{ $index }}" aria-expanded="false">
-							{{ $syllabus->title->$language }}
-						</button>
-					</h2>
-					<div id="collapse{{ $index }}" class="accordion-collapse collapse" data-bs-parent="#syllabusAccordion">
-						<div class="accordion-body">
-							<!-- View PDF Button -->
-							<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-								data-bs-target="#pdfModal{{ $index }}">
-								View PDF
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<!-- Modal for PDF Viewer -->
-				<div class="modal fade" id="pdfModal{{ $index }}" tabindex="-1" aria-labelledby="pdfModalLabel{{ $index }}"
-					aria-hidden="true">
-					<div class="modal-dialog modal-xl modal-dialog-centered">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="pdfModalLabel{{ $index }}">{{ $syllabus->title->$language }}</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							</div>
-							<div class="modal-body" style="height: 80vh;">
-								<iframe src="{{ asset(implode('/', ['documents', $category, $syllabus->pdf])) }}"
-									class="w-100 h-100 border-0" allowfullscreen></iframe>
-							</div>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section> --}}
 	<section class="border-top border-1 border-gold-bg--light">
 		<div class="container py-5 px-3 px-sm-5">
 			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
-
 			<ul class="list-group">
 				@foreach ($item->syllabuses as $index => $syllabus)
 					<li
 						class="col-12 list-group-item col-sm-8 col-lg-5 mb-3 border rounded   p-3 d-flex justify-content-between align-items-center bg-white ">
 						<a href="#" data-bs-toggle="modal" data-bs-target="#pdfModal{{ $index }}" class="text-decoration-none">
 							{{ $syllabus->title->$language }}
+
 						</a>
 					</li>
 
 					<!-- Modal for PDF Viewer -->
-					<div class="modal fade" id="pdfModal{{ $index }}" tabindex="-1" aria-labelledby="pdfModalLabel{{ $index }}"
-						aria-hidden="true">
-						<div class="modal-dialog modal-xl modal-dialog-centered">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="pdfModalLabel{{ $index }}">{{ $syllabus->title->$language }}</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body" style="height: 80vh;">
-									<iframe src="{{ asset(implode('/', ['documents', $category, $syllabus->pdf])) }}"
-										class="w-100 h-100 border-0" allowfullscreen></iframe>
-								</div>
-							</div>
-						</div>
-					</div>
+					<x-modal :id="'pdfModal' . $index" :title="$syllabus->title->$language" size="xl">
+						<iframe src="{{ asset('documents/' . $category . '/' . $syllabus->pdf) }}" class="w-100 h-100 border-0"
+							allowfullscreen></iframe>
+					</x-modal>
 				@endforeach
 			</ul>
 		</div>
 	</section>
-
 
 	<!-- Instructors Section -->
 	<section class="gold-bg--light rounded-top-5">
@@ -202,4 +123,5 @@
 			</div>
 		</div>
 	</section>
+
 @endsection
