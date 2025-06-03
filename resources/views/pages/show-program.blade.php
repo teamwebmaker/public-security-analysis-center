@@ -53,7 +53,7 @@
 					</ul>
 
 					<div class="mt-4 d-flex flex-wrap gap-3">
-						<a href="#" class="btn register-btn px-4">Register</a>
+						<a href="#" class="btn view-more--secondary px-4">Register</a>
 						<a href="#" class="btn border-dark px-4">For Companies</a>
 					</div>
 				</div>
@@ -97,6 +97,7 @@
 						<iframe src="{{ asset('documents/' . $category . '/' . $syllabus->pdf) }}" class="w-100 h-100 border-0"
 							allowfullscreen></iframe>
 					</x-modal>
+
 				@endforeach
 			</ul>
 		</div>

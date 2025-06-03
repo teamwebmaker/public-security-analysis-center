@@ -87,12 +87,12 @@ body[data-languge="en"]{
 /* ========================== */
 /* Show-program.blade.php */
 
-.register-btn{
+.view-more--secondary{
     background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
-.register-btn:hover {
+.view-more--secondary:hover {
   background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.85);
   color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.9);
 }

@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $MainMenu = MainMenu::orderBy('sorted', 'ASC')->with('subMenu')->get();
-        // // Update modified variable when js or css is updated
-        // View::share(['MainMenu' => $MainMenu, 'routeName' => Route::currentRouteName(), 'modified' => '03-05-2025']);
+        $MainMenu = MainMenu::orderBy('sorted', 'ASC')->with('subMenu')->get();
+        // Update modified variable when js or css is updated
+        View::share(['MainMenu' => $MainMenu, 'routeName' => Route::currentRouteName(), 'modified' => '03-05-2025']);
     }
 }

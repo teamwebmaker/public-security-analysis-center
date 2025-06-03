@@ -12,6 +12,8 @@ use App\Models\Partner;
 use App\Models\Info;
 use App\Models\Project;
 use App\Models\Publication;
+use App\Models\ServiceCategory;
+
 class PageController extends Controller
 {
     public string $language;
@@ -78,15 +80,18 @@ class PageController extends Controller
 
     public function services()
     {
-        // Use paginate directly on the query, not after `all()`
-        $services = Service::paginate(6);
+        $language = App::getLocale();
 
+        // First get all categories with their services to avoid N+1 problem
+        $categories = ServiceCategory::with([
+            'services' => function ($query) {
+                $query->orderBy('sortable');
+            }
+        ])->get();
         return view('pages.services', [
-            'services' => $services,
+            'categories' => $categories,
             'partners' => Partner::all(),
-            'language' => App::getLocale()
+            'language' => $language
         ]);
     }
-
-
 }

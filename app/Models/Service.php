@@ -13,4 +13,8 @@ class Service extends Model
         'title' => JsonConvertCast::class,
         'description' => JsonConvertCast::class
     ];
+    public function category()
+    {
+        return $this->belongsTo(ServiceCategory::class, 'service_category_id');
+    }
 }
