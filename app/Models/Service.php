@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Service extends Model
 {
     use HasFactory;
-    protected  $casts = [
+    protected $casts = [
         'title' => JsonConvertCast::class,
         'description' => JsonConvertCast::class
     ];

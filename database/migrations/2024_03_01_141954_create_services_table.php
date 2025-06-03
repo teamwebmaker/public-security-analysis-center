@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,8 +15,16 @@ return new class extends Migration
             $table->json('title');
             $table->json('description');
             $table->string('image');
-            $table->enum('visibility',['0', '1']) -> default('1');
-            $table->tinyInteger('sortable') -> default(1);
+
+            // Connection to service_category
+            $table->unsignedBigInteger('service_category_id')->nullable();
+            $table->foreign('service_category_id')
+                ->references('id')
+                ->on('service_categories')
+                ->onDelete('set null');
+
+            $table->enum('visibility', ['0', '1'])->default('1');
+            $table->tinyInteger('sortable')->default(1);
             $table->timestamps();
         });
     }
