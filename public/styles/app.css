@@ -28,7 +28,7 @@ body[data-languge="en"]{
 }
 
 /* Swiper Slider */
-.partners {
+/* .partners {
   padding-block: 25px;
   }
  
@@ -40,6 +40,28 @@ body[data-languge="en"]{
     --swiper-pagination-bullet-width: 12px;
     --swiper-pagination-bullet-height: 12px;
       margin: 5px 6px !important;
+} */
+
+/* Attempt to fix bullet position error in mobile */
+.partners {
+  position: relative; 
+  padding-block: 25px;
+}
+
+.partners .swiper-pagination {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  margin: 5px 6px !important;
+  background: #333; /* Customize as needed */
 }
 
 .swiper-pagination-bullet-active{
