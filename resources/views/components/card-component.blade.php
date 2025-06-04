@@ -33,7 +33,7 @@
 
     {{-- Optional footer with date and link --}}
     @if($date || $link)
-        <div class="p-4 d-flex  justify-content-between gap-sm-0">
+        <div class="p-4 d-flex justify-content-between align-items-end gap-sm-0">
             <!-- First column (always present) -->
             <div>
                 @if($date)

@@ -11,12 +11,15 @@ class SingleItemComponent extends Component
     public string $language;
     public object $item;
     public string $category;
+    public string $isPdfMarkerDisplayed;
 
-    public function __construct($item, $language, $category)
+    public function __construct($item, $language, $category, $isPdfMarkerDisplayed)
     {
-        $this -> language = $language;
-        $this -> item = $item;
-        $this -> category = $category;
+        $this->language = $language;
+        $this->item = $item;
+        $this->category = $category;
+        $this->isPdfMarkerDisplayed = $isPdfMarkerDisplayed;
+
     }
 
     /**

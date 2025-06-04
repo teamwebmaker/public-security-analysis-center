@@ -5,7 +5,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <x-single-item-component :item="$item" :language="$language" :category="$category" />
+                    <x-single-item-component :item="$item" :language="$language" :category="$category"
+                        :isPdfMarkerDisplayed="isset($item->file)" />
                 </div>
             </div>
         </div>
