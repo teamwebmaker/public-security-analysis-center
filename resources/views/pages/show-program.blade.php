@@ -12,7 +12,7 @@
 					<div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
 						@if (!empty($item->video))
 							@php
-								preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/', $item->video, $matches);
+								preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^&\s]+)/', $item->video, $matches);
 								$youtubeId = $matches[1] ?? null;
 							@endphp
 							@if ($youtubeId)

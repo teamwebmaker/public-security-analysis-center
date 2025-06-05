@@ -1,7 +1,6 @@
 <footer class="bg-dark text-light py-5 mt-5">
 	<div class="container">
 		<div class="row align-items-center gy-4">
-
 			<!-- Logo and Attribution -->
 			<div class="col-lg-4 text-center text-lg-start align-self-start">
 				<a href="{{ route('home.page') }}">
@@ -21,13 +20,10 @@
 					class="d-flex flex-wrap gap-2 col-5 col-lg-12  m-auto m-lg-0 justify-content-center justify-content-lg-start">
 					<!-- Pill-shaped navigation items -->
 					@foreach($MainMenu as $menu_item)
-						<a href="#" class="text-white btn-sm text-decoration-none px-1">
-							<span class="position-relative z-1">{{ $menu_item->title->$language }}</span>
-							<span
-								class="position-absolute top-0 start-0 w-100 h-100 bg-warning opacity-0 hover-opacity-10 transition-all"></span>
+						<a href="{{ route($menu_item->link) }}" class=" text-white btn-sm text-decoration-none px-1">
+							<span class="position-relative z-1">{{ $menu_item->title->ka }}</span>
 						</a>
 					@endforeach
-
 				</div>
 			</div>
 			<!-- Contact Info -->
@@ -51,7 +47,6 @@
 					</li>
 				</ul>
 			</div>
-
 		</div>
 	</div>
 </footer>

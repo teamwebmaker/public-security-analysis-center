@@ -1,4 +1,4 @@
-:root{
+:root {
     /* Black Color */
     --black-hue: 330;
     --black-saturation: 5%;
@@ -13,7 +13,7 @@
     --gold: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
-.response-img{
+.response-img {
     width: 100%;
     display: block;
     aspect-ratio: 9 / 6;
@@ -44,7 +44,7 @@
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
-.gold-text:hover{
+.gold-text:hover {
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
@@ -52,17 +52,18 @@
     background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
-.gold-bg--light{
+.gold-bg--light {
     background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.1);
 }
 
-.black-text{
+.black-text {
     color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
 }
 
 .black-bg {
     background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
 }
+
 .gold-border {
     border-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
@@ -78,24 +79,35 @@
     transition: width 0.75s;
 }
 
-.animated-line:hover::after{
+.animated-line:hover::after {
     width: 100%;
 }
 
-.page-item .page-link{
+.page-item .page-link {
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa)) !important;
 }
 
 .page-item.active .page-link {
-    background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa)) !important;
+    background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa)) !important;
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa)) !important;
     border-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa)) !important;
     font-weight: bold;
 }
 
-@media (max-width: 1400px){
+/* Tooltip styles  */
+.custom-tooltip .tooltip-inner {
+    background-color: var(--black);
+    color: #fff;
+    /* white text */
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 0.3rem;
+    max-width: 250px;
+    text-align: center;
+}
+
+@media (max-width: 1400px) {
     .container {
         max-width: 98% !important;
     }
 }
-

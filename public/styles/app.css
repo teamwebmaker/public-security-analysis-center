@@ -1,6 +1,7 @@
 @import "config.css";
 @import "bpg-algeti.css";
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 /* 'Roboto', sans-serif; */
 .wrapper {
     display: flex;
@@ -14,16 +15,23 @@ body {
 }
 
 
-body[data-languge="ka"]{
+body[data-languge="ka"] {
     font-family: 'algeti', serif;
 }
 
-body[data-languge="en"]{
-    font-family:'Roboto', sans-serif;
+body[data-languge="en"] {
+    font-family: 'Roboto', sans-serif;
 }
 
- 
-.navbar-toggler{
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+
+.navbar-toggler {
     border: 1px solid var(--gold);
 }
 
@@ -44,31 +52,32 @@ body[data-languge="en"]{
 
 /* Attempt to fix bullet position error in mobile */
 .partners {
-  position: relative; 
-  padding-block: 25px;
+    position: relative;
+    padding-block: 25px;
 }
 
 .partners .swiper-pagination {
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 10;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
 }
 
 .swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
-  margin: 5px 6px !important;
-  background: #333; /* Customize as needed */
+    width: 12px;
+    height: 12px;
+    margin: 5px 6px !important;
+    background: #333;
+    /* Customize as needed */
 }
 
-.swiper-pagination-bullet-active{
+.swiper-pagination-bullet-active {
     background-color: var(--gold);
 }
 
-.language-switcher{
+.language-switcher {
     padding: 7px;
     background-color: transparent;
     border-radius: 5px;
@@ -76,73 +85,75 @@ body[data-languge="en"]{
     font-size: 0.75rem;
 }
 
-.language-switcher:hover{
+.language-switcher:hover {
     background-color: var(--black);
     color: var(--gold);
 }
 
-.active-language{
+.active-language {
     background-color: var(--black);
     color: var(--gold);
 }
-.view-more{
-    background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+
+.view-more {
+    background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 
 }
 
-.view-more:hover{
-    background-color:  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
-    color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+.view-more:hover {
+    background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+    color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
 }
 
-.card-article{
-    border: 1px solid  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+.card-article {
+    border: 1px solid hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
-.card-partner{
-    border: 1px solid  hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+
+.card-partner {
+    border: 1px solid hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
     height: 100%;
 }
 
 /* ========================== */
 /* Show-program.blade.php */
 
-.view-more--secondary{
-    background-color:  hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
+.view-more--secondary {
+    background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), var(--back-alfa));
     color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
 .view-more--secondary:hover {
-  background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.85);
-  color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.9);
+    background-color: hsla(var(--black-hue), var(--black-saturation), var(--back-lightness), 0.85);
+    color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), 0.9);
 }
 
 
 /* single-item-component */
 .publication-img-wrapper {
-	position: relative;
-	cursor: pointer;
+    position: relative;
+    cursor: pointer;
 }
 
 .publication-img-wrapper::after {
-	content: attr(data-pdfMarker);
-	position: absolute;
+    content: attr(data-pdfMarker);
+    position: absolute;
     inset: 0;
-	background: rgba(0, 0, 0, 0.5);
-	color: #fff;
-	font-weight: bold;
-	font-size: 1.1rem;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	opacity: 1;
-	transition: opacity 0.3s ease;
-	border-radius: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    border-radius: 0.5rem;
     pointer-events: none;
 }
 
 .publication-img-wrapper:hover::after {
-	opacity: 0;
+    opacity: 0;
 }
 
 
