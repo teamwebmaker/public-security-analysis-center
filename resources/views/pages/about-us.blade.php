@@ -1,132 +1,67 @@
 @extends('layouts.master')
 @section('title', 'About us Page')
-
-@section('styles')
-    <style>
-        .about-section {
-            padding: 5rem 0;
-        }
-
-        .about-content {
-            position: relative;
-        }
-
-        .about-image {
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .about-image:hover {
-            transform: translateY(-5px);
-        }
-
-        .about-title {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-        }
-
-
-        .about-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-        }
-
-        .about-highlights {
-            margin-top: 2rem;
-        }
-
-        .highlight-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .highlight-icon {
-            color: var(--gold);
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 768px) {
-            .about-section {
-                padding: 3rem 0;
-            }
-
-            .about-title {
-                font-size: 2rem;
-            }
-
-            .about-image {
-                margin-bottom: 2rem;
-            }
-        }
-    </style>
-@endsection
-
 @section('main')
-    <main>
-        <section class="about-section">
-            <div class="container">
-                <div class="row align-items-center">
-                    <!-- Image Column -->
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <img src="{{ asset($item->image) }}" alt="{{ $item->title->$language }}"
-                            class="about-image img-fluid w-100">
-                    </div>
+	<main>
+		<div class="container my-5 shadow rounded p-4 bg-white">
+			<!-- Title -->
+			<div class="mb-4">
+				<h2 class="gold-text fw-bold" style="letter-spacing: 0.5px;">
+					{{ $item->title->$language }}
+				</h2>
+			</div>
 
-                    <!-- Content Column -->
-                    <div class="col-lg-6">
-                        <h2 class="about-title gold-text fw-bold">{{ $item->title->$language }}</h2>
+			<!-- Row -->
+			<div class="row align-items-start gx-lg-4 gy-4">
+				<!-- Left Column: Text -->
+				<div class="col-12 col-lg-6">
+					<p class="fs-5 fw-light mb-0" style="line-height: 1.7; color: #333;">
+						{{ $item->description->$language }}
+					</p>
+				</div>
 
-                        <div class="about-description">
-                            {!! nl2br(e($item->description->$language)) !!}
-                        </div>
+				<!-- Right Column: Image & Stats -->
+				<div class="col-12 col-lg-6">
+					<div class="d-flex flex-column flex-lg-column-reverse gap-3">
+						<!-- Stats (Top on mobile, Bottom on large) -->
+						@php
+							$hasExperience = isset($item->experience);
+							$hasGraduates = isset($item->graduates);
+						@endphp
 
-                        <div class="about-highlights">
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="bi bi-award-fill"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold mb-1">15+ Years Experience</h5>
-                                    <p class="mb-0">Providing top-quality training since 2008</p>
-                                </div>
-                            </div>
+						@if ($hasExperience || $hasGraduates)
+							<div
+								class="border rounded py-3 px-3 bg-white d-flex flex-column flex-sm-row justify-content-between text-center gap-3">
+								@if ($hasExperience)
+									<div class="flex-fill">
+										<h4 class="fw-bold gold-text mb-1">{{ $item->experience }}&nbsp;+</h4>
+										<p class="mb-0 text-muted">Years Experience</p>
+									</div>
+								@endif
 
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="bi bi-people-fill"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold mb-1">5000+ Graduates</h5>
-                                    <p class="mb-0">Professionals trained across multiple industries</p>
-                                </div>
-                            </div>
+								@if ($hasExperience && $hasGraduates)
+									<!-- Divider: horizontal on mobile, vertical on desktop -->
+									<div class="d-block d-sm-none" style="height:1px; background:#ddd;"></div>
+									<div class="d-none d-sm-block vr"></div>
+								@endif
 
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="bi bi-star-fill"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold mb-1">Industry Leaders</h5>
-                                    <p class="mb-0">Partnered with top organizations worldwide</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+								@if ($hasGraduates)
+									<div class="flex-fill">
+										<h4 class="fw-bold gold-text mb-1">{{ $item->graduates }}&nbsp;+</h4>
+										<p class="mb-0 text-muted">Graduates</p>
+									</div>
+								@endif
+							</div>
+						@endif
 
-        
-    </main>
+						<!-- Image (Bottom on mobile, Top on large) -->
+						<div class="mt-2 d-flex justify-content-center align-items-center rounded overflow-hidden"
+							style="max-height: 450px; max-width: 100%;">
+							<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"
+								alt="{{ $item->title->$language }}" class="img-fluid rounded object-fit-contain w-100">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
 @endsection
-
- 
