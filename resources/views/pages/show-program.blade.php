@@ -67,7 +67,7 @@
 		<h2 class="gold-text fw-bold mb-4">About the Course</h2>
 		<div class="row g-4 align-items-start">
 			<div class="col-md-9">
-				<p class="fs-5 fw-light lh-md">
+				<p class="fs-5 fw-light lh-md justified-text">
 					{{ $item->description->$language }}
 				</p>
 			</div>

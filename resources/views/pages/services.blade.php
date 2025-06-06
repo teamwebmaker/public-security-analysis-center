@@ -12,11 +12,13 @@
 					<div class="d-flex justify-content-center mt-4 mb-3">
 						<div class="d-flex flex-wrap gap-2 w-100 justify-content-center" style="max-width: 500px;">
 							@foreach($categories as $category)
-								<a href="#category-{{ Str::slug($category->name) }}"
-									class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm hover-shadow">
-									<span>{{ $category->name }}</span>
-									<i class="bi bi-box-arrow-up-right"></i>
-								</a>
+								@if (!$category->services->isEmpty())
+									<a href="#category-{{ Str::slug($category->name) }}"
+										class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm hover-shadow">
+										<span>{{ $category->name }}</span>
+										<i class="bi bi-box-arrow-up-right"></i>
+									</a>
+								@endif
 							@endforeach
 						</div>
 					</div>
@@ -25,9 +27,9 @@
 					<div class="mt-3">
 						<a href="#" data-bs-toggle="modal" data-bs-target="#servicesModal"
 							class="btn btn-light btn-lg px-4 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm">
-							მოითხოვე სერვისები <i class="bi bi-envelope-open"></i>
+							მომსახურების მოთხოვნა <i class="bi bi-envelope-open"></i>
 						</a>
-						<x-modal id="servicesModal" :title="'Request a Service'" size="md" height="min-content">
+						<x-modal id="servicesModal" :title="'მომსახურების მოთხოვნა'" size="md" height="min-content">
 							<x-services-form />
 						</x-modal>
 					</div>

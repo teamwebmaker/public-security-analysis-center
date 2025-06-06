@@ -35,22 +35,6 @@ button {
     border: 1px solid var(--gold);
 }
 
-/* Swiper Slider */
-/* .partners {
-  padding-block: 25px;
-  }
- 
-  .swiper-pagination {
-  --swiper-pagination-bottom: -10px;
-  }
-
-.swiper-pagination-bullet{
-    --swiper-pagination-bullet-width: 12px;
-    --swiper-pagination-bullet-height: 12px;
-      margin: 5px 6px !important;
-} */
-
-/* Attempt to fix bullet position error in mobile */
 .partners {
     position: relative;
     padding-block: 25px;
@@ -65,16 +49,29 @@ button {
     z-index: 10;
 }
 
+.swiper-slide {
+    width: auto !important;
+    display: flex;
+    justify-content: center;
+}
+
 .swiper-pagination-bullet {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     margin: 5px 6px !important;
     background: #333;
-    /* Customize as needed */
 }
 
 .swiper-pagination-bullet-active {
     background-color: var(--gold);
+}
+
+.card-partner {
+    width: 180px;
+    max-width: 100%;
+    margin-inline: auto;
+    height: 100%;
+    border: 1px solid hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
 .language-switcher {
@@ -110,10 +107,6 @@ button {
     border: 1px solid hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
 
-.card-partner {
-    border: 1px solid hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
-    height: 100%;
-}
 
 /* ========================== */
 /* Show-program.blade.php */

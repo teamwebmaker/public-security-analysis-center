@@ -22,7 +22,7 @@
 			@endif
 		</div>
 		<div>
-			<p class=" fs-5 fw-light" style="line-height: 1.7; color: #333;">
+			<p class=" fs-5 fw-light justified-text" style="line-height: 1.7; color: #333;">
 				{{ $item->description->$language }}
 			</p>
 		</div>
