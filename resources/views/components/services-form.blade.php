@@ -105,15 +105,17 @@
             `Name: ${name}\nCompany: ${company}\nContact: ${contact}\nServices: ${services}\n\nMessage:\n${message}`
         );
 
-        // Redirect to Gmail compose window with pre-filled details
-        const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=psacge@gmail.com&su=${subject}&body=${body}`;
-        window.open(mailtoLink, '_blank');
-    });
+        // Simple mobile device detection
+        const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent);
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        if (isMobile) {
+            // Use mailto on mobile
+            const mailtoLink = `mailto:psacge@gmail.com?subject=${subject}&body=${body}`;
+            window.location.href = mailtoLink;
+        } else {
+            // Use Gmail web compose on desktop
+            const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=psacge@gmail.com&su=${subject}&body=${body}`;
+            window.open(gmailLink, '_blank');
+        }
     });
 </script>
