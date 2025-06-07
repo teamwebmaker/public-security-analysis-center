@@ -2,7 +2,6 @@
     'title' => null,
     'description' => null,
     'image' => null,
-    'img_temp' => null, // Temp
     'link' => null,
     'date' => null,
 ])
@@ -12,8 +11,6 @@
     @if($image)
         <div class="card-header p-0">
             <img src="{{ asset($image) }}" class="card-img-top response-img" alt="Image">
-            {{-- Temp for services --}}
-            {{-- <img src="{{$img_temp }}" class="card-img-top response-img" alt="Image"> --}}
         </div>
     @endif
 

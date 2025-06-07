@@ -22,31 +22,47 @@ class PageController extends Controller
         $this->language = App::getLocale();
     }
 
-    public function home(Request $request)
-    {
+  public function home(Request $request)
+{
+    // Determine sort order
     $sortOrder = $request->query('sort', 'newest') === 'oldest' ? 'asc' : 'desc';
-
-    // Use UNION with the same column structure
-    $projects = DB::table('projects')
-        ->select('id', 'title', 'description', 'image', 'created_at', DB::raw('"projects" as collection'));
-
+    
+    // Base query for publications
     $articles = DB::table('publications')
-        ->select('id', 'title', 'description', 'image', 'created_at', DB::raw('"publications" as collection'))
-        ->unionAll($projects);
-
-    // Wrap query to apply ordering
-    $combined = DB::table(DB::raw("({$articles->toSql()}) as combined"))
-        ->mergeBindings($articles)
+        ->select([
+            'id',
+            'title',
+            'description',
+            'image',
+            'created_at',
+            DB::raw('"publications" as collection')
+        ]);
+    
+    // Union with projects query
+    $combinedQuery = $articles->unionAll(
+        DB::table('projects')
+            ->select([
+                'id',
+                'title', 
+                'description',
+                'image',
+                'created_at',
+                DB::raw('"projects" as collection')
+            ])
+    );
+    
+    // Execute the paginated query
+    $results = DB::table(DB::raw("({$combinedQuery->toSql()}) as combined"))
+        ->mergeBindings($combinedQuery)
         ->orderBy('created_at', $sortOrder)
-        ->paginate(6)
-        ->withQueryString();
-
+        ->paginate(6);
+    
     return view('pages.home', [
         'language' => $this->language,
-        'articles' => $combined,
+        'articles' => $results,
         'partners' => Partner::all(),
     ]);
-    }
+}
 
     public function aboutUs(): view
     {

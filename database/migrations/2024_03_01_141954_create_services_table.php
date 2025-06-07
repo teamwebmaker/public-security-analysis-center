@@ -18,10 +18,6 @@ return new class extends Migration {
 
             // Connection to service_category
             $table->unsignedBigInteger('service_category_id')->nullable();
-            $table->foreign('service_category_id')
-                ->references('id')
-                ->on('service_categories')
-                ->onDelete('set null');
 
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->tinyInteger('sortable')->default(1);

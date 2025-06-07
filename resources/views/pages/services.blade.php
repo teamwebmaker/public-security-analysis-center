@@ -13,9 +13,9 @@
 						<div class="d-flex flex-wrap gap-2 w-100 justify-content-center" style="max-width: 500px;">
 							@foreach($categories as $category)
 								@if (!$category->services->isEmpty())
-									<a href="#category-{{ Str::slug($category->name) }}"
+									<a href="#category-{{ Str::slug($category->name->$language) }}"
 										class="btn btn-outline-light rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm hover-shadow">
-										<span>{{ $category->name }}</span>
+										<span>{{ $category->name->$language }}</span>
 										<i class="bi bi-box-arrow-up-right"></i>
 									</a>
 								@endif
@@ -42,17 +42,16 @@
 			<div class="container-xxl px-3 px-md-5">
 				@foreach($categories as $category)
 					@if (!$category->services->isEmpty())
-						<div id="category-{{ Str::slug($category->name) }}" class="mb-5 pt-4">
+						<div id="category-{{ Str::slug($category->name->$language) }}" class="mb-5 pt-4">
 							<h3 class="text-center text-uppercase fw-semibold gold-text mb-4 animate__animated animate__fadeInUp">
-								{{ $category->name }}
+								{{ $category->name->$language }}
 							</h3>
 							<div class="row g-4 justify-content-center">
 								@foreach($category->services as $service)
 									<div class="col-lg-4 col-md-6">
 										{{-- img_temp | Temporary --}}
 										<x-card-component :title="$service->title->$language" :description="$service->description->$language"
-											:image="'images/services/' . $service->image" :img_temp="$service->image"
-											:link="route('services.show', ['id' => $service->id])" />
+											:image="'images/services/' . $service->image" :link="route('services.show', ['id' => $service->id])" />
 									</div>
 								@endforeach
 							</div>
@@ -62,4 +61,7 @@
 			</div>
 		</div>
 	</main>
+@endsection
+@section('scripts')
+	<script type="module" src="{{ asset('scripts/services.js') }}"></script>
 @endsection

@@ -19,13 +19,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 
   {{-- Prevent browser cache by appending last modified date --}}
-  <script src="{{ asset('scripts/app.js') . '?date=' . $modified }}"></script>
+  <script type="module" src="{{ asset('scripts/app.js') . '?date=' . $modified }}"></script>
 
   @yield('scripts')
-  <script>
+  <script type="module">
+    import { partnersSliderParams } from './scripts/app.js';
     const swiper = new Swiper(".partners", partnersSliderParams);
   </script>
-
 </body>
 
 </html>

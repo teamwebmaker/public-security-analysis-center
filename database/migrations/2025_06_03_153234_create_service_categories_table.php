@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->json('name');
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();
         });
