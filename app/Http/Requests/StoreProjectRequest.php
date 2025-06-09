@@ -28,7 +28,7 @@ class StoreProjectRequest extends FormRequest
             'description_ka' => 'required|string|min:10',
             'description_en' => 'required|string|min:10',
             // 'image' => 'required|mimes:jpg,webp,png'
-            'image' => 'required|image|mimes:jpg,jpeg,webp,png|max:2048',
+            'image' => 'required|image|mimes:jpg,jpeg,webp,png|max:5120',
         ];
     }
 }

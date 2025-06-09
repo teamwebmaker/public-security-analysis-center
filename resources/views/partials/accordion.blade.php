@@ -62,10 +62,10 @@
             <div class="accordion-body">
                 <ul class="list-group">
                     <li class="list-group-item @if($routeName == 'programs.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="#">სპეც.პროგრამების ნახვა</a>
+                        <a class="nav-link" href="{{ route('programs.index') }}">სპეც.პროგრამების ნახვა</a>
                     </li>
-                    <li class="list-group-item  @if($routeName == 'programs.create')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="#">სპეც.პროგრამის შექმნა</a>
+                    <li class=" list-group-item @if($routeName == 'programs.create') bg-secondary text-white @endif">
+                        <a class="nav-link" href="{{ route('programs.create') }}">სპეც.პროგრამის შექმნა</a>
                     </li>
                 </ul>
             </div>

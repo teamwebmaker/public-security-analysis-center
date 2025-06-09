@@ -111,6 +111,10 @@
     text-justify: inter-word;
 }
 
+.transition-all {
+    transition: all 0.5s ease-in-out;
+}
+
 @media (max-width: 1400px) {
     .container {
         max-width: 98% !important;

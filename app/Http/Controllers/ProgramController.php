@@ -3,61 +3,75 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\StoreProgramsRequest;
 use App\Models\Partner;
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 
-class ProgramController extends Controller
+class ProgramController  extends CrudController
 {
+
+  protected string $modelClass = Program::class;
+    protected string $contextField = 'program';
+    protected string $viewFolder = 'programs';
+    protected string $uploadPath = 'images/programs/';
+
+   protected array $imageFields = [
+    'image' => 'images/programs/',
+    'certificate_image' => 'images/certificates/',
+];
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+ 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+   public function store(StoreProgramsRequest $request)
+{
+    $data = $request->validated();
+
+
+      foreach ($this->imageFields as $field => $path) {
+            $data[$field] = $this->handleImageUpload($request, $field);
+        }
+
+    $programData = [
+        'title' => $data['title'],
+        'description' => $data['description'],
+        'image' => $data['image'],
+        'certificate_image' => $data['certificate_image'],
+        'video' => $data['video'],
+        'price' => $data['price'],
+        'duration' => $data['duration'],
+        'address' => $data['address'],
+        'start_date' => $data['start_date'],
+        'end_date' => $data['end_date'],
+        'start_time' => $data['hour']['start'],
+        'end_time' => $data['hour']['end'],
+        'days' => json_encode($data['days']),
+        'visibility' => $data['visibility'],
+    ];
+    dd($programData);
+    Program::create($programData);
+
+    return redirect()->route('programs.index')->with('success', 'პროგრამა შეიქმნა წარმატებით');
+}
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-
-        // $mentors = [
-        //     (object)[
-        //         'name' => 'Anna Kvirikashvili',
-        //         'description' => 'Expert in intelligence operations and cybersecurity with over 20 years of experience in government and private sector.',
-        //         'image' => 'https://robohash.org/mentor1'
-        //     ],
-        //     (object)[
-        //         'name' => 'Levan Toradze',
-        //         'description' => 'Former diplomat and instructor in international relations, specializing in conflict resolution.',
-        //         'image' => 'https://robohash.org/mentor2'
-        //     ],
-        //     (object)[
-        //         'name' => 'Nino Makharadze',
-        //         'description' => 'Trainer in national security policy and law enforcement strategy. Led multiple national seminars.',
-        //         'image' => 'https://robohash.org/mentor3'
-        //     ]
-        //     ];
-        // $item = Program::findOrFail($id);
         $item = Program::with(['syllabuses', 'mentors'])->findOrFail($id);
         // dd(vars: );
         return view(
@@ -70,16 +84,8 @@ class ProgramController extends Controller
                 // 'mentors' => $mentors
             ]
         );
-
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+ 
 
     /**
      * Update the specified resource in storage.
@@ -88,12 +94,5 @@ class ProgramController extends Controller
     {
         //
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+ 
 }

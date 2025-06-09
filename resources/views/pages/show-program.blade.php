@@ -31,25 +31,37 @@
 					<h1 class="fw-bold mb-4 fs-3 gold-black">{{ $item->title->$language }}</h1>
 
 					<ul class="list-unstyled fs-6 lh-lg">
-						<li class="d-flex align-items-center mb-2">
+						<li class="mb-2 me-2">
 							<i class="bi bi-currency-exchange me-2"></i>
 							<strong class="pe-1">Price:</strong> {{ $item->price }} ₾
 						</li>
-						<li class="d-flex align-items-center mb-2">
+						<li class="mb-2 me-2">
 							<i class="bi bi-clock-fill me-2"></i>
 							<strong class="pe-1">Duration:</strong> {{ $item->duration }}
 						</li>
-						<li class="d-flex align-items-center mb-2">
+						<li class="mb-2 me-2">
 							<i class="bi bi-calendar-event-fill me-2"></i>
 							<strong class="pe-1">Course Starts:</strong> {{ date('d.m.Y', strtotime($item->start_date)) }}
 						</li>
-						<li class="d-flex align-items-center">
-							<i class="bi bi-calendar-week-fill me-2"></i>
+						<li class="mb-2 me-2">
+							<i class="bi bi-calendar-week-fill mb-2 me-2"></i>
 							<strong class="pe-1">Schedule:</strong>
-							{{ collect($item->days)->map(fn($day) => mb_substr(trim($day), 0, 3))->implode(', ') }}
+							{{ collect($item->days->$language)->map(fn($day) => mb_substr(trim($day), 0, 3))->implode(', ') }}
 							|
 							{{ $item->hour->start }} - {{ $item->hour->end }}
 						</li>
+						<li class="mb-2 me-2 d-flex align-items-end">
+							<i class="bi bi-geo-alt-fill me-1"></i>
+							<strong class="pe-1">Location:</strong>
+							<span class="text-truncate d-inline-block" style="max-width: 150px;" data-bs-toggle="tooltip"
+								data-bs-placement="top" title="{{ $item->address }}">
+								<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->address) }} "
+									target="_blank">
+									{{ $item->address }}
+								</a>
+							</span>
+						</li>
+
 					</ul>
 
 					<div class="mt-4 d-flex flex-wrap gap-3">
@@ -71,10 +83,13 @@
 					{{ $item->description->$language }}
 				</p>
 			</div>
-			<div class="col-7 col-sm-5 col-md-3 ">
-				<img src="{{ asset(implode('/', ['images', $category, $item->certificate_image])) }}"
-					class="img-fluid rounded shadow" alt="certificate-{{ $item->title->$language }} ">
-			</div>
+			@if ($item->certificate_image)
+				<div class="col-7 col-sm-5 col-md-3 ">
+					<img src="{{ asset(implode('/', ['images/certificates', $category, $item->certificate_image])) }}"
+						class="img-fluid rounded shadow" alt="certificate-{{ $item->title->$language }} ">
+				</div>
+			@endif
+
 		</div>
 	</section>
 

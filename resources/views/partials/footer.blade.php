@@ -11,16 +11,19 @@
 
 				<!-- Social Icons -->
 				<div class="d-flex justify-content-center justify-content-lg-start gap-3 ps-2 mb-3">
-					<a href="https://instagram.com" target="_blank" class="gold-text fs-5" title="Facebook">
+					<a href="https://www.facebook.com/profile.php?id=61552198050161" target="_blank" class="gold-text fs-5"
+						title="Facebook">
 						<i class="bi bi-facebook"></i>
 					</a>
-					<a href="https://instagram.com" target="_blank" class="gold-text fs-5" title="Instagram">
+					<a href="https://www.instagram.com/psacge?igsh=ZTE4OG5lZzBlNHBr" target="_blank" class="gold-text fs-5"
+						title="Instagram">
 						<i class="bi bi-instagram"></i>
 					</a>
-					<a href="https://linkedin.com" target="_blank" class="gold-text fs-5" title="Linkedin">
+					<a href="https://www.linkedin.com/in/giorgi-gratiashvili-9809481bb" target="_blank"
+						class="gold-text fs-5" title="Linkedin">
 						<i class="bi bi-linkedin"></i>
 					</a>
-					<a href="https://youtube.com" target="_blank" class="gold-text fs-5" title="Youtube">
+					<a href="https://www.youtube.com/@psac-ge" target="_blank" class="gold-text fs-5" title="Youtube">
 						<i class="bi bi-youtube"></i>
 					</a>
 				</div>

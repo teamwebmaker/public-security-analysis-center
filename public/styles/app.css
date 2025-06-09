@@ -122,17 +122,17 @@ button {
 }
 
 
-/* single-item-component */
-.publication-img-wrapper {
+/* Reusable Overlay */
+.overlay-label-wrapper {
     position: relative;
     cursor: pointer;
 }
 
-.publication-img-wrapper::after {
-    content: attr(data-pdfMarker);
+.overlay-label-wrapper::after {
+    content: attr(data-label);
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: hsla(var(--black-hue, 0), var(--black-saturation, 0%), var(--back-lightness, 0%), var(--overlay-alpha, 0.5));
     color: #fff;
     font-weight: bold;
     font-size: 1.1rem;
@@ -145,7 +145,8 @@ button {
     pointer-events: none;
 }
 
-.publication-img-wrapper:hover::after {
+
+.overlay-label-wrapper:hover::after {
     opacity: 0;
 }
 

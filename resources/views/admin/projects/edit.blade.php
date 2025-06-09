@@ -2,12 +2,19 @@
 @section('title', 'რედაქტირება/' . $project->title->ka)
 
 @section('main')
+
+    {{-- Global Success Display --}}
     @session('success')
         <div class="alert alert-success" role="alert" x-data="{ show: true }" x-show="show"
             x-init="setTimeout(() => show = false, 3000)">
             {{ $value }}
         </div>
     @endsession
+
+    {{-- Global warning Display --}}
+    <div class="alert alert-warning d-none" id="validation-errors-container">
+        <ul class="mb-0" id="validation-errors-list"></ul>
+    </div>
 
     {{-- Global Error Display --}}
     @if ($errors->any())
@@ -30,9 +37,11 @@
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="ka-tab" data-bs-toggle="tab" data-bs-target="#ka-tab-content"
-                            type="button" role="tab" aria-controls="ka-tab-content" aria-selected="true">KA</button>
+                            type="button" role="tab" aria-controls="ka-tab-content" aria-selected="true"><i
+                                class="bi bi-translate me-2"></i>ქართული</button>
                         <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-tab-content"
-                            type="button" role="tab" aria-controls="en-tab-content" aria-selected="false">EN</button>
+                            type="button" role="tab" aria-controls="en-tab-content" aria-selected="false"> <i
+                                class="bi bi-translate me-2"></i>English</button>
                     </div>
                 </nav>
 
@@ -48,7 +57,7 @@
                         </div>
                         <div class="mb-3">
                             <textarea class="form-control @error('description_ka') is-invalid @enderror" rows="5"
-                                name="description_ka" placeholder="აღწერა"
+                                name="description_ka" placeholder="აღწერა" minlength="10"
                                 required>{{ old('description_ka', $project->description->ka) }}</textarea>
                             @error('description_ka')
                                 <div class="invalid-feedback">{{ $message }}</div>

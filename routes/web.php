@@ -59,7 +59,8 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['route.guard'])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
         Route::resource('projects', ProjectController::class)->except('show');
-        Route::resource('partners', PartnerController::class)->except(methods: 'show');
+        Route::resource('partners', PartnerController::class)->except('show');
+        Route::resource('programs', ProgramController::class)->except('show');
         Route::resource('publications', PublicationController::class)->except('show');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::resource('contacts', ContactsController::class)->only([
