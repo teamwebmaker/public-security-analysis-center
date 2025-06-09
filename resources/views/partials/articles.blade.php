@@ -65,7 +65,7 @@
         <!-- Pagination -->
         @if($articles->hasPages())
             <div class="row mt-4">
-                <div class="col-md-12 d-flex justify-content-center">
+                <div class="col-md-12 ">
                     {{ $articles->withQueryString()->links('pagination::bootstrap-5') }}
                 </div>
             </div>

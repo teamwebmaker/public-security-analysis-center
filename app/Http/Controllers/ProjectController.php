@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Facades\App;
@@ -48,6 +49,7 @@ class ProjectController extends Controller
         $image->move(public_path($uploadPath), $imageName); //TODO: Store File in Public Directory
         $title = ["ka" => $data['title_ka'], "en" => $data['title_en']];
         $description = ["ka" => $data['description_ka'], "en" => $data['description_en']];
+
         Project::create([
             'title' => $title,
             'description' => $description,
@@ -85,31 +87,54 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateProjectRequest $request, Project $project)
-    {   $imageName = null;
-        $data = $request->validated();
-        if($request->hasFile('image')){
-            $image = $request -> image;
-            $imageName = uniqid() . '-' . time() .'.'. $image -> extension(); // TODO: Generate new File Name
-            $uploadPath = 'images/projects/'; //TODO: Set Upload Path
-            $image->move(public_path($uploadPath), $imageName); //TODO: Store File in Public Directory
+{
+    $imageName = null;
+    $data = $request->validated();
+
+    if ($request->hasFile('image')) {
+        // Delete old image if it exists
+        $oldImagePath = public_path('images/projects/' . $project->image);
+        if (File::exists($oldImagePath)) {
+            File::delete($oldImagePath);
         }
-        $title = ["ka" => $data['title_ka'], "en" => $data['title_en']];
-        $description = ["ka" => $data['description_ka'], "en" => $data['description_en']];
-        $updatedData = [
-            'title' => $title,
-            'description' => $description,
-        ];
-        if ($imageName) $updatedData = [...$updatedData, 'image' => $imageName];
-        $project->update($updatedData);
-        return redirect() -> back() -> with('success', 'პროექტი განახლდა წარმატებით');
+
+        // Upload new image
+        $image = $request->image;
+        $imageName = uniqid() . '-' . time() . '.' . $image->extension();
+        $uploadPath = 'images/projects/';
+        $image->move(public_path($uploadPath), $imageName);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Project $project)
-    {
-        $project -> delete();
-        return redirect() -> route('projects.index') -> with('success', 'პროექტი წარმატებით წაიშალა.');
+    // Prepare multilingual title and description
+    $title = ["ka" => $data['title_ka'], "en" => $data['title_en']];
+    $description = ["ka" => $data['description_ka'], "en" => $data['description_en']];
+
+    // Prepare data to update
+    $updatedData = [
+        'title' => $title,
+        'description' => $description,
+    ];
+
+    if ($imageName) {
+        $updatedData['image'] = $imageName;
     }
+
+    $project->update($updatedData);
+
+    return redirect()->back()->with('success', 'პროექტი განახლდა წარმატებით');
+}
+
+public function destroy(Project $project)
+{
+    // Delete image from folder if it exists
+    $imagePath = public_path('images/projects/' . $project->image);
+    if (File::exists($imagePath)) {
+        File::delete($imagePath);
+    }
+
+    // Delete the project record
+    $project->delete();
+
+    return redirect()->route('projects.index')->with('success', 'პროექტი წარმატებით წაიშალა.');
+}
 }

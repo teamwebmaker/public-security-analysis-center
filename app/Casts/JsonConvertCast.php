@@ -3,27 +3,18 @@
 namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Database\Eloquent\Model;
 
 class JsonConvertCast implements CastsAttributes
 {
-    /**
-     * Cast the given value.
-     *
-     * @param  array<string, mixed>  $attributes
-     */
-    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function get($model, string $key, $value, array $attributes)
     {
-        return json_decode($value);
+        // Return as object for ->ka syntax
+        return json_decode($value); // no `true` => returns stdClass
     }
 
-    /**
-     * Prepare the given value for storage.
-     *
-     * @param  array<string, mixed>  $attributes
-     */
-    public function set(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function set($model, string $key, $value, array $attributes)
     {
-        return json_encode($value);
+        // Store as JSON with visible Unicode characters
+        return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }
