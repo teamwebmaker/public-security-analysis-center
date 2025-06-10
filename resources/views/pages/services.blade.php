@@ -3,12 +3,12 @@
 
 @section('main')
 	<main>
-		{{-- Hero Section --}}
+		<!-- Hero Section -->
 		<div class="container-fluid pt-5 pb-5 gold-bg border-bottom border-1 border-gold-bg--light rounded-bottom-4">
 			<div class="container-xxl px-3 px-md-5">
 				<div class="text-center mb-4">
 					<h1 class="fw-bold display-5 text-white">Our Services</h1>
-					{{-- Jump Links --}}
+					<!-- Jump Links -->
 					<div class="d-flex justify-content-center mt-4 mb-3">
 						<div class="d-flex flex-wrap gap-2 w-100 justify-content-center" style="max-width: 500px;">
 							@foreach($categories as $category)
@@ -23,7 +23,7 @@
 						</div>
 					</div>
 
-					{{-- CTA Button / modal --}}
+					<!-- CTA Button / modal -->
 					<div class="mt-3">
 						<a href="#" data-bs-toggle="modal" data-bs-target="#servicesModal"
 							class="btn btn-light btn-lg px-4 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm">
@@ -37,7 +37,7 @@
 			</div>
 		</div>
 
-		{{-- Services Section --}}
+		<!-- Services Section -->
 		<div class="container-fluid py-5 bg-light">
 			<div class="container-xxl px-3 px-md-5">
 				@foreach($categories as $category)
@@ -49,7 +49,7 @@
 							<div class="row g-4 justify-content-center">
 								@foreach($category->services as $service)
 									<div class="col-lg-4 col-md-6">
-										{{-- img_temp | Temporary --}}
+										<!-- img_temp | Temporary -->
 										<x-card-component :title="$service->title->$language" :description="$service->description->$language"
 											:image="'images/services/' . $service->image" :link="route('services.show', ['id' => $service->id])" />
 									</div>
@@ -63,5 +63,5 @@
 	</main>
 @endsection
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/services.js') }}"></script>
+	<script type="module" src="{{ asset('scripts/services.js') . '?date=' . $modified }}"></script>
 @endsection

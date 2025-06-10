@@ -20,7 +20,7 @@ class ProgramController  extends CrudController
 
    protected array $imageFields = [
     'image' => 'images/programs/',
-    'certificate_image' => 'images/certificates/',
+    'certificate_image' => 'images/certificates/programs',
 ];
     /**
      * Display a listing of the resource.
@@ -40,27 +40,48 @@ class ProgramController  extends CrudController
     $data = $request->validated();
 
 
-      foreach ($this->imageFields as $field => $path) {
-            $data[$field] = $this->handleImageUpload($request, $field);
-        }
+       foreach ($this->imageFields as $field => $path) {
+        $data[$field] = $this->handleImageUpload($request, $field);
+    }
+    // Create a translation map for week days
+    $weekDayTranslations = [
+        'ორშაბათი' => 'Monday',
+        'სამშაბათი' => 'Tuesday',
+        'ოთხშაბათი' => 'Wednesday',
+        'ხუთშაბათი' => 'Thursday',
+        'პარასკევი' => 'Friday',
+        'შაბათი' => 'Saturday',
+        'კვირა' => 'Sunday'
+    ];
+
+    // Get the submitted days (or empty array if not set)
+    $submittedDays = $data['days'] ?? [];
+
+    // Populate the en key values with the translated values
+    $daysData = [
+        'ka' => $submittedDays,
+        'en' => array_map(function($day) use ($weekDayTranslations) {
+            return $weekDayTranslations[$day] ?? $day; // Fallback to original if translation missing
+        }, $submittedDays)
+    ];
+
 
     $programData = [
-        'title' => $data['title'],
-        'description' => $data['description'],
-        'image' => $data['image'],
-        'certificate_image' => $data['certificate_image'],
+        'title' => $data['title'], // This will be an array ['ka' => ..., 'en' => ...]
+        'description' => $data['description'], // Same array structure
+        'image' => $data['image'] ?? null,
+        'certificate_image' => $data['certificate_image'] ?? null,
         'video' => $data['video'],
         'price' => $data['price'],
         'duration' => $data['duration'],
         'address' => $data['address'],
         'start_date' => $data['start_date'],
         'end_date' => $data['end_date'],
-        'start_time' => $data['hour']['start'],
-        'end_time' => $data['hour']['end'],
-        'days' => json_encode($data['days']),
+        'hour' => $data['hour'],
+        'days' => $daysData,
         'visibility' => $data['visibility'],
     ];
-    dd($programData);
+
     Program::create($programData);
 
     return redirect()->route('programs.index')->with('success', 'პროგრამა შეიქმნა წარმატებით');

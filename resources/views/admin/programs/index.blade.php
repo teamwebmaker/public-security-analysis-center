@@ -10,20 +10,29 @@
 		</div>
 	@endsession
 
-	<div class="row g-4">
+	<div class="row g-4 ">
 		@foreach($programs as $program)
 			<div class="col-xl-5 col-lg-6">
-				<div class="card h-100 shadow-sm">
-					<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
-						style="--overlay-alpha: 0.7; height: 200px;">
-
-						<a href="{{ asset('images/programs/' . $program->image) }}" data-fancybox
-							data-caption="{{ $program->title->en }}">
-							<img class="w-100 h-100 object-fit-cover" src="{{ asset('images/programs/' . $program->image) }}"
-								alt="{{ $program->title->ka }}">
-						</a>
-
-					</div>
+				<div class="card shadow-sm">
+					@if ($program->image)
+						<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
+							style="--overlay-alpha: 0.7; height: 200px;">
+							<a href="{{ asset('images/programs/' . $program->image) }}" data-fancybox
+								data-caption="{{ $program->title->en }}">
+								<img class="w-100 h-100 object-fit-cover" src="{{ asset('images/programs/' . $program->image) }}"
+									alt="{{ $program->title->ka }}">
+							</a>
+						</div>
+					@else
+						<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
+							style="--overlay-alpha: 0.7; height: 170px;">
+							<a href="{{ asset('images/programs/not-found-image.webp') }}" data-fancybox
+								data-caption="სურათი არ არის ატვირთული">
+								<img class="w-100 h-100 object-fit-cover" src="{{ asset('images/programs/not-found-image.webp') }}"
+									alt="Not found image">
+							</a>
+						</div>
+					@endif
 					<div class="card-body">
 						<h5 class="card-title text-truncate" title="{{ $program->title->ka }}">
 							{{ $program->title->ka }}
@@ -33,27 +42,27 @@
 						<div x-data="{ expanded: false, height: 0 }" x-init="$nextTick(() => height = $refs.content.scrollHeight)">
 
 							<!-- Description with smooth transition -->
-							<div @click="expanded = !expanded" class="overflow-hidden transition-all  duration-500 ease-in-out mb-1"
+							<div @click="expanded = !expanded" class="overflow-hidden transition-all  duration-500 ease-in-out mb-1 "
 								:style="expanded ? 'max-height:' + height + 'px' : 'max-height: 4.5em;'">
-								<p class="card-text mb-0" x-ref="content">
+								<p class="card-text mb-0" x-ref="content" style="cursor: pointer;">
 									{{ $program->description->ka }}
 								</p>
 							</div>
 
 							<!-- Toggle button stays outside to avoid clipping -->
-							<button @click="expanded = !expanded" class="btn btn-sm btn-link p-0 text-decoration-none">
-								<i class="bi me-1" :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-								<span x-text="expanded ? 'ნაკლების ჩვენება' : 'მეტის ჩვენება'"></span>
-							</button>
+							@if (strlen($program->description->ka) > 100)
+								<button @click="expanded = !expanded" class="btn btn-sm btn-link p-0 text-decoration-none">
+									<i class="bi me-1" :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+									<span x-text="expanded ? 'ნაკლების ჩვენება' : 'მეტის ჩვენება'"></span>
+								</button>
+							@endif
+
 						</div>
-
-
-
-
 						<ul class="list-group list-group-flush mb-3">
 							<li class="list-group-item d-flex justify-content-between align-items-center">
 								<span>ფასი:</span>
-								<span class="badge bg-primary rounded-pill">{{ $program->price }} ₾</span>
+								<span class="badge bg-primary rounded-pill" style="font-size: 13px;">{{ $program->price }}
+									₾</span>
 							</li>
 							<li class="list-group-item d-flex justify-content-between align-items-center">
 								<span>ხანგრძლივობა:</span>
@@ -67,7 +76,8 @@
 								<div class="d-flex justify-content-between">
 									<span>დღეები:</span>
 									<select>
-										<option class="badge bg-secondary me-1"> <span>სულ</span> {{ count($program->days->ka ?? [])}}
+										<option class="badge bg-secondary me-1"> <span>სულ</span>
+											{{ count($program->days->ka ?? [])}}
 										</option>
 										@foreach($program->days->ka ?? [] as $day)
 											<option class="badge bg-secondary me-1" disabled>{{ $day }}</option>
@@ -119,7 +129,7 @@
 							@endif
 						</ul>
 					</div>
-					<div class="card-footer bg-transparent border-top-0">
+					<div class="card-footer bg-transparent ">
 						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 							<a class="btn btn-outline-success me-md-2" href="{{ route('programs.edit', ['program' => $program]) }}">
 								<i class="bi bi-pencil-square me-1"></i>რედაქტირება

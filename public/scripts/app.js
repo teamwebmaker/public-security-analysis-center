@@ -12,6 +12,9 @@ export const partnersSliderParams = {
         clickable: true,
     },
 }
+// Initialize Swiper
+new Swiper(".partners", partnersSliderParams);
+
 
 // Bootstrap initialize tooltips
 const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

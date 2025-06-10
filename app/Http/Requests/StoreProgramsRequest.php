@@ -22,20 +22,23 @@ class StoreProgramsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'             => 'required|string|max:200',
-            'description'       => 'required|string|min:10',
-            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'video'             => 'nullable|url',
-            'price'             => 'required|numeric|min:0',
-            'duration'          => 'required|string|max:100',
-            'address'           => 'required|string|max:225',
-            'start_date'        => 'required|date|after_or_equal:today',
-            'end_date'          => 'required|date|after_or_equal:start_date',
-            'start_time'        => 'required|date_format:H:i',
-            'end_time'          => 'required|date_format:H:i|after:start_time',
-            'days'              => 'required|array|min:1',
-            'visibility'        => 'required|in:1,0',
+        'title.ka'          => 'required|string|max:200',
+        'title.en'          => 'required|string|max:200',
+        'description.ka'    => 'required|string|min:10',
+        'description.en'    => 'required|string|min:10',
+        'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        'certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        'video'             => 'required|url',
+        'price'             => 'required|numeric|min:0',
+        'duration'          => 'required|string|max:100',
+        'address'           => 'required|string|max:225',
+        'start_date'        => 'required|date|after_or_equal:today',
+        'end_date'          => 'required|date|after_or_equal:start_date',
+        'hour.start'        => 'required|date_format:H:i',
+        'hour.end'          => 'required|date_format:H:i|after:hour.start',
+        'days'              => 'required|array|min:1',
+        'days.*'           => 'string',
+        'visibility'        => 'required|in:1,0',
         ];
     }
 }

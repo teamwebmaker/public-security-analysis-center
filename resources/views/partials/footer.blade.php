@@ -47,7 +47,7 @@
 
 			<!-- Contact Info -->
 			<div class="col-lg-3 text-center text-lg-start align-self-start">
-				<div class=" ms-auto" style="width: max-content;">
+				<div class="m-auto m-lg-0 ms-lg-auto" style="width: max-content;">
 					<h6 class="text-uppercase fw-bold gold-text mb-3">კონტაქტი</h6>
 					<ul class="list-unstyled small text-center text-lg-end ">
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">

@@ -50,17 +50,20 @@
 							|
 							{{ $item->hour->start }} - {{ $item->hour->end }}
 						</li>
-						<li class="mb-2 me-2 d-flex align-items-end">
-							<i class="bi bi-geo-alt-fill me-1"></i>
-							<strong class="pe-1">Location:</strong>
-							<span class="text-truncate d-inline-block" style="max-width: 150px;" data-bs-toggle="tooltip"
-								data-bs-placement="top" title="{{ $item->address }}">
-								<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->address) }} "
-									target="_blank">
-									{{ $item->address }}
-								</a>
-							</span>
-						</li>
+
+						@if ($item->address)
+							<li class="mb-2 me-2 d-flex align-items-end">
+								<i class="bi bi-geo-alt-fill me-1"></i>
+								<strong class="pe-1">Location:</strong>
+								<span class="text-truncate d-inline-block" style="max-width: 150px;" data-bs-toggle="tooltip"
+									data-bs-placement="top" title="{{ $item->address }}">
+									<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->address) }} "
+										target="_blank">
+										{{ $item->address }}
+									</a>
+								</span>
+							</li>
+						@endif
 
 					</ul>
 

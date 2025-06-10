@@ -20,8 +20,7 @@ class Program extends Model
         'address',
         "start_date",
         "end_date",
-        "start_time",
-        "end_time",
+        "hour",
         "days",
         "visibility",
     ];
