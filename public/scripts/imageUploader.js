@@ -11,6 +11,9 @@ class ImageUploader {
    }
 
    init() {
+      // Initialize Fancybox
+      Fancybox.bind('[data-fancybox]');
+
       // Create remove button
       this.removeBtn = document.createElement('button');
       this.removeBtn.type = 'button';

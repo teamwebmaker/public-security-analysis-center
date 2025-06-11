@@ -326,6 +326,6 @@
 @endsection
 
 @section('scripts')
-   <script src="{{ asset('scripts/imageUploader.js') }}"></script>
-   <script src="{{ asset('scripts/programCreate.js') }}"></script>
+   <script src="{{ asset('scripts/imageUploader.js') . '?date=' . $modified }}"></script>
+   <script src="{{ asset('scripts/programCreate.js') . '?date=' . $modified }}"></script>
 @endsection

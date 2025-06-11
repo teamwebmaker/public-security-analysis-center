@@ -13,7 +13,6 @@ abstract class CrudController extends Controller
     protected string $contextField;
 
     protected string $viewFolder;
-    protected string $uploadPath;
     protected array $imageFields = []; // In case if user needs to upload multiple images in different paths (optional)
 
     public function index()
@@ -41,59 +40,52 @@ abstract class CrudController extends Controller
         ]);
     }
 
-public function destroy($id)
-{
-    $document = $this->modelClass::findOrFail($id);
+    public function destroy($id)
+    {
+        $document = $this->modelClass::findOrFail($id);
 
-    if (!empty($this->imageFields)) {
-        foreach ($this->imageFields as $field => $path) {
-            $imageName = $document->{$field};
-            if ($imageName) {
-                $imagePath = public_path($path . $imageName);
-                if (File::exists($imagePath)) {
-                    File::delete($imagePath);
+        if (!empty($this->imageFields)) {
+            foreach ($this->imageFields as $field => $path) {
+                $imageName = $document->{$field};
+                if ($imageName) {
+                    $imagePath = public_path($path . $imageName);
+                    if (File::exists($imagePath)) {
+                        File::delete($imagePath);
+                    }
                 }
             }
         }
-    } else {
-        $imageName = $document->image;
-        if ($imageName) {
-            $imagePath = public_path($this->uploadPath . $imageName);
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
-        }
+
+        $document->delete();
+
+        return redirect()
+            ->route("{$this->viewFolder}.index")
+            ->with("success", "წარმატებით წაიშალა.");
     }
-
-    $document->delete();
-
-    return redirect()
-        ->route("{$this->viewFolder}.index")
-        ->with("success", "წარმატებით წაიშალა.");
-}
 
     protected function handleImageUpload(
         Request $request,
-        string $field,
+        $imageField,
+        $imagePath,
         $oldImage = null
     ) {
-        if (!$request->hasFile($field)) {
-            return $oldImage;
+
+        $imageName = null;
+        
+        // Upload image
+        if ($request->file($imageField)) {
+            $image = $request->file($imageField);
+            $imageName = uniqid() . "-" . time() . "." . $image->extension();
+            $image->move(public_path($imagePath), $imageName);
         }
 
-        $uploadPath = $this->imageFields[$field] ?? $this->uploadPath;
-
         // Delete old image
-        if ($oldImage) {
-            $oldImagePath = public_path($uploadPath . $oldImage);
+        if ($request->file($imageField) && $oldImage) {
+            $oldImagePath = public_path($imagePath . $oldImage);
             if (File::exists($oldImagePath)) {
                 File::delete($oldImagePath);
             }
         }
-
-        $image = $request->file($field);
-        $imageName = uniqid() . "-" . time() . "." . $image->extension();
-        $image->move(public_path($uploadPath), $imageName);
 
         return $imageName;
     }

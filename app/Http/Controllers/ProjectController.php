@@ -15,7 +15,7 @@ class ProjectController extends CrudController
     protected string $modelClass = Project::class;
     protected string $contextField = "project";
     protected string $viewFolder = "projects";
-    protected string $uploadPath = "images/projects/";
+    protected array $imageFields = ["image" => "images/projects/"];
 
     /**
      * Display the specified resource.
@@ -38,6 +38,13 @@ class ProjectController extends CrudController
     {
         $data = $request->validated();
 
+        foreach ($this->imageFields as $field => $path) {
+            $imageName = $this->handleImageUpload($request, $field, $path);
+            if ($imageName) {
+                $data[$field] = $imageName;
+            }
+        }
+
         $title = [
             "ka" => $data["title_ka"],
             "en" => $data["title_en"],
@@ -50,7 +57,6 @@ class ProjectController extends CrudController
 
         $data["title"] = $title;
         $data["description"] = $description;
-        $data["image"] = $this->handleImageUpload($request, "image");
 
         Project::create($data);
 
@@ -66,6 +72,13 @@ class ProjectController extends CrudController
     {
         $data = $request->validated();
 
+        foreach ($this->imageFields as $field => $path) {
+            $imageName = $this->handleImageUpload($request, $field, $path, $project->image);
+            if ($imageName) {
+                $data[$field] = $imageName;
+            }
+        }
+
         $title = [
             "ka" => $data["title_ka"],
             "en" => $data["title_en"],
@@ -78,15 +91,6 @@ class ProjectController extends CrudController
 
         $data["title"] = $title;
         $data["description"] = $description;
-
-        $imageName = $this->handleImageUpload(
-            $request,
-            "image",
-            $project->image
-        );
-        if ($imageName) {
-            $data["image"] = $imageName;
-        }
 
         $project->update($data);
 

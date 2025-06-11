@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date('start_date');
             $table->date('end_date');
             $table->json('days');
-            $table->json('hour');
+            $table->json('hour')->nullable();
             $table->string('duration');
             $table->string('address')->nullable();
             $table->enum('visibility', ['0', '1'])->default('1');

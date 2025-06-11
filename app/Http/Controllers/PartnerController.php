@@ -14,13 +14,18 @@ class PartnerController extends CrudController
     protected string $modelClass = Partner::class;
     protected string $contextField = "partner";
     protected string $viewFolder = "partners";
-    protected string $uploadPath = "images/partners/";
 
+    protected array $imageFields = [
+        "image" => "images/partners/",
+    ];
     public function store(StorePartnersRequest $request)
     {
         $data = $request->validated();
 
-        $data["image"] = $this->handleImageUpload($request, "image");
+        foreach ($this->imageFields as $field => $path) {
+            $imageName =  $this->handleImageUpload($request, $field, $path);
+            if ($imageName) $data[$field] = $imageName;
+        }
 
         Partner::create($data);
 
@@ -33,13 +38,9 @@ class PartnerController extends CrudController
     {
         $data = $request->validated();
 
-        $imageName = $this->handleImageUpload(
-            $request,
-            "image",
-            $partner->image
-        );
-        if ($imageName) {
-            $data["image"] = $imageName;
+        foreach ($this->imageFields as $field => $path) {
+            $imageName = $this->handleImageUpload($request, $field, $path, $partner->image);
+            if ($imageName) $data["image"] = $imageName;
         }
         $partner->update($data);
 

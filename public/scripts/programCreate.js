@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-   // Initialize Fancybox
-   Fancybox.bind('[data-fancybox]');
-
    // Preserve active tab after validation error
    const activeTabId = sessionStorage.getItem('activeTab');
    if (activeTabId) {
@@ -16,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
          sessionStorage.setItem('activeTab', event.target.id);
       });
    });
-
+   
    // Form validation
    const form = document.getElementById('program-form');
    if (form) {

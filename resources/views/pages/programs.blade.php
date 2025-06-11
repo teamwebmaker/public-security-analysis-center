@@ -7,10 +7,12 @@
 			<div class="container-xxl">
 				<div class="row mb-5">
 					@foreach($programs as $program)
-						<div class="col-lg-4 col-md-6  mb-4">
-							<x-card-component :title="$program->title->$language" :image="'images/programs/' . $program->image"
-								:link="route('programs.show', ['id' => $program->id])" />
-						</div>
+						@if ($program->visibility)
+							<div class="col-lg-4 col-md-6  mb-4">
+								<x-card-component :title="$program->title->$language" :image="'images/programs/' . $program->image"
+									:link="route('programs.show', ['id' => $program->id])" />
+							</div>
+						@endif
 					@endforeach
 				</div>
 				<div class="row">
