@@ -26,17 +26,14 @@ abstract class CrudController extends Controller
 
     public function create()
     {
-        return view("admin.{$this->viewFolder}.create", [
-            "routeName" => Route::currentRouteName(),
-        ]);
+        return view("admin.{$this->viewFolder}.create",);
     }
 
     public function edit($id)
     {
         $document = $this->modelClass::findOrFail($id);
-        return view("admin.{$this->viewFolder}.edit", [
+        return view("admin.{$this->viewFolder}.edit",[
             $this->contextField => $document,
-            "routeName" => Route::currentRouteName(),
         ]);
     }
 

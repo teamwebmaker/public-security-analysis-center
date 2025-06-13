@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Publication;
 use App\Models\Partner;
 use App\Models\Contact;
+use App\Models\Program;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -58,6 +59,10 @@ class AdminController extends Controller
             "publications" => (object) [
                 "title" => "პუბლიკაციები",
                 "count" => Publication::count(),
+            ],
+            "programs" => (object) [
+                "title" => "პროგრამები",
+                "count" => Program::count(),
             ],
             "partners" => (object) [
                 "title" => "პარტნიორები",

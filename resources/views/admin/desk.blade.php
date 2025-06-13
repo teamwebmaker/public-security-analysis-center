@@ -1,99 +1,51 @@
 @extends('layouts.dashboard')
 @section('title', 'Admin Dashboard')
 @section('main')
-    <div class="row">
-    <div class="col-md-4 mb-3">
-        <div class="card gold-bg">
-            <div class="card-header  d-flex justify-content-between">
-                <button class="btn black-bg px-2 gold-text py-1">
-                    <i class="bi bi-folder-plus"></i>
-                </button>
-                <button class="btn black-bg gold-text px-2 py-1">
-                    <span class="btn-label">{{ $projects -> title }}</span>
-                </button>
-            </div>
-            <div class="card-body d-flex justify-content-between">
-                <button class="btn black-bg gold-text  px-2 py-1">
-                    <span class="btn-label">რაოდენობა</span>
-                </button>
-                <button class="btn black-bg gold-text px-2 py-1">{{ $projects -> count }}</button>
-            </div>
+    <div class="row g-4">
+
+        <!-- Projects Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.dashboard-card', [
+                'icon' => 'bi-folder-plus',
+                'title' => $projects->title,
+                'count' => $projects->count,
+                'viewRoute' => route('projects.index'),
+                'createRoute' => route('projects.index'),
+            ])
         </div>
+
+        <!-- Partners Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.dashboard-card', [
+                'icon' => 'bi-people',
+                'title' => $partners->title,
+                'count' => $partners->count,
+                'viewRoute' => route('partners.index'),
+                'createRoute' => route('partners.create'),
+            ])
+        </div>
+
+        <!-- Special Programs Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.dashboard-card', [
+                'icon' => 'bi-briefcase',
+                'title' => 'სპეც.პროგრამები',
+                'count' => 40,
+                'viewRoute' => route('programs.index'),
+                'createRoute' => route('programs.create'),
+            ])
+        </div>
+
+        <!-- Publications Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.dashboard-card', [
+                'icon' => 'bi-book',
+                'title' => $publications->title,
+                'count' => $publications->count,
+                'viewRoute' => route('publications.index'),
+                'createRoute' => route('publications.create'),
+            ])
+        </div>
+
     </div>
-     <div class="col-md-4 mb-3">
-            <div class="card gold-bg">
-                <div class="card-header  d-flex justify-content-between">
-                    <button class="btn black-bg px-2 gold-text py-1">
-                        <i class="bi bi-people"></i>
-                    </button>
-                    <button class="btn black-bg  px-2 gold-text py-1">
-                        <span class="btn-label">{{ $partners -> title }}</span>
-                    </button>
-                </div>
-                <div class="card-body d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">რაოდენობა</span>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">{{ $partners -> count }}</button>
-                </div>
-            </div>
-     </div>
-     <div class="col-md-4 mb-3">
-            <div class="card gold-bg">
-                <div class="card-header  d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <i class="bi bi-briefcase"></i>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">სპეც.პროგრამები</span>
-                    </button>
-                </div>
-                <div class="card-body d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">რაოდენობა</span>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">40</button>
-                </div>
-            </div>
-     </div>
-      <div class="col-md-4 mb-3">
-            <div class="card gold-bg">
-                <div class="card-header  d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <i class="bi bi-book"></i>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">{{ $publications -> title }}</span>
-                    </button>
-                </div>
-                <div class="card-body d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">რაოდენობა</span>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">{{ $publications -> count }}</button>
-                </div>
-            </div>
-      </div>
-      <div class="col-md-4 mb-3">
-            <div class="card gold-bg">
-                <div class="card-header  d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <i class="bi bi-book"></i>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">{{ $contacts -> title }}</span>
-                    </button>
-                </div>
-                <div class="card-body d-flex justify-content-between">
-                    <button class="btn black-bg gold-text px-2 py-1">
-                        <span class="btn-label">რაოდენობა</span>
-                    </button>
-                    <button class="btn black-bg gold-text px-2 py-1">{{ $contacts -> count }}</button>
-                </div>
-            </div>
-        </div>
-</div>
-@endsection
-@section('scripts')
-    <script></script>
 @endsection

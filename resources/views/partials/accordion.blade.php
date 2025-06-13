@@ -1,120 +1,32 @@
 <div class="accordion" id="dashboard">
-    <!-- projects -->
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#projects" aria-expanded="true" aria-controls="projects">
-                <i class="bi bi-folder-plus"></i>
-                <span class="btn-label">პროექტები</span>
-            </button>
-        </h2>
-        <div id="projects"
-            class="accordion-collapse collapse @if($routeName == 'projects.index' || $routeName == 'projects.create' || $routeName == 'projects.edit') show @endif"
-            data-bs-parent="#dashboard">
-            <div class="accordion-body">
-                <ul class="list-group">
-                    <li class="list-group-item  @if($routeName == 'projects.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('projects.index') }}">პროექტების ნახვა</a>
-                    </li>
-                    <li class="list-group-item  @if($routeName == 'projects.create')  bg-secondary text-white   @endif">
-                        <a class="nav-link" href="{{ route('projects.create') }}">პროექტის შექმნა</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- partners -->
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#partners" aria-expanded="true" aria-controls="partners">
-                <i class="bi bi-people"></i>
-                <span class="btn-label">პარტნიორები</span>
-            </button>
-        </h2>
-        <div id="partners"
-            class="accordion-collapse collapse @if($routeName == 'partners.index' || $routeName == 'partners.create' || $routeName == 'partners.edit') show @endif"
-            data-bs-parent="#dashboard">
-            <div class="accordion-body">
-                <ul class="list-group">
-                    <li class="list-group-item @if($routeName == 'partners.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('partners.index') }}">პარტნიორების ნახვა</a>
-                    </li>
-                    <li class="list-group-item  @if($routeName == 'partners.create')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('partners.create') }}">პარტნიორის შექმნა</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- programs -->
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#programs" aria-expanded="true" aria-controls="programs">
-                <i class="bi bi-briefcase"></i>
-                <span class="btn-label">სპეც.პროგრამები</span>
-            </button>
-        </h2>
-        <div id="programs"
-            class="accordion-collapse collapse @if($routeName == 'programs.index' || $routeName == 'programs.create' || $routeName == 'programs.edit') show @endif"
-            data-bs-parent="#dashboard">
-            <div class="accordion-body">
-                <ul class="list-group">
-                    <li class="list-group-item @if($routeName == 'programs.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('programs.index') }}">სპეც.პროგრამების ნახვა</a>
-                    </li>
-                    <li class=" list-group-item @if($routeName == 'programs.create') bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('programs.create') }}">სპეც.პროგრამის შექმნა</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- publications -->
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#publications" aria-expanded="true" aria-controls="publications">
-                <i class="bi bi-book"></i>
-                <span class="btn-label">პუბლიკაციები</span>
-            </button>
-        </h2>
-        <div id="publications"
-            class="accordion-collapse collapse @if($routeName == 'publications.index' || $routeName == 'publications.create' || $routeName == 'publications.edit')  show @endif"
-            data-bs-parent="#dashboard">
-            <div class="accordion-body">
-                <ul class="list-group">
-                    <li class="list-group-item @if($routeName == 'publications.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="#">პუბლიკაციების ნახვა</a>
-                    </li>
-                    <li
-                        class="list-group-item @if($routeName == 'publications.create')  bg-secondary text-white   @endif">
-                        <a class="nav-link" href="#">პუბლიკაციის შექმნა</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- contacts -->
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#contacts" aria-expanded="true" aria-controls="contacts">
-                <i class="bi bi-envelope"></i>
-                <span class="btn-label">შეტყობინებები</span>
-            </button>
-        </h2>
-        <div id="contacts"
-            class="accordion-collapse collapse @if($routeName == 'contacts.index' || $routeName == 'contacts.show')  show @endif"
-            data-bs-parent="#dashboard">
-            <div class="accordion-body">
-                <ul class="list-group">
-                    <li class="list-group-item @if($routeName == 'contacts.index')  bg-secondary text-white @endif">
-                        <a class="nav-link" href="{{ route('contacts.index') }}">ნახვა</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+
+    <x-accordion-item id="projects" icon="bi-folder-plus" label="პროექტები"
+        :active-routes="['projects.index', 'projects.create', 'projects.edit']" :routes="[
+        ['name' => 'projects.index', 'label' => 'პროექტების ნახვა', 'icon' => 'bi-list-ul'],
+        ['name' => 'projects.create', 'label' => 'პროექტის შექმნა', 'icon' => 'bi-plus-circle'],
+    ]" />
+
+    <x-accordion-item id="partners" icon="bi-people" label="პარტნიორები"
+        :active-routes="['partners.index', 'partners.create', 'partners.edit']" :routes="[
+        ['name' => 'partners.index', 'label' => 'პარტნიორების ნახვა', 'icon' => 'bi-list-ul'],
+        ['name' => 'partners.create', 'label' => 'პარტნიორის შექმნა', 'icon' => 'bi-plus-circle'],
+    ]" />
+
+    <x-accordion-item id="programs" icon="bi-briefcase" label="სპეც.პროგრამები"
+        :active-routes="['programs.index', 'programs.create', 'programs.edit']" :routes="[
+        ['name' => 'programs.index', 'label' => 'სპეც.პროგრამების ნახვა', 'icon' => 'bi-list-ul'],
+        ['name' => 'programs.create', 'label' => 'სპეც.პროგრამის შექმნა', 'icon' => 'bi-plus-circle'],
+    ]" />
+
+    <x-accordion-item id="publications" icon="bi-book" label="პუბლიკაციები"
+        :active-routes="['publications.index', 'publications.create', 'publications.edit']" :routes="[
+        ['name' => 'publications.index', 'label' => 'პუბლიკაციების ნახვა', 'icon' => 'bi-list-ul'],
+        ['name' => 'publications.create', 'label' => 'პუბლიკაციის შექმნა', 'icon' => 'bi-plus-circle'],
+    ]" />
+
+    <x-accordion-item id="contacts" icon="bi-envelope" label="შეტყობინებები"
+        :active-routes="['contacts.index', 'contacts.show']" :routes="[
+        ['name' => 'contacts.index', 'label' => 'ნახვა', 'icon' => 'bi-list-ul'],
+    ]" />
+
 </div>

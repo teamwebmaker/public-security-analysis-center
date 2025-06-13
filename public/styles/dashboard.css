@@ -1,0 +1,143 @@
+:root {
+   /* --sidebar-width: 350px; */
+   --sidebar-width: 300px;
+   --topbar-height: 70px;
+   --primary-accent: #4e73df;
+   --secondary-accent: #f8f9fc;
+}
+
+body {
+   background-color: #f8f9fc;
+   font-family: 'Nunito', sans-serif;
+}
+
+.dashboard-wrapper {
+   display: flex;
+   min-height: 100dvh;
+}
+
+.sidebar {
+   position: fixed;
+   width: var(--sidebar-width);
+   height: 100dvh;
+   z-index: 1000;
+   background: #fff;
+   transition: all 0.3s;
+}
+
+.sidebar-brand {
+   height: var(--topbar-height);
+   color: var(--primary-accent);
+   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.topbar-content {
+   margin-left: var(--sidebar-width);
+   flex: 1;
+}
+
+.topbar {
+   height: var(--topbar-height);
+   background: #fff;
+}
+
+
+
+.accordion-button {
+   font-weight: 600;
+   padding: 1rem 1.5rem;
+   border: 0;
+   box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+   background-color: var(--secondary-accent);
+   color: var(--primary-accent);
+}
+
+.accordion-button::after {
+   margin-left: auto;
+}
+
+.accordion-item {
+   border: 0;
+   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.accordion-body {
+   padding: 0;
+}
+
+.nav-link {
+   padding: 0.75rem 1.5rem;
+   color: #5a5c69;
+   font-weight: 500;
+   transition: all 0.2s;
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+}
+
+.nav-link:hover {
+   color: var(--primary-accent);
+}
+
+.nav-link.active {
+   color: white;
+   background-color: var(--primary-accent);
+}
+
+.nav-link i {
+   width: 20px;
+   text-align: center;
+}
+
+.user-profile-btn {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   color: #5a5c69;
+   font-weight: 600;
+}
+
+.user-profile-btn:hover {
+   color: var(--primary-accent);
+}
+
+.logout-btn {
+   background-color: transparent;
+   border: 1px solid #ddd;
+   color: #5a5c69;
+   font-weight: 600;
+}
+
+.logout-btn:hover {
+   background-color: #f8f9fc;
+   color: var(--primary-accent);
+}
+
+.card {
+   border: 0;
+   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+   border-radius: 0.5rem;
+}
+
+/* Bootstrap equivalent to (lg) */
+@media (max-width: 992px) {
+   .sidebar {
+      margin-left: calc(var(--sidebar-width) * -1);
+
+   }
+
+   .sidebar.active {
+      margin-left: 0;
+   }
+
+   .topbar-content {
+      margin-left: 0;
+   }
+
+   .sidebar-toggler {
+      display: block !important;
+   }
+}
