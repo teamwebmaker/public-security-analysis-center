@@ -1,6 +1,7 @@
 import { getOne } from "./heplers.js";
-
+import './bootstrap/bootstrapValidation.js' // Bootstrap form validation
 document.addEventListener('DOMContentLoaded', () => {
+
    const sidebar = getOne('.sidebar');
    const dashboardWrapper = getOne('.dashboard-wrapper');
    const sidebarToggler = getOne('.sidebar-toggler');

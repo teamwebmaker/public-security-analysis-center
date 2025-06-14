@@ -3,13 +3,13 @@
 
 @section('main')
    <div class="row justify-content-center">
-      <div class="col">
+      <div class="col p-0 p-sm-3 col-lg-10">
         <div class="card shadow-sm border-0">
           <div class="card-header bg-white py-3">
             <h5 class="mb-0">პროგრამის დამატება</h5>
           </div>
           <div class="card-body">
-            <form method="POST" action="{{ route('programs.store') }}" enctype="multipart/form-data" id="program-form">
+            <form method="POST" action="{{ route('programs.store') }}" enctype="multipart/form-data" id="program-form" class="needs-validation" novalidate>
                @csrf
 
                <!-- Global Error Display -->
@@ -29,13 +29,13 @@
                    <li class="nav-item" role="presentation">
                      <button class="nav-link active" id="ka-tab" data-bs-toggle="tab" data-bs-target="#ka"
                         type="button" role="tab">
-                        <i class="bi bi-translate me-2"></i>ქართული
+                       KA
                      </button>
                    </li>
                    <li class="nav-item" role="presentation">
                      <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en" type="button"
                         role="tab">
-                        <i class="bi bi-translate me-2"></i>English
+                      EN
                      </button>
                    </li>
                  </ul>
@@ -151,7 +151,7 @@
                         <div class="input-group">
                           <input type="number" id="price" name="price"
                             class="form-control @error('price') is-invalid @enderror" placeholder="0.00"
-                            step="0.01" value="{{ old('price') }}" required>
+                            step="0.01" min="0" value="{{ old('price') }}" required>
                           <span class="input-group-text">₾</span>
                         </div>
                         @error('price')
@@ -305,19 +305,22 @@
                    <label for="visibility" class="form-label">ხილვადობა</label>
                    <select id="visibility" name="visibility"
                      class="form-select @error('visibility') is-invalid @enderror">
-                     <option value="1" {{ old('visibility', 1) == 1 ? 'selected' : '' }}>ხილული</option>
-                     <option value="0" {{ old('visibility') == 0 ? 'selected' : '' }}>დამალული</option>
+                   	<option value="1" {{ old('visibility', '1') == '1' ? 'selected' : '' }}>ხილული</option>
+					  				<option value="0" {{ old('visibility', '1') == '0' ? 'selected' : '' }}>დამალული</option>
                    </select>
                    @error('visibility')
                   <div class="invalid-feedback">{{ $message }}</div>
                @enderror
                  </div>
                </div>
+
+               {{-- action buttons --}}
                <div class="d-flex justify-content-end mt-4 gap-2">
                  <button type="submit" class="btn btn-primary px-4 py-2">
                    დამატება
                  </button>
                </div>
+               
             </form>
           </div>
         </div>
@@ -326,6 +329,5 @@
 @endsection
 
 @section('scripts')
-   <script src="{{ asset('scripts/imageUploader.js') . '?date=' . $modified }}"></script>
-   <script src="{{ asset('scripts/programCreate.js') . '?date=' . $modified }}"></script>
+   <script type="module" src="{{ asset('scripts/programCreate.js') . '?date=' . $modified }}"></script>
 @endsection

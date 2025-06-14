@@ -25,6 +25,7 @@ class UpdatePartnersRequest extends FormRequest
         'title' => 'required|string|min:3|max:200',
         'link' => 'required|url|min:10',
         'image' => 'sometimes|image|mimes:jpg,jpeg,webp,png|max:5120',
+        'visibility'=> 'sometimes|in:1,0',
         ];
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('pdf');
             $table->unsignedBigInteger('program_id');
             $table->foreign('program_id')->references('id')->on('programs');
+            $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();
         });
     }

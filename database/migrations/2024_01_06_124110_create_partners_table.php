@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->string('link');
+            $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();
         });
     }

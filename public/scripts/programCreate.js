@@ -1,4 +1,11 @@
+import ImageUploader from "./imageUploader.js";
+
 document.addEventListener('DOMContentLoaded', function () {
+
+   // Initialize all image uploaders on page
+   new ImageUploader('program-image', 'program-image-preview');
+   new ImageUploader('certificate-image', 'certificate-image-preview');
+
    // Preserve active tab after validation error
    const activeTabId = sessionStorage.getItem('activeTab');
    if (activeTabId) {
@@ -13,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
          sessionStorage.setItem('activeTab', event.target.id);
       });
    });
-   
+
    // Form validation
    const form = document.getElementById('program-form');
    if (form) {

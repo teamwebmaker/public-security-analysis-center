@@ -10,7 +10,7 @@
                 'title' => $projects->title,
                 'count' => $projects->count,
                 'viewRoute' => route('projects.index'),
-                'createRoute' => route('projects.index'),
+                'createRoute' => route('projects.create'),
             ])
         </div>
 
@@ -29,8 +29,8 @@
         <div class="col-12 col-md-6 col-xl-4">
             @include('components.dashboard-card', [
                 'icon' => 'bi-briefcase',
-                'title' => 'სპეც.პროგრამები',
-                'count' => 40,
+                'title' => $programs->title,
+                'count' => $programs->count,
                 'viewRoute' => route('programs.index'),
                 'createRoute' => route('programs.create'),
             ])
@@ -46,6 +46,5 @@
                 'createRoute' => route('publications.create'),
             ])
         </div>
-
     </div>
 @endsection

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('file');
             $table->unsignedBigInteger('genre_id');
             $table->foreign('genre_id')->references('id')->on('genres');
+            $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();
         });
     }

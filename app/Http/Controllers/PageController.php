@@ -78,7 +78,7 @@ class PageController extends Controller
     public function projects(): view
     {
         return view('pages.projects', [
-            'projects' => Project::orderBy('id', 'DESC')->paginate(6),
+            'projects' => Project::where('visibility', '1')->orderBy('id', 'DESC')->paginate(6),
             'partners' => Partner::all()
         ]);
     }
@@ -92,7 +92,7 @@ class PageController extends Controller
     public function publications()
     {
         return view('pages.publications', [
-            'publications' => Publication::paginate(6),
+            'publications' => Publication::where('visibility', '1')->paginate(6),
             'partners' => Partner::all(),
             'language' => App::getLocale()
         ]);

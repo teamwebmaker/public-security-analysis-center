@@ -55,12 +55,4 @@ class ImageUploader {
    }
 }
 
-// Initialize all image uploaders on page
-document.addEventListener('DOMContentLoaded', function () {
-   // Example usage - you can add more instances as needed
-   new ImageUploader('program-image', 'program-image-preview');
-   new ImageUploader('certificate-image', 'certificate-image-preview');
-
-   // Add more instances for other image uploads if needed
-   // new ImageUploader('other-image', 'other-image-preview');
-});
+export default ImageUploader;

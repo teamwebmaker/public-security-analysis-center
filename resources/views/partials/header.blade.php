@@ -35,7 +35,7 @@
 						<a class="contact-options d-flex gap-2 align-items-center black-text text-decoration-none"
 							href="tel:+995577416620">
 							<i class="bi bi-telephone fs-5"></i>
-							<span class="contact-option-label fs-6">577416620</span>
+							<span class="contact-option-label fs-6">595401188</span>
 						</a>
 					</div>
 				</div>
@@ -56,8 +56,7 @@
 			<nav class="navbar navbar-expand-xl py-1">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="{{ route('home.page') }}">
-						<img src="{{ asset('images/themes/psac-logo-450x150.png') }}" class="page-logo"
-							alt="psac-main-logo" />
+						<img src="{{ asset('images/themes/psac-log.png') }}" class="page-logo" alt="psac-main-logo" />
 					</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
 						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

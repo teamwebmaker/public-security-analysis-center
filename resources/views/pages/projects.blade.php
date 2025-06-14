@@ -6,11 +6,20 @@
         <div class="container-fluid pt-5">
             <div class="container-xxl">
                 <div class="row mb-5">
-                    @foreach($projects as $project)
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <x-project-component :project="$project" language="ka" />
+                    @if ($projects->isEmpty())
+                        <div class="col-md-8">
+                            <div class="alert alert-info">
+                                {{-- {{ __(' No projects found') }} --}}
+                                No projects found
+                            </div>
                         </div>
-                    @endforeach
+                    @else
+                        @foreach($projects as $project)
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <x-project-component :project="$project" language="ka" />
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
                 <div class="row">
                     <div class="col-md-12">

@@ -12,7 +12,7 @@
 
 	<div class="row g-4 ">
 		@foreach($programs as $program)
-			<div class="col-xl-5 col-lg-6">
+			<div class="col-12 col-sm-7 col-md-6 ">
 				<div class="card shadow-sm">
 					@if ($program->image)
 						<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
@@ -131,14 +131,14 @@
 					</div>
 					<div class="card-footer bg-transparent ">
 						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-							<a class="btn btn-outline-success me-md-2" href="{{ route('programs.edit', ['program' => $program]) }}">
+							<a class="btn btn-outline-primary me-md-2" href="{{ route('programs.edit', ['program' => $program]) }}">
 								<i class="bi bi-pencil-square me-1"></i>რედაქტირება
 							</a>
 							<form method="POST" action="{{ route('programs.destroy', ['program' => $program]) }}"
 								onsubmit="return confirm('წავშალოთ კურსი?')">
 								@csrf
 								@method('DELETE')
-								<button type="submit" class="btn btn-outline-danger">
+								<button type="submit" class="btn btn-outline-danger w-100">
 									<i class="bi bi-trash me-1"></i>წაშლა
 								</button>
 							</form>

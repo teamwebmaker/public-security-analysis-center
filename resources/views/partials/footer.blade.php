@@ -52,7 +52,7 @@
 					<ul class="list-unstyled small text-center text-lg-end ">
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-telephone-fill gold-text"></i>
-							<span>+995 577 416 620</span>
+							<span>+995 595 401 188</span>
 						</li>
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-envelope-fill gold-text"></i>

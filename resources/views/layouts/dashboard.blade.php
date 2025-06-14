@@ -28,7 +28,6 @@
                 </button>
 
                 <div class="d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
-
                     <div>
                         <a href="{{ route('admin.dashboard.page') }}" class=" user-profile-btn text-decoration-none">
                             <i class="bi bi-person-circle fs-5"></i>

@@ -9,7 +9,7 @@ use App\Casts\JsonConvertCast;
 class Project extends Model
 {
 
-    protected $fillable = ['title', 'description', 'image'];
+    protected $fillable = ['title', 'description', 'image', 'visibility'];
     use HasFactory;
     protected  $casts = [
         'title' => JsonConvertCast::class,

@@ -1,25 +1,25 @@
 <div class="accordion" id="dashboard">
 
     <x-accordion-item id="projects" icon="bi-folder-plus" label="პროექტები"
-        :active-routes="['projects.index', 'projects.create', 'projects.edit']" :routes="[
+        :active-routes="['projects.index', 'projects.create']" :routes="[
         ['name' => 'projects.index', 'label' => 'პროექტების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'projects.create', 'label' => 'პროექტის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
 
     <x-accordion-item id="partners" icon="bi-people" label="პარტნიორები"
-        :active-routes="['partners.index', 'partners.create', 'partners.edit']" :routes="[
+        :active-routes="['partners.index', 'partners.create',]" :routes="[
         ['name' => 'partners.index', 'label' => 'პარტნიორების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'partners.create', 'label' => 'პარტნიორის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
 
     <x-accordion-item id="programs" icon="bi-briefcase" label="სპეც.პროგრამები"
-        :active-routes="['programs.index', 'programs.create', 'programs.edit']" :routes="[
+        :active-routes="['programs.index', 'programs.create']" :routes="[
         ['name' => 'programs.index', 'label' => 'სპეც.პროგრამების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'programs.create', 'label' => 'სპეც.პროგრამის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
 
     <x-accordion-item id="publications" icon="bi-book" label="პუბლიკაციები"
-        :active-routes="['publications.index', 'publications.create', 'publications.edit']" :routes="[
+        :active-routes="['publications.index', 'publications.create']" :routes="[
         ['name' => 'publications.index', 'label' => 'პუბლიკაციების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'publications.create', 'label' => 'პუბლიკაციის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />

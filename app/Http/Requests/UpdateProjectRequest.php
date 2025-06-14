@@ -26,8 +26,8 @@ class UpdateProjectRequest extends FormRequest
             'title_en' => 'required|string|min:3|max:200',
             'description_ka' => 'required|string|min:10',
             'description_en' => 'required|string|min:10',
-            // 'image' => 'sometimes|mimes:jpg,webp,png'
-             'image' => 'sometimes|image|mimes:jpg,jpeg,webp,png|max:5120',
+            'image' => 'sometimes|image|mimes:jpg,jpeg,webp,png|max:5120',
+            'visibility'=> 'sometimes|in:1,0',
         ];
     }
 }
