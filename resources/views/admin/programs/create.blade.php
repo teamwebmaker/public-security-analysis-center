@@ -96,7 +96,7 @@
                      <div class="card-body">
                         <label for="program-image" class="form-label">პროგრამის სურათი</label>
                         <input type="file" id="program-image" name="image"
-                          class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                          class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp">
                         @error('image')
                      <div class="invalid-feedback">{{ $message }}</div>
                    @enderror
@@ -113,7 +113,7 @@
                      <div class="card-body">
                         <label for="certificate-image" class="form-label">სერთიფიკატის სურათი</label>
                         <input type="file" id="certificate-image" name="certificate_image"
-                          class="form-control @error('certificate_image') is-invalid @enderror" accept="image/*">
+                          class="form-control @error('certificate_image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp">
                         @error('certificate_image')
                      <div class="invalid-feedback">{{ $message }}</div>
                    @enderror

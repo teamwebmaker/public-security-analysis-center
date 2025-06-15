@@ -57,7 +57,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script type="module" src="{{ asset('scripts/dashboard.js') . '?date=' . $modified }}"></script>
+    <script type="module" src="{{ asset('scripts/admin/dashboard.js') . '?date=' . $modified }}"></script>
+    <script type="module" src="{{ asset('scripts/admin/index.js') . '?date=' . $modified }}"></script>
     @yield('scripts')
 </body>
 

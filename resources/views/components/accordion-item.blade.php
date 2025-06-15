@@ -5,8 +5,9 @@
 
 <div class="accordion-item">
     <h2 class="accordion-header">
-        <button class="accordion-button d-flex gap-2" type="button" data-bs-toggle="collapse"
-            data-bs-target="#{{ $id }}" aria-expanded="{{ $isOpen ? 'true' : 'false' }}" aria-controls="{{ $id }}">
+        <button class="accordion-button d-flex gap-2 {{ $isOpen ? '' : 'collapsed' }}" type="button"
+            data-bs-toggle="collapse" data-bs-target="#{{ $id }}" aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
+            aria-controls="{{ $id }}">
             <i class="bi {{ $icon }}"></i>
             <span class="btn-label">{{ $label }}</span>
         </button>

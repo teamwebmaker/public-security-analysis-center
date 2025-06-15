@@ -95,7 +95,7 @@
 							<div class="col-md-6">
 								<label for="project_image" class="form-label">სურათი <span class="text-danger">*</span> </label>
 								<input type="file" id="project-image" class="form-control @error('image') is-invalid @enderror"
-									name="image" required accept="image/*">
+									name="image" required accept="image/jpeg,image/png,image/webp">
 								@error('image')
 									<div class="invalid-feedback">{{ $message }}</div>
 								@enderror
