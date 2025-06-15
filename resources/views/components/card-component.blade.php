@@ -22,7 +22,7 @@
 
     {{-- Optional footer with date and link --}}
     @if((isset($date) && $date) || (isset($link) && $link))
-        <div class="p-4 d-flex justify-content-between align-items-end gap-sm-0">
+        <div class="p-4 pt-2 d-flex justify-content-between align-items-end gap-sm-0">
             <!-- First column (always present) -->
             <div>
                 @if(isset($date) && $date)

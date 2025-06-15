@@ -4,11 +4,7 @@
             <h2 class="mb-3 mb-md-0">{{ __('static.section.articles.title') }}</h2>
 
             <!-- Fixed Filter Component -->
-            <x-sort-data name="sort" :options="[
-        'newest' => 'Newest to Oldest',
-        'oldest' => 'Oldest to Newest'
-    ]"
-                :selected="request()->query('sort', 'newest')" />
+            <x-sort-data name="sort" :selected="request()->query('sort', 'newest')" />
         </div>
 
         <!-- Responsive Grid -->

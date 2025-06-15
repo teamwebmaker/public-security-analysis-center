@@ -7,7 +7,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class SortData extends Component
-    // name', 'options', 'selected', 'class' => ''
     {
     public string $name;
     public array $options;
@@ -18,7 +17,10 @@ class SortData extends Component
      */
     public function __construct(    
         string $name, 
-        array $options, 
+        array $options = [
+        'newest' => 'Newest to Oldest',
+        'oldest' => 'Oldest to Newest'
+        ],
         string $selected = 'newest', 
         string $class = ''
         )

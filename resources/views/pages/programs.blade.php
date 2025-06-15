@@ -9,15 +9,14 @@
 					<h2 class="mb-3 mb-md-0">პროგრამები</h2>
 
 					<!-- Fixed Filter Component -->
-					<x-sort-data name="sort" :options="['newest' => 'Newest to Oldest', 'oldest' => 'Oldest to Newest']"
-						:selected="request()->query('sort', 'newest')" class="" />
+					<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
 				</div>
 				<div class="row mb-5">
 					@foreach($programs as $program)
 						@if ($program->visibility)
 							<div class="col-lg-4 col-md-6  mb-4">
-								<x-card-component :title="$program->title->$language" :image="'images/programs/' . $program->image"
-									:link="route('programs.show', ['id' => $program->id])" />
+								<x-card-component :title="$program->title->$language" :description="$program->description->$language"
+									:image="'images/programs/' . $program->image" :link="route('programs.show', ['id' => $program->id])" />
 							</div>
 						@endif
 					@endforeach

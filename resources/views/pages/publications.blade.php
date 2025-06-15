@@ -9,8 +9,7 @@
 				<h2 class="mb-3 mb-md-0">პუბლიკაციები</h2>
 
 				<!-- Fixed Filter Component -->
-				<x-sort-data name="sort" :options="['newest' => 'Newest to Oldest', 'oldest' => 'Oldest to Newest']"
-					:selected="request()->query('sort', 'newest')" class="" />
+				<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
 			</div>
 			<div class="row mb-5">
 				@if ($publications->isEmpty())
