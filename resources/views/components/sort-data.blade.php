@@ -9,7 +9,9 @@
         @endif
     @endforeach
 
-    <select name="{{ $name }}" id="{{ $name }}" class="{{ $class }}" onchange="this.form.submit()">
+    <select name="{{ $name }}" id="{{ $name }}"
+        class="form-select form-select-sm text-dark fs-6 border-secondary w-auto {{ $class }}"
+        onchange="this.form.submit()">
         @foreach($options as $value => $label)
             <option value="{{ $value }}" @selected($selected === $value)>
                 {{ $label }}
