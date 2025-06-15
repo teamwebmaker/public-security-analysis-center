@@ -1,3 +1,29 @@
+
+// Load Fancybox dynamically when needed.
+export function loadFancyboxCDN(callback) {
+  // Prevent duplicate loading
+  if (window.Fancybox) {
+    callback && callback();
+    return;
+  }
+
+  // Load CSS
+  if (!document.querySelector('link[href*="fancybox.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css';
+    document.head.appendChild(link);
+  }
+
+  // Load JS
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js';
+  script.onload = () => {
+    callback && callback(); // Run Fancybox.bind when ready
+  };
+  document.body.appendChild(script);
+}
+
 export function enableSmoothScroll(selector, offset = 100) {
   document.querySelectorAll(selector).forEach(link => {
     link.addEventListener('click', function (e) {

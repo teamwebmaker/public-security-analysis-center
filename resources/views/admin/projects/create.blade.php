@@ -244,5 +244,5 @@
 @endsection
 
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/projectCreate.js') . '?date=' . $modified }}"></script>
+	<script type="module" src="{{ asset('scripts/project/projectCreate.js') . '?date=' . $modified }}"></script>
 @endsection

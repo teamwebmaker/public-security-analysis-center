@@ -1,3 +1,5 @@
+import { loadFancyboxCDN } from "./heplers.js";
+
 // Handle image preview and removal on file input change
 class ImageUploader {
    constructor(inputId, previewId, removeBtnClass = 'btn-remove-image') {
@@ -11,8 +13,12 @@ class ImageUploader {
    }
 
    init() {
-      // Initialize Fancybox
-      Fancybox.bind('[data-fancybox]');
+      // Only bind Fancybox if [data-fancybox] exists
+      if (document.querySelector('[data-fancybox]')) {
+         loadFancyboxCDN(() => {
+            Fancybox.bind('[data-fancybox]');
+         });
+      }
 
       // Create remove button
       this.removeBtn = document.createElement('button');

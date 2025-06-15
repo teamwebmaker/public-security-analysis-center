@@ -159,7 +159,5 @@
 @endsection
 
 @section('scripts')
-	<script>
-		Fancybox.bind('[data-fancybox]', {});
-	</script>
+	<script type="module" src="{{ asset('scripts/program/programIndex.js') . '?date=' . $modified }}"></script>
 @endsection
