@@ -1,11 +1,3 @@
-@props([
-    'title' => null,
-    'description' => null,
-    'image' => null,
-    'link' => null,
-    'date' => null,
-])
-
 <div class="card card-article">
     {{-- Optional image --}}
     @if($image)
