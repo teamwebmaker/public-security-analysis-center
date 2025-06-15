@@ -25,7 +25,7 @@
 
 						<!-- partner title -->
 						<div class="mb-4">
-							<label for="title" class="form-label">სათაური *</label>
+							<label for="title" class="form-label">სათაური <span class="text-danger">*</span></label>
 							<input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title"
 								value="{{ old('title') }}" placeholder="შეიყვანეთ სათაური" required>
 							@error('title')
@@ -35,7 +35,7 @@
 
 						<!-- partner link -->
 						<div class="mb-4">
-							<label for="link" class="form-label">ლინკი *</label>
+							<label for="link" class="form-label">ლინკი <span class="text-danger">*</span></label>
 							<div class="input-group">
 								<span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
 								<input type="url" class="form-control @error('link') is-invalid @enderror" id="link" name="link"
@@ -49,7 +49,7 @@
 						<div class="row mb-4">
 							<!-- Image -->
 							<div class="col-md-6">
-								<label for="image" class="form-label">სურათი *</label>
+								<label for="image" class="form-label">სურათი <span class="text-danger">*</span></label>
 								<input type="file" id="partner-image" class="form-control @error('image') is-invalid @enderror"
 									name="image" required accept="image/*">
 								@error('image')
@@ -63,7 +63,7 @@
 							</div>
 							<!-- Visibility -->
 							<div class="col-md-6">
-								<label for="visibility" class="form-label">ხილვადობა *</label>
+								<label for="visibility" class="form-label">ხილვადობა <span class="text-danger">*</span></label>
 								<select id="visibility" name="visibility"
 									class="form-select @error('visibility') is-invalid @enderror" required>
 									<option value="1" {{ old('visibility', '1') == '1' ? 'selected' : '' }}>ხილული</option>
@@ -91,5 +91,5 @@
 	</div>
 @endsection
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/partnerCreate.js') . '?date=' . $modified }}"></script>
+	<script type="module" src="{{ asset('scripts/partner.js') . '?date=' . $modified }}"></script>
 @endsection

@@ -9,7 +9,7 @@
     @endsession
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 ">
         @foreach($projects as $project)
-            <x-admin-card :title="$project->title->ka" :description="$project->description->ka" :image="'images/projects/' . $project->image" :edit-url="route('projects.edit', $project)"
+            <x-admin-card :title="$project->title->ka" :description="$project->description->ka" :image="'images/projects/' . $project->image" :visibility="$project->visibility" :edit-url="route('projects.edit', $project)"
                 :delete-url="route('projects.destroy', $project)" />
         @endforeach
     </div>

@@ -12,6 +12,7 @@ class AdminCard extends Component
     public string $image;
     public string $editUrl;
     public string $deleteUrl;
+    public string $visibility;
     public ?string $description;
 
     /**
@@ -22,12 +23,14 @@ class AdminCard extends Component
         string $image,
         string $editUrl,
         string $deleteUrl,
+        string $visibility,
         ?string $description = null
     ) {
          $this->title = $title;
          $this->image = $image;
          $this->editUrl = $editUrl;
          $this->deleteUrl = $deleteUrl;
+         $this->visibility = $visibility;
          $this->description = $description;
     }
 
