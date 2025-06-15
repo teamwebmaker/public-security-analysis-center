@@ -12,33 +12,48 @@
 
 	<div class="row g-4 ">
 		@foreach($programs as $program)
-			<div class="col-12 col-sm-7 col-md-6 ">
+			<div class="col-12 col-sm-8 col-md-6 mx-auto ">
 				<div class="card shadow-sm">
-					@if ($program->image)
-						<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
-							style="--overlay-alpha: 0.7; height: 200px;">
+					<!-- image -->
+					<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
+						style="--overlay-alpha: 0.7; height: 200px;">
+						@if ($program->image)
 							<a href="{{ asset('images/programs/' . $program->image) }}" data-fancybox
 								data-caption="{{ $program->title->en }}">
 								<img class="w-100 h-100 object-fit-cover" src="{{ asset('images/programs/' . $program->image) }}"
 									alt="{{ $program->title->ka }}">
 							</a>
-						</div>
-					@else
-						<div class="card-header p-0 overflow-hidden overlay-label-wrapper" data-label="სურათის ნახვა" data-alpha="0.7"
-							style="--overlay-alpha: 0.7; height: 170px;">
+						@else
 							<a href="{{ asset('images/programs/not-found-image.webp') }}" data-fancybox
 								data-caption="სურათი არ არის ატვირთული">
 								<img class="w-100 h-100 object-fit-cover" src="{{ asset('images/programs/not-found-image.webp') }}"
 									alt="Not found image">
 							</a>
-						</div>
-					@endif
-					<div class="card-body">
-						<h5 class="card-title text-truncate" title="{{ $program->title->ka }}">
-							{{ $program->title->ka }}
-						</h5>
-						<h6 class="card-subtitle mb-2 text-muted small">{{ $program->title->en }}</h6>
+						@endif
+						<!-- Visibility Overlay -->
+						@if($program->visibility == 0)
+							<div class="position-absolute  top-0 start-0 w-100 h-100 bg-dark bg-opacity-75"></div>
+						@endif
+					</div>
 
+					<div class="card-body">
+						<div class="d-flex align-items-start justify-content-between gap-2">
+							<div>
+								<h5 class="card-title text-truncate" title="{{ $program->title->ka }}">
+									{{ $program->title->ka }}
+								</h5>
+								<h6 class="card-subtitle mb-2 text-muted small">{{ $program->title->en }}</h6>
+							</div>
+
+							<!-- Small visibility indicator -->
+							<div>
+								@if($program->visibility == 0)
+									<i class="bi bi-eye-slash fs-5 text-danger mt-1"></i>
+								@else
+									<i class="bi bi-eye fs-5 text-success mt-1"></i>
+								@endif
+							</div>
+						</div>
 						<div x-data="{ expanded: false, height: 0 }" x-init="$nextTick(() => height = $refs.content.scrollHeight)">
 
 							<!-- Description with smooth transition -->
@@ -50,7 +65,7 @@
 							</div>
 
 							<!-- Toggle button stays outside to avoid clipping -->
-							@if (strlen($program->description->ka) > 100)
+							@if (strlen($program->description->ka) > 200)
 								<button @click="expanded = !expanded" class="btn btn-sm btn-link p-0 text-decoration-none">
 									<i class="bi me-1" :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
 									<span x-text="expanded ? 'ნაკლების ჩვენება' : 'მეტის ჩვენება'"></span>
@@ -129,17 +144,18 @@
 							@endif
 						</ul>
 					</div>
+
 					<div class="card-footer bg-transparent ">
 						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 							<a class="btn btn-outline-primary me-md-2" href="{{ route('programs.edit', ['program' => $program]) }}">
-								<i class="bi bi-pencil-square me-1"></i>რედაქტირება
+								<i class="bi bi-pencil-square me-1"></i>Edit
 							</a>
 							<form method="POST" action="{{ route('programs.destroy', ['program' => $program]) }}"
 								onsubmit="return confirm('წავშალოთ კურსი?')">
 								@csrf
 								@method('DELETE')
 								<button type="submit" class="btn btn-outline-danger w-100">
-									<i class="bi bi-trash me-1"></i>წაშლა
+									<i class="bi bi-trash me-1"></i>Delete
 								</button>
 							</form>
 						</div>

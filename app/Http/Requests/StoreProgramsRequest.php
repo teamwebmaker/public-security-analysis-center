@@ -26,7 +26,7 @@ class StoreProgramsRequest extends FormRequest
         'title.en'          => 'required|string|max:200',
         'description.ka'    => 'required|string|min:10',
         'description.en'    => 'required|string|min:10',
-        'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        'image'             => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         'certificate_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         'video'             => 'nullable|url',
         'price'             => 'required|numeric|min:0',

@@ -96,7 +96,7 @@
                      <div class="card-body">
                         <label for="program-image" class="form-label">პროგრამის სურათი</label>
                         <input type="file" id="program-image" name="image"
-                          class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp">
+                          class="form-control @error('image') is-invalid @enderror" accept="image/jpeg,image/png,image/webp" required>
                         @error('image')
                      <div class="invalid-feedback">{{ $message }}</div>
                    @enderror

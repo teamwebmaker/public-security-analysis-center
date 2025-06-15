@@ -12,18 +12,18 @@ return new class extends Migration {
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->json('title');
-            $table->json('description');
-            $table->string('image')->nullable();
+            $table->json('title');// {ka:"", en:"" }
+            $table->json('description'); // {ka:"", en:"" }
+            $table->string('image');
             $table->string('certificate_image')->nullable();
-            $table->string('video');
+            $table->string('video')->nullable();
             $table->string('price');
             $table->date('start_date');
             $table->date('end_date');
-            $table->json('days');
-            $table->json('hour')->nullable();
+            $table->json('days'); // {ka: [], en: [] }
+            $table->json('hour')->nullable(); // { start: '00:00', end: '00:00' }
             $table->string('duration');
-            $table->string('address')->nullable();
+            $table->string('address')->nullable(); 
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->tinyInteger('sortable')->default(1);
             $table->timestamps();
