@@ -2,7 +2,7 @@
 @section('title', 'პარტნიორის შექმნა')
 @section('main')
 	<div class="row justify-content-center">
-		<div class="col-lg-8">
+		<div class="col-lg-9">
 			<div class="card border-0 shadow-sm">
 				<div class="card-body p-4">
 					<h1 class="h4 mb-4">პარტნიორის შექმნა</h1>
@@ -76,10 +76,8 @@
 						</div>
 
 						<!-- Action buttons -->
-						<div class="d-flex justify-content-between align-items-center mt-4">
-							<a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
-								<i class="bi bi-arrow-left me-2"></i> უკან დაბრუნება
-							</a>
+						<div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
+							<x-go-back-button fallback="partners.index" />
 							<button type="submit" class="btn btn-primary px-4">
 								<i class="bi bi-check-lg me-2"></i> დამატება
 							</button>

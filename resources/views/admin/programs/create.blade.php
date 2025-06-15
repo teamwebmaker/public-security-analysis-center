@@ -314,13 +314,13 @@
                  </div>
                </div>
 
-               {{-- action buttons --}}
-               <div class="d-flex justify-content-end mt-4 gap-2">
-                 <button type="submit" class="btn btn-primary px-4 py-2">
-                   დამატება
-                 </button>
-               </div>
-               
+              <!-- Action buttons -->
+              <div class="d-flex justify-content-end align-items-center flex-column flex-sm-row gap-2 mt-4">
+                <x-go-back-button fallback="partners.index" />
+                <button type="submit" class="btn btn-primary px-4 ">
+                  <i class="bi bi-check-lg me-2"></i> დამატება
+                </button>
+              </div>
             </form>
           </div>
         </div>
