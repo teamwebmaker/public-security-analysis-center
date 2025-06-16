@@ -100,11 +100,11 @@
 									<select id="visibility" name="visibility"
 										class="form-select @error('visibility') is-invalid @enderror" required>
 										<option value="1" {{ old('visibility', $partner->visibility ?? '1') == '1' ? 'selected' : ''
-								   }}>
+											   }}>
 											ხილული
 										</option>
 										<option value="0" {{ old('visibility', $partner->visibility ?? '1') == '0' ? 'selected' : ''
-								   }}>
+											   }}>
 											დამალული
 										</option>
 									</select>
@@ -116,7 +116,7 @@
 						</div>
 
 						<!-- Action Buttons -->
-						<div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+						<div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
 							<x-go-back-button fallback="partners.index" />
 							<button type="submit" class="btn btn-primary px-4">
 								<i class="bi bi-check-lg me-2"></i> განახლება
@@ -130,4 +130,5 @@
 @endsection
 
 @section('scripts')
-<script type="module" src="{{ asset('scripts/partner.js') . '?date=' . $modified }}"></script>@endsection
+	{!! load_script('scripts/partner.js') !!}
+@endsection

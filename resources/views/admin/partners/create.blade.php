@@ -89,5 +89,5 @@
 	</div>
 @endsection
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/partner.js') . '?date=' . $modified }}"></script>
+	{!! load_script('scripts/partner.js') !!}
 @endsection

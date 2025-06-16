@@ -1,5 +1,4 @@
 <div class="accordion" id="dashboard">
-
     <x-accordion-item id="projects" icon="bi-folder-plus" label="პროექტები"
         :active-routes="['projects.index', 'projects.create','projects.edit']" :routes="[
         ['name' => 'projects.index', 'label' => 'პროექტების ნახვა', 'icon' => 'bi-list-ul'],

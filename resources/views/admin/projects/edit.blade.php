@@ -143,8 +143,8 @@
 							</div>
 						</div>
 
-						<div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-							<x-go-back-button fallback="partners.index" />
+						<div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
+							<x-go-back-button fallback="projects.index" />
 							<button type="submit" class="btn btn-primary px-4">
 								<i class="bi bi-check-lg me-2"></i> განახლება
 							</button>
@@ -157,5 +157,7 @@
 @endsection
 
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/project/projectEdit.js') . '?date=' . $modified }}"></script>
+	{{--
+	<script type="module" src="{{ asset('scripts/project/projectEdit.js') . '?date=' . $modified }}"></script> --}}
+	{!! load_script('scripts/project/projectEdit.js') !!}
 @endsection

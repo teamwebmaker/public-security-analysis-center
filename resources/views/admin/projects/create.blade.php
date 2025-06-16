@@ -138,5 +138,5 @@
 @endsection
 
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/project/projectCreate.js') . '?date=' . $modified }}"></script>
+	{!! load_script('scripts/project/projectCreate.js') !!}
 @endsection

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
 {{-- Prevents browser caching by appending last modified time --}}
-<link rel="stylesheet" href="{{ asset('styles/app.css') . '?date=' . $modified }}">
+{!! load_style('styles/app.css') !!}
 
 <link rel="shortcut icon" href="{{ asset('images/themes/icon.png') }}" />
 @yield('styles')

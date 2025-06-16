@@ -26,9 +26,8 @@ class UpdateProgramsRequest extends FormRequest
             "title.en" => "required|string|max:200",
             "description.ka" => "required|string|min:10",
             "description.en" => "required|string|min:10",
-            "image" => "sometimes|image|mimes:jpeg,png,jpg,gif,webp|max:5120",
-            "certificate_image" =>
-                "sometimes|image|mimes:jpeg,png,jpg,gif,webp|max:5120",
+            "image" => "sometimes|image|mimes:jpeg,png,jpg,webp|max:5120",
+            "certificate_image" => "nullable|image|mimes:jpeg,png,jpg,webp|max:5120",
             "video" => "nullable|url",
             "price" => "required|numeric|min:0",
             "duration" => "required|string|max:100",

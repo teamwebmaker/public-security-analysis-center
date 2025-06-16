@@ -175,5 +175,5 @@
 @endsection
 
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/program/programIndex.js') . '?date=' . $modified }}"></script>
+	{!! load_script('scripts/program/programIndex.js') !!}
 @endsection

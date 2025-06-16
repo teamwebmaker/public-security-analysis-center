@@ -3,7 +3,7 @@
 
 <head>
     @include('partials.head')
-    <link rel="stylesheet" href="{{ asset('styles/dashboard.css') . '?date=' . $modified }}">
+    {!! load_style('styles/dashboard.css') !!}
 </head>
 
 <body>
@@ -57,8 +57,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script type="module" src="{{ asset('scripts/admin/dashboard.js') . '?date=' . $modified }}"></script>
-    <script type="module" src="{{ asset('scripts/admin/index.js') . '?date=' . $modified }}"></script>
+    {!! load_script('scripts/admin/dashboard.js') !!}
+    {!! load_script('scripts/admin/index.js') !!}
     @yield('scripts')
 </body>
 

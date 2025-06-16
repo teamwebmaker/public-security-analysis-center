@@ -30,7 +30,7 @@ class AdminCard extends Component
          $this->image = $image;
          $this->editUrl = $editUrl;
          $this->deleteUrl = $deleteUrl;
-         $this->visibility = $visibility;
+        $this->visibility = $visibility;
          $this->description = $description;
     }
 

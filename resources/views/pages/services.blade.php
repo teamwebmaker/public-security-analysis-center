@@ -63,5 +63,5 @@
 	</main>
 @endsection
 @section('scripts')
-	<script type="module" src="{{ asset('scripts/services.js') . '?date=' . $modified }}"></script>
+	{!! load_script('scripts/services.js') !!}
 @endsection
