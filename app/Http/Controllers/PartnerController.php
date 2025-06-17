@@ -40,7 +40,7 @@ class PartnerController extends CrudController
 
         foreach ($this->imageFields as $field => $path) {
             $imageName = $this->handleImageUpload($request, $field, $path, $partner->image);
-            if ($imageName) $data["image"] = $imageName;
+            if ($imageName) $data[$field] = $imageName;
         }
         $partner->update($data);
 

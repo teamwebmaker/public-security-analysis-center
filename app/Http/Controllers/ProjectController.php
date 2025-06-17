@@ -9,6 +9,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Partner;
 use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
 
 class ProjectController extends CrudController
 {
@@ -23,6 +24,7 @@ class ProjectController extends CrudController
     public function show(string $id)
     {
         $item = Project::findOrFail($id);
+
         return view("pages.show", [
             "language" => App::getLocale(),
             "item" => $item,
@@ -32,33 +34,13 @@ class ProjectController extends CrudController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created project.
      */
     public function store(StoreProjectRequest $request)
     {
         $data = $request->validated();
-
-        foreach ($this->imageFields as $field => $path) {
-            $imageName = $this->handleImageUpload($request, $field, $path);
-            if ($imageName) {
-                $data[$field] = $imageName;
-            }
-        }
-
-        $title = [
-            "ka" => $data["title_ka"],
-            "en" => $data["title_en"],
-        ];
-
-        $description = [
-            "ka" => $data["description_ka"],
-            "en" => $data["description_en"],
-        ];
-
-        $data["title"] = $title;
-        $data["description"] = $description;
-
-        Project::create($data);
+        $projectData = $this->prepareProjectData($request, $data);
+        Project::create($projectData);
 
         return redirect()
             ->route("projects.index")
@@ -66,19 +48,34 @@ class ProjectController extends CrudController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an existing project.
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $data = $request->validated();
+        $projectData = $this->prepareProjectData($request, $data, $project);
+        $project->update($projectData);
 
-        foreach ($this->imageFields as $field => $path) {
-            $imageName = $this->handleImageUpload($request, $field, $path, $project->image);
-            if ($imageName) {
-                $data[$field] = $imageName;
-            }
-        }
+        return redirect()
+            ->back()
+            ->with("success", "პროექტი განახლდა წარმატებით");
+    }
 
+    /**
+     * Extracted shared logic for preparing request data
+     */
+    private function prepareProjectData(Request $request, array $data, ?Project $project = null): array
+    {
+        // Handle image upload
+        $images = collect($this->imageFields)
+            ->mapWithKeys(function ($path, $field) use ($request, $project) {
+                $existing = $project?->$field;
+                $image = $this->handleImageUpload($request, $field, $path, $existing);
+                return $image ? [$field => $image] : [];
+            })
+            ->toArray();
+
+        // Handle translations
         $title = [
             "ka" => $data["title_ka"],
             "en" => $data["title_en"],
@@ -89,13 +86,11 @@ class ProjectController extends CrudController
             "en" => $data["description_en"],
         ];
 
-        $data["title"] = $title;
-        $data["description"] = $description;
-
-        $project->update($data);
-
-        return redirect()
-            ->back()
-            ->with("success", "პროექტი განახლდა წარმატებით");
+        return [
+            ...$data,
+            ...$images,
+            "title" => $title,
+            "description" => $description,
+        ];
     }
 }
