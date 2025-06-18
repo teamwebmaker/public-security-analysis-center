@@ -52,8 +52,8 @@
 						</li>
 
 						@if ($item->address)
-							<li class="mb-2 me-2 d-flex align-items-end">
-								<i class="bi bi-geo-alt-fill me-1"></i>
+							<li class="mb-2 me-2 d-flex align-items-center">
+								<i class="bi bi-geo-alt-fill me-2"></i>
 								<strong class="pe-1">Location:</strong>
 								<span class="text-truncate d-inline-block" style="max-width: 150px;" data-bs-toggle="tooltip"
 									data-bs-placement="top" title="{{ $item->address }}">

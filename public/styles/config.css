@@ -12,6 +12,12 @@
     --gold-alfa: 1;
     --gold: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
+/* bootstrap icons */
+
+i {
+    vertical-align: middle;
+    line-height: 1;
+}
 
 .response-img {
     width: 100%;
