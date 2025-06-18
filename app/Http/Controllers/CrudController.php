@@ -20,7 +20,6 @@ abstract class CrudController extends Controller
         $model = app($this->modelClass);
         return view("admin.{$this->viewFolder}.index", [
             $this->viewFolder => $model->orderBy("id", "DESC")->paginate(6),
-            "routeName" => Route::currentRouteName(),
         ]);
     }
 

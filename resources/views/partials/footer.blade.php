@@ -52,11 +52,11 @@
 					<ul class="list-unstyled small text-center text-lg-end ">
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-telephone-fill gold-text"></i>
-							<span>+995 595 401 188</span>
+							<span>{{$contactPhone}}</span>
 						</li>
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-envelope-fill gold-text"></i>
-							<a href="mailto:psacge@gmail.com" class="text-white text-decoration-none">psacge@gmail.com</a>
+							<a href="mailto:psacge@gmail.com" class="text-white text-decoration-none">{{$contactEmail}}</a>
 						</li>
 						<li class="d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-geo-alt-fill gold-text"></i>

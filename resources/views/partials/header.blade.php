@@ -5,9 +5,11 @@
 				<!-- Left Side: Contact Info -->
 				<div class="col-auto">
 					<div class="d-flex align-items-center justify-content-between d-md-none gap-3">
-						<a class="d-flex gap-2 align-items-center black-text text-decoration-none" href="tel:+995577416620">
+						<a class="d-flex gap-2 align-items-center black-text text-decoration-none"
+							href="tel:{{ $contactPhone }}">
 							<i class="bi bi-telephone fs-5"></i>
-							<span class="contact-option-label fs-6">577416620</span>
+							<span class="contact-option-label fs-6">
+								{{ $contactPhone }}</span>
 						</a>
 						<!-- Toggle Icon -->
 						<button class="btn p-0 border-0" type="button" data-bs-toggle="collapse"
@@ -21,7 +23,7 @@
 						<a class="d-flex gap-2 align-items-center black-text text-decoration-none"
 							href="mailto:psacge@gmail.com">
 							<i class="bi bi-envelope fs-5"></i>
-							<span class="contact-option-label fs-6">psacge@gmail.com</span>
+							<span class="contact-option-label fs-6">{{ $contactEmail }}</span>
 						</a>
 					</div>
 
@@ -30,12 +32,12 @@
 						<a class="contact-options d-flex gap-2 align-items-center black-text text-decoration-none"
 							href="mailto:psacge@gmail.com">
 							<i class="bi bi-envelope fs-5"></i>
-							<span class="contact-option-label fs-6">psacge@gmail.com</span>
+							<span class="contact-option-label fs-6">{{ $contactEmail }}</span>
 						</a>
 						<a class="contact-options d-flex gap-2 align-items-center black-text text-decoration-none"
 							href="tel:+995577416620">
 							<i class="bi bi-telephone fs-5"></i>
-							<span class="contact-option-label fs-6">595401188</span>
+							<span class="contact-option-label fs-6">{{ $contactPhone }}</span>
 						</a>
 					</div>
 				</div>

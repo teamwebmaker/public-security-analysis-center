@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Info;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use App\Models\MainMenu;
@@ -24,7 +25,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $MainMenu = MainMenu::orderBy('sorted', 'ASC')->with('subMenu')->get();
-        // Update modified variable when js or css is updated
-        View::share(['MainMenu' => $MainMenu, 'routeName' => Route::currentRouteName(), 'modified' => '14-06-2025']);
+
+        $contact = Info::select('email', 'phone')->first();
+        View::share([
+            'MainMenu' => $MainMenu,
+            'contactEmail' => $contact?->email,
+            'contactPhone' => $contact?->phone
+        ]);
     }
 }

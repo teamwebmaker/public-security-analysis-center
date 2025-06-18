@@ -14,8 +14,7 @@ class ContactsController extends Controller
     public function index()
     {
         return view('admin.contacts.index', [
-            'contacts' => Contact::orderBy('id', 'DESC') -> paginate(6),
-            'routeName' => Route::currentRouteName()
+            'contacts' => Contact::orderBy('id', 'DESC')->paginate(6),
         ]);
     }
 
@@ -42,7 +41,6 @@ class ContactsController extends Controller
     {
         return view('admin.contacts.show', [
             'contact' => $contact,
-            'routeName' => Route::currentRouteName()
         ]);
     }
 
@@ -67,7 +65,7 @@ class ContactsController extends Controller
      */
     public function destroy(Contact $contact)
     {
-        $contact -> delete();
-        return redirect() -> route('contacts.index') -> with('success', 'შეტყობინება წარმატებით წაიშალა.');
+        $contact->delete();
+        return redirect()->route('contacts.index')->with('success', 'შეტყობინება წარმატებით წაიშალა.');
     }
 }

@@ -23,9 +23,7 @@ class PublicationController extends Controller
      */
     public function create()
     {
-        return view('admin.publications.create', [
-            'routeName' => Route::currentRouteName()
-        ]);
+        return view('admin.publications.create', );
     }
 
     /**
