@@ -47,44 +47,24 @@
 								<div class="tab-pane fade show active" id="ka-tab-content" role="tabpanel"
 									aria-labelledby="ka-tab">
 									<div class="mb-3">
-										<label for="title_ka" class="form-label">სათაური <span class="text-danger">*</span> </label>
-										<input type="text" class="form-control @error('title_ka') is-invalid @enderror" id="title_ka"
-											name="title_ka" placeholder="შეიყვანეთ სათაური" value="{{ old('title_ka') }}" required>
-										@error('title_ka')
-											<div class="invalid-feedback">{{ $message }}</div>
-										@enderror
+										<x-form.input name="title_ka" label="სათაური" placeholder="შეიყვანეთ სათაური"
+											value="{{ old('title_ka') }}" />
 									</div>
 
 									<div class="mb-3">
-										<label for="description_ka" class="form-label">აღწერა <span class="text-danger">*</span>
-										</label>
-										<textarea class="form-control @error('description_ka') is-invalid @enderror"
-											id="description_ka" name="description_ka" rows="5" placeholder="შეიყვანეთ აღწერა"
-											minlength="10" required>{{ old('description_ka') }}</textarea>
-										@error('description_ka')
-											<div class="invalid-feedback">{{ $message }}</div>
-										@enderror
+										<x-form.textarea name="description_ka" label="აღწერა" placeholder="შეიყვანეთ აღწერა"
+											value="{{ old('description_ka') }}" />
 									</div>
 								</div>
 
 								<div class="tab-pane fade" id="en-tab-content" role="tabpanel" aria-labelledby="en-tab">
 									<div class="mb-3">
-										<label for="title_en" class="form-label">Title <span class="text-danger">*</span> </label>
-										<input type="text" class="form-control @error('title_en') is-invalid @enderror" id="title_en"
-											name="title_en" placeholder="Enter title" value="{{ old('title_en') }}" required>
-										@error('title_en')
-											<div class="invalid-feedback">{{ $message }}</div>
-										@enderror
+										<x-form.input name="title_en" label="Title" placeholder="Enter title"
+											value="{{ old('title_en') }}" />
 									</div>
 									<div class="mb-3">
-										<label for="description_en" class="form-label">Description <span class="text-danger">*</span>
-										</label>
-										<textarea class="form-control @error('description_en') is-invalid @enderror"
-											id="description_en" name="description_en" rows="5" placeholder="Enter description"
-											minlength="10" required>{{ old('description_en') }}</textarea>
-										@error('description_en')
-											<div class="invalid-feedback">{{ $message }}</div>
-										@enderror
+										<x-form.textarea name="description_en" label="Description" placeholder="Enter description"
+											value="{{ old('description_en') }}" />
 									</div>
 								</div>
 							</div>
@@ -93,43 +73,24 @@
 						<div class="row mb-4">
 							<!-- Image -->
 							<div class="col-md-6">
-								<label for="project_image" class="form-label">სურათი <span class="text-danger">*</span> </label>
-								<input type="file" id="project-image" class="form-control @error('image') is-invalid @enderror"
-									name="image" required accept="image/jpeg,image/png,image/webp">
-								@error('image')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
-								<div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 5MB</div>
-								<div class="mt-2 text-center">
-									<img id="project-image-preview" src="#" alt="Project image preview" class="img-thumbnail d-none"
-										style="max-height: 150px;" data-fancybox>
-								</div>
+								<x-form.input type="file" id="project-image" name="image" label="სურათი"
+									placeholder="შეიყვანეთ სურათი" />
+								<x-form.image-upload-preview id="project" />
+
 							</div>
 							<!-- Visibility -->
 							<div class="col-md-6">
-								<label for="visibility" class="form-label">ხილვადობა <span class="text-danger">*</span> </label>
-								<select id="visibility" name="visibility"
-									class="form-select @error('visibility') is-invalid @enderror" required>
-
-									<option value="1" {{ old('visibility', '1') == '1' ? 'selected' : '' }}>ხილული</option>
-									<option value="0" {{ old('visibility', '1') == '0' ? 'selected' : '' }}>დამალული</option>
-								</select>
-
-								@error('visibility')
-									<div class="invalid-feedback">{{ $message }}</div>
-								@enderror
+								<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
+									label="ხილვადობა" required class="custom-class" />
 							</div>
 
-						</div>
-
-						<!-- Action buttons -->
-						<div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
-							<x-go-back-button fallback="projects.index" />
-							<button type="submit" class="btn btn-primary px-4">
-								<i class="bi bi-check-lg me-2"></i> დამატება
-							</button>
-						</div>
-
+							<!-- Action buttons -->
+							<div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
+								<x-go-back-button fallback="projects.index" />
+								<button type="submit" class="btn btn-primary px-4">
+									<i class="bi bi-check-lg me-2"></i> დამატება
+								</button>
+							</div>
 					</form>
 				</div>
 			</div>
