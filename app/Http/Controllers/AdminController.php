@@ -20,7 +20,7 @@ class AdminController extends Controller
         $this->user = (object) [
             "email" => "psac@admin.panel",
             "password" =>
-                '$2y$10$PlR/Juu2rW/s8yfMMNs29OcEpn6zL2HxcCSCBrSTKiVS07FeotMZO', //$AdminPanel2024#
+                '$2y$10$PlR/Juu2rW/s8yfMMNs29OcEpn6zL2HxcCSCBrSTKiVS07FeotMZO', // $AdminPanel2024#
         ];
     }
     public function login()

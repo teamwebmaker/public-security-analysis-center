@@ -4,17 +4,23 @@
     </label>
 @endif
 
-<input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
-    class="{{ trim($class) }} @error($name) is-invalid @enderror" @if($value !== null) value="{{ $value }}" @endif
-    @if($placeholder) placeholder="{{ $placeholder }}" @endif @if($type == 'file') accept="{{ $accept }}" @endif
-    @if($required) required @endif {{ $attributes }}>
+<div class="input-group">
+    @if ($icon)
+        <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
+    @endif
 
-@error($name)
-    <div class="invalid-feedback">
-        {{ $message }}
-    </div>
-@enderror
+    <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
+        class="{{ trim($class) }} @error($name) is-invalid @enderror" @if($value !== null) value="{{ $value }}" @endif
+        @if($placeholder) placeholder="{{ $placeholder }}" @endif @if($type == 'file') accept="{{ $accept }}" @endif
+        @if($required) required @endif {{ $attributes }}>
+
+    @error($name)
+        <div class="invalid-feedback">
+            {{ $message }}
+        </div>
+    @enderror
+</div>
 
 @if ($type == 'file')
-    <div class="form-text">Supported formats: JPG, PNG, WEBP. Max size: 5MB</div>
+    <div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 5MB</div>
 @endif

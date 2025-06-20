@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('title', 'Project List')
+@section('title', 'პროექტების სია')
 @section('main')
     @session('success')
         <div class="alert alert-success" role="alert" x-data="{ show: true }" x-show="show"

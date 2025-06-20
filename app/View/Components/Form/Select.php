@@ -15,13 +15,14 @@ class Select extends Component
     public bool $required;
     public ?string $label;
 
+
     public function __construct(
         string $name,
         $options = [],
         $selected = null,
         ?string $id = null,
         string $class = '',
-        bool $required = false,
+        bool $required = true,
         ?string $label = null
     ) {
         $this->name = $name;

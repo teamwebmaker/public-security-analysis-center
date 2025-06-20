@@ -12,7 +12,7 @@
 
         <!-- Card Body -->
         <div class="card-body">
-            <div class="d-flex align-items-start gap-2">
+            <div class="d-flex zalign-items-start gap-2">
                 <h3 class="card-title h5 mb-3 text-truncate flex-grow-1" title="{{ $title }}">
                     {{ $title }}
                 </h3>

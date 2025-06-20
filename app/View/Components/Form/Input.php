@@ -15,6 +15,8 @@ class Input extends Component
     public bool $required;
     public string $placeholder;
     public ?string $label;
+
+    public ?string $icon;
     public string $accept;
 
     public function __construct(
@@ -26,6 +28,7 @@ class Input extends Component
         bool $required = true,
         string $placeholder = '',
         ?string $label = null,
+        ?string $icon = null,
         string $accept = 'image/jpeg,image/png,image/webp'
     ) {
         $this->name = $name;
@@ -36,6 +39,7 @@ class Input extends Component
         $this->required = $required;
         $this->placeholder = $placeholder;
         $this->label = $label;
+        $this->icon = $icon;
         $this->accept = $accept;
 
         // Handle old input
