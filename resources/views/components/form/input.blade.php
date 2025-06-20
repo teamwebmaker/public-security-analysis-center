@@ -5,7 +5,7 @@
 @endif
 
 <div class="input-group">
-    @if ($icon)
+    @if ($icon && $iconPosition == 'left')
         <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
     @endif
 
@@ -13,6 +13,10 @@
         class="{{ trim($class) }} @error($name) is-invalid @enderror" @if($value !== null) value="{{ $value }}" @endif
         @if($placeholder) placeholder="{{ $placeholder }}" @endif @if($type == 'file') accept="{{ $accept }}" @endif
         @if($required) required @endif {{ $attributes }}>
+
+    @if ($icon && $iconPosition == 'right')
+        <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
+    @endif
 
     @error($name)
         <div class="invalid-feedback">
@@ -22,5 +26,5 @@
 </div>
 
 @if ($type == 'file')
-    <div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 5MB</div>
+    <div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 2MB</div>
 @endif

@@ -22,7 +22,9 @@
                     @else
                         @foreach($projects as $project)
                             <div class="col-lg-4 col-md-6 mb-4">
-                                <x-project-component :project="$project" language="ka" />
+                                <x-card-component :title="$project->title->$language"
+                                    :description="$project->description->$language" :image="'images/projects/' . $project->image"
+                                    :link="route('projects.show', ['id' => $project->id])" />
                             </div>
                         @endforeach
                     @endif

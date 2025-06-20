@@ -90,6 +90,7 @@ class PageController extends Controller
                 ->orderBy("created_at", $sortOrder)
                 ->paginate(6),
             "partners" => Partner::all(),
+            "language" => App::getLocale(),
         ]);
     }
     public function contact(): view

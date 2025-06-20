@@ -1,3 +1,4 @@
+import '../bootstrap/bootstrapTooltips.js'; 
 import { loadFancyboxCDN } from "../heplers.js";
 
 document.addEventListener("DOMContentLoaded", function () {

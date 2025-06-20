@@ -1,3 +1,4 @@
+import './bootstrap/bootstrapTooltips.js';
 export const partnersSliderParams = {
     // slidesPerView: 2,
     slidesPerView: 'auto',
@@ -14,10 +15,3 @@ export const partnersSliderParams = {
 }
 // Initialize Swiper
 new Swiper(".partners", partnersSliderParams);
-
-
-// Bootstrap initialize tooltips
-const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-    new bootstrap.Tooltip(tooltipTriggerEl);
-});

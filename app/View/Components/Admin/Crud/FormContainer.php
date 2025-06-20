@@ -15,6 +15,7 @@ class FormContainer extends Component
 
     public bool $hasFileUpload;
     public string $cardClass;
+    public string $cardWrapperClass;
     public string $cardBodyClass;
     public string $titleClass;
     public string $formClass;
@@ -30,9 +31,10 @@ class FormContainer extends Component
         string $insertMethod = '',
         bool $hasFileUpload = false,
 
+        string $cardWrapperClass = 'col col-lg-9',
         string $cardClass = 'border-0 shadow-sm',
         string $cardBodyClass = 'p-4',
-        string $titleClass = 'h4 mb-4',
+        string $titleClass = 'card-header bg-white h4 ps-4 py-4',
         string $formClass = 'needs-validation',
         string $submitButtonText = 'დამატება',
         string $submitButtonIcon = 'bi bi-check-lg',
@@ -44,6 +46,7 @@ class FormContainer extends Component
         $this->insertMethod = $insertMethod;
         $this->hasFileUpload = $hasFileUpload;
 
+        $this->cardWrapperClass = $cardWrapperClass;
         $this->cardClass = $cardClass;
         $this->cardBodyClass = $cardBodyClass;
         $this->titleClass = $titleClass;
@@ -60,6 +63,7 @@ class FormContainer extends Component
             'method' => $this->method,
             'insertMethod' => $this->insertMethod,
             'hasFileUpload' => $this->hasFileUpload,
+            'cardWrapperClass' => $this->cardWrapperClass,
             'cardClass' => $this->cardClass,
             'cardBodyClass' => $this->cardBodyClass,
             'titleClass' => $this->titleClass,

@@ -1,20 +1,19 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Admin\Programs;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class ProjectComponent extends Component
+class ProgramCard extends Component
 {
     /**
      * Create a new component instance.
      */
-
-    public function __construct(public object $project, public string $language)
+    public function __construct()
     {
-
+        //
     }
 
     /**
@@ -22,6 +21,6 @@ class ProjectComponent extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.project-component');
+        return view('components.admin.programs.program-card');
     }
 }

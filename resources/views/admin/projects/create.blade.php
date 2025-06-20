@@ -39,12 +39,12 @@
 		<!-- Image and visibility -->
 		<div class="row mb-4">
 			<div class="col-md-6">
-				<x-form.input type="file" id="project-image" name="image" label="სურათი" required />
+				<x-form.input type="file" id="project-image" name="image" label="სურათი" />
 				<x-form.image-upload-preview id="project" />
 			</div>
 			<div class="col-md-6">
-				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1" label="ხილვადობა"
-					required />
+				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
+					label="ხილვადობა" />
 			</div>
 		</div>
 

@@ -103,18 +103,33 @@ class ProgramController extends CrudController
             "en" => array_map(fn($day) => self::WEEKDAY_TRANSLATIONS[$day] ?? $day, $submittedDays),
         ];
 
+        $title = [
+            "ka" => $data["title_ka"],
+            "en" => $data["title_en"],
+        ];
+
+        $description = [
+            "ka" => $data["description_ka"],
+            "en" => $data["description_en"],
+        ];
+
+        $hour = [
+            "start" => $data["hour_start"],
+            "end" => $data["hour_end"],
+        ];
+
         // Return merged data: uploaded images + other fields + translated days
         return [
             ...$images,
-            "title" => $data["title"],
-            "description" => $data["description"],
+            "title" => $title,
+            "description" => $description,
             "video" => $data["video"],
             "price" => $data["price"],
             "duration" => $data["duration"],
             "address" => $data["address"],
             "start_date" => $data["start_date"],
             "end_date" => $data["end_date"],
-            "hour" => $data["hour"],
+            "hour" => $hour,
             "days" => $daysData,
             "visibility" => $data["visibility"],
         ];

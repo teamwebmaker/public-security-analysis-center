@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-lg-9">
+    <div class="{{ $cardWrapperClass }}">
         <!-- Global Success Display -->
         @session('success')
             <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" x-data="{ show: true }"
@@ -10,8 +10,8 @@
         @endsession
         <div class="card {{ $cardClass }}">
             {{ $imageHeader ?? '' }}
+            <h1 class="{{ $titleClass }}">{{ $title }}</h1>
             <div class="card-body {{ $cardBodyClass }}">
-                <h1 class="{{ $titleClass }}">{{ $title }}</h1>
                 <form method="{{ strtoupper($method) === 'GET' ? 'GET' : 'POST' }}" action="{{ $action }}"
                     @if($hasFileUpload) enctype="multipart/form-data" @endif class="{{ $formClass }}"
                      novalidate 

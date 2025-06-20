@@ -17,6 +17,8 @@ class Input extends Component
     public ?string $label;
 
     public ?string $icon;
+    public ?string $iconPosition;
+
     public string $accept;
 
     public function __construct(
@@ -29,6 +31,7 @@ class Input extends Component
         string $placeholder = '',
         ?string $label = null,
         ?string $icon = null,
+        ?string $iconPosition = 'left',
         string $accept = 'image/jpeg,image/png,image/webp'
     ) {
         $this->name = $name;
@@ -40,6 +43,7 @@ class Input extends Component
         $this->placeholder = $placeholder;
         $this->label = $label;
         $this->icon = $icon;
+        $this->iconPosition = $iconPosition;
         $this->accept = $accept;
 
         // Handle old input
