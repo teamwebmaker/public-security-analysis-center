@@ -28,27 +28,4 @@ class StorePartnersRequest extends FormRequest
             'visibility' => 'required|in:1,0',
         ];
     }
-
-    /**
-     * Custom error messages for validation.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'title.required' => 'გთხოვთ შეავსეთ სათაური.',
-            'title.min' => 'სათაური უნდა იყოს მინიმუმ 3 სიმბოლო.',
-            'title.max' => 'სათაური არ უნდა აღემატებოდეს 200 სიმბოლოს.',
-            'link.required' => 'გთხოვთ შეავსეთ ბმული.',
-            'link.url' => 'გთხოვთ მიუთითოთ სწორი ბმული.',
-            'link.min' => 'ბმული უნდა იყოს მინიმუმ 10 სიმბოლო.',
-            'image.required' => 'გთხოვთ ატვირთეთ სურათი.',
-            'image.image' => 'ფაილი უნდა იყოს სურათი.',
-            'image.mimes' => 'სურათი უნდა იყოს JPG, JPEG, PNG ან WEBP ფორმატში.',
-            'image.max' => 'სურათი არ უნდა აღემატებოდეს 2MB-ს.',
-            'visibility.required' => 'გთხოვთ აირჩიოთ ხილვადობა.',
-            'visibility.in' => 'არასწორი ხილვადობის მნიშვნელობა.',
-        ];
-    }
 }

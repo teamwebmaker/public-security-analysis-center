@@ -30,39 +30,4 @@ class UpdateProjectRequest extends FormRequest
             'visibility' => 'required|in:1,0',
         ];
     }
-
-    /**
-     * Custom error messages for validation.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            // Title fields
-            'title_ka.required' => 'გთხოვთ შეავსეთ სათაური (ქართულად).',
-            'title_ka.min' => 'სათაური (ქართულად) უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს.',
-            'title_ka.max' => 'სათაური (ქართულად) არ უნდა აღემატებოდეს 200 სიმბოლოს.',
-
-            'title_en.required' => 'გთხოვთ შეავსეთ სათაური (ინგლისურად).',
-            'title_en.min' => 'სათაური (ინგლისურად) უნდა შეიცავდეს მინიმუმ 3 სიმბოლოს.',
-            'title_en.max' => 'სათაური (ინგლისურად) არ უნდა აღემატებოდეს 200 სიმბოლოს.',
-
-            // Description fields
-            'description_ka.required' => 'გთხოვთ შეავსეთ აღწერა (ქართულად).',
-            'description_ka.min' => 'აღწერა (ქართულად) უნდა შეიცავდეს მინიმუმ 10 სიმბოლოს.',
-
-            'description_en.required' => 'გთხოვთ შეავსეთ აღწერა (ინგლისურად).',
-            'description_en.min' => 'აღწერა (ინგლისურად) უნდა შეიცავდეს მინიმუმ 10 სიმბოლოს.',
-
-            // Image field (optional in update)
-            'image.image' => 'ატვირთული ფაილი უნდა იყოს სურათი.',
-            'image.mimes' => 'სურათი უნდა იყოს JPG, JPEG, PNG ან WEBP ფორმატში.',
-            'image.max' => 'სურათის ზომა არ უნდა აღემატებოდეს 2MB-ს.',
-
-            // Visibility field
-            'visibility.required' => 'გთხოვთ მიუთითოთ ხილვადობის სტატუსი.',
-            'visibility.in' => 'არასწორი ხილვადობის მნიშვნელობა.',
-        ];
-    }
 }
