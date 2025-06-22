@@ -25,6 +25,6 @@
     @enderror
 </div>
 
-@if ($type == 'file')
+@if ($type == 'file' && $isImage)
     <div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 2MB</div>
 @endif

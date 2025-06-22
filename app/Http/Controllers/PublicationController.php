@@ -2,73 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePublicationRequest;
+use App\Http\Requests\UpdatePublicationRequest;
 use App\Models\Partner;
 use App\Models\Publication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
-class PublicationController extends Controller
+class PublicationController extends CrudController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.publications.create', );
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
+    protected string $modelClass = Publication::class;
+    protected string $contextField = "publication";
+    protected string $resourceName = "publications";
+    protected array $fileFields = ["image" => "images/publications/", "file" => "documents/publications/"];
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
         $item = Publication::findOrFail($id);
-        return view('pages.show', [
-            'language' => App::getLocale(),
-            'item' => $item,
-            'category' => 'publications',
-            'partners' => Partner::all()
+        return view("pages.show", [
+            "language" => App::getLocale(),
+            "item" => $item,
+            "category" => "publications",
+            "partners" => Partner::all(),
         ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Store a newly created resource in storage.
      */
-    public function edit(string $id)
+    public function store(StorePublicationRequest $request)
     {
-        //
+        $data = $request->validated();
+        $publicationData = $this->preparePublicationData($request, $data);
+        Publication::create($publicationData);
+
+        return redirect()
+            ->route("publications.index")
+            ->with("success", "პუბლიკაცია შეიქმნა წარმატებით");
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePublicationRequest $request, Publication $publication)
     {
-        //
+        $data = $request->validated();
+        $publicationData = $this->preparePublicationData($request, $data, $publication);
+        $publication->update($publicationData);
+
+        return redirect()
+            ->back()
+            ->with("success", "პუბლიკაცია განახლდა წარმატებით");
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Extracted shared logic for preparing request data
      */
-    public function destroy(string $id)
-    {
-        //
+    private function preparePublicationData(
+        Request $request,
+        array $data,
+        ?Publication $publication = null
+    ): array {
+        // Handle image upload
+        $files = collect($this->fileFields)
+            ->mapWithKeys(function ($path, $field) use ($request, $publication) {
+                $existing = $publication?->$field;
+                $file = $this->handleFileUpload(
+                    $request,
+                    $field,
+                    $path,
+                    $existing
+                );
+                return $file ? [$field => $file] : [];
+            })
+            ->toArray();
+
+        // Handle translations
+        $title = [
+            "ka" => $data["title_ka"],
+            "en" => $data["title_en"],
+        ];
+
+        $description = [
+            "ka" => $data["description_ka"],
+            "en" => $data["description_en"],
+        ];
+
+        return [
+            ...$data,
+            ...$files,
+            "title" => $title,
+            "description" => $description,
+        ];
     }
 }

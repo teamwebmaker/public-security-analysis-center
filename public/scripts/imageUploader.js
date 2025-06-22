@@ -14,11 +14,12 @@ class ImageUploader {
 
    init() {
       // Only bind Fancybox if [data-fancybox] exists
-      if (document.querySelector('[data-fancybox]')) {
-         loadFancyboxCDN(() => {
-            Fancybox.bind('[data-fancybox]');
-         });
-      }
+      // This is needed but fancybox is already initialized in admin index.js
+      // if (document.querySelector('[data-fancybox]')) {
+      //    loadFancyboxCDN(() => {
+      //       Fancybox.bind('[data-fancybox]');
+      //    });
+      // }
 
       // Create remove button
       this.removeBtn = document.createElement('button');

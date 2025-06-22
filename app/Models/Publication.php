@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Publication extends Model
 {
-    protected $fillable = ['title', 'description', 'image'];
+    protected $fillable = ['title', 'description', 'image', 'file', 'visibility'];
     use HasFactory;
     protected  $casts = [
         'title' => JsonConvertCast::class,

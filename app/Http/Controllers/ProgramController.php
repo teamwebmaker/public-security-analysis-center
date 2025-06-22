@@ -14,11 +14,11 @@ class ProgramController extends CrudController
     // Core metadata for CRUD operations
     protected string $modelClass = Program::class;
     protected string $contextField = "program";
-    protected string $viewFolder = "programs";
+    protected string $resourceName = "programs";
     protected string $uploadPath = "images/programs/";
 
     // Image fields and their upload directories
-    protected array $imageFields = [
+    protected array $fileFields = [
         "image" => "images/programs/",
         "certificate_image" => "images/certificates/programs/",
     ];
@@ -86,11 +86,11 @@ class ProgramController extends CrudController
     private function prepareProgramData(Request $request, array $data, ?Program $program = null): array
     {
         // Process and upload each image field; delete old if new one is uploaded
-        $images = collect($this->imageFields)
+        $files = collect($this->fileFields)
             ->mapWithKeys(function ($path, $field) use ($request, $program) {
                 $existing = $program?->$field;
-                $image = $this->handleImageUpload($request, $field, $path, $existing);
-                return $image ? [$field => $image] : [];
+                $file = $this->handleFileUpload($request, $field, $path, $existing);
+                return $file ? [$field => $file] : [];
             })
             ->toArray();
 
@@ -120,7 +120,7 @@ class ProgramController extends CrudController
 
         // Return merged data: uploaded images + other fields + translated days
         return [
-            ...$images,
+            ...$files,
             "title" => $title,
             "description" => $description,
             "video" => $data["video"],

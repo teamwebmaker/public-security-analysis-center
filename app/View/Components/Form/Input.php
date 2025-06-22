@@ -13,6 +13,8 @@ class Input extends Component
     public string $class;
     public $value;
     public bool $required;
+    public bool $isImage;
+
     public string $placeholder;
     public ?string $label;
 
@@ -28,6 +30,7 @@ class Input extends Component
         string $class = '',
         $value = null,
         bool $required = true,
+        bool $isImage = true,
         string $placeholder = '',
         ?string $label = null,
         ?string $icon = null,
@@ -40,6 +43,7 @@ class Input extends Component
         $this->class = 'form-control ' . $class;
         $this->value = $value;
         $this->required = $required;
+        $this->isImage = $isImage;
         $this->placeholder = $placeholder;
         $this->label = $label;
         $this->icon = $icon;

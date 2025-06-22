@@ -9,7 +9,26 @@ export function imageValidation() {
          if (file) {
             const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
             if (!validTypes.includes(file.type)) {
-               alert('Invalid file type. Please upload a JPG, PNG, or WEBP image.');
+               alert('ფაილის ტიპი არასწორია. გთხოვთ, ატვირთოთ JPG, PNG ან WEBP სურათი.');
+               e.target.value = ''; // Clear invalid file
+            }
+         }
+      });
+   });
+}
+
+// PDF upload validation
+export function pdfValidation() {
+   // Select all file inputs accepting PDF files
+   const pdfInputs = document.querySelectorAll('input[type="file"][accept="application/pdf"]');
+
+   pdfInputs.forEach(input => {
+      input.addEventListener('change', function (e) {
+         const file = e.target.files[0];
+         if (file) {
+            const validType = 'application/pdf';
+            if (file.type !== validType) {
+               alert('ფაილის ტიპი არასწორია. გთხოვთ, ატვირთოთ PDF დოკუმენტი.');
                e.target.value = ''; // Clear invalid file
             }
          }

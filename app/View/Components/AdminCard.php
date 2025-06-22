@@ -4,41 +4,34 @@ namespace App\View\Components;
 
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
+
 
 class AdminCard extends Component
 {
-    public string $title;
     public string $image;
-    public string $editUrl;
-    public string $deleteUrl;
-    public string $visibility;
-    public ?string $description;
+    public string $resourceName;
+    public Model $document;
+    public ?string $containerClass;
 
     /**
      * Create a new component instance.
      */
     public function __construct(
-        string $title,
         string $image,
-        string $editUrl,
-        string $deleteUrl,
-        string $visibility,
-        ?string $description = null
+        string $resourceName,
+        Model $document,
+        ?string $containerClass = 'col-xl-4 col-lg-6 mb-4'
     ) {
-         $this->title = $title;
-         $this->image = $image;
-         $this->editUrl = $editUrl;
-         $this->deleteUrl = $deleteUrl;
-        $this->visibility = $visibility;
-         $this->description = $description;
+        $this->image = $image;
+        $this->resourceName = $resourceName;
+        $this->document = $document;
+        $this->containerClass = $containerClass;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
     public function render(): View|Closure|string
     {
-        return view("components.admin-card");
+        return view('components.admin-card');
     }
 }

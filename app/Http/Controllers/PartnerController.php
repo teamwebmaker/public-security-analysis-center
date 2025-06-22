@@ -5,47 +5,65 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePartnersRequest;
 use App\Http\Requests\UpdatePartnersRequest;
 use App\Models\Partner;
-use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 class PartnerController extends CrudController
 {
     protected string $modelClass = Partner::class;
     protected string $contextField = "partner";
-    protected string $viewFolder = "partners";
+    protected string $resourceName = "partners";
 
-    protected array $imageFields = [
+    protected array $fileFields = [
         "image" => "images/partners/",
     ];
+
+    /**
+     * Store a newly created partner.
+     */
     public function store(StorePartnersRequest $request)
     {
         $data = $request->validated();
+        $partnerData = $this->preparePartnerData($request, $data);
 
-        foreach ($this->imageFields as $field => $path) {
-            $imageName =  $this->handleImageUpload($request, $field, $path);
-            if ($imageName) $data[$field] = $imageName;
-        }
-
-        Partner::create($data);
+        Partner::create($partnerData);
 
         return redirect()
             ->route("partners.index")
             ->with("success", "პარტნიორი დაემატა წარმატებით");
     }
 
+    /**
+     * Update an existing partner.
+     */
     public function update(UpdatePartnersRequest $request, Partner $partner)
     {
         $data = $request->validated();
+        $partnerData = $this->preparePartnerData($request, $data, $partner);
 
-        foreach ($this->imageFields as $field => $path) {
-            $imageName = $this->handleImageUpload($request, $field, $path, $partner->image);
-            if ($imageName) $data[$field] = $imageName;
-        }
-        $partner->update($data);
+        $partner->update($partnerData);
 
         return redirect()
             ->back()
             ->with("success", "პარტნიორი განახლდა წარმატებით");
+    }
+
+    /**
+     * Extract shared logic for preparing partner data
+     */
+    private function preparePartnerData(Request $request, array $data, ?Partner $partner = null): array
+    {
+        // Handle file uploads
+        $files = collect($this->fileFields)
+            ->mapWithKeys(function ($path, $field) use ($request, $partner) {
+                $existing = $partner?->$field;
+                $file = $this->handleFileUpload($request, $field, $path, $existing);
+                return $file ? [$field => $file] : [];
+            })
+            ->toArray();
+
+        return [
+            ...$data,
+            ...$files,
+        ];
     }
 }

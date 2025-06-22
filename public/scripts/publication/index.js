@@ -1,5 +1,5 @@
 import ImageUploader from "../imageUploader.js";
 
 document.addEventListener("DOMContentLoaded", function () {
-   new ImageUploader('project-image', 'project-image-preview');
+   new ImageUploader('publication-image', 'publication-image-preview');
 });

@@ -15,8 +15,8 @@ class ProjectController extends CrudController
 {
     protected string $modelClass = Project::class;
     protected string $contextField = "project";
-    protected string $viewFolder = "projects";
-    protected array $imageFields = ["image" => "images/projects/"];
+    protected string $resourceName = "projects";
+    protected array $fileFields = ["image" => "images/projects/"];
 
     /**
      * Display the specified resource.
@@ -67,11 +67,11 @@ class ProjectController extends CrudController
     private function prepareProjectData(Request $request, array $data, ?Project $project = null): array
     {
         // Handle image upload
-        $images = collect($this->imageFields)
+        $files = collect($this->fileFields)
             ->mapWithKeys(function ($path, $field) use ($request, $project) {
                 $existing = $project?->$field;
-                $image = $this->handleImageUpload($request, $field, $path, $existing);
-                return $image ? [$field => $image] : [];
+                $file = $this->handleFileUpload($request, $field, $path, $existing);
+                return $file ? [$field => $file] : [];
             })
             ->toArray();
 
@@ -88,7 +88,7 @@ class ProjectController extends CrudController
 
         return [
             ...$data,
-            ...$images,
+            ...$files,
             "title" => $title,
             "description" => $description,
         ];

@@ -2,9 +2,8 @@
 @section('title', 'რედაქტირება: ' . $partner->title)
 
 @section('main')
-	<x-admin.crud.form-container method="POST" insertMethod="PUT"
-		action="{{ route('partners.update', ['partner' => $partner]) }}" title="პარტნიორის რედაქტირება" :hasFileUpload="true"
-		backRoute="partners.index">
+	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route('partners.update', $partner) }}"
+		title="პარტნიორის რედაქტირება" :hasFileUpload="true" backRoute="partners.index">
 
 		<x-slot name="imageHeader">
 			@if($partner->image)
