@@ -58,7 +58,7 @@
 			<nav class="navbar navbar-expand-xl py-1">
 				<div class="container-fluid">
 					<a class="navbar-brand" href="{{ route('home.page') }}">
-						<img src="{{ asset('images/themes/psac-log.png') }}" class="page-logo" alt="psac-main-logo" />
+						<img src="{{ asset('images/themes/logo-psac.png') }}" class="page-logo" alt="psac-main-logo" />
 					</a>
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
 						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

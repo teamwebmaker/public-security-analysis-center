@@ -4,7 +4,7 @@
 			<!-- Logo and Attribution -->
 			<div class="col-lg-4 align-self-center text-center text-lg-start">
 				<a href="{{ route('home.page') }}">
-					<img src="{{ asset('images/themes/psac-logo-450x150.png') }}" alt="psac-main-logo"
+					<img src="{{ asset('images/themes/logo-psac.png') }}" alt="psac-main-logo"
 						class="img-fluid mb-2 mx-auto mx-lg-0 d-block" />
 				</a>
 
