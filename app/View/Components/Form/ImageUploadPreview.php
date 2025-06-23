@@ -26,7 +26,7 @@ class ImageUploadPreview extends Component
         $this->id = $id;
         $this->alt = $alt;
         $this->class = 'img-thumbnail d-none ' . $class;
-        $this->containerClass = 'mt-2 text-center ' . $containerClass;
+        $this->containerClass = 'my-2 text-center ' . $containerClass;
         $this->style = $style;
     }
 

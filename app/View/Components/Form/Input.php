@@ -16,12 +16,16 @@ class Input extends Component
     public bool $isImage;
 
     public string $placeholder;
+    public string $accept;
+
     public ?string $label;
 
     public ?string $icon;
     public ?string $iconPosition;
 
-    public string $accept;
+
+    public ?int $minlength = null;
+    public ?int $maxlength = null;
 
     public function __construct(
         string $name = '',
@@ -41,7 +45,7 @@ class Input extends Component
         $this->type = $type;
         $this->id = $id ?? $name;
         $this->class = 'form-control ' . $class;
-        $this->value = $value;
+        $this->value = $value ?? old($name);
         $this->required = $required;
         $this->isImage = $isImage;
         $this->placeholder = $placeholder;
@@ -50,9 +54,10 @@ class Input extends Component
         $this->iconPosition = $iconPosition;
         $this->accept = $accept;
 
-        // Handle old input
-        if ($name && !$value) {
-            $this->value = old($name);
+        // Set minlength for text input
+        if ($type === 'text') {
+            $this->minlength = 3;   // default for text
+            $this->maxlength = 200; // default for text ( 0 and null means no limit )
         }
     }
 

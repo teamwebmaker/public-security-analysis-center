@@ -16,6 +16,7 @@ class Textarea extends Component
     public ?string $label;
     public int $rows;
     public ?int $minlength;
+    public ?int $maxlength;
 
     public function __construct(
         string $name = '',
@@ -26,7 +27,8 @@ class Textarea extends Component
         string $placeholder = '',
         ?string $label = null,
         int $rows = 5,
-        ?int $minlength = 10
+        ?int $minlength = 10,
+        ?int $maxlength = null // 0 also means no limit
     ) {
         $this->name = $name;
         $this->id = $id ?? $name;
@@ -37,6 +39,7 @@ class Textarea extends Component
         $this->label = $label;
         $this->rows = $rows;
         $this->minlength = $minlength;
+        $this->maxlength = $maxlength;
     }
 
     public function render(): View

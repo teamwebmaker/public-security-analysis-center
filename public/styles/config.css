@@ -12,12 +12,27 @@
     --gold-alfa: 1;
     --gold: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
-/* bootstrap icons */
+/* bootstrap  */
 
+/* icons */
 i {
     vertical-align: middle;
     line-height: 1;
 }
+
+/* Custom focus style for all .form-control elements */
+.form-control:focus {
+    border-color: none !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0.2px rgba(67, 97, 238, 0.25) !important;
+}
+select:focus {
+    border-color: none !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0.2px rgba(67, 97, 238, 0.25) !important;
+}
+
+/* ///////////////// */
 
 .response-img {
     width: 100%;

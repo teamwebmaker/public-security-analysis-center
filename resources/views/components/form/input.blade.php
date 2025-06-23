@@ -10,9 +10,10 @@
     @endif
 
     <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
-        class="{{ trim($class) }} @error($name) is-invalid @enderror" @if($value !== null) value="{{ $value }}" @endif
-        @if($placeholder) placeholder="{{ $placeholder }}" @endif @if($type == 'file') accept="{{ $accept }}" @endif
-        @if($required) required @endif {{ $attributes }}>
+        class="{{ trim($class) }} @error($name) is-invalid @enderror" @if ($minlength !== null)
+        minlength="{{ $minlength }}" @endif @if ($maxlength) maxlength="{{ $maxlength }}" @endif @if($value) @endif
+        @if($value !== null) value="{{ $value }}" @endif @if($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if($type == 'file') accept="{{ $accept }}" @endif @if($required) required @endif {{ $attributes }}>
 
     @if ($icon && $iconPosition == 'right')
         <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
