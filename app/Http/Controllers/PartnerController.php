@@ -11,6 +11,7 @@ class PartnerController extends CrudController
 {
     protected string $modelClass = Partner::class;
     protected string $contextField = "partner";
+    protected string $contextFieldPlural = "partners";
     protected string $resourceName = "partners";
 
     protected array $fileFields = [
@@ -28,7 +29,7 @@ class PartnerController extends CrudController
         Partner::create($partnerData);
 
         return redirect()
-            ->route("partners.index")
+            ->route("{$this->resourceName}.index")
             ->with("success", "პარტნიორი დაემატა წარმატებით");
     }
 

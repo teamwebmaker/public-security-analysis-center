@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 
 /*
@@ -62,6 +63,9 @@ Route::prefix('admin')->group(function () {
         Route::resource('partners', PartnerController::class)->except('show');
         Route::resource('programs', ProgramController::class)->except('show');
         Route::resource('publications', PublicationController::class)->except('show');
+        // Services 
+        Route::resource('service-categories', ServiceCategoryController::class)->except('show');
+
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::resource('contacts', ContactsController::class)->only([
             'index',

@@ -14,6 +14,8 @@ class ProgramController extends CrudController
     // Core metadata for CRUD operations
     protected string $modelClass = Program::class;
     protected string $contextField = "program";
+
+    protected string $contextFieldPlural = "programs";
     protected string $resourceName = "programs";
     protected string $uploadPath = "images/programs/";
 
@@ -42,7 +44,7 @@ class ProgramController extends CrudController
         Program::create($programData);
 
         return redirect()
-            ->route("programs.index")
+            ->route("{$this->resourceName}.index")
             ->with("success", "პროგრამა შეიქმნა წარმატებით");
     }
 

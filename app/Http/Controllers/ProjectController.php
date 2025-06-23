@@ -15,6 +15,7 @@ class ProjectController extends CrudController
 {
     protected string $modelClass = Project::class;
     protected string $contextField = "project";
+    protected string $contextFieldPlural = "projects";
     protected string $resourceName = "projects";
     protected array $fileFields = ["image" => "images/projects/"];
 
@@ -43,7 +44,7 @@ class ProjectController extends CrudController
         Project::create($projectData);
 
         return redirect()
-            ->route("projects.index")
+            ->route("{$this->resourceName}.index")
             ->with("success", "პროექტი შეიქმნა წარმატებით");
     }
 

@@ -11,6 +11,7 @@ abstract class CrudController extends Controller
 {
     protected string $modelClass;
     protected string $contextField;
+    protected string $contextFieldPlural;
 
     protected string $resourceName;
 
@@ -21,7 +22,8 @@ abstract class CrudController extends Controller
     {
         $model = app($this->modelClass);
         return view("admin.{$this->resourceName}.index", [
-            $this->resourceName => $model->orderBy("id", "DESC")->paginate(6),
+            $this->contextFieldPlural => $model->orderBy("id", "DESC")->paginate(6),
+            'contextFieldPlural' => $this->contextFieldPlural,
             'resourceName' => $this->resourceName
         ]);
     }

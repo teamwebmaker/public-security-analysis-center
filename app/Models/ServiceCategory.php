@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ServiceCategory extends Model
 {
+    protected $fillable = ['name', 'visibility'];
     use HasFactory;
-    protected $casts =[
+    protected $casts = [
         'name' => JsonConvertCast::class
     ];
 

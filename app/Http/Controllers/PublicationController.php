@@ -14,6 +14,7 @@ class PublicationController extends CrudController
 {
     protected string $modelClass = Publication::class;
     protected string $contextField = "publication";
+    protected string $contextFieldPlural = "publications";
     protected string $resourceName = "publications";
     protected array $fileFields = ["image" => "images/publications/", "file" => "documents/publications/"];
     /**
@@ -25,7 +26,7 @@ class PublicationController extends CrudController
         return view("pages.show", [
             "language" => App::getLocale(),
             "item" => $item,
-            "category" => "publications",
+            "category" => $this->resourceName,
             "partners" => Partner::all(),
         ]);
     }
@@ -40,7 +41,7 @@ class PublicationController extends CrudController
         Publication::create($publicationData);
 
         return redirect()
-            ->route("publications.index")
+            ->route("{$this->resourceName}.index")
             ->with("success", "პუბლიკაცია შეიქმნა წარმატებით");
     }
 

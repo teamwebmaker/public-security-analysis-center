@@ -10,23 +10,23 @@ use Illuminate\View\Component;
 
 class AdminCard extends Component
 {
-    public string $image;
-    public string $resourceName;
     public Model $document;
+    public string $resourceName;
+    public ?string $image;
     public ?string $containerClass;
 
     /**
      * Create a new component instance.
      */
     public function __construct(
-        string $image,
-        string $resourceName,
         Model $document,
+        string $resourceName,
+        ?string $image,
         ?string $containerClass = 'col-xl-4 col-lg-6 mb-4'
     ) {
         $this->image = $image;
-        $this->resourceName = $resourceName;
         $this->document = $document;
+        $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;
     }
 

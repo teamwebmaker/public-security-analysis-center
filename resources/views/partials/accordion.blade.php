@@ -22,10 +22,15 @@
         ['name' => 'publications.index', 'label' => 'პუბლიკაციების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'publications.create', 'label' => 'პუბლიკაციის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
+    <x-accordion-item id="service-categories" icon="bi-tools" label="სერვისები"
+        :active-routes="['service-categories.index', 'service-categories.create','service-categories.edit']" :routes="[
+        ['name' => 'service-categories.index', 'label' => 'სერვის კატეგორიები', 'icon' => 'bi-list-ul'],
+        ['name' => 'service-categories.create', 'label' => 'სერვის კატეგორიის შექმნა', 'icon' => 'bi-plus-circle'],
+    ]" />
 
-    <x-accordion-item id="contacts" icon="bi-envelope" label="შეტყობინებები"
+    {{-- <x-accordion-item id="contacts" icon="bi-envelope" label="შეტყობინებები"
         :active-routes="['contacts.index', 'contacts.show','contacts.edit']" :routes="[
         ['name' => 'contacts.index', 'label' => 'ნახვა', 'icon' => 'bi-list-ul'],
-    ]" />
+    ]" /> --}}
 
 </div>

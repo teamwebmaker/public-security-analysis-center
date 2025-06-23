@@ -1,12 +1,23 @@
 <?php
-$title = is_object($document->title) ? $document->title->ka : $document->title;
+// $title = is_object($document->title) ? $document->title->ka : $document->title;
+if (is_object($document->title) && ($document->title->ka ?? false)) {
+    $title = $document->title->ka;
+} elseif (!empty($document->title)) {
+    $title = $document->title;
+} elseif (is_object($document->name) && ($document->name->ka ?? false)) {
+    $title = $document->name->ka;
+} else {
+    $title = $document->name;
+}
 $visibility = $document->visibility == 0
 ?>
 <div class="{{ $containerClass }}">
     <div class="card h-100 border-0 shadow-sm overflow-hidden position-relative">
         <!-- Card Image -->
         <div class="card-header p-0 border-0  position-relative">
-            <x-admin.image-header :src="$image" :folder='$resourceName' :caption="'სურათი ' . $title" />
+            @if (isset($image))
+                <x-admin.image-header :src="$image" :folder='$resourceName' :caption="'სურათი ' . $title" />
+            @endif
             <!-- Visibility Overlay -->
             @if($visibility)
                 <div class="position-absolute  top-0 start-0 w-100 h-100 bg-dark bg-opacity-75"></div>
