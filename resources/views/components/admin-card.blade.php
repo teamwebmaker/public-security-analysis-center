@@ -1,14 +1,4 @@
 <?php
-// $title = is_object($document->title) ? $document->title->ka : $document->title;
-if (is_object($document->title) && ($document->title->ka ?? false)) {
-    $title = $document->title->ka;
-} elseif (!empty($document->title)) {
-    $title = $document->title;
-} elseif (is_object($document->name) && ($document->name->ka ?? false)) {
-    $title = $document->name->ka;
-} else {
-    $title = $document->name;
-}
 $visibility = $document->visibility == 0
 ?>
 <div class="{{ $containerClass }}">

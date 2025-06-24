@@ -5,7 +5,8 @@
 @section('main')
     <x-admin.index-view :items="$publications">
         @foreach($publications as $publication)
-            <x-admin-card :document="$publication" :image="$publication->image" :resourceName="$resourceName">
+            <x-admin-card :document="$publication" :title="$publication->title->ka" :image="$publication->image"
+                :resourceName="$resourceName">
                 <x-slot name="cardDetails">
                     @if ($publication->file)
                         <a href="{{ asset('documents/' . $resourceName . '/' . $publication->file) }}" data-fancybox data-type="pdf"

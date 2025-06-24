@@ -4,8 +4,8 @@
 
 <x-admin.index-view :items="$programs" containerClass="row mt-4">
 	@foreach($programs as $program)
-		<x-admin-card :document="$program" :image="$program->image" :resourceName='$resourceName'
-			containerClass="col-12 col-sm-8 col-md-6 mx-auto">
+		<x-admin-card :document="$program" :title="$program->title->ka" :image="$program->image"
+			:resourceName='$resourceName' containerClass="col-12 col-sm-8 col-md-6 mx-auto">
 			<x-slot name="cardDetails">
 				<x-admin.programs.details-list :program="$program" />
 			</x-slot>

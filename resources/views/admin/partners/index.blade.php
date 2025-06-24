@@ -4,7 +4,8 @@
 
 <x-admin.index-view :items="$partners">
     @foreach($partners as $partner)
-        <x-admin-card :document="$partner" :image="$partner->image" :resourceName='$resourceName' />
+        <x-admin-card :document="$partner" :title="$partner->title" :image="$partner->image"
+            :resourceName='$resourceName' />
     @endforeach
 </x-admin.index-view>
 

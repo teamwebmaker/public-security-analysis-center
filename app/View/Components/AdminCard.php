@@ -11,6 +11,8 @@ use Illuminate\View\Component;
 class AdminCard extends Component
 {
     public Model $document;
+
+    public string $title;
     public string $resourceName;
     public ?string $image;
     public ?string $containerClass;
@@ -20,11 +22,13 @@ class AdminCard extends Component
      */
     public function __construct(
         Model $document,
+        string $title,
         string $resourceName,
         ?string $image,
         ?string $containerClass = 'col-xl-4 col-lg-6 mb-4'
     ) {
         $this->image = $image;
+        $this->title = $title;
         $this->document = $document;
         $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;

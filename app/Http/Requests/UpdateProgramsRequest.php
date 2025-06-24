@@ -22,8 +22,8 @@ class UpdateProgramsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title_ka" => "required|string|max:200",
-            "title_en" => "required|string|max:200",
+            "title_ka" => "required|string|min:3|max:200",
+            "title_en" => "required|string|min:3|max:200",
             "description_ka" => "required|string|min:10",
             "description_en" => "required|string|min:10",
             "image" => "sometimes|image|mimes:jpeg,png,jpg,webp|max:2048",
