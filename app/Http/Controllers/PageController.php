@@ -24,48 +24,48 @@ class PageController extends Controller
 
     public function home(Request $request)
     {
-        $sortOrder =
-            $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
+        $sortOrder = $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
 
-        $articles = DB::table("publications")->select([
+        $articles = Publication::select([
             "id",
             "title",
             "description",
             "image",
             "created_at",
-            DB::raw('"publications" as collection'),
+            DB::raw("'publications' as collection"),
         ]);
 
-        $projects = DB::table("projects")->select([
+        $projects = Project::select([
             "id",
             "title",
             "description",
             "image",
             "created_at",
-            DB::raw('"projects" as collection'),
+            DB::raw("'projects' as collection"),
         ]);
 
-        $programs = DB::table("programs")->select([
+        $programs = Program::select([
             "id",
             "title",
             "description",
             "image",
             "created_at",
-            DB::raw('"programs" as collection'),
+            DB::raw("'programs' as collection"),
         ]);
 
-        // Combine all three using unionAll
         $combinedQuery = $articles->unionAll($projects)->unionAll($programs);
 
         $results = DB::table(DB::raw("({$combinedQuery->toSql()}) as combined"))
-            ->mergeBindings($combinedQuery)
+            ->mergeBindings($combinedQuery->toBase())
             ->orderBy("created_at", $sortOrder)
             ->paginate(6);
+
+        $partners = Partner::all(); // Global scope still applies here
 
         return view("pages.home", [
             "language" => $this->language,
             "articles" => $results,
-            "partners" => Partner::all(),
+            "partners" => $partners,
         ]);
     }
 

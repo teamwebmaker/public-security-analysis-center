@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Casts\JsonConvertCast;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\HasVisibilityScope;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
-
-    protected $fillable = ['title', 'description', 'image', 'visibility'];
     use HasFactory;
-    protected  $casts = [
+    use HasVisibilityScope;
+    protected $fillable = ['title', 'description', 'image', 'visibility'];
+    protected $casts = [
         'title' => JsonConvertCast::class,
         'description' => JsonConvertCast::class
     ];
