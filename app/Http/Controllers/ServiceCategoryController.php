@@ -11,7 +11,6 @@ class ServiceCategoryController extends CrudController
     protected string $modelClass = ServiceCategory::class;
     protected string $contextField = "serviceCategory";
     protected string $contextFieldPlural = "serviceCategories";
-
     protected string $resourceName = "service-categories";
 
 
@@ -29,16 +28,19 @@ class ServiceCategoryController extends CrudController
             ->with("success", "კატეგორია დაემატა წარმატებით");
     }
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreServiceCategoriesRequest $request, ServiceCategory $serviceCategory)
     {
-        //
+        $data = $request->validated();
+        $serviceCategoryData = $this->prepareServiceCategoryData($data);
+        $serviceCategory->update($serviceCategoryData);
+
+        return redirect()
+            ->back()
+            ->with("success", "კატეგორია განახლდა წარმატებით");
     }
-
-
 
     public function prepareServiceCategoryData(array $data, )
     {
