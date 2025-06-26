@@ -2,37 +2,25 @@
 
 namespace App\Http\Controllers;
 
+// Pass additional data to index view
+use App\Http\Requests\StoreServiceRequest;
+use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Partner;
 use App\Models\Service;
+use App\Models\ServiceCategory;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
-class ServiceController extends Controller
+class ServiceController extends CrudController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    protected string $modelClass = Service::class;
+    protected string $contextField = "service";
+    protected string $contextFieldPlural = "services";
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
+    protected array $belongsTo = ["category"];
+    protected string $resourceName = "services";
+    protected array $fileFields = ["image" => "images/services/"];
     /**
      * Display the specified resource.
      */
@@ -47,27 +35,92 @@ class ServiceController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    // Pass additional data to index view
+    protected function additionalIndexData(): array
     {
-        //
+        return [
+            'serviceCategories' => ServiceCategory::all(),
+        ];
     }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreServiceRequest $request)
+    {
+        $data = $request->validated();
+        $serviceData = $this->prepareServiceData($request, $data);
+        Service::create($serviceData);
+
+        return redirect()
+            ->route("{$this->resourceName}.index")
+            ->with("success", "სერვისი შეიქმნა წარმატებით");
+    }
+
+    // Pass additional data to create view
+    protected function additionalCreateData(): array
+    {
+        return [
+            // build a simple key-value array from a data set
+            'serviceCategories' => ServiceCategory::all()->pluck('name.ka', 'id')->toArray(),
+            'services' => Service::select('id', 'service_category_id', 'sortable')->get()
+        ];
+    }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateServiceRequest $request, Service $service)
     {
-        //
+        $data = $request->validated();
+        $projectData = $this->prepareServiceData($request, $data, $service);
+        $service->update($projectData);
+
+        return redirect()
+            ->back()
+            ->with("success", "სერვისი განახლდა წარმატებით");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Add additional data to update view we need it inside select
+    protected function additionalEditData(): array
     {
-        //
+        return [
+            // build a simple key-value array from a data set
+            'serviceCategories' => ServiceCategory::all()->pluck('name.ka', 'id')->toArray(),
+            'services' => Service::select('id', 'service_category_id', 'sortable')->get()
+        ];
+    }
+
+
+    private function prepareServiceData(Request $request, array $data, ?Service $service = null): array
+    {
+        // Handle image upload
+        $files = collect($this->fileFields)
+            ->mapWithKeys(function ($path, $field) use ($request, $service) {
+                $existing = $service?->$field;
+                $file = $this->handleFileUpload($request, $field, $path, $existing);
+                return $file ? [$field => $file] : [];
+            })
+            ->toArray();
+
+        // Handle translations
+        $title = [
+            "ka" => $data["title_ka"],
+            "en" => $data["title_en"],
+        ];
+
+        $description = [
+            "ka" => $data["description_ka"],
+            "en" => $data["description_en"],
+        ];
+
+        return [
+            ...$data,
+            ...$files,
+            "title" => $title,
+            "description" => $description,
+        ];
     }
 }

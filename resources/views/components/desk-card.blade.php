@@ -1,4 +1,4 @@
-<div class="card border-0 shadow-sm rounded-4 h-100">
+<div class="card border-0 shadow-sm rounded-4  h-100">
     <div class="card-header bg-white border-0 rounded-top-4 py-3 px-4 d-flex align-items-start">
         <div class="d-flex align-items-center">
             <div class="bg-light p-2 rounded-circle me-3 d-flex align-items-center justify-content-center">

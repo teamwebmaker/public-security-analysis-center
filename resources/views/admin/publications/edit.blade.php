@@ -59,8 +59,8 @@
 		<!-- Visibility & Submit -->
 		<div class="row">
 			<div class="col-md-4 mb-2">
-				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
-					label="ხილვადობა" />
+				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
+					selected="{{ old('visibility', $publication->visibility) }}" label="ხილვადობა" />
 			</div>
 		</div>
 	</x-admin.crud.form-container>

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Admin\Services;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class dashboardCard extends Component
+class DetailsList extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class dashboardCard extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dashboard-card');
+        return view('components.admin.services.details-list');
     }
 }

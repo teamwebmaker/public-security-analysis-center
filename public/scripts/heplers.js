@@ -47,7 +47,7 @@ export function enableSmoothScroll(selector, offset = 100) {
  * @param {string} id
  * @returns {HTMLElement|null}
  */
-export function getElementById(id) {
+export function getById(id) {
   return document.getElementById(id);
 }
 

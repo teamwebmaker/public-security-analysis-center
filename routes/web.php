@@ -65,6 +65,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('publications', PublicationController::class)->except('show');
         // Services 
         Route::resource('service-categories', ServiceCategoryController::class)->except('show');
+        Route::resource('services', ServiceController::class)->except('show');
 
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::resource('contacts', ContactsController::class)->only([

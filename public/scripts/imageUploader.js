@@ -1,10 +1,10 @@
-import { loadFancyboxCDN } from "./heplers.js";
+import { getById } from "./heplers.js";
 
 // Handle image preview and removal on file input change
 class ImageUploader {
    constructor(inputId, previewId, removeBtnClass = 'btn-remove-image') {
-      this.input = document.getElementById(inputId);
-      this.preview = document.getElementById(previewId);
+      this.input = getById(inputId);
+      this.preview = getById(previewId);
       this.removeBtnClass = removeBtnClass;
 
       if (this.input && this.preview) {

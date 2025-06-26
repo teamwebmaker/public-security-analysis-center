@@ -1,22 +1,22 @@
 @props(['program'])
 
 <ul class="list-group list-group-flush mb-3">
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ფასი:</span>
         <span class="badge bg-primary rounded-pill" style="font-size: 13px;">
             {{ $program->price }} ₾
         </span>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ხანგრძლივობა:</span>
         <span>{{ $program->duration }}</span>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>საათები:</span>
         <span>{{ $program->hour->start }} - {{ $program->hour->end }}</span>
     </li>
     <li class="list-group-item">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between flex-wrap">
             <span>დღეები:</span>
             <select>
                 <option class="badge bg-secondary me-1">
@@ -28,21 +28,21 @@
             </select>
         </div>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>სტატუსი:</span>
         <span class="badge {{ $program->visibility ? 'bg-success' : 'bg-warning' }}">
             {{ $program->visibility ? 'ხილული' : 'დამალული' }}
         </span>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>დაწყება:</span>
         <span>{{ $program->start_date }}</span>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>დასრულება:</span>
         <span>{{ $program->end_date }}</span>
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ლოკაცია:</span>
         <label class="text-truncate d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
             data-bs-custom-class="custom-tooltip" data-bs-title="{{ $program->address }}"

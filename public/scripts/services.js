@@ -1,8 +1,8 @@
-import { enableSmoothScroll, getOne, getElementById, getAll } from './heplers.js';
+import { enableSmoothScroll, getOne, getById, getAll } from './heplers.js';
 
 // Dom elements
 const scrollLink = getOne('scroll-link') // scroll related
-const form = getElementById('serviceForm'); // form related
+const form = getById('serviceForm'); // form related
 
 
 // Smooth scroll 

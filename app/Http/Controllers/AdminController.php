@@ -9,6 +9,8 @@ use App\Models\Publication;
 use App\Models\Partner;
 use App\Models\Contact;
 use App\Models\Program;
+use App\Models\Service;
+use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -67,6 +69,14 @@ class AdminController extends Controller
             "partners" => (object) [
                 "title" => "პარტნიორები",
                 "count" => Partner::count(),
+            ],
+            "services" => (object) [
+                "title" => "სერვისები",
+                "count" => Service::count(),
+            ],
+            "service_categories" => (object) [
+                "title" => "სერვის კატეგორიები",
+                "count" => ServiceCategory::count(),
             ],
             "contacts" => (object) [
                 "title" => "შეტყობინებები",

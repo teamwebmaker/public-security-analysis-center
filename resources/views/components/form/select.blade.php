@@ -6,12 +6,18 @@
 
 <select id="{{ $id }}" name="{{ $name }}" class="{{ $class }}@error($name) is-invalid @enderror" @if($required) required
 @endif {{ $attributes }}>
+
+    @if(is_null($selected))
+        <option value="" disabled selected>-- აირჩიეთ ვარიანტი --</option>
+    @endif
+
     @foreach($options as $value => $text)
-        <option value="{{ $value }}" @if($selected == $value) selected @endif>
+        <option value="{{ $value }}" @if((string) $selected === (string) $value) selected @endif>
             {{ $text }}
         </option>
     @endforeach
 </select>
+
 
 @error($name)
     <div class="invalid-feedback">

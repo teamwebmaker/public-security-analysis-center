@@ -1,3 +1,4 @@
+import { getById } from "../heplers.js";
 import ImageUploader from "../imageUploader.js";
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
    });
 
    // Form validation
-   const form = document.getElementById('program-form');
+   const form = getById('program-form');
    if (form) {
       form.addEventListener('submit', function (e) {
          const daysChecked = document.querySelectorAll('input[name="days[]"]:checked').length > 0;

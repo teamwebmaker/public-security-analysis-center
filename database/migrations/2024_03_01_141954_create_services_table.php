@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('service_category_id')->nullable();
 
             $table->enum('visibility', ['0', '1'])->default('1');
-            $table->tinyInteger('sortable')->default(1);
+            $table->tinyInteger('sortable');
             $table->timestamps();
         });
     }

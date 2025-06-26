@@ -16,7 +16,3 @@
         </div>
     </div>
 @endsection
-
-@section('scripts')
-    {!! load_script('scripts/ind.js') !!}
-@endsection

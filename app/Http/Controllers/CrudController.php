@@ -13,6 +13,8 @@ abstract class CrudController extends Controller
     protected string $contextField;
     protected string $contextFieldPlural;
 
+    protected array $belongsTo = [];
+
     protected string $resourceName;
 
     // Remember field names should be the same as in database and in input form
@@ -21,24 +23,70 @@ abstract class CrudController extends Controller
     public function index()
     {
         $model = app($this->modelClass);
-        return view("admin.{$this->resourceName}.index", [
-            $this->contextFieldPlural => $model->orderBy("id", "DESC")->paginate(6),
-            'contextFieldPlural' => $this->contextFieldPlural,
-            'resourceName' => $this->resourceName
-        ]);
+
+        $relations = is_array($this->belongsTo)
+            ? $this->belongsTo
+            : (is_string($this->belongsTo)
+                ? explode(",", $this->belongsTo)
+                : []);
+
+        $data = !empty($relations)
+            ? $model
+                ->with($relations)
+                ->orderBy("id", "DESC")
+                ->paginate(6)
+            : $model->orderBy("id", "DESC")->paginate(6);
+
+        $baseData = [
+            $this->contextFieldPlural => $data,
+            "resourceName" => $this->resourceName,
+        ];
+
+        return view(
+            "admin.{$this->resourceName}.index",
+            array_merge($baseData, $this->additionalIndexData())
+        );
+    }
+
+    // Pass additional data for index view besides main model data
+    protected function additionalIndexData(): array
+    {
+        return []; // Default: nothing extra
     }
 
     public function create()
     {
-        return view("admin.{$this->resourceName}.create", );
+        return view(
+            "admin.{$this->resourceName}.create",
+            $this->additionalCreateData()
+        );
+    }
+
+    // Pass additional data for create view
+    protected function additionalCreateData(): array
+    {
+        return []; // Default: nothing extra
     }
 
     public function edit($id)
     {
         $document = $this->modelClass::findOrFail($id);
-        return view("admin.{$this->resourceName}.edit", [
-            $this->contextField => $document,
-        ]);
+
+        return view(
+            "admin.{$this->resourceName}.edit",
+            array_merge(
+                [
+                    $this->contextField => $document,
+                ],
+                $this->additionalEditData()
+            )
+        );
+    }
+
+    // Pass additional data for edit view
+    protected function additionalEditData(): array
+    {
+        return []; // Default: nothing extra
     }
 
     public function destroy($id)
@@ -75,7 +123,12 @@ abstract class CrudController extends Controller
         // Upload new file
         if ($request->file($fieldName)) {
             $file = $request->file($fieldName);
-            $fileName = uniqid() . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $fileName =
+                uniqid() .
+                "-" .
+                time() .
+                "." .
+                $file->getClientOriginalExtension();
             $file->move(public_path($destinationPath), $fileName);
         }
 
