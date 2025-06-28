@@ -13,11 +13,13 @@ class IndexView extends Component
 {
 
     public Collection|LengthAwarePaginator $items;
+    public string $resourceName;
     public ?string $containerClass;
 
-    public function __construct(Collection|LengthAwarePaginator $items, ?string $containerClass = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 ')
+    public function __construct(Collection|LengthAwarePaginator $items, string $resourceName, ?string $containerClass = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3', )
     {
         $this->items = $items;
+        $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;
     }
 

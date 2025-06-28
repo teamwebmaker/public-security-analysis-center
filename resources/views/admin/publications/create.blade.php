@@ -4,7 +4,7 @@
 	<x-admin.crud.form-container method="POST" title="პიბლიკაციის შექმნა" action="{{ route('publications.store') }}"
 		:hasFileUpload="true" backRoute="publications.index">
 
-		<!-- Language tabs -->
+		<!-- Multilingual Tabs -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -16,7 +16,7 @@
 						<x-form.input name="title_ka" label="სათაური" value="{{ old('title_ka') }}"
 							placeholder="შეიყვანეთ სათაური ქართულად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა" value="{{ old('description_ka') }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" />
 					</div>
@@ -28,7 +28,7 @@
 						<x-form.input name="title_en" label="Title" value="{{ old('title_en') }}"
 							placeholder="შეიყვანეთ სათაური ინგლისურად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description" value="{{ old('description_en') }}"
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" />
 					</div>
@@ -48,7 +48,7 @@
 		</div>
 		<!-- Visibility & Submit -->
 		<div class="row">
-			<div class="col-md-4 mb-2">
+			<div class="col-md-4 mb-3">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
 			</div>

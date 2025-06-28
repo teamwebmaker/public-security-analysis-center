@@ -17,18 +17,20 @@
 				placeholder="შეიყვანეთ სათაური" />
 		</div>
 
+		<!-- partner link -->
 		<div class="mb-4">
 			<x-form.input type="url" name="link" label="ლინკი" value="{{ old('link', $partner->link) }}"
 				placeholder="https://example.com" icon="link-45deg" />
 		</div>
 
-		<div class="row mb-3">
+		<div class="row">
+			<!-- Image -->
 			<div class="col-md-6">
 				<x-form.input type="file" id="partner-image" name="image" label="სურათი" :required="false" />
 				<x-form.image-upload-preview id="partner" />
 			</div>
+			<!-- Visibility -->
 			<div class="col-md-6">
-
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
 					selected="{{ old('visibility', $partner->visibility) }}" label="ხილვადობა" />
 			</div>

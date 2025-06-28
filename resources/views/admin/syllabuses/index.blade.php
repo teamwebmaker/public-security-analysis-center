@@ -3,7 +3,7 @@
 @section('title', 'სილაბუსების სია')
 
 @section('main')
-    <x-admin.index-view :items="$syllabuses">
+    <x-admin.index-view :items="$syllabuses" :resourceName="$resourceName">
         @foreach($syllabuses as $syllabus)
             <x-admin-card :document="$syllabus" :title="$syllabus->title->ka" :resourceName="$resourceName">
                 <x-slot name="cardDetails">

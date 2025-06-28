@@ -15,4 +15,10 @@
             {!! $items->withQueryString()->links('pagination::bootstrap-5') !!}
         </div>
     </div>
+
+    <!-- Floating Speed Dial Button -->
+    <a href="{{ route($resourceName . '.create') }}" class="btn btn-primary btn-lg rounded-circle shadow position-fixed"
+        style="bottom: 1rem; right: 1rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+        <i class="bi bi-plus-lg fs-4"></i>
+    </a>
 @endsection

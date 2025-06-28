@@ -11,6 +11,7 @@
 			@endif
 		</x-slot>
 
+		<!-- Multilingual Tabs -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -22,7 +23,7 @@
 						<x-form.input name="title_ka" label="სათაური" placeholder="შეიყვანეთ სათაური ქართულად"
 							value="{{ old('title_ka', $publication->title->ka) }}" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა"
 							value="{{ old('description_ka', $publication->description->ka) }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" />
@@ -35,13 +36,12 @@
 						<x-form.input name="title_en" label="Title" placeholder="შეიყვანეთ სათაური ინგლისურად"
 							value="{{ old('title_en', $publication->title->en) }}" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description"
 							value="{{ old('description_en', $publication->description->en) }}"
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" />
 					</div>
 				</div>
-
 			</x-tabs>
 		</div>
 
@@ -63,6 +63,7 @@
 					selected="{{ old('visibility', $publication->visibility) }}" label="ხილვადობა" />
 			</div>
 		</div>
+
 	</x-admin.crud.form-container>
 @endsection
 

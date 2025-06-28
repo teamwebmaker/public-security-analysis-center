@@ -4,7 +4,7 @@
 	<x-admin.crud.form-container method="POST" title="პროექტის შექმნა" action="{{ route('projects.store') }}"
 		:hasFileUpload="true" backRoute="projects.index">
 
-		<!-- Language tabs -->
+		<!-- Multilingual Tabs -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -16,7 +16,7 @@
 						<x-form.input name="title_ka" label="სათაური" value="{{ old('title_ka') }}"
 							placeholder="შეიყვანეთ სათაური ქართულად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა" value="{{ old('description_ka') }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" />
 					</div>
@@ -28,7 +28,7 @@
 						<x-form.input name="title_en" label="Title" value="{{ old('title_en') }}"
 							placeholder="შეიყვანეთ სათაური ინგლისურად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description" value="{{ old('description_en') }}"
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" />
 					</div>
@@ -37,7 +37,7 @@
 		</div>
 
 		<!-- Image and visibility -->
-		<div class="row mb-4">
+		<div class="row">
 			<div class="col-md-6">
 				<x-form.input type="file" id="project-image" name="image" label="სურათი" />
 				<x-form.image-upload-preview id="project" />

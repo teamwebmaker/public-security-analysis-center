@@ -17,7 +17,7 @@
 						<x-form.input name="title_ka" label="სათაური" value="{{ old('title_ka') }}"
 							placeholder="შეიყვანეთ სათაური ქართულად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა" value="{{ old('description_ka') }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" />
 					</div>
@@ -29,7 +29,7 @@
 						<x-form.input name="title_en" label="Title" value="{{ old('title_en') }}"
 							placeholder="შეიყვანეთ სათაური ინგლისურად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description" value="{{ old('description_en') }}"
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" />
 					</div>

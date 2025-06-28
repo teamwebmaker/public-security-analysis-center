@@ -11,6 +11,7 @@
 			@endif
 		</x-slot>
 
+		<!-- Title ka en -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -18,21 +19,19 @@
 		]">
 				<!-- Georgian content -->
 				<div class="tab-pane fade show active " id="ka-tab-content" role="tabpanel" aria-labelledby="ka-tab">
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.input name="title_ka" label="სათაური" placeholder="შეიყვანეთ სათაური ქართულად"
 							value="{{ old('title_ka', $syllabus->title->ka) }}" />
 					</div>
-
 				</div>
 
 				<!-- English content -->
 				<div class="tab-pane fade" id="en-tab-content" role="tabpanel" aria-labelledby="en-tab">
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.input name="title_en" label="Title" placeholder="შეიყვანეთ სათაური ინგლისურად"
 							value="{{ old('title_en', $syllabus->title->en) }}" />
 					</div>
 				</div>
-
 			</x-tabs>
 		</div>
 
@@ -50,7 +49,7 @@
 
 		</div>
 		<!-- Visibility -->
-		<div class="row mb-2">
+		<div class="row">
 			<div class="col-md-4">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
 					selected="{{ old('visibility', $syllabus->visibility) }}" label="ხილვადობა" />

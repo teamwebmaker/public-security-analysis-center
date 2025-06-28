@@ -3,7 +3,7 @@
 @section('title', 'პუბლიკაციების სია')
 
 @section('main')
-    <x-admin.index-view :items="$publications">
+    <x-admin.index-view :items="$publications" :resourceName="$resourceName">
         @foreach($publications as $publication)
             <x-admin-card :document="$publication" :title="$publication->title->ka" :image="$publication->image"
                 :resourceName="$resourceName">

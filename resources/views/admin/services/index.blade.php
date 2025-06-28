@@ -2,7 +2,7 @@
 
 @section('title', 'სერვისების სია')
 
-<x-admin.index-view :items="$services">
+<x-admin.index-view :items="$services" :resourceName="$resourceName">
     @foreach($services as $service)
         <x-admin-card :document="$service" :title="$service->title->ka" :image="$service->image"
             :resourceName='$resourceName'>

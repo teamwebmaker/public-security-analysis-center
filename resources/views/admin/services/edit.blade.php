@@ -10,6 +10,7 @@
 				<x-admin.image-header :src="$service->image" folder="services" caption="სერვისის ძველი სურათი" />
 			@endif
 		</x-slot>
+
 		<!-- Language tabs -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
@@ -57,22 +58,23 @@
 			</div>
 		</div>
 
-		<div class="row mb-4">
+		<div class="row">
+			<!-- Sortable (order) -->
 			<div class="col-md-6">
 				<x-form.input type="number" id="sortable" name="sortable" value="{{ old('sortable', $service->sortable) }}"
 					label="რიგითობა" placeholder="უნიკალური რიგი კატეგორიაში " min="1" />
-
-
 
 				<!-- Already used sortable numbers -->
 				<div class="mt-2" id="used-sortables-container" style="display: none;">
 					<label class="form-label">უკვე გამოყენებული რიგები:</label>
 					<div class="d-flex flex-wrap gap-2" id="used-sortables-badges"></div>
 				</div>
+				<!-- disclaimer -->
 				<div class="form-text">
 					რიგის ნომერი უნდა იყოს უნიკალური თითოეულ კატეგორიაში
 				</div>
 			</div>
+			<!-- visibility -->
 			<div class="col-md-6">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
 					selected="{{ old('visibility', $service->visibility) }}" label="ხილვადობა" />

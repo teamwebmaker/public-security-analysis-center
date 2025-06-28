@@ -18,7 +18,7 @@
 						<x-form.input name="title_ka" label="სათაური" value="{{ old('title_ka') }}"
 							placeholder="შეიყვანეთ სათაური ქართულად" />
 					</div>
-					<div class="mb-3">
+					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა" value="{{ old('description_ka') }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" />
 					</div>
@@ -51,7 +51,7 @@
 		</div>
 
 		<!-- Sortable and visibility -->
-		<div class="row mb-4">
+		<div class="row">
 			<div class="col-md-6">
 				<x-form.input type="number" id="sortable" name="sortable" label="რიგითობა"
 					placeholder="უნიკალური რიგი კატეგორიაში" min="1" />

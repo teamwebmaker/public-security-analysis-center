@@ -4,7 +4,7 @@
 	<x-admin.crud.form-container method="POST" title="სილაბუსის შექმნა" action="{{ route('syllabuses.store') }}"
 		:hasFileUpload="true" backRoute="syllabuses.index">
 
-		<!-- Language tabs -->
+		<!-- Title ka en -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -38,8 +38,9 @@
 				<x-form.select name="program_id" id="program_id" :options="$programs" label="პროგრამა" />
 			</div>
 		</div>
-		<div class="row mb-2">
-			<!-- Visibility -->
+
+		<!-- Visibility -->
+		<div class="row">
 			<div class="col-md-4">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
