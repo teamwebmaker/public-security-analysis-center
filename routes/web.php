@@ -11,6 +11,7 @@ use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SyllabusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +62,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
         Route::resource('projects', ProjectController::class)->except('show');
         Route::resource('partners', PartnerController::class)->except('show');
+        // Programs
         Route::resource('programs', ProgramController::class)->except('show');
+        Route::resource('syllabuses', SyllabusController::class)->except('show');
+
         Route::resource('publications', PublicationController::class)->except('show');
         // Services 
         Route::resource('service-categories', ServiceCategoryController::class)->except('show');

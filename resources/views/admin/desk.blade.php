@@ -37,6 +37,41 @@
             </div>
         </div>
 
+        <!-- Grouped Service + Category Card -->
+        <div class="col-12">
+            <div class="card border border-white shadow-sm bg-light rounded-4 h-100 p-3  ">
+
+                <!-- Optional title -->
+                <h6 class="text-muted mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-layers text-secondary"></i>
+                    სპეც პროგრამები და სილაბუსები
+                </h6>
+
+                <!-- Side-by-side equal-width cards -->
+                <div class="d-flex flex-column flex-md-row gap-3">
+                    <div class="w-100  w-md-50">
+                         <!--  Programs Card -->                      
+                        @include('components.desk-card', [
+                            'icon' => 'bi-briefcase',
+                            'title' => $programs->title,
+                            'count' => $programs->count,
+                            'viewRoute' => route('programs.index'),
+                            'createRoute' => route('programs.create'),
+                        ])
+                    </div>
+                    <div class="w-100  w-md-50">
+                        @include('components.desk-card', [
+                            'icon' => 'bi-file-earmark-text',
+                            'title' => $syllabuses->title,
+                            'count' => $syllabuses->count,
+                            'viewRoute' => route('syllabuses.index'),
+                            'createRoute' => route('syllabuses.create'),
+                        ])
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Projects Card -->
         <div class="col-12 col-md-6 col-xl-4">
             @include('components.desk-card', [
@@ -56,17 +91,6 @@
                 'count' => $partners->count,
                 'viewRoute' => route('partners.index'),
                 'createRoute' => route('partners.create'),
-            ])
-        </div>
-
-        <!-- Special Programs Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
-                'icon' => 'bi-briefcase',
-                'title' => $programs->title,
-                'count' => $programs->count,
-                'viewRoute' => route('programs.index'),
-                'createRoute' => route('programs.create'),
             ])
         </div>
 

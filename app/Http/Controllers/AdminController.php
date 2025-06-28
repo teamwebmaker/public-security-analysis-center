@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\Program;
 use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\Syllabus;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -65,6 +66,10 @@ class AdminController extends Controller
             "programs" => (object) [
                 "title" => "პროგრამები",
                 "count" => Program::count(),
+            ],
+            "syllabuses" => (object) [
+                "title" => "სილაბუსები",
+                "count" => Syllabus::count(),
             ],
             "partners" => (object) [
                 "title" => "პარტნიორები",

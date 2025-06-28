@@ -38,7 +38,7 @@
 			</x-tabs>
 		</div>
 
-		<!-- Image and visibility -->
+		<!-- Image and category id -->
 		<div class="row mb-4">
 			<div class="col-md-6">
 				<x-form.input type="file" id="service-image" name="image" label="სურათი" />

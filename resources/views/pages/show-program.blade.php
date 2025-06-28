@@ -97,50 +97,55 @@
 	</section>
 
 	<!-- Syllabus Section -->
-	<section class="border-top border-1 border-gold-bg--light">
-		<div class="container py-5 px-3 px-sm-5">
-			<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
-			<ul class="list-group">
-				@foreach ($item->syllabuses as $index => $syllabus)
-					<li
-						class="col-12 list-group-item col-sm-8 col-lg-5 mb-3 border rounded   p-3 d-flex justify-content-between align-items-center bg-white ">
-						<a href="#" data-bs-toggle="modal" data-bs-target="#pdfModal{{ $index }}" class="text-decoration-none">
-							{{ $syllabus->title->$language }}
+	@if(isset($item->syllabuses) && count($item->syllabuses) > 0)
+		<section class="border-top border-1 border-gold-bg--light">
+			<div class="container py-5 px-3 px-sm-5">
+				<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
+				<ul class="list-group">
+					@foreach ($item->syllabuses as $index => $syllabus)
+						<li
+							class="col-12 list-group-item col-sm-8 col-lg-5 mb-3 border rounded   p-3 d-flex justify-content-between align-items-center bg-white ">
+							<a href="#" data-bs-toggle="modal" data-bs-target="#pdfModal{{ $index }}" class="text-decoration-none">
+								{{ $syllabus->title->$language }}
 
-						</a>
-					</li>
+							</a>
+						</li>
 
-					<!-- Modal for PDF Viewer -->
-					<x-modal :id="'pdfModal' . $index" :title="$syllabus->title->$language" size="xl">
-						<iframe src="{{ asset('documents/' . $category . '/' . $syllabus->pdf) }}" class="w-100 h-100 border-0"
-							allowfullscreen></iframe>
-					</x-modal>
+						<!-- Modal for PDF Viewer -->
+						<x-modal :id="'pdfModal' . $index" :title="$syllabus->title->$language" size="xl">
+							<iframe src="{{ asset('documents/' . $program_syllabuses . '/' . $syllabus->pdf) }}"
+								class="w-100 h-100 border-0" allowfullscreen></iframe>
+						</x-modal>
 
-				@endforeach
-			</ul>
-		</div>
-	</section>
+					@endforeach
+				</ul>
+			</div>
+		</section>
+
+	@endif
 
 	<!-- Instructors Section -->
-	<section class="gold-bg--light rounded-top-5">
-		<div class="container-lg mt-5 px-3 px-sm-5">
-			<h2 class="fw-bold mb-4 text-center gold-text">Instructors</h2>
-			<div class="row justify-content-center g-4 mb-5">
-				@foreach($item->mentors as $mentor)
-					<div class="col-12 col-md-6 col-lg-4 d-flex">
-						<div class="card w-100 h-100 border-0 shadow-sm text-center p-3">
-							<img src="{{ $mentor->image }}" class="rounded mx-auto mb-3"
-								style="width: 100px; height: 100px; object-fit: cover;" alt="{{ $mentor['full-name'] }}">
-							<div class="card-body">
-								<h5 class="card-title fw-bold mb-1">{{ $mentor['full-name'] }}</h5>
-								<p class="text-muted small mb-1">{{ $mentor->position ?? '' }}</p>
-								<p class="card-text fs-6">{{ $mentor->description }}</p>
+	@if (isset($item->mentors) && count($item->mentors) > 0)
+		<section class="gold-bg--light rounded-top-5">
+			<div class="container-lg mt-5 px-3 px-sm-5">
+				<h2 class="fw-bold mb-4 text-center gold-text">Instructors</h2>
+				<div class="row justify-content-center g-4 mb-5">
+					@foreach($item->mentors as $mentor)
+						<div class="col-12 col-md-6 col-lg-4 d-flex">
+							<div class="card w-100 h-100 border-0 shadow-sm text-center p-3">
+								<img src="{{ $mentor->image }}" class="rounded mx-auto mb-3"
+									style="width: 100px; height: 100px; object-fit: cover;" alt="{{ $mentor['full-name'] }}">
+								<div class="card-body">
+									<h5 class="card-title fw-bold mb-1">{{ $mentor['full-name'] }}</h5>
+									<p class="text-muted small mb-1">{{ $mentor->position ?? '' }}</p>
+									<p class="card-text fs-6">{{ $mentor->description }}</p>
+								</div>
 							</div>
 						</div>
-					</div>
-				@endforeach
+					@endforeach
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	@endif
 
 @endsection

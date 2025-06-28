@@ -12,9 +12,13 @@
     ]" />
 
     <x-accordion-item id="programs" icon="bi-briefcase" label="სპეც.პროგრამები"
-        :active-routes="['programs.index', 'programs.create','programs.edit']" :routes="[
+        :active-routes="['programs.index', 'programs.create','programs.edit','syllabuses.index', 'syllabuses.create', 'syllabuses.edit']"
+        :routes="[
         ['name' => 'programs.index', 'label' => 'სპეც.პროგრამების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'programs.create', 'label' => 'სპეც.პროგრამის შექმნა', 'icon' => 'bi-plus-circle'],
+        // Syllabuses
+        ['name' => 'syllabuses.index', 'label' => 'სილაბუსის ნახვა', 'icon' => 'bi-list-ul'],
+        ['name' => 'syllabuses.create', 'label' => 'სილაბუსის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
 
     <x-accordion-item id="publications" icon="bi-book" label="პუბლიკაციები"
@@ -27,6 +31,7 @@
         'service-categories.index', 'service-categories.create','service-categories.edit']" :routes="[
         ['name' => 'services.index', 'label' => 'სერვისები', 'icon' => 'bi-list-ul'],
         ['name' => 'services.create', 'label' => 'სერვისის შექმნა', 'icon' => 'bi-plus-circle'],
+        // service-categories
         ['name' => 'service-categories.index', 'label' => 'სერვის კატეგორიები', 'icon' => 'bi-list-ul'],
         ['name' => 'service-categories.create', 'label' => 'სერვის კატეგორიის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />

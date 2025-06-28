@@ -70,6 +70,7 @@ class ProgramController extends CrudController
             "language" => App::getLocale(),
             "partners" => Partner::all(),
             "category" => "programs",
+            'program_syllabuses' => 'syllabuses'
         ]);
     }
 

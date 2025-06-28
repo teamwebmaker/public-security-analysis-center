@@ -24,7 +24,7 @@ class AdminCard extends Component
         Model $document,
         string $title,
         string $resourceName,
-        ?string $image,
+        ?string $image = null,
         ?string $containerClass = 'col-xl-4 col-lg-6 mb-4'
     ) {
         $this->image = $image;
