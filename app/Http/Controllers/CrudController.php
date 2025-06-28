@@ -30,6 +30,7 @@ abstract class CrudController extends Controller
                 ? explode(",", $this->belongsTo)
                 : []);
 
+        // Query with or without relations
         $data = !empty($relations)
             ? $model
                 ->with($relations)
@@ -37,6 +38,7 @@ abstract class CrudController extends Controller
                 ->paginate(6)
             : $model->orderBy("id", "DESC")->paginate(6);
 
+        // Pass plural field and resource name to the view
         $baseData = [
             $this->contextFieldPlural => $data,
             "resourceName" => $this->resourceName,

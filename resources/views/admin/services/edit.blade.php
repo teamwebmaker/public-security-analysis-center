@@ -5,6 +5,11 @@
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" title="სერვისის რედაქტირება"
 		action="{{ route('services.update', $service) }}" :hasFileUpload="true" backRoute="services.index">
 
+		<x-slot name="imageHeader">
+			@if($service->image)
+				<x-admin.image-header :src="$service->image" folder="services" caption="სერვისის ძველი სურათი" />
+			@endif
+		</x-slot>
 		<!-- Language tabs -->
 		<div class="mb-4">
 			<x-tabs :tabs="[
@@ -53,10 +58,17 @@
 		</div>
 
 		<div class="row mb-4">
-
 			<div class="col-md-6">
 				<x-form.input type="number" id="sortable" name="sortable" value="{{ old('sortable', $service->sortable) }}"
 					label="რიგითობა" placeholder="უნიკალური რიგი კატეგორიაში " min="1" />
+
+
+
+				<!-- Already used sortable numbers -->
+				<div class="mt-2" id="used-sortables-container" style="display: none;">
+					<label class="form-label">უკვე გამოყენებული რიგები:</label>
+					<div class="d-flex flex-wrap gap-2" id="used-sortables-badges"></div>
+				</div>
 				<div class="form-text">
 					რიგის ნომერი უნდა იყოს უნიკალური თითოეულ კატეგორიაში
 				</div>
@@ -71,5 +83,14 @@
 @endsection
 
 @section('scripts')
-	{!! load_script('scripts/service/serviceCreate.js') !!}
+	{!! load_script('scripts/service/serviceEdit.js') !!}
+
+	<script>
+		// Pass services to JS	
+		window.appData = {
+			services: @json($services),
+			currentService: @json($service)
+		};
+
+	</script>
 @endsection

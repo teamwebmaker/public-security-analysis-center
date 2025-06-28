@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-// Pass additional data to index view
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Partner;
 use App\Models\Service;
 use App\Models\ServiceCategory;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -21,6 +19,7 @@ class ServiceController extends CrudController
     protected array $belongsTo = ["category"];
     protected string $resourceName = "services";
     protected array $fileFields = ["image" => "images/services/"];
+
     /**
      * Display the specified resource.
      */
@@ -31,12 +30,13 @@ class ServiceController extends CrudController
             'language' => App::getLocale(),
             'item' => $item,
             'category' => 'services',
-            'partners' => Partner::all()
+            'partners' => Partner::all(),
         ]);
     }
 
-
-    // Pass additional data to index view
+    /**
+     * Pass additional data to index view.
+     */
     protected function additionalIndexData(): array
     {
         return [
@@ -58,16 +58,13 @@ class ServiceController extends CrudController
             ->with("success", "სერვისი შეიქმნა წარმატებით");
     }
 
-    // Pass additional data to create view
+    /**
+     * Pass additional data to create view.
+     */
     protected function additionalCreateData(): array
     {
-        return [
-            // build a simple key-value array from a data set
-            'serviceCategories' => ServiceCategory::all()->pluck('name.ka', 'id')->toArray(),
-            'services' => Service::select('id', 'service_category_id', 'sortable')->get()
-        ];
+        return $this->getServiceFormData();
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -83,17 +80,28 @@ class ServiceController extends CrudController
             ->with("success", "სერვისი განახლდა წარმატებით");
     }
 
-    // Add additional data to update view we need it inside select
+    /**
+     * Add additional data to update view.
+     */
     protected function additionalEditData(): array
     {
+        return $this->getServiceFormData();
+    }
+
+    /**
+     * Shared data for create/edit service forms.
+     */
+    private function getServiceFormData(): array
+    {
         return [
-            // build a simple key-value array from a data set
             'serviceCategories' => ServiceCategory::all()->pluck('name.ka', 'id')->toArray(),
-            'services' => Service::select('id', 'service_category_id', 'sortable')->get()
+            'services' => Service::select('id', 'service_category_id', 'sortable')->get(),
         ];
     }
 
-
+    /**
+     * Prepare service data for storing or updating.
+     */
     private function prepareServiceData(Request $request, array $data, ?Service $service = null): array
     {
         // Handle image upload

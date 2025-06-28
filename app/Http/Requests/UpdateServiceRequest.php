@@ -33,10 +33,14 @@ class UpdateServiceRequest extends FormRequest
                 'required',
                 'integer',
                 'min:1',
-                Rule::unique('services')->where(function ($query) {
-                    return $query->where('service_category_id', $this->service_category_id);
-                }),
+                Rule::unique('services')
+                    // Ignore the current service and validate rest of them
+                    ->ignore($this->route('service'))
+                    ->where(function ($query) {
+                        return $query->where('service_category_id', $this->service_category_id);
+                    }),
             ],
+
             'service_category_id' => ['nullable', 'integer', 'exists:service_categories,id'] // array good for complex validation
         ];
     }
