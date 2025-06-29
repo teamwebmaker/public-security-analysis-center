@@ -1,3 +1,7 @@
+@php
+    // get resourceName from back route for speed-dial
+    $indexResourceName = explode('.', $backRoute)[0];
+@endphp
 <div class="row justify-content-center">
     <div class="{{ $cardWrapperClass }}">
         <!-- Global Success Display -->
@@ -17,6 +21,7 @@
                      novalidate 
                      >
                     @csrf
+                    <!-- apply method('PUT') or method('PATCH') or method('DELETE') conditionally -->
                     @if(strtoupper($method) !== 'GET' && $insertMethod !== '')
                         @if(in_array(strtoupper($insertMethod), ['PUT', 'PATCH', 'DELETE']))
                             @method($insertMethod)
@@ -52,5 +57,7 @@
                 </form>
             </div>
         </div>
+        <!-- Floating Speed Dial Button -->
+        <x-admin.speed-dial :resourceName="$indexResourceName" />
     </div>
 </div>
