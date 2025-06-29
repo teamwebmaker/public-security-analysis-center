@@ -2,12 +2,12 @@
 @section('title', 'რედაქტირება: ' . $project->title->ka)
 
 @section('main')
-	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route('projects.update', $project) }}"
-		title="პროექტის რედაქტირება" :hasFileUpload="true" backRoute="projects.index">
+	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route($resourceName . '.update', $project) }}"
+		title="პროექტის რედაქტირება" :hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<x-slot name="imageHeader">
-			@if($project->image)
-				<x-admin.image-header :src="$project->image" folder="projects" caption="პროექტის ძველი სურათი" />
+			@if ($project->image)
+				<x-admin.image-header :src="$project->image" :folder="$resourceName" caption="პროექტის ძველი სურათი" />
 			@endif
 		</x-slot>
 

@@ -3,8 +3,8 @@
 
 @section('main')
 	<x-admin.crud.form-container method="POST" insertMethod="PUT"
-		action="{{ route('service-categories.update', $serviceCategory) }}" title="სერვის კატეგორიის რედაქტირება"
-		:hasFileUpload="false" backRoute="service-categories.index" cardWrapperClass="col col-md-8">
+		action="{{ route($resourceName . '.update', $serviceCategory) }}" title="სერვის კატეგორიის რედაქტირება"
+		:hasFileUpload="false" :backRoute="$resourceName . '.index'" cardWrapperClass="col col-md-8">
 
 		<!-- title ka en -->
 		<div class="mb-3">

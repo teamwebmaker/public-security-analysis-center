@@ -60,7 +60,12 @@ abstract class CrudController extends Controller
     {
         return view(
             "admin.{$this->resourceName}.create",
-            $this->additionalCreateData()
+            array_merge(
+                [
+                    "resourceName" => $this->resourceName,
+                ],
+                $this->additionalCreateData()
+            )
         );
     }
 
@@ -79,6 +84,7 @@ abstract class CrudController extends Controller
             array_merge(
                 [
                     $this->contextField => $document,
+                    "resourceName" => $this->resourceName,
                 ],
                 $this->additionalEditData()
             )

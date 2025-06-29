@@ -2,8 +2,8 @@
 @section('title', 'პარტნიორის შექმნა')
 @section('main')
 
-	<x-admin.crud.form-container title="პარტნიორის შექმნა" action="{{ route('partners.store') }}" method="POST"
-		:hasFileUpload="true" backRoute="partners.index">
+	<x-admin.crud.form-container title="პარტნიორის შექმნა" action="{{ route($resourceName . '.store') }}" method="POST"
+		:hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<!-- partner title -->
 		<div class="mb-3">

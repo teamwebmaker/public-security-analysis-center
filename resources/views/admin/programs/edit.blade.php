@@ -3,14 +3,14 @@
 
 @section('main')
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" title="პროგრამის რედაქტირება"
-		action="{{ route('programs.update', $program) }}" :hasFileUpload="true" backRoute="programs.index"
+		action="{{ route($resourceName . '.update', $program) }}" :hasFileUpload="true" :backRoute="$resourceName . '.index'"
 		cardWrapperClass="col col-lg-12">
 
 		<x-slot name="imageHeader">
 			<div class="row g-0">
 				@if($program->image)
 					<div class="col-md-6">
-						<x-admin.image-header :src="$program->image" folder="programs" caption="პროგრამის ძველი სურათი" />
+						<x-admin.image-header :src="$program->image" :folder="$resourceName" caption="პროგრამის ძველი სურათი" />
 					</div>
 				@endif
 				@if($program->certificate_image)

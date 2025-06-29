@@ -2,8 +2,9 @@
 @section('title', 'პროგრამის დამატება')
 
 @section('main')
-	<x-admin.crud.form-container method="POST" title="პროგრამის დამატება" action="{{ route('programs.store') }}"
-		:hasFileUpload="true" backRoute="programs.index" cardWrapperClass="col col-lg-12">
+
+	<x-admin.crud.form-container method="POST" title="პროგრამის დამატება" action="{{ route($resourceName . '.store') }}"
+		:hasFileUpload="true" :backRoute="$resourceName . '.index'" cardWrapperClass="col col-lg-12">
 
 		<!-- Multilingual Tabs -->
 		<div class="mb-4">

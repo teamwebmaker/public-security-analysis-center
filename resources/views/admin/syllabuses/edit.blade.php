@@ -2,12 +2,12 @@
 @section('title', 'რედაქტირება: ' . $syllabus->title->ka)
 
 @section('main')
-	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route('syllabuses.update', $syllabus) }}"
-		title="სილაბუსის რედაქტირება" :hasFileUpload="true" backRoute="syllabuses.index">
+	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route($resourceName . '.update', $syllabus) }}"
+		title="სილაბუსის რედაქტირება" :hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<x-slot name="imageHeader">
 			@if($syllabus->pdf)
-				<iframe src="{{ asset('documents/syllabuses/' . $syllabus->pdf) }}" style="height: 350px"></iframe>
+				<iframe src="{{ asset('documents/' . $resourceName . '/' . $syllabus->pdf) }}" style="height: 350px"></iframe>
 			@endif
 		</x-slot>
 

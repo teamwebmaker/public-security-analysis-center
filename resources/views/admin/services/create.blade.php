@@ -3,8 +3,8 @@
 @section('title', 'პროექტის შექმნა')
 
 @section('main')
-	<x-admin.crud.form-container method="POST" title="სერვისის შექმნა" action="{{ route('services.store') }}"
-		:hasFileUpload="true" backRoute="services.index">
+	<x-admin.crud.form-container method="POST" title="სერვისის შექმნა" action="{{ route($resourceName . '.store') }}"
+		:hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<!-- Language tabs -->
 		<div class="mb-4">

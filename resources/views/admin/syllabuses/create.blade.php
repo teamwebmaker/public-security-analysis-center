@@ -1,8 +1,8 @@
 @extends('layouts.dashboard')
 @section('title', 'სილაბუსის შექმნა')
 @section('main')
-	<x-admin.crud.form-container method="POST" title="სილაბუსის შექმნა" action="{{ route('syllabuses.store') }}"
-		:hasFileUpload="true" backRoute="syllabuses.index">
+	<x-admin.crud.form-container method="POST" title="სილაბუსის შექმნა" action="{{ route($resourceName . '.store') }}"
+		:hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<!-- Title ka en -->
 		<div class="mb-4">

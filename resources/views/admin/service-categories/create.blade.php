@@ -2,8 +2,8 @@
 @section('title', 'სერვის კატეგორიის შექმნა')
 @section('main')
 
-	<x-admin.crud.form-container title="სერვის კატეგორიის შექმნა" action="{{ route('service-categories.store') }}"
-		method="POST" :hasFileUpload="false" backRoute="service-categories.index" cardWrapperClass="col col-md-8">
+	<x-admin.crud.form-container title="სერვის კატეგორიის შექმნა" action="{{ route($resourceName . '.store') }}"
+		method="POST" :hasFileUpload="false" :backRoute="$resourceName . '.index'" cardWrapperClass="col col-md-8">
 
 		<!-- title ka en -->
 		<div class="mb-3">

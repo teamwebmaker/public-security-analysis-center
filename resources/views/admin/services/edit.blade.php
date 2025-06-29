@@ -3,11 +3,11 @@
 
 @section('main')
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" title="სერვისის რედაქტირება"
-		action="{{ route('services.update', $service) }}" :hasFileUpload="true" backRoute="services.index">
+		action="{{ route($resourceName . '.update', $service) }}" :hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<x-slot name="imageHeader">
 			@if($service->image)
-				<x-admin.image-header :src="$service->image" folder="services" caption="სერვისის ძველი სურათი" />
+				<x-admin.image-header :src="$service->image" :folder="$resourceName" caption="სერვისის ძველი სურათი" />
 			@endif
 		</x-slot>
 

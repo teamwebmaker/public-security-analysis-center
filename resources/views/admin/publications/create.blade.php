@@ -1,8 +1,8 @@
 @extends('layouts.dashboard')
 @section('title', 'პიბლიკაციის შექმნა')
 @section('main')
-	<x-admin.crud.form-container method="POST" title="პიბლიკაციის შექმნა" action="{{ route('publications.store') }}"
-		:hasFileUpload="true" backRoute="publications.index">
+	<x-admin.crud.form-container method="POST" title="პიბლიკაციის შექმნა" action="{{ route($resourceName . '.store') }}"
+		:hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
 		<!-- Multilingual Tabs -->
 		<div class="mb-4">
