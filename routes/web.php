@@ -7,6 +7,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ServiceCategoryController;
@@ -65,6 +66,9 @@ Route::prefix('admin')->group(function () {
         // Programs
         Route::resource('programs', ProgramController::class)->except('show');
         Route::resource('syllabuses', SyllabusController::class)->except('show');
+
+        // Mentors
+        Route::resource('mentors', MentorController::class)->except('show');
 
         Route::resource('publications', PublicationController::class)->except('show');
         // Services 

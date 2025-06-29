@@ -21,7 +21,7 @@
 								</iframe>
 							@endif
 						@elseif (!empty($item->image))
-							<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"
+							<img src="{{ asset(implode('/', ['images', $resourceName, $item->image])) }}"
 								class="w-100 h-100 object-fit-cover" alt="{{ $item->title->$language }}">
 						@endif
 					</div>
@@ -88,7 +88,7 @@
 			</div>
 			@if ($item->certificate_image)
 				<div class="col-7 col-sm-5 col-md-3 ">
-					<img src="{{ asset(implode('/', ['images/certificates', $category, $item->certificate_image])) }}"
+					<img src="{{ asset(implode('/', ['images/certificates', $resourceName, $item->certificate_image])) }}"
 						class="img-fluid rounded shadow" alt="certificate-{{ $item->title->$language }} ">
 				</div>
 			@endif
@@ -133,12 +133,14 @@
 					@foreach($item->mentors as $mentor)
 						<div class="col-12 col-md-6 col-lg-4 d-flex">
 							<div class="card w-100 h-100 border-0 shadow-sm text-center p-3">
-								<img src="{{ $mentor->image }}" class="rounded mx-auto mb-3"
-									style="width: 100px; height: 100px; object-fit: cover;" alt="{{ $mentor['full-name'] }}">
+								<img src="{{ asset('images/' . $resourceName_mentors . '/' . $mentor->image) }}"
+									class="rounded mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;"
+									alt="{{ $mentor->full_name }}">
 								<div class="card-body">
-									<h5 class="card-title fw-bold mb-1">{{ $mentor['full-name'] }}</h5>
-									<p class="text-muted small mb-1">{{ $mentor->position ?? '' }}</p>
-									<p class="card-text fs-6">{{ $mentor->description }}</p>
+									<h5 class="card-title fw-bold mb-1">{{ $mentor->full_name }}</h5>
+									@if (is_object($mentor->description) && !empty($mentor->description->language))
+										<p class="card-text fs-6">{{ $mentor->description->language }}</p>
+									@endif
 								</div>
 							</div>
 						</div>

@@ -11,14 +11,16 @@
         ['name' => 'partners.create', 'label' => 'პარტნიორის შექმნა', 'icon' => 'bi-plus-circle'],
     ]" />
 
-    <x-accordion-item id="programs" icon="bi-briefcase" label="სპეც.პროგრამები"
-        :active-routes="['programs.index', 'programs.create','programs.edit','syllabuses.index', 'syllabuses.create', 'syllabuses.edit']"
-        :routes="[
+    <x-accordion-item id="programs" icon="bi-briefcase" label="სპეც.პროგრამები" :active-routes="['programs.index', 'programs.create','programs.edit','mentors.index',
+        'mentors.create', 'mentors.edit', 'syllabuses.index', 'syllabuses.create', 'syllabuses.edit']" :routes="[
         ['name' => 'programs.index', 'label' => 'სპეც.პროგრამების ნახვა', 'icon' => 'bi-list-ul'],
         ['name' => 'programs.create', 'label' => 'სპეც.პროგრამის შექმნა', 'icon' => 'bi-plus-circle'],
+        // Mentors
+        ['name' => 'mentors.index', 'label' => 'მენტორების ნახვა', 'icon' => 'bi-person-workspace'],
+        ['name' => 'mentors.create', 'label' => 'მენტორის შექმნა', 'icon' => 'bi-person-plus-fill'],
         // Syllabuses
-        ['name' => 'syllabuses.index', 'label' => 'სილაბუსის ნახვა', 'icon' => 'bi-list-ul'],
-        ['name' => 'syllabuses.create', 'label' => 'სილაბუსის შექმნა', 'icon' => 'bi-plus-circle'],
+        ['name' => 'syllabuses.index', 'label' => 'სილაბუსის ნახვა', 'icon' => 'bi-file-earmark-pdf-fill'],
+        ['name' => 'syllabuses.create', 'label' => 'სილაბუსის შექმნა', 'icon' => 'bi-file-earmark-plus-fill'],
     ]" />
 
     <x-accordion-item id="publications" icon="bi-book" label="პუბლიკაციები"

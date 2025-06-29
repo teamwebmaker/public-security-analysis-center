@@ -56,11 +56,15 @@ $visibility = $document->visibility == 0
             </div>
 
 
+            <!-- description -->
             @if ($document->description)
-                <p class="card-text text-muted line-clamp mb-4" style="--bs-line-clamp: 3;">
-                    {{ $document->description->ka ?? $description }}
-                </p>
+                    <p class="card-text text-muted line-clamp mb-4" style="--bs-line-clamp: 3;">
+                        {{ is_object($document->description)
+                ? ($document->description->ka ?? ($document->description->en ?? ''))
+                : $document->description }}
+                    </p>
             @endif
+
             <!-- Card Details slot -->
             <div class="mt-auto">
                 {{ $cardDetails ?? '' }}

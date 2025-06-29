@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Publication;
 use App\Models\Partner;
 use App\Models\Contact;
+use App\Models\Mentor;
 use App\Models\Program;
 use App\Models\Service;
 use App\Models\ServiceCategory;
@@ -70,6 +71,10 @@ class AdminController extends Controller
             "syllabuses" => (object) [
                 "title" => "სილაბუსები",
                 "count" => Syllabus::count(),
+            ],
+            "mentors" => (object) [
+                "title" => "მენტორები",
+                "count" => Mentor::count(),
             ],
             "partners" => (object) [
                 "title" => "პარტნიორები",

@@ -64,12 +64,12 @@ class ProgramController extends CrudController
     public function show(string $id)
     {
         $item = Program::with(["syllabuses", "mentors"])->findOrFail($id);
-
         return view("pages.show-program", [
             "item" => $item,
             "language" => App::getLocale(),
             "partners" => Partner::all(),
-            "category" => "programs",
+            "resourceName" => $this->resourceName,
+            "resourceName_mentors" => 'mentors',
             'program_syllabuses' => 'syllabuses'
         ]);
     }
