@@ -19,12 +19,18 @@ $visibility = $document->visibility == 0
 
 
             <!-- Visibility Overlay -->
-            @if ($visibility)
-                <div
-                    class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-eye-slash fs-2 text-danger mt-1"></i>
-                </div>
-            @endif
+            <div>
+                @if ($visibility)
+                    @if (!isset($image))
+                        <div style="height: 35px;"> </div>
+                    @endif
+                    {{-- @endif --}}
+                    <div
+                        class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-eye-slash fs-2 text-danger mt-1"></i>
+                    </div>
+                @endif
+            </div>
         </div>
 
         <!-- Card Body -->

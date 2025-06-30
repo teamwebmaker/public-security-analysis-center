@@ -20,6 +20,12 @@ i {
     line-height: 1;
 }
 
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+      box-shadow: 0 0 0 0.3px rgb(34, 34, 34) !important;
+}
+
 /* Custom focus style for all .form-control elements */
 .form-control:focus {
     border-color: none !important;
