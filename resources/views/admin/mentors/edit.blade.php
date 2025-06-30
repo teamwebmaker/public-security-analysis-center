@@ -45,7 +45,7 @@
 
 
 
-		<div class="row">
+		<div class="row mb-3">
 			<!-- Image -->
 			<div class="col-md-6">
 				<x-form.input type="file" id="mentor-image" name="image" label="სურათი" :required="false" />
@@ -58,9 +58,13 @@
 					selected="{{ old('visibility', $mentor->visibility) }}" label="ხილვადობა" />
 			</div>
 		</div>
+		<div class="col-md-5">
+			<x-form.checkbox-dropdown label="აირჩიე პროგრამები" :items="$programs" name="program_ids"
+				:selected="isset($mentor) ? $mentor->programs->pluck('id') : old('program_ids', [])" labelField="title.ka" />
+		</div>
 	</x-admin.crud.form-container>
 
 @endsection
 @section('scripts')
-	{!! load_script('scripts/mentor.js') !!}
+	{!! load_script('scripts/mentor/mentor.js') !!}
 @endsection

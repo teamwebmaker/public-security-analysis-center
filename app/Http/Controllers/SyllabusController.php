@@ -20,17 +20,6 @@ class SyllabusController extends CrudController
 
 
     /**
-     * Pass additional data to index view.
-     */
-    protected function additionalIndexData(): array
-    {
-        return [
-            'programs' => Program::all()
-        ];
-    }
-
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreSyllabusRequest $request)

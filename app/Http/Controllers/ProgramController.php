@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProgramsRequest;
 use App\Http\Requests\UpdateProgramsRequest;
+use App\Models\Mentor;
 use App\Models\Partner;
 use App\Models\Program;
 use Illuminate\Http\Request;
@@ -14,8 +15,9 @@ class ProgramController extends CrudController
     // Core metadata for CRUD operations
     protected string $modelClass = Program::class;
     protected string $contextField = "program";
-
     protected string $contextFieldPlural = "programs";
+
+    protected array $belongsTo = ["mentors"];
     protected string $resourceName = "programs";
     protected string $uploadPath = "images/programs/";
 
@@ -41,11 +43,23 @@ class ProgramController extends CrudController
     {
         $data = $request->validated();
         $programData = $this->prepareProgramData($request, $data);
-        Program::create($programData);
+        $program = Program::create($programData);
+
+        if (!empty($data['mentor_ids'])) {
+            $program->mentors()->sync($data['mentor_ids']);
+        }
 
         return redirect()
             ->route("{$this->resourceName}.index")
             ->with("success", "პროგრამა შეიქმნა წარმატებით");
+    }
+
+    /**
+     * Pass additional data to create view.
+     */
+    protected function additionalCreateData(): array
+    {
+        return $this->getMentorFormData();
     }
 
     // Handles updating an existing program
@@ -55,9 +69,31 @@ class ProgramController extends CrudController
         $programData = $this->prepareProgramData($request, $data, $program);
         $program->update($programData);
 
+        // Sync mentors (remove ones unchecked, add new ones)
+        $program->mentors()->sync($request->input('mentor_ids', []));
+
         return redirect()
             ->back()
             ->with("success", "პროგრამა განახლდა წარმატებით");
+    }
+
+    /**
+     * Pass additional data to edit view.
+     */
+    protected function additionalEditData(): array
+    {
+        return $this->getMentorFormData();
+    }
+
+
+    /**
+     * Shared data for create/edit service forms.
+     */
+    private function getMentorFormData(): array
+    {
+        return [
+            'mentors' => Mentor::select('id', 'full_name')->get(),
+        ];
     }
 
     // Displays the details of a single program

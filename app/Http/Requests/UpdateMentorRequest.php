@@ -26,6 +26,8 @@ class UpdateMentorRequest extends FormRequest
             'description_ka' => 'nullable|string|min:10|max:250',
             'description_en' => 'nullable|string|min:10|max:250',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'program_ids' => 'nullable|array',
+            'program_ids.*' => 'exists:programs,id',
             'visibility' => 'required|in:1,0',
         ];
     }

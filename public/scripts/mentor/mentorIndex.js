@@ -1,0 +1,1 @@
+import '../bootstrap/bootstrapTooltips.js'; 

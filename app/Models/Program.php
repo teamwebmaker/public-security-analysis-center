@@ -36,7 +36,7 @@ class Program extends Model
 
     public function mentors()
     {
-        return $this->belongsToMany(Mentor::class);
+        return $this->belongsToMany(Mentor::class)->withTimestamps();
     }
 
     public function syllabuses()

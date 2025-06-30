@@ -20,7 +20,10 @@ $visibility = $document->visibility == 0
 
             <!-- Visibility Overlay -->
             @if ($visibility)
-                <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75"></div>
+                <div
+                    class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-eye-slash fs-2 text-danger mt-1"></i>
+                </div>
             @endif
         </div>
 
@@ -28,18 +31,9 @@ $visibility = $document->visibility == 0
         <div class="card-body d-flex flex-column bg-white">
             <div class="d-flex align-items-start gap-2">
                 <!-- title -->
-                <h3 class="card-title h5  text-truncate flex-grow-1">
+                <h3 class="card-title h5 mb-0 text-wrap">
                     {{ $title }}
                 </h3>
-
-                <!-- Small visibility indicator -->
-                <div>
-                    @if ($visibility)
-                        <i class="bi bi-eye-slash fs-5 text-danger mt-1"></i>
-                    @else
-                        <i class="bi bi-eye fs-5 text-success mt-1"></i>
-                    @endif
-                </div>
             </div>
             <!-- Created Date -->
             <div class="d-flex gap-3  mb-3">

@@ -38,6 +38,8 @@ class UpdateProgramsRequest extends FormRequest
             "hour_end" => "required|date_format:H:i|after:hour_start",
             "days" => "required|array|min:1",
             "days.*" => "string",
+            'mentor_ids' => 'nullable|array',
+            'mentor_ids.*' => 'exists:mentors,id',
             "visibility" => "required|in:1,0",
         ];
     }

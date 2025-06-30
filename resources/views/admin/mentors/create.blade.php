@@ -33,24 +33,28 @@
 			</x-tabs>
 		</div>
 
-
-
-		<div class="row">
+		<div class="row mb-3">
 			<!-- Image -->
 			<div class="col-md-6">
 				<x-form.input type="file" id="mentor-image" name="image" label="სურათი" />
 				<x-form.image-upload-preview id="mentor" />
 			</div>
 
-			<!-- Visibility -->
 			<div class="col-md-6">
+				<!-- Visibility -->
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
 			</div>
 		</div>
+
+		<div class="col-md-5">
+			<x-form.checkbox-dropdown label="აირჩიე პროგრამები" :items="$programs" name="program_ids" labelField="title.ka" />
+		</div>
+
+
 	</x-admin.crud.form-container>
 
 @endsection
 @section('scripts')
-	{!! load_script('scripts/mentor.js') !!}
+	{!! load_script('scripts/mentor/mentor.js') !!}
 @endsection

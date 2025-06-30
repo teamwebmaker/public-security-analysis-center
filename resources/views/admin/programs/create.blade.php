@@ -7,7 +7,7 @@
 		:hasFileUpload="true" :backRoute="$resourceName . '.index'" cardWrapperClass="col col-lg-12">
 
 		<!-- Multilingual Tabs -->
-		<div class="mb-4">
+		<div class="mb-4 shadow-sm">
 			<x-tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
@@ -130,11 +130,17 @@
 			</div>
 		</div>
 
-		<!-- Visibility & Submit -->
 		<div class="row">
+			<!-- Visibility -->
 			<div class="col-md-3 mb-3">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
+			</div>
+			<!-- Mentors -->
+			<div class="col-md-5 mb-3">
+				<label for="mentor_ids" class="form-label">მენტორები</label>
+				<x-form.checkbox-dropdown label="აირჩიე მენტორები" :items="$mentors" name="mentor_ids"
+					labelField="full_name" />
 			</div>
 		</div>
 
