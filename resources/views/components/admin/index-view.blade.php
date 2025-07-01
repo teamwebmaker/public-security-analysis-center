@@ -16,15 +16,7 @@
 
     <!-- Empty State Placeholder -->
     @if ($items->isEmpty())
-        <div class="position-absolute top-50 start-50 translate-middle text-center text-muted">
-            <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
-            <p class="mb-1">დოკუმენტები ვერ მოიძებნა</p>
-            <a href="{{ route($resourceName . '.create') }}"
-                class="text-primary small text-decoration-none d-inline-flex align-items-center">
-                დამატება
-                <i class="bi bi-plus  fs-5"></i>
-            </a>
-        </div>
+        <x-ui.empty-state-message :resourceName="$resourceName" :overlay="true" />
     @endif
 
     <div class="row">

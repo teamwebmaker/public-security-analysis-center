@@ -9,25 +9,22 @@
 				<h2 class="mb-3 mb-md-0">პუბლიკაციები</h2>
 
 				<!-- Fixed Filter Component -->
-				<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
+				@if ($publications->isNotEmpty())
+					<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
+				@endif
 			</div>
 			<div class="row mb-5">
-				@if ($publications->isEmpty())
-					<div class="col-md-8">
-						<div class="alert alert-info">
-							{{-- {{ __('No publications found') }} --}}
-							No publications found
-						</div>
+				@forelse ($publications as $publication)
+					<div class="col-lg-4 col-md-6 mb-4">
+						<x-card-component :title="$publication->title->$language"
+							:description="$publication->description->$language" :image="'images/publications/' . $publication->image"
+							:date="$publication->created_at->format('d.m.Y')" :link="route('publications.show', ['id' => $publication->id])" />
 					</div>
-				@else
-					@foreach($publications as $publication)
-						<div class="col-lg-4 col-md-6 mb-4">
-							<x-card-component :title="$publication->title->$language"
-								:description="$publication->description->$language" :image="'images/publications/' . $publication->image"
-								:date="$publication->created_at->format('d.m.Y')" :link="route('publications.show', ['id' => $publication->id])" />
-						</div>
-					@endforeach
-				@endif
+				@empty
+					{{-- {{ __('No publications found') }} --}}
+					<x-ui.empty-state-message :message="'პუბლიკაციები ვერ მოიძებნა'" />
+				@endforelse
+
 
 			</div>
 			<div class="row">

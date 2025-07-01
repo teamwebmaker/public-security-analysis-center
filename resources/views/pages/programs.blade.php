@@ -9,17 +9,20 @@
 					<h2 class="mb-3 mb-md-0">პროგრამები</h2>
 
 					<!-- Fixed Filter Component -->
-					<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
+					@if ($programs->isNotEmpty())
+						<x-sort-data name="sort" :selected="request()->query('sort', 'newest')" class="" />
+					@endif
 				</div>
 				<div class="row mb-5">
-					@foreach($programs as $program)
-						@if ($program->visibility)
-							<div class="col-lg-4 col-md-6  mb-4">
-								<x-card-component :title="$program->title->$language" :description="$program->description->$language"
-									:image="'images/programs/' . $program->image" :link="route('programs.show', ['id' => $program->id])" />
-							</div>
-						@endif
-					@endforeach
+					@forelse ($programs as $program)
+						<div class="col-lg-4 col-md-6  mb-4">
+							<x-card-component :title="$program->title->$language" :description="$program->description->$language"
+								:image="'images/programs/' . $program->image" :link="route('programs.show', ['id' => $program->id])" />
+						</div>
+					@empty
+						{{-- {{ __('No programs found') }} --}}
+						<x-ui.empty-state-message :message="'პროგრამები ვერ მოიძებნა'" />
+					@endforelse
 				</div>
 				<div class="row">
 					<div class="col-md-12">

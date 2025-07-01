@@ -1,3 +1,13 @@
+@php
+	// if category have services but is not visible services don't appear
+	// if category have no services it will not appear
+	// according to this logic hasVisibleServices is necessary to properly display empty state message 
+	$hasVisibleServices = $categories->filter(
+		fn($category) =>
+		$category->visibility === '1' &&
+		$category->services->where('visibility', '1')->isNotEmpty()
+	)->isNotEmpty();
+@endphp
 @extends('layouts.master')
 @section('title', 'Services Page')
 
@@ -40,6 +50,9 @@
 		<!-- Services Section -->
 		<div class="container-fluid py-5 bg-light">
 			<div class="container-xxl px-3 px-md-5">
+				@if (!$hasVisibleServices)
+					<x-ui.empty-state-message :message="'სერვისები ვერ მოიძებნა'" minHeight="30dvh" />
+				@endif
 				@foreach($categories as $category)
 					@if (!$category->services->isEmpty())
 						<div id="category-{{ Str::slug($category->name->$language) }}" class="mb-5 pt-4">
@@ -49,7 +62,6 @@
 							<div class="row g-4 justify-content-center">
 								@foreach($category->services as $service)
 									<div class="col-lg-4 col-md-6">
-										<!-- img_temp | Temporary -->
 										<x-card-component :title="$service->title->$language" :description="$service->description->$language"
 											:image="'images/services/' . $service->image" :link="route('services.show', ['id' => $service->id])" />
 									</div>
