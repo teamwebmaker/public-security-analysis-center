@@ -11,7 +11,7 @@ class ServiceCategoryController extends CrudController
     protected string $modelClass = ServiceCategory::class;
     protected string $contextField = "serviceCategory";
     protected string $contextFieldPlural = "serviceCategories";
-    protected string $resourceName = "service-categories";
+    protected string $resourceName = "service_categories";
 
 
     /**

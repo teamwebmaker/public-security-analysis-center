@@ -6,7 +6,7 @@
 
 		<!-- Title ka en -->
 		<div class="mb-4">
-			<x-tabs :tabs="[
+			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
 		]">
@@ -25,7 +25,7 @@
 							placeholder="შეიყვანეთ სათაური ინგლისურად" />
 					</div>
 				</div>
-			</x-tabs>
+			</x-ui.tabs>
 		</div>
 
 		<!-- PDF -->

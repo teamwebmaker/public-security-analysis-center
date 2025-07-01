@@ -55,44 +55,68 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        return view("admin.desk", [
-            "projects" => (object) [
-                "title" => "პროექტები",
-                "count" => Project::count(),
-            ],
-            "publications" => (object) [
-                "title" => "პუბლიკაციები",
-                "count" => Publication::count(),
-            ],
-            "programs" => (object) [
-                "title" => "პროგრამები",
-                "count" => Program::count(),
-            ],
-            "syllabuses" => (object) [
-                "title" => "სილაბუსები",
-                "count" => Syllabus::count(),
-            ],
-            "mentors" => (object) [
-                "title" => "მენტორები",
-                "count" => Mentor::count(),
-            ],
-            "partners" => (object) [
-                "title" => "პარტნიორები",
-                "count" => Partner::count(),
-            ],
-            "services" => (object) [
-                "title" => "სერვისები",
-                "count" => Service::count(),
-            ],
-            "service_categories" => (object) [
-                "title" => "სერვის კატეგორიები",
-                "count" => ServiceCategory::count(),
-            ],
-            "contacts" => (object) [
-                "title" => "შეტყობინებები",
-                "count" => Contact::count(),
-            ],
-        ]);
+        // return view("admin.desk", [
+        //     "projects" => (object) [
+        //         "title" => "პროექტები",
+        //         "count" => Project::count(),
+        //     ],
+        //     "publications" => (object) [
+        //         "title" => "პუბლიკაციები",
+        //         "count" => Publication::count(),
+        //     ],
+        //     "programs" => (object) [
+        //         "title" => "პროგრამები",
+        //         "count" => Program::count(),
+        //     ],
+        //     "syllabuses" => (object) [
+        //         "title" => "სილაბუსები",
+        //         "count" => Syllabus::count(),
+        //     ],
+        //     "mentors" => (object) [
+        //         "title" => "მენტორები",
+        //         "count" => Mentor::count(),
+        //     ],
+        //     "partners" => (object) [
+        //         "title" => "პარტნიორები",
+        //         "count" => Partner::count(),
+        //     ],
+        //     "services" => (object) [
+        //         "title" => "სერვისები",
+        //         "count" => Service::count(),
+        //     ],
+        //     "service_categories" => (object) [
+        //         "title" => "სერვის კატეგორიები",
+        //         "count" => ServiceCategory::count(),
+        //     ],
+        //     "contacts" => (object) [
+        //         "title" => "შეტყობინებები",
+        //         "count" => Contact::count(),
+        //     ],
+        // ]);
+        $resources = [
+            'projects' => ['title' => 'პროექტები', 'model' => Project::class],
+            'contacts' => ['title' => 'შეტყობინებები', 'model' => Contact::class],
+            'partners' => ['title' => 'პარტნიორები', 'model' => Partner::class],
+            'publications' => ['title' => 'პუბლიკაციები', 'model' => Publication::class],
+            // program
+            'programs' => ['title' => 'პროგრამები', 'model' => Program::class],
+            'syllabuses' => ['title' => 'სილაბუსები', 'model' => Syllabus::class],
+            'mentors' => ['title' => 'მენტორები', 'model' => Mentor::class],
+            // services
+            'services' => ['title' => 'სერვისები', 'model' => Service::class],
+            'service_categories' => ['title' => 'სერვის კატეგორიები', 'model' => ServiceCategory::class],
+        ];
+
+        $data = collect($resources)->mapWithKeys(function ($item, $key) {
+            return [
+                $key => (object) [
+                    'title' => $item['title'],
+                    'count' => $item['model']::count(),
+                    'resourceName' => $key,
+                ]
+            ];
+        });
+        return view("admin.desk", $data->all());
     }
 
     public function logout()

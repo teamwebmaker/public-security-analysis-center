@@ -11,7 +11,7 @@
         <!-- Sidebar -->
         <div class="sidebar shadow">
             <div class="sidebar-brand d-flex align-items-center justify-content-between justify-content-md-center p-3 ">
-                <span class="fs-5 fw-bold">სამართავი პანელი</span>
+                <span class="fs-5 fw-bold" style="cursor: default;">სამართავი პანელი</span>
                 <button class="btn-close d-md-none" aria-label="Close"></button>
             </div>
             <div class="pt-3">
@@ -30,8 +30,9 @@
                 <div class="d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
                     <div>
                         <a href="{{ route('admin.dashboard.page') }}" class=" user-profile-btn text-decoration-none">
-                            <i class="bi bi-person-circle fs-5"></i>
-                            <span>psac@admin.panel</span>
+                            {{-- <i class="bi bi-columns fs-5"></i> --}}
+                            <i class="bi bi-columns-gap fs-5" style="rotate: 90deg;"></i>
+                            <span>მთავარი</span>
                         </a>
                     </div>
 

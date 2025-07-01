@@ -20,7 +20,7 @@
 
 		<!-- Multilingual description -->
 		<div class="mb-3">
-			<x-tabs :tabs="[
+			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
 		]">
@@ -40,7 +40,7 @@
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" maxlength="250" :required="false" />
 					</div>
 				</div>
-			</x-tabs>
+			</x-ui.tabs>
 		</div>
 
 

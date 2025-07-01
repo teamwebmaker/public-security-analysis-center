@@ -13,7 +13,7 @@
 
 		<!-- Title ka en -->
 		<div class="mb-4">
-			<x-tabs :tabs="[
+			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
 		]">
@@ -32,7 +32,7 @@
 							value="{{ old('title_en', $syllabus->title->en) }}" />
 					</div>
 				</div>
-			</x-tabs>
+			</x-ui.tabs>
 		</div>
 
 		<!--  PDF -->

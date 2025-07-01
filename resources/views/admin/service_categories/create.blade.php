@@ -7,7 +7,7 @@
 
 		<!-- title ka en -->
 		<div class="mb-3">
-			<x-tabs :tabs="[
+			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
 		]">
@@ -27,7 +27,7 @@
 					</div>
 
 				</div>
-			</x-tabs>
+			</x-ui.tabs>
 		</div>
 
 		<!-- Visibility -->

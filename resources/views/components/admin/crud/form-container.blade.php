@@ -35,7 +35,7 @@
                     <!-- Action buttons -->
                     <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2 mt-4">
                         @if($backRoute)
-                        <x-go-back-button :fallback="$backRoute" />
+                        <x-ui.go-back-btn :fallback="$backRoute" />
                         @endif
                         <button type="submit" class="btn btn-primary px-4">
                             @if($submitButtonIcon)

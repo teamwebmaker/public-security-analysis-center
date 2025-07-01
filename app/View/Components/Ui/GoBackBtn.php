@@ -1,13 +1,14 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Ui;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class GoBackButton extends Component
+class GoBackBtn extends Component
 {
+
     public string $fallback;
     public string $type;
     public string $text;
@@ -30,6 +31,6 @@ class GoBackButton extends Component
      */
     public function render(): View|Closure|string
     {
-        return view("components.go-back-button");
+        return view('components.ui.go-back-btn');
     }
 }

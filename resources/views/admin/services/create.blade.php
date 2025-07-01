@@ -8,7 +8,7 @@
 
 		<!-- Language tabs -->
 		<div class="mb-4">
-			<x-tabs :tabs="[
+			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
 			['id' => 'en', 'label' => 'EN'],
 		]">
@@ -35,7 +35,7 @@
 							placeholder="შეიყვანეთ აღწერა ინგლისურად" />
 					</div>
 				</div>
-			</x-tabs>
+			</x-ui.tabs>
 		</div>
 
 		<!-- Image and category id -->
