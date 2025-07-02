@@ -2,7 +2,7 @@
 
 @section('title', 'ჩვენს შესახებ')
 
-<x-admin.index-view :items="$infos" :resourceName="$resourceName" :hasSpeedDial="false" containerClass="row">
+<x-admin.index-view :items="$infos" :hasSpeedDial="false" containerClass="row">
     @foreach($infos as $info)
         <x-admin-card :document="$info" :title="$info->title->ka" :image="$info->image" :resourceName='$resourceName'
             :hasDelete="false" :hasVisibility="false" containerClass="col col-sm-7 m-auto">

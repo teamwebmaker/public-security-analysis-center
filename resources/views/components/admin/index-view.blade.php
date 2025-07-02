@@ -16,7 +16,7 @@
 
     <!-- Empty State Placeholder -->
     @if ($items->isEmpty())
-        <x-ui.empty-state-message :resourceName="$resourceName" :overlay="true" />
+        <x-ui.empty-state-message :resourceName="$resourceName ?? null" :overlay="true" />
     @endif
 
     <div class="row">
