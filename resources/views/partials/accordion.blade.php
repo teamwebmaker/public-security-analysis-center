@@ -52,6 +52,15 @@
             ]
         ],
         [
+            'id' => 'main_menus',
+            'icon' => 'bi-segmented-nav',
+            'label' => 'მენიუ',
+            'routes' => [
+                ['name' => 'main_menus.index', 'label' => 'სერვისები', 'icon' => 'bi-list-ul'],
+                ['name' => 'main_menus.create', 'label' => 'სერვისის შექმნა', 'icon' => 'bi-plus-circle'],
+            ]
+        ],
+        [
             'id' => 'infos',
             'icon' => 'bi-person-vcard',
             'label' => 'ჩვენს შესახებ',

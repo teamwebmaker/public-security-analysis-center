@@ -8,6 +8,8 @@ use App\Models\Project;
 use App\Models\Publication;
 use App\Models\Partner;
 use App\Models\Contact;
+use App\Models\Info;
+use App\Models\MainMenu;
 use App\Models\Mentor;
 use App\Models\Program;
 use App\Models\Service;
@@ -55,49 +57,13 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        // return view("admin.desk", [
-        //     "projects" => (object) [
-        //         "title" => "პროექტები",
-        //         "count" => Project::count(),
-        //     ],
-        //     "publications" => (object) [
-        //         "title" => "პუბლიკაციები",
-        //         "count" => Publication::count(),
-        //     ],
-        //     "programs" => (object) [
-        //         "title" => "პროგრამები",
-        //         "count" => Program::count(),
-        //     ],
-        //     "syllabuses" => (object) [
-        //         "title" => "სილაბუსები",
-        //         "count" => Syllabus::count(),
-        //     ],
-        //     "mentors" => (object) [
-        //         "title" => "მენტორები",
-        //         "count" => Mentor::count(),
-        //     ],
-        //     "partners" => (object) [
-        //         "title" => "პარტნიორები",
-        //         "count" => Partner::count(),
-        //     ],
-        //     "services" => (object) [
-        //         "title" => "სერვისები",
-        //         "count" => Service::count(),
-        //     ],
-        //     "service_categories" => (object) [
-        //         "title" => "სერვის კატეგორიები",
-        //         "count" => ServiceCategory::count(),
-        //     ],
-        //     "contacts" => (object) [
-        //         "title" => "შეტყობინებები",
-        //         "count" => Contact::count(),
-        //     ],
-        // ]);
         $resources = [
             'projects' => ['title' => 'პროექტები', 'model' => Project::class],
             'contacts' => ['title' => 'შეტყობინებები', 'model' => Contact::class],
             'partners' => ['title' => 'პარტნიორები', 'model' => Partner::class],
             'publications' => ['title' => 'პუბლიკაციები', 'model' => Publication::class],
+            'infos' => ['title' => 'ჩვენს შესახებ', 'model' => Info::class],
+            'main_menus' => ['title' => 'მენიუ', 'model' => MainMenu::class],
             // program
             'programs' => ['title' => 'პროგრამები', 'model' => Program::class],
             'syllabuses' => ['title' => 'სილაბუსები', 'model' => Syllabus::class],

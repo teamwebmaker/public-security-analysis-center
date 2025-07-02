@@ -18,11 +18,14 @@
                 <span class="small">ნახვა</span>
                 <i class="bi bi-eye ms-2 fs-6"></i>
             </a>
-            <a href="{{ $createRoute }}"
-                class="btn btn-sm btn-success rounded-pill px-3 d-inline-flex align-items-center shadow-sm">
-                <span class="small">შექმნა</span>
-                <i class="bi bi-plus-lg ms-2 fs-6"></i>
-            </a>
+            @if (isset($createRoute))
+                <a href="{{ $createRoute }}"
+                    class="btn btn-sm btn-success rounded-pill px-3 d-inline-flex align-items-center shadow-sm">
+                    <span class="small">შექმნა</span>
+                    <i class="bi bi-plus-lg ms-2 fs-6"></i>
+                </a>
+            @endif
+
         </div>
     </div>
 </div>

@@ -20,9 +20,27 @@ abstract class CrudController extends Controller
     // Remember field names should be the same as in database and in input form
     protected array $fileFields = []; // In case if user needs to upload multiple files in different paths (optional)
 
+    // Apply default sorting and make it changeable if needed
+    protected string $defaultOrderBy = 'updated_at';
+    protected string $defaultOrderDirection = 'desc';
+
+    protected function getOrderBy(): string
+    {
+        return $this->defaultOrderBy;
+    }
+
+    protected function getOrderDirection(): string
+    {
+        return $this->defaultOrderDirection;
+    }
+
+
     public function index()
     {
         $model = app($this->modelClass);
+        // sorting
+        $orderBy = $this->getOrderBy();
+        $direction = $this->getOrderDirection();
 
         $relations = is_array($this->belongsTo)
             ? $this->belongsTo
@@ -34,9 +52,9 @@ abstract class CrudController extends Controller
         $data = !empty($relations)
             ? $model
                 ->with($relations)
-                ->orderBy("id", "DESC")
+                ->orderBy($orderBy, $direction)
                 ->paginate(6)
-            : $model->orderBy("id", "DESC")->paginate(6);
+            : $model->orderBy($orderBy, $direction)->paginate(6);
 
         // Pass plural field and resource name to the view
         $baseData = [

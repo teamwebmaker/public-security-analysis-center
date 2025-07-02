@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\InfoController;
+use App\Http\Controllers\MainMenuController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
@@ -66,6 +67,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('partners', PartnerController::class)->except('show');
         Route::resource('publications', PublicationController::class)->except('show');
         Route::resource('infos', InfoController::class)->only(['index', 'edit', 'update']);
+        Route::resource('main_menus', MainMenuController::class)->except('show');
 
         // Programs
         Route::resource('programs', ProgramController::class)->except('show');

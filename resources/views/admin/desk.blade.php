@@ -114,6 +114,27 @@
             ])
         </div>
 
+        <!-- infos Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.desk-card', [
+                'icon' => 'bi-book',
+                'title' => $infos->title,
+                'count' => $infos->count,
+                'viewRoute' => route($infos->resourceName . '.index'),
+                // 'createRoute' => route($infos->resourceName . '.create'),
+            ])
+        </div>
+        <!-- main_menus Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.desk-card', [
+                'icon' => 'bi-book',
+                'title' => $main_menus->title,
+                'count' => $main_menus->count,
+                'viewRoute' => route($main_menus->resourceName . '.index'),
+                'createRoute' => route($main_menus->resourceName . '.create'),
+            ])
+        </div>
+
         <!-- Contacts Card -->
         {{-- <div class="col-12 col-md-6 col-xl-4">
             @include('components.desk-card', [
