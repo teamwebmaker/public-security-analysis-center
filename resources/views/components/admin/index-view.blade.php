@@ -26,5 +26,8 @@
     </div>
 
     <!-- Floating Speed Dial Button -->
-    <x-admin.speed-dial :resourceName="$resourceName" :isCreate="true" />
+    @if ($hasSpeedDial)
+        <x-admin.speed-dial :resourceName="$resourceName" :isCreate="true" />
+    @endif
+
 @endsection

@@ -16,6 +16,8 @@ class AdminCard extends Component
     public string $resourceName;
     public ?string $image;
     public ?string $containerClass;
+    public ?bool $hasDelete;
+    public ?bool $hasVisibility;
 
     /**
      * Create a new component instance.
@@ -25,13 +27,17 @@ class AdminCard extends Component
         string $title,
         string $resourceName,
         ?string $image = null,
-        ?string $containerClass = 'col-xl-4 col-lg-6 mb-4'
+        ?string $containerClass = 'col-xl-4 col-lg-6 mb-4',
+        ?bool $hasDelete = true,
+        ?bool $hasVisibility = true
     ) {
         $this->image = $image;
         $this->title = $title;
         $this->document = $document;
         $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;
+        $this->hasDelete = $hasDelete;
+        $this->hasVisibility = $hasVisibility;
     }
 
     public function render(): View|Closure|string

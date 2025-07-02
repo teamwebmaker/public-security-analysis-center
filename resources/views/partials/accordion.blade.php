@@ -51,14 +51,22 @@
                 ['name' => 'service_categories.create', 'label' => 'სერვის კატეგორიის შექმნა', 'icon' => 'bi-plus-circle'],
             ]
         ],
+        [
+            'id' => 'infos',
+            'icon' => 'bi-person-vcard',
+            'label' => 'ჩვენს შესახებ',
+            'routes' => [
+                ['name' => 'infos.index', 'label' => 'რედაქტირება', 'icon' => 'bi-pencil-square'],
+            ],
+        ],
     ];
 @endphp
 
 <div class="accordion" id="dashboard">
     @foreach ($accordionItems as $item)
         <x-accordion-item :id="$item['id']" :icon="$item['icon']" :label="$item['label']" :routes="$item['routes']" {{--
-        Adds .edit automatically to index and edit routes --}}
-        :active-routes="collect($item['routes'])->pluck('name')->merge(collect($item['routes'])->pluck('name')->map(fn($r) => str_replace('.index', '.edit', $r)))->unique()->toArray()" />
+            Adds .edit automatically to index and edit routes --}}
+            :active-routes="collect($item['routes'])->pluck('name')->merge(collect($item['routes'])->pluck('name')->map(fn($r) => str_replace('.index', '.edit', $r)))->unique()->toArray()" />
     @endforeach
 </div>
 

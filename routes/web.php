@@ -7,6 +7,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\PartnerController;
@@ -63,14 +64,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
         Route::resource('projects', ProjectController::class)->except('show');
         Route::resource('partners', PartnerController::class)->except('show');
+        Route::resource('publications', PublicationController::class)->except('show');
+        Route::resource('infos', InfoController::class)->only(['index', 'edit', 'update']);
+
         // Programs
         Route::resource('programs', ProgramController::class)->except('show');
         Route::resource('syllabuses', SyllabusController::class)->except('show');
-
-        // Mentors
         Route::resource('mentors', MentorController::class)->except('show');
 
-        Route::resource('publications', PublicationController::class)->except('show');
         // Services 
         Route::resource('service_categories', ServiceCategoryController::class)->except('show');
         Route::resource('services', ServiceController::class)->except('show');

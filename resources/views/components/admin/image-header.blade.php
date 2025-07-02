@@ -12,11 +12,9 @@
             style="max-height: {{ $height }}; object-position: center;">
 
         <!-- Always-visible icon in top-right -->
-        <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center justify-content-center rounded-1 shadow-sm bg-white"
-            style="width: 32px; height: 32px;">
-            <i class="bi bi-fullscreen text-dark fs-5"></i>
+        <div class="position-absolute top-0 end-0 ms-2 mt-2 d-flex align-items-center justify-content-center shadow-sm bg-white rounded-start-1"
+            style="width: 30px; height: 22px; ">
+            <i class="bi bi-aspect-ratio text-secondary fs-4"></i>
         </div>
-
-
     </a>
 </div>
