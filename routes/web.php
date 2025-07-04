@@ -33,9 +33,11 @@ Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about.page');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact.page');
 
 Route::get('/publications', [PageController::class, 'publications'])->name('publications.page');
-Route::post('/notification', [EmailController::class, 'sendNotification'])->name('send.notification');
+// Route::post('/notification', [EmailController::class, 'sendNotification'])->name('send.notification');
 
 // With Resource Controller
+
+Route::resource('contacts', ContactsController::class)->only(['store']);
 
 Route::get('/services', [PageController::class, 'services'])->name('services.page');
 Route::resource('services', ServiceController::class)->only('show')->parameters([
@@ -78,12 +80,11 @@ Route::prefix('admin')->group(function () {
         Route::resource('service_categories', ServiceCategoryController::class)->except('show');
         Route::resource('services', ServiceController::class)->except('show');
 
-        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::resource('contacts', ContactsController::class)->only([
             'index',
-            'show',
-            'destroy'
+            'destroy',
         ]);
+        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
     });
     Route::get('/', [AdminController::class, 'login'])->name('admin.login.page');
     Route::post('/auth', [AdminController::class, 'auth'])->name('admin.auth');

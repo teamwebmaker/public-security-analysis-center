@@ -1,6 +1,12 @@
 <?php
-$visibility = $document->visibility == 0
+$visibility = $document->visibility == 0;
+$descriptionText = is_object($document->description)
+    ? $document->description->ka ?? ($document->description->en ?? "")
+    : $document->description;
+$shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
+
 ?>
+
 <div class="{{ $containerClass }}">
     <div class="card h-100 border-0 bg-white overflow-hidden position-relative">
 
@@ -60,13 +66,24 @@ $visibility = $document->visibility == 0
 
 
             <!-- description -->
-            @if ($document->description)
-                    <p class="card-text text-muted line-clamp mb-4" style="--bs-line-clamp: 3;">
-                        {{ is_object($document->description)
-                ? ($document->description->ka ?? ($document->description->en ?? ''))
-                : $document->description }}
+            @if ($descriptionText)
+                <div @if($shouldTruncate) x-data="{ expanded: false }" @endif class="mb-4">
+                    <p class="card-text text-muted mb-0"
+                    :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
+                    style="@if($shouldTruncate)--bs-line-clamp: 3;@endif">
+                        {{ $descriptionText }}
                     </p>
+
+                    @if ($shouldTruncate)
+                        <button @click="expanded = !expanded" class="btn btn-link p-0 d-inline-flex align-items-center gap-1" type="button">
+                            <span x-show="!expanded">See more <i class="bi bi-chevron-down"></i></span>
+                            <span x-show="expanded">See less <i class="bi bi-chevron-up"></i></span>
+                        </button>
+                    @endif
+                </div>
             @endif
+
+
 
             <!-- Card Details slot -->
             <div class="mt-auto">
@@ -80,11 +97,13 @@ $visibility = $document->visibility == 0
         <div class="card-footer border-0 pt-0 pb-3 px-4 bg-white">
             <div class="d-flex justify-content-between gap-2">
                 <!-- Edit Button -->
-                <a href="{{ route($resourceName . '.edit', $document) }}"
-                    class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-pencil-square"></i>
-                    <span>Edit</span>
-                </a>
+                @if ($hasEdit)
+                    <a href="{{ route($resourceName . '.edit', $document) }}"
+                        class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit</span>
+                    </a>
+                @endif
 
                 @if ($hasDelete)
                     <!-- Delete Button -->

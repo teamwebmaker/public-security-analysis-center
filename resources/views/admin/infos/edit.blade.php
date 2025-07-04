@@ -63,7 +63,7 @@
 			<!-- email -->
 			<div class="col-md-6 mb-3">
 				<x-form.input type='email' name="email" label="ელ.ფოსტა" icon="envelope-at-fill	"
-					placeholder="მაგ: example@email.com" value="{{ old('email', $info->email) }}" />
+					placeholder="მაგ: example@email.com" value="{{ old('email', $info->email) }}" autocomplete="email" />
 			</div>
 
 			<!-- phone -->
@@ -71,7 +71,7 @@
 				<x-form.input type='tel' name="phone" label="ტელეფონი" icon="telephone-fill"
 					placeholder="მაგ: +995 XXX XXX XXX, ან: 032 XXX XX XX"
 					pattern="^(\+\d{3} \d{3} \d{3} \d{3}|\+\d{3} \d{3} \d{2} \d{2} \d{2}|\d{3} \d{3} \d{2} \d{2})$"
-					value="{{ old('phone', $info->phone) }}" />
+					value="{{ old('phone', $info->phone) }}" autocomplete="email" />
 
 			</div>
 		</div>

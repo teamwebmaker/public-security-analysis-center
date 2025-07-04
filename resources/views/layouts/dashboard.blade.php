@@ -36,13 +36,20 @@
                         </a>
                     </div>
 
-                    <form method="POST" action="{{ route('admin.logout') }}">
-                        @csrf
-                        <button type="submit" class="btn logout-btn d-flex gap-2 align-items-center ">
-                            <i class="bi bi-box-arrow-right fs-5 "></i>
-                            <span class="fs-8  d-none d-sm-block">გასვლა</span>
-                        </button>
-                    </form>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="{{ route('contacts.index') }}" class="btn logout-btn">
+                            <i class="bi bi-mailbox2-flag fs-4"></i>
+                        </a>
+
+                        <form method="POST" action="{{ route('admin.logout') }}">
+                            @csrf
+                            <button type="submit" class="btn logout-btn d-flex gap-2 align-items-center ">
+                                <i class="bi bi-box-arrow-right fs-5 "></i>
+                                <span class="fs-8  d-none d-sm-block">გასვლა</span>
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
 
             </nav>

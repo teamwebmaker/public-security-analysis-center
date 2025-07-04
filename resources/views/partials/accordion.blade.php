@@ -1,6 +1,15 @@
 @php
     $accordionItems = [
         [
+            'id' => 'contacts',
+            'icon' => 'bi-mailbox2-flag',
+            'label' => 'შეტყობინებები',
+            'routes' => [
+                ['name' => 'contacts.index', 'label' => 'პროექტების ნახვა', 'icon' => 'bi-list-ul'],
+            ],
+            'active-routes' => ['contacts.index',],
+        ],
+        [
             'id' => 'projects',
             'icon' => 'bi-folder-plus',
             'label' => 'პროექტები',

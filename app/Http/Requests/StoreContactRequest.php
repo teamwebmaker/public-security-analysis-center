@@ -24,9 +24,9 @@ class StoreContactRequest extends FormRequest
         return [
             'full_name' => 'string|min:3|max:200',
             'subject' => 'string|min:3|max:200',
-            'email' => 'required|email',
+            'email' => 'required|email|min:5|max:500',
+            'phone' => 'nullable|min:5|max:20',
             'message' => 'required|min:5',
-            'phone' => 'string|min:9'
         ];
     }
 }

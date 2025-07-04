@@ -1,47 +1,47 @@
 @extends('layouts.dashboard')
-@section('title', 'Contacts List')
-@section('main')
-    @session('success')
-        <div class="alert alert-success" role="alert" x-data="{ show: true }" x-show="show"
-            x-init="setTimeout(() => show = false, 3000)">
-            {{ $value }}
-        </div>
-    @endsession
-    <div class="row">
-        @foreach($contacts as $contact)
-            <div class="col-xl-4 col-lg-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title truncate" title="{{ $contact->email }}">
+@section('title', 'შეტყობინებების სია')
+
+<x-admin.index-view :items="$contacts" :hasSpeedDial="false" :resourceName="$resourceName">
+    @foreach($contacts as $contact)
+        @php
+            $contact['description'] = $contact->message;
+        @endphp
+        <x-admin-card :document="$contact" :title="$contact->full_name" :resourceName='$resourceName' :hasEdit=" false"
+            :hasEdit="false" :hasVisibility="false">
+            <x-slot name="cardDetails">
+                <ul class="list-group list-group-flush mb-3">
+                    @if ($contact->subject)
+                        <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+                            <span>დანიშნულება:</span>
+                            <label class="text-truncate d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-custom-class="custom-tooltip" data-bs-title="{{ $contact->subject }}"
+                                style="max-width: 150px; cursor: pointer;">
+                                <span>{{ $contact->subject }}</span>
+                            </label>
+                        </li>
+
+                    @endif
+                    </li>
+                    @if ($contact->phone)
+                        <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+                            <span>ტელეფონი:</span>
+                            <span class="badge bg-primary rounded-pill">
+                                {{ $contact->phone }}
+                            </span>
+                        </li>
+                    @endif
+                    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+                        <span>ელ.ფოსტა:</span>
+                        <span class="badge bg-primary rounded-pill">
                             {{ $contact->email }}
-                        </h3>
-                        <p class="line-clamp">
-                            {{ $contact->message}}
-                        </p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <a type="button" class="btn btn-success d-flex gap-2"
-                            href="{{ route('contacts.show', ['contact' => $contact]) }}">
-                            <i class="bi bi-binoculars"></i>
-                            <span class="text-label">Show</span>
-                        </a>
-                        <form method="POST" action="{{ route('contacts.destroy', ['contact' => $contact]) }}"
-                            onsubmit="return confirm('წავშალოთ შეტყობინება?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger d-flex gap-2">
-                                <i class="bi bi-trash"></i>
-                                <span class="text-label">Delete</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {!! $contacts->withQueryString()->links('pagination::bootstrap-5') !!}
-        </div>
-    </div>
+                        </span>
+                    </li>
+                </ul>
+            </x-slot>
+        </x-admin-card>
+    @endforeach
+</x-admin.index-view>
+
+@section('scripts')
+    {!! load_script('scripts/contact.js') !!}
 @endsection

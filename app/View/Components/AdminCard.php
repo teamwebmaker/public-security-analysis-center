@@ -17,6 +17,7 @@ class AdminCard extends Component
     public ?string $image;
     public ?string $containerClass;
     public ?bool $hasDelete;
+    public ?bool $hasEdit;
     public ?bool $hasVisibility;
 
     /**
@@ -29,6 +30,7 @@ class AdminCard extends Component
         ?string $image = null,
         ?string $containerClass = 'col-xl-4 col-lg-6 mb-4',
         ?bool $hasDelete = true,
+        ?bool $hasEdit = true,
         ?bool $hasVisibility = true
     ) {
         $this->image = $image;
@@ -37,6 +39,7 @@ class AdminCard extends Component
         $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;
         $this->hasDelete = $hasDelete;
+        $this->hasEdit = $hasEdit;
         $this->hasVisibility = $hasVisibility;
     }
 
