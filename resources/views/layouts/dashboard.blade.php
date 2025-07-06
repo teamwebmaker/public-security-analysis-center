@@ -32,7 +32,7 @@
                         <a href="{{ route('admin.dashboard.page') }}" class=" user-profile-btn text-decoration-none">
                             {{-- <i class="bi bi-columns fs-5"></i> --}}
                             <i class="bi bi-columns-gap fs-5" style="rotate: 90deg;"></i>
-                            <span>მთავარი</span>
+                            <span class="d-none d-sm-block">მთავარი</span>
                         </a>
                     </div>
 
@@ -51,7 +51,7 @@
                             @csrf
                             <button type="submit" class="btn logout-btn d-flex gap-2 align-items-center ">
                                 <i class="bi bi-box-arrow-right fs-5 "></i>
-                                <span class="fs-8  d-none d-sm-block">გასვლა</span>
+                                <span class="fs-8 d-none d-sm-block">გასვლა</span>
                             </button>
                         </form>
                     </div>

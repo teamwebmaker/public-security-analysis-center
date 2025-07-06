@@ -1,7 +1,7 @@
 <style>
     .toast-fade-in-out-success {
         animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-            toastOut 0.4s cubic-bezier(0.7, 0, 0.84, 0) forwards 3.5s;
+            toastOut 0.4s cubic-bezier(0.7, 0, 0.84, 0) forwards 3.8s;
     }
 
     .toast-fade-in-out-error {
@@ -77,14 +77,20 @@
             opacity: 0.8;
         }
     }
-</style>
 
-<div class="position-fixed top-0 start-0 end-0 px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2" style="z-index: 1100;">
+    .toast-container {
+        pointer-events: none;
+    }
+
+    .toast {
+        pointer-events: auto;
+    }
+</style>
+<div class="toast-container position-fixed bottom-0 end-0  px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2" style="z-index: 1100;">
     @foreach ($messages as $message)
     <div x-data="{ show: true }" x-show="show" x-transition @if($type === 'success')
-        x-init="setTimeout(() => show = false, 4000)" @endif class="toast {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }}
-                rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg"
-        style="max-width: 350px;" role="alert" aria-live="assertive" aria-atomic="true">
+        x-init="setTimeout(() => show = false, 4000)" @endif class="toast mb-1 {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }} rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg" style="max-width: 350px;"
+        role="alert" aria-live="assertive" aria-atomic="true">
 
         <div class="d-flex align-items-center p-1">
             <div class="d-flex align-items-center gap-1 flex-grow-1">

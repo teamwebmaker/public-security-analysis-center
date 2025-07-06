@@ -114,6 +114,17 @@
             ])
         </div>
 
+        
+        <!-- contacts Card -->
+        <div class="col-12 col-md-6 col-xl-4">
+            @include('components.desk-card', [
+                'icon' => 'bi-mailbox2-flag',
+                'title' => $contacts->title,
+                'count' => $contacts->count,
+                'viewRoute' => route($contacts->resourceName . '.index'),
+            ])
+        </div>
+
         <!-- infos Card -->
         <div class="col-12 col-md-6 col-xl-4">
             @include('components.desk-card', [
@@ -121,9 +132,9 @@
                 'title' => $infos->title,
                 'count' => $infos->count,
                 'viewRoute' => route($infos->resourceName . '.index'),
-                // 'createRoute' => route($infos->resourceName . '.create'),
             ])
         </div>
+        
         <!-- main_menus Card -->
         <div class="col-12 col-md-6 col-xl-4">
             @include('components.desk-card', [

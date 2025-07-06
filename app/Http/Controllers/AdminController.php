@@ -55,19 +55,22 @@ class AdminController extends Controller
     public function dashboard()
     {
         $resources = [
-            'projects' => ['title' => 'პროექტები', 'model' => Project::class],
-            'contacts' => ['title' => 'შეტყობინებები', 'model' => Contact::class],
-            'partners' => ['title' => 'პარტნიორები', 'model' => Partner::class],
-            'publications' => ['title' => 'პუბლიკაციები', 'model' => Publication::class],
-            'infos' => ['title' => 'ჩვენს შესახებ', 'model' => Info::class],
-            'main_menus' => ['title' => 'მენიუ', 'model' => MainMenu::class],
+            // services
+            'services' => ['title' => 'სერვისები', 'model' => Service::class],
+            'service_categories' => ['title' => 'სერვის კატეგორიები', 'model' => ServiceCategory::class],
+
             // program
             'programs' => ['title' => 'პროგრამები', 'model' => Program::class],
             'syllabuses' => ['title' => 'სილაბუსები', 'model' => Syllabus::class],
             'mentors' => ['title' => 'მენტორები', 'model' => Mentor::class],
-            // services
-            'services' => ['title' => 'სერვისები', 'model' => Service::class],
-            'service_categories' => ['title' => 'სერვის კატეგორიები', 'model' => ServiceCategory::class],
+
+            'projects' => ['title' => 'პროექტები', 'model' => Project::class],
+            'partners' => ['title' => 'პარტნიორები', 'model' => Partner::class],
+            'publications' => ['title' => 'პუბლიკაციები', 'model' => Publication::class],
+
+            'contacts' => ['title' => 'შეტყობინებები', 'model' => Contact::class],
+            'infos' => ['title' => 'ჩვენს შესახებ', 'model' => Info::class],
+            'main_menus' => ['title' => 'მენიუ', 'model' => MainMenu::class],
         ];
 
         $data = collect($resources)->mapWithKeys(function ($item, $key) {

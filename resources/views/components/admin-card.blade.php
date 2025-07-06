@@ -16,7 +16,7 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
                 <x-admin.image-header :src="$image" :folder="$resourceName" :caption="'სურათი ' . $title" />
 
                 <!-- Updated Date Overlay -->
-                <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-transparent rounded-pill" style="z-index: 7777;">
+                <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-white rounded-pill" style="z-index: 7777;">
                     <span class="d-flex align-items-center gap-1 text-muted badge">
                         <i class="bi bi-pencil"></i>
                         {{ $document->updated_at->diffForHumans() }}
