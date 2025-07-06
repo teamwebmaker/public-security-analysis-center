@@ -6,7 +6,6 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\EmailController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\MainMenuController;
 use App\Http\Controllers\MentorController;
@@ -87,6 +86,7 @@ Route::prefix('admin')->group(function () {
         // Push notifications
         Route::post('/subscribe', [PushController::class, 'saveSubscription']);
         Route::post('/unsubscribe', [PushController::class, 'unsubscribe']);
+        Route::post('/check-subscription', [PushController::class, 'checkSubscription']);
 
         Route::get('/push-subscriptions', [PushController::class, 'index'])->name('push.index');
         Route::put('/push-subscriptions/{subscription}/approve', [PushController::class, 'approve'])->name('push.approve');

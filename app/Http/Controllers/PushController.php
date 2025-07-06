@@ -1,52 +1,75 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Http;
+
 use App\Models\PushSubscription;
 use Illuminate\Http\Request;
+use App\Services\SubscriptionMetaService;
 
 class PushController extends Controller
 {
-    protected string $resourceName = "push-subscriptions";
+    protected string $resourceName = 'push-subscriptions';
 
+    /**
+     * Displays the subscription list view with pagination.
+     */
     public function index()
     {
-        $subscriptions = PushSubscription::latest()->paginate(6);
         return view("admin.{$this->resourceName}.index", [
-            'subscriptions' => $subscriptions,
-            'resourceName' => $this->resourceName
+            'subscriptions' => PushSubscription::latest()->paginate(6),
+            'resourceName' => $this->resourceName,
         ]);
     }
 
-    // Updates approved status to 1 (true)
+    /**
+     * Approves a specific subscription (sets 'approved' to true).
+     */
     public function approve(PushSubscription $subscription)
     {
         $subscription->update(['approved' => true]);
         return back()->with('success', 'გამოწერა წარმატებით დამტკიცდა');
     }
 
-    // Deletes subscription
+    /**
+     * Rejects a specific subscription (deletes it).
+     */
     public function reject(PushSubscription $subscription)
     {
         $subscription->delete();
         return back()->with('success', 'გამოწერა უარყოფილია');
     }
 
-    // Gets subscription by endpoint and deletes it
+    /**
+     * Unsubscribes a user by endpoint (removes subscription from DB).
+     */
     public function unsubscribe(Request $request)
     {
-        $request->validate([
-            'endpoint' => 'required|url'
-        ]);
-
-        PushSubscription::where('subscriptions->endpoint', $request->endpoint)->delete();
+        $endpoint = $this->validateEndpoint($request);
+        $this->deleteByEndpoint($endpoint);
 
         return response()->json(['message' => 'გამოწერა წარმატებით გაუქმდა']);
     }
 
-    // Saves new subscription to database with additional info (like browser, os, ip, location)
-    public function saveSubscription(Request $request)
+    /**
+     * Checks if a given subscription exists based on the endpoint.
+     */
+    public function checkSubscription(Request $request)
     {
+        $endpoint = $this->validateEndpoint($request);
+        return response()->json(['exists' => $this->existsByEndpoint($endpoint)]);
+    }
+
+    /**
+     * Saves a new push subscription with metadata (browser, OS, location).
+     */
+    public function saveSubscription(Request $request, SubscriptionMetaService $meta)
+    {
+        $userAgent = $request->userAgent();
+        $ip = $request->ip();
+        $browser = $meta->detectBrowser($userAgent);
+        $os = $meta->detectOS($userAgent);
+        $location = $meta->getLocation($ip);
+
         $request->validate([
             'sub' => 'required|array',
             'sub.endpoint' => 'required|url',
@@ -57,89 +80,51 @@ class PushController extends Controller
 
         $endpoint = $request->input('sub.endpoint');
 
-        // Check if endpoint exists
-        $exists = PushSubscription::where('subscriptions->endpoint', $endpoint)->exists();
-
-        if ($exists) {
+        // Prevent duplicate subscriptions
+        if ($this->existsByEndpoint($endpoint)) {
             return response()->json(['message' => 'Subscription already exists'], 200);
         }
 
-        // Get browser information
-        $browser = $this->getBrowser();
-        $os = $this->getOS();
-        $userAgent = request()->header('User-Agent');
-        $ip = request()->ip();
-        $location = $this->getLocation($ip);
-
-        // Save new subscription (not approved by default)
+        // Save the new subscription with collected metadata
         PushSubscription::create([
             'subscriptions' => $request->sub,
-            'approved' => false, // Default to not approved
+            'approved' => false,
             'browser' => $browser,
             'os' => $os,
             'ip_address' => $ip,
             'country' => $location['country'] ?? null,
             'city' => $location['city'] ?? null,
-            'user_agent' => $userAgent
+            'user_agent' => $userAgent,
         ]);
 
         return response()->json(['message' => 'Subscription saved successfully. Awaiting approval.'], 200);
     }
 
-    // Helper methods to get browser and OS info
-    private function getBrowser()
+    // ========== 🔧 PRIVATE HELPERS ==========
+
+    /**
+     * Validates and returns a subscription endpoint from the request.
+     */
+    private function validateEndpoint(Request $request): string
     {
-        $userAgent = request()->header('User-Agent');
-        if (strpos($userAgent, 'Opera') || strpos($userAgent, 'OPR/'))
-            return 'Opera';
-        elseif (strpos($userAgent, 'Edge'))
-            return 'Edge';
-        elseif (strpos($userAgent, 'Chrome'))
-            return 'Chrome';
-        elseif (strpos($userAgent, 'Safari'))
-            return 'Safari';
-        elseif (strpos($userAgent, 'Firefox'))
-            return 'Firefox';
-        elseif (strpos($userAgent, 'MSIE') || strpos($userAgent, 'Trident/7'))
-            return 'Internet Explorer';
-        return 'Unknown';
+        return $request->validate([
+            'endpoint' => 'required|url',
+        ])['endpoint'];
     }
 
-    private function getOS()
+    /**
+     * Checks if a subscription exists by endpoint inside the JSON field.
+     */
+    private function existsByEndpoint(string $endpoint): bool
     {
-        $userAgent = request()->header('User-Agent');
-        if (strpos($userAgent, 'Windows'))
-            return 'Windows';
-        elseif (strpos($userAgent, 'Mac'))
-            return 'Mac';
-        elseif (strpos($userAgent, 'Linux'))
-            return 'Linux';
-        elseif (strpos($userAgent, 'Android'))
-            return 'Android';
-        elseif (strpos($userAgent, 'iOS'))
-            return 'iOS';
-        return 'Unknown';
+        return PushSubscription::where('subscriptions->endpoint', $endpoint)->exists();
     }
 
-
-    private function getLocation($ip)
+    /**
+     * Deletes a subscription by endpoint from the JSON field.
+     */
+    private function deleteByEndpoint(string $endpoint): void
     {
-        // If you have an API key, add it like ?token=YOUR_TOKEN
-        $response = Http::get("https://ipinfo.io/{$ip}/json");
-
-        if ($response->successful()) {
-            $data = $response->json();
-
-            return [
-                'country' => $data['country'] ?? null,
-                'city' => $data['city'] ?? null,
-            ];
-        }
-
-        return [
-            'country' => null,
-            'city' => null,
-        ];
+        PushSubscription::where('subscriptions->endpoint', $endpoint)->delete();
     }
-
 }
