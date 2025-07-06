@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreContactRequest;
 use App\Models\Contact;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
+use App\Jobs\SendContactNotificationJob;
+use App\Http\Requests\StoreContactRequest;
 
 class ContactsController extends Controller
 {
@@ -16,34 +14,35 @@ class ContactsController extends Controller
      */
     public function index()
     {
+        // if admin is coming from browser notification take id from url
+        $selectedContactId = request()->query()
+            ? (int) array_keys(request()->query())[0]
+            : null;
+
+
         return view('admin.contacts.index', [
-            'contacts' => Contact::orderBy('created_at', 'DESC')->paginate(10),
+            'contacts' => Contact::orderBy('created_at', 'DESC')->paginate(6),
+            'selectedContactId' => $selectedContactId,
             'resourceName' => $this->resourceName
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(StoreContactRequest $request)
     {
-        // Validate the request
         $validated = $request->validated();
-        // Prepare data for database
-        $data = [
+
+        $contact = Contact::create([
             'subject' => $request->filled('subject') ? $request->subject : 'without subject',
-            ...$validated
-        ];
+            ...$validated,
+        ]);
 
-        // Store in DB
-        Contact::create($data);
+        // Dispatch the job ( send the notification )
+        dispatch(new SendContactNotificationJob($contact));
 
-        // Send email notification
-        // Mail::to('davitgogidze@gmail.com')->send(new EmailNotification($data['subject'], $data['description']));
-
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'თქვენი შეტყობინება წარმატებით გაიგზავნა');
+        return redirect()->back()->with('success', 'Your message has been sent.');
     }
+
     /**
      * Remove the specified resource from storage.
      */

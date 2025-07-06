@@ -8,7 +8,7 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
 ?>
 
 <div class="{{ $containerClass }}">
-    <div class="card h-100 border-0 bg-white overflow-hidden position-relative">
+    <div class="{{ $cardClass }}">
 
         <!-- Card Image -->
         <div class="card-header p-0 border-0 position-relative" style="isolation: isolate;">
@@ -16,14 +16,13 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
                 <x-admin.image-header :src="$image" :folder="$resourceName" :caption="'სურათი ' . $title" />
 
                 <!-- Updated Date Overlay -->
-                <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-white rounded-pill" style="z-index: 7777;">
+                <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-transparent rounded-pill" style="z-index: 7777;">
                     <span class="d-flex align-items-center gap-1 text-muted badge">
                         <i class="bi bi-pencil"></i>
                         {{ $document->updated_at->diffForHumans() }}
                     </span>
                 </div>
             @endif
-
 
             <!-- Visibility Overlay -->
             @if ($hasVisibility)
@@ -43,7 +42,7 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
         </div>
 
         <!-- Card Body -->
-        <div class="card-body d-flex flex-column bg-white">
+        <div class="card-body d-flex flex-column bg-transparent">
             <div class="d-flex align-items-start gap-2">
                 <!-- title -->
                 <h3 class="card-title h5 mb-0 text-wrap">
@@ -83,19 +82,16 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
                 </div>
             @endif
 
-
-
             <!-- Card Details slot -->
             <div class="mt-auto">
                 {{ $cardDetails ?? '' }}
             </div>
         </div>
 
-
-
         <!-- Card Footer -->
-        <div class="card-footer border-0 pt-0 pb-3 px-4 bg-white">
+        <div class="card-footer border-0 pt-0 pb-3 px-4 bg-transparent">
             <div class="d-flex justify-content-between gap-2">
+                {{ $cardFooter ?? '' }}
                 <!-- Edit Button -->
                 @if ($hasEdit)
                     <a href="{{ route($resourceName . '.edit', $document) }}"
@@ -118,7 +114,6 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
                         </button>
                     </form>
                 @endif
-
             </div>
         </div>
     </div>

@@ -134,17 +134,5 @@
                 'createRoute' => route($main_menus->resourceName . '.create'),
             ])
         </div>
-
-        <!-- Contacts Card -->
-        {{-- <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
-                'icon' => 'bi-envelope',
-                'title' => $contacts->title,
-                'count' => $contacts->count,
-                'viewRoute' => route($contacts->resourceName . '.index'),
-                'createRoute' => route($contacts->resourceName . '.create'),
-            ])
-        </div> --}}
-
     </div>
 @endsection

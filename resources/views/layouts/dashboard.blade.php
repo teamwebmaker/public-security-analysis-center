@@ -37,10 +37,16 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-2">
+                        <!-- Contacts  -->
                         <a href="{{ route('contacts.index') }}" class="btn logout-btn">
                             <i class="bi bi-mailbox2-flag fs-4"></i>
                         </a>
+                        <!-- subscriptions  -->
+                        <a href="{{ route('push.index') }}" class="btn logout-btn">
+                            <i class="bi bi-bell-fill fs-4"></i>
+                        </a>
 
+                        <!-- Logout -->
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
                             <button type="submit" class="btn logout-btn d-flex gap-2 align-items-center ">
