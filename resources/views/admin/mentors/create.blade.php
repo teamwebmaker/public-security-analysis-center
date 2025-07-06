@@ -36,8 +36,8 @@
 		<div class="row mb-3">
 			<!-- Image -->
 			<div class="col-md-6">
-				<x-form.input type="file" id="mentor-image" name="image" label="სურათი" />
-				<x-form.image-upload-preview id="mentor" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 
 			<div class="col-md-6">
@@ -56,5 +56,5 @@
 
 @endsection
 @section('scripts')
-	{!! load_script('scripts/mentor/mentor.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection

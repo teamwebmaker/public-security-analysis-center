@@ -8,7 +8,3 @@
             :resourceName='$resourceName' />
     @endforeach
 </x-admin.index-view>
-
-@section('scripts')
-    <script></script>
-@endsection

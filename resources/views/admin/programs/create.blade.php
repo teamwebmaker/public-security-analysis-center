@@ -44,7 +44,7 @@
 				<div class="card h-100 border">
 					<div class="card-body">
 						<x-form.input type="file" id="program-image" name="image" label="პროგრამის სურათი" />
-						<x-form.image-upload-preview id="program" />
+						<x-form.image-upload-preview id="program-image" />
 					</div>
 				</div>
 			</div>
@@ -53,7 +53,7 @@
 					<div class="card-body">
 						<x-form.input type="file" id="certificate-image" name="certificate_image" label="სერთიფიკატის სურათი"
 							:required="false" />
-						<x-form.image-upload-preview id="certificate" />
+						<x-form.image-upload-preview id="certificate-image" />
 					</div>
 				</div>
 			</div>

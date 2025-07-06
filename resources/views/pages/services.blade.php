@@ -75,5 +75,5 @@
 	</main>
 @endsection
 @section('scripts')
-	{!! load_script('scripts/services.js') !!}
+	{!! load_script('scripts/servicesPublic.js') !!}
 @endsection

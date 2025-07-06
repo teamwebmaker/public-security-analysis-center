@@ -1,11 +1,3 @@
-import ImageUploader from "../imageUploader.js";
-
-document.addEventListener("DOMContentLoaded", function() {
-   new ImageUploader('service-image', 'service-image-preview');
-});
-
-
-
 /**
  * Initializes sortable value suggestions and used-sortable badges 
  * for service category selection.

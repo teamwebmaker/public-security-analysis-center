@@ -12,7 +12,3 @@
 		</x-admin-card>
 	@endforeach
 </x-admin.index-view>
-
-@section('scripts')
-	{!! load_script('scripts/program/programIndex.js') !!}
-@endsection

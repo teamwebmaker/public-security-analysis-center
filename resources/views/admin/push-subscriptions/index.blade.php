@@ -33,6 +33,5 @@
         window.APP_CSRF_TOKEN = "{{ csrf_token() }}";
     </script>
 
-    {!! load_script('scripts/bootstrap/bootstrapTooltips.js') !!}
     {!! load_script('scripts/toggle_notification_subscription.js') !!}
 @endsection

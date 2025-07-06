@@ -78,8 +78,8 @@
 
 		<!-- Image -->
 		<div class="col-md-5">
-			<x-form.input type="file" id="info-image" name="image" label="სურათი" :required="false" />
-			<x-form.image-upload-preview id="info" />
+			<x-form.input type="file" id="image" name="image" label="სურათი" :required="false" />
+			<x-form.image-upload-preview id="image" />
 		</div>
 
 
@@ -87,5 +87,5 @@
 @endsection
 
 @section('scripts')
-	{!! load_script('scripts/infos.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection

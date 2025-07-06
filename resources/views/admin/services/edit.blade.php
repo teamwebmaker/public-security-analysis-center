@@ -48,8 +48,8 @@
 		<!-- Image and visibility -->
 		<div class="row mb-4">
 			<div class="col-md-6">
-				<x-form.input type="file" id="service-image" name="image" label="სურათი" :required="false" />
-				<x-form.image-upload-preview id="service" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" :required="false" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 			<div class="col-md-6">
 				<x-form.select name="service_category_id" :options="$serviceCategories" label="კატეგორია"
@@ -86,6 +86,7 @@
 
 @section('scripts')
 	{!! load_script('scripts/service/serviceEdit.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 
 	<script>
 		// Pass services to JS	

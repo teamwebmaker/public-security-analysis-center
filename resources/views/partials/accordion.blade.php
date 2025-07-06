@@ -61,6 +61,14 @@
             ]
         ],
         [
+            'id' => 'infos',
+            'icon' => 'bi-person-vcard',
+            'label' => 'ჩვენს შესახებ',
+            'routes' => [
+                ['name' => 'infos.index', 'label' => 'რედაქტირება', 'icon' => 'bi-pencil-square'],
+            ],
+        ],
+        [
             'id' => 'main_menus',
             'icon' => 'bi-segmented-nav',
             'label' => 'მენიუ',
@@ -68,14 +76,6 @@
                 ['name' => 'main_menus.index', 'label' => 'სერვისები', 'icon' => 'bi-list-ul'],
                 ['name' => 'main_menus.create', 'label' => 'სერვისის შექმნა', 'icon' => 'bi-plus-circle'],
             ]
-        ],
-        [
-            'id' => 'infos',
-            'icon' => 'bi-person-vcard',
-            'label' => 'ჩვენს შესახებ',
-            'routes' => [
-                ['name' => 'infos.index', 'label' => 'რედაქტირება', 'icon' => 'bi-pencil-square'],
-            ],
         ],
     ];
 @endphp

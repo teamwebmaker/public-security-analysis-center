@@ -30,7 +30,7 @@
 		</div>
 
 		<div class="row">
-			<!-- Image -->
+			<!-- sorted -->
 			<div class="col-md-6">
 				<x-form.input type="number" id="sorted" name="sorted" label="რიგითობა" value="{{ old('sorted') }}"
 					placeholder="რიგის ნომერი" min="1" />
@@ -44,7 +44,4 @@
 		</div>
 	</x-admin.crud.form-container>
 
-@endsection
-@section('scripts')
-	{!! load_script('scripts/partner.js') !!}
 @endsection

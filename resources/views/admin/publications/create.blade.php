@@ -39,8 +39,8 @@
 		<!-- Image and PDF -->
 		<div class="row mb-4">
 			<div class="col-md-6">
-				<x-form.input type="file" id="publication-image" name="image" label="სურათი" />
-				<x-form.image-upload-preview id="publication" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 			<div class="col-md-6">
 				<x-form.input type="file" name="file" label="pdf დოკუმენტი" :isImage="false" accept="application/pdf" />
@@ -58,5 +58,5 @@
 @endsection
 
 @section('scripts')
-	{!! load_script('scripts/publication/publicationCreate.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection

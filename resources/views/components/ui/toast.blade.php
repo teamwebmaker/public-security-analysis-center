@@ -86,7 +86,7 @@
         pointer-events: auto;
     }
 </style>
-<div class="toast-container position-fixed bottom-0 end-0  px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2" style="z-index: 1100;">
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2" style="z-index: 1100;">
     @foreach ($messages as $message)
     <div x-data="{ show: true }" x-show="show" x-transition @if($type === 'success')
         x-init="setTimeout(() => show = false, 4000)" @endif class="toast mb-1 {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }} rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg" style="max-width: 350px;"

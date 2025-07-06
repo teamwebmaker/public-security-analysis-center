@@ -17,14 +17,8 @@
                             </label>
                         </li>
                     @endforeach
-
                 </ul>
             </x-slot>
-
         </x-admin-card>
     @endforeach
 </x-admin.index-view>
-
-@section('scripts')
-    {!! load_script('scripts/mentor/mentorIndex.js') !!}
-@endsection

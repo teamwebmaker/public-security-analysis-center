@@ -43,13 +43,11 @@
 			</x-ui.tabs>
 		</div>
 
-
-
 		<div class="row mb-3">
 			<!-- Image -->
 			<div class="col-md-6">
-				<x-form.input type="file" id="mentor-image" name="image" label="სურათი" :required="false" />
-				<x-form.image-upload-preview id="mentor" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" :required="false" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 
 			<!-- Visibility -->
@@ -66,5 +64,5 @@
 
 @endsection
 @section('scripts')
-	{!! load_script('scripts/mentor/mentor.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection

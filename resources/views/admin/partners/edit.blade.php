@@ -26,8 +26,8 @@
 		<div class="row">
 			<!-- Image -->
 			<div class="col-md-6">
-				<x-form.input type="file" id="partner-image" name="image" label="სურათი" :required="false" />
-				<x-form.image-upload-preview id="partner" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" :required="false" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 			<!-- Visibility -->
 			<div class="col-md-6">
@@ -39,5 +39,5 @@
 @endsection
 
 @section('scripts')
-	{!! load_script('scripts/partner.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection

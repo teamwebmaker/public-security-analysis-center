@@ -49,8 +49,8 @@
 		<div class="row">
 			<!-- Image -->
 			<div class="col-md-6">
-				<x-form.input type="file" id="project-image" name="image" label="სურათი" :required="false" />
-				<x-form.image-upload-preview id="project" />
+				<x-form.input type="file" id="image" name="image" label="სურათი" :required="false" />
+				<x-form.image-upload-preview id="image" />
 			</div>
 			<!-- visibility -->
 			<div class="col-md-6">
@@ -62,5 +62,5 @@
 @endsection
 
 @section('scripts')
-	{!! load_script('scripts/project/projectEdit.js') !!}
+	{!! load_script('scripts/imgUploadInit.js') !!}
 @endsection
