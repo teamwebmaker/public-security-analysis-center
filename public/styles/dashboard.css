@@ -11,6 +11,11 @@ body {
    font-family: 'Nunito', sans-serif;
 }
 
+
+.sidebar::-webkit-scrollbar {
+   display: none;
+}
+
 .dashboard-wrapper {
    display: flex;
    min-height: 100dvh;
@@ -23,6 +28,8 @@ body {
    z-index: 1000;
    background: #fff;
    transition: all 0.3s;
+
+   scrollbar-width: none; -ms-overflow-style: none;
 }
 
 .sidebar-brand {

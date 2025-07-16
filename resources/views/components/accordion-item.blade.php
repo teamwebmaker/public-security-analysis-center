@@ -1,28 +1,15 @@
-@php
-    $routeName = request()->route()->getName();
-    $isOpen = in_array($routeName, $activeRoutes);
-@endphp
-
-<div class="accordion-item">
-    <h2 class="accordion-header">
-        <button class="accordion-button d-flex gap-2 {{ $isOpen ? '' : 'collapsed' }}" type="button"
-            data-bs-toggle="collapse" data-bs-target="#{{ $id }}" aria-expanded="{{ $isOpen ? 'true' : 'false' }}"
-            aria-controls="{{ $id }}">
-            <i class="bi {{ $icon }}"></i>
-            <span class="btn-label">{{ $label }}</span>
+<div class="accordion-item {{ $open ? 'show' : '' }}">
+    <h2 class="accordion-header" id="heading-{{ $id }}">
+        <button class="accordion-button {{ $open ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapse-{{ $id }}" aria-expanded="{{ $open ? 'true' : 'false' }}"
+            aria-controls="collapse-{{ $id }}">
+            <i class="bi {{ $icon }} me-2 fs-5"></i> {{ $label }}
         </button>
     </h2>
-    <div id="{{ $id }}" class="accordion-collapse collapse {{ $isOpen ? 'show' : '' }}" data-bs-parent="#dashboard">
+    <div id="collapse-{{ $id }}" class="accordion-collapse collapse {{ $open ? 'show' : '' }}"
+        aria-labelledby="heading-{{ $id }}" data-bs-parent="#{{ $parent }}">
         <div class="accordion-body">
-            <div class="list-group list-group-flush">
-                @foreach ($routes as $route)
-                    <a href="{{ route($route['name']) }}"
-                        class="list-group-item list-group-item-action nav-link @if($routeName === $route['name']) active @endif">
-                        <i class="bi {{ $route['icon'] }}"></i>
-                        {{ $route['label'] }}
-                    </a>
-                @endforeach
-            </div>
+            {{ $slot }}
         </div>
     </div>
 </div>

@@ -5,12 +5,15 @@
     @include('partials.head')
     {!! load_style('styles/dashboard.css') !!}
 </head>
+<style>
+
+</style>
 
 <body>
     <div class="dashboard-wrapper">
         <!-- Sidebar -->
-        <div class="sidebar shadow">
-            <div class="sidebar-brand d-flex align-items-center justify-content-between justify-content-md-center p-3 ">
+        <div class="sidebar shadow overflow-y-auto">
+            <div class="sidebar-brand d-flex align-items-center justify-content-between justify-content-md-center p-3">
                 <span class="fs-5 fw-bold" style="cursor: default;">სამართავი პანელი</span>
                 <button class="btn-close d-md-none" aria-label="Close"></button>
             </div>
