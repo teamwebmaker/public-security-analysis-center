@@ -9,8 +9,8 @@
         <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
     @endif
 
-    <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
-        class="{{ trim($class) }} @error($name) is-invalid @enderror" @if ($minlength !== null)
+    <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}" class="{{ trim($class) }}
+         @if ($displayError) @error($name) is-invalid @enderror @endif" @if ($minlength !== null)
         minlength="{{ $minlength }}" @endif @if ($maxlength) maxlength="{{ $maxlength }}" @endif @if($value) @endif
         @if($value !== null) value="{{ $value }}" @endif @if($placeholder) placeholder="{{ $placeholder }}" @endif
         @if($type == 'file') accept="{{ $accept }}" @endif @if($required) required @endif {{ $attributes }}>
@@ -19,11 +19,14 @@
         <span class="input-group-text"><i class="bi bi-{{ $icon }}"></i></span>
     @endif
 
-    @error($name)
-        <div class="invalid-feedback">
-            {{ $message }}
-        </div>
-    @enderror
+    @if ($displayError)
+        @error($name)
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
+    @endif
+
 </div>
 
 @if ($type == 'file' && $isImage)

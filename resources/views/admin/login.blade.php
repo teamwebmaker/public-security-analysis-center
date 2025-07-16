@@ -2,48 +2,32 @@
 <html lang="en">
 
 <head>
-    @include('partials.head')
+    @extends('partials.head')
+    @section('title', 'ადმინის ავტორიზაცია')
 </head>
 
-<body data-languge="en">
-    <div class="container-fluid py-5">
-        <div class="container">
-            <h2 class="card-title text-center mb-4 fw-bold text-secondary">
-                <i class="bi bi-door-open-fill"></i>
-                <span class="title-label">
-                    ავტორიზაცია
-                </span>
-            </h2>
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <form method="POST" action="{{ route('admin.auth') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Email" name="email" />
-                            @session('email')
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {{ $value }}
-                                </div>
-                            @endsession
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Password" name="password">
-                            @session('password')
-                                <div class="alert alert-danger mt-2" role="alert">
-                                    {{ $value }}
-                                </div>
-                            @endsession
-                        </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </form>
-                </div>
+<!-- Display global errors -->
+@if ($errors->any())
+    <x-ui.toast :messages="$errors->all()" type="error" />
+@endif
+
+<body data-language="en" style="font-family: 'Nunito', sans-serif">
+    <x-auth.wrapper>
+        <x-auth.auth-form route="admin.auth" type="login">
+            <div class="mb-3">
+                <x-form.input type="email" name="email" label="ელ.ფოსტა" :displayError="false"
+                    placeholder="შეიყვანეთ ელ.ფოსტა" />
             </div>
-        </div>
-    </div>
+            <div class="mb-4">
+                <x-form.input type="password" name="password" label="პაროლი" :displayError="false"
+                    placeholder="შეიყვანეთ პაროლი" />
+            </div>
+        </x-auth.auth-form>
+    </x-auth.wrapper>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    {!! load_script('scripts/bootstrap/bootstrapValidation.js') !!}
 </body>
 
 </html>

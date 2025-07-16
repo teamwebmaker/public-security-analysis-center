@@ -15,6 +15,8 @@ class Input extends Component
     public bool $required;
     public bool $isImage;
 
+    public bool $displayError;
+
     public string $placeholder;
     public string $accept;
 
@@ -22,6 +24,7 @@ class Input extends Component
 
     public ?string $icon;
     public ?string $iconPosition;
+
 
 
     public ?int $minlength = null;
@@ -35,6 +38,7 @@ class Input extends Component
         $value = null,
         bool $required = true,
         bool $isImage = true,
+        bool $displayError = true,
         string $placeholder = '',
         ?string $label = null,
         ?string $icon = null,
@@ -48,6 +52,7 @@ class Input extends Component
         $this->value = $value ?? old($name);
         $this->required = $required;
         $this->isImage = $isImage;
+        $this->displayError = $displayError;
         $this->placeholder = $placeholder;
         $this->label = $label;
         $this->icon = $icon;

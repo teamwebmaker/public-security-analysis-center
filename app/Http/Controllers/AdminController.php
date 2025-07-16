@@ -31,23 +31,22 @@ class AdminController extends Controller
 
     public function auth(Request $request)
     {
+        // Validate request (auto-redirects with errors if failed)
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
+        // Manual authentication check
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return back()->with('email', 'ელ.ფოსტა არასწორია');
-        }
-
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->with('password', 'პაროლი არასწორია');
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'email' => 'პაროლი ან ელ.ფოსტა არასწორია',
+            ]);
         }
 
         Session::put('admin', $user);
-
         return redirect()->route('admin.dashboard.page');
     }
 
