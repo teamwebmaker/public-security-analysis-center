@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\Infos;
+namespace App\View\Components\Admin\Infos;
 
 use Closure;
 use Illuminate\Contracts\View\View;

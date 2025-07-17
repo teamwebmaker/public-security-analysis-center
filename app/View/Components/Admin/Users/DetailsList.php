@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components\Infos;
+namespace App\View\Components\Admin\Users;
 
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -21,6 +21,6 @@ class DetailsList extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.admin.infos.details-list');
+        return view('components.admin.users.details-list');
     }
 }

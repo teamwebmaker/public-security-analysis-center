@@ -18,9 +18,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'full_name',
         'email',
+        'phone',
         'password',
+        'role_id',
+        'is_active'
     ];
 
     /**
@@ -39,7 +42,25 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the user's role name (e.g., "admin").
+     */
+    public function getRoleName(): string
+    {
+        return $this->role->name ?? 'unknown';
+    }
+
+    public function scopeWithoutAdmins($query)
+    {
+        // Assuming role_id 1 = admin
+        return $query->where('role_id', '!=', 1);
+    }
 }

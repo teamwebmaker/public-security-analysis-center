@@ -7,7 +7,7 @@
         <x-admin-card :document="$info" :title="$info->title->ka" :image="$info->image" :resourceName='$resourceName'
             :hasDelete="false" :hasVisibility="false" containerClass="col col-sm-7 m-auto">
             <x-slot name="cardDetails">
-                <x-infos.details-list :info="$info" />
+                <x-admin.infos.details-list :info="$info" />
             </x-slot>
         </x-admin-card>
     @endforeach

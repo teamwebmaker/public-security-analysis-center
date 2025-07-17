@@ -15,6 +15,8 @@ use App\Http\Controllers\PushController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +63,10 @@ Route::prefix('admin')->group(function () {
     Route::middleware(['route.guard'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
+
+        // Management related routes
+        // Route::get('/register_users', [AuthController::class, 'SignUp'])->name('admin.users.index');
+        Route::resource('users', UserController::class)->except('show');
 
         // CRUD: Projects, Partners, Publications
         Route::resource('projects', ProjectController::class)->except('show');

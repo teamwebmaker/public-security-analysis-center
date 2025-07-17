@@ -16,6 +16,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Syllabus;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -23,7 +24,7 @@ class AdminController extends Controller
     public object $user;
     public function login()
     {
-        if (Session::has("admin")) {
+        if (Auth::check() && Auth::user()->getRoleName() == "admin") {
             return redirect()->route("admin.dashboard.page");
         }
         return view("admin.login");
@@ -46,7 +47,8 @@ class AdminController extends Controller
             ]);
         }
 
-        Session::put('admin', $user);
+        // Session::put('admin', $user);
+        Auth::login($user);
         return redirect()->route('admin.dashboard.page');
     }
 
@@ -86,7 +88,7 @@ class AdminController extends Controller
 
     public function logout()
     {
-        Session::forget("admin");
+        Auth::logout();
         return redirect()->route("admin.login.page");
     }
 }

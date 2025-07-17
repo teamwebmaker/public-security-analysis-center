@@ -23,7 +23,19 @@ return [
       'icon' => 'bi-building-gear',
       'label' => 'მენეჯმენტი',
       'parent' => 'dashboard',
-      'children' => [],
+      'children' => [
+         [
+            'id' => 'registration',
+            'icon' => 'bi-person-fill-gear',
+            'label' => 'დარეგისტრირება',
+            'routes' => [
+
+               ['name' => 'users.index', 'label' => 'მომხმარებლებთა სია', 'icon' => 'bi-list-ul'],
+               ['name' => 'users.create', 'label' => 'მომხმარებლის შექმნა', 'icon' => 'bi-plus-circle'],
+
+            ],
+         ]
+      ],
    ],
    [
 

@@ -70,7 +70,7 @@
                     </div>
                     <div class="col">
                         @include('components.desk-card', [
-                            'icon' => 'bi-person-lines-fill',
+                            'icon' => 'bi-person-vcard',
                             'title' => $mentors->title,
                             'count' => $mentors->count,
                             'viewRoute' => route($mentors->resourceName . '.index'),
@@ -118,7 +118,7 @@
         <!-- contacts Card -->
         <div class="col-12 col-md-6 col-xl-4">
             @include('components.desk-card', [
-                'icon' => 'bi-mailbox2-flag',
+                'icon' => 'bi-mailbox-flag',
                 'title' => $contacts->title,
                 'count' => $contacts->count,
                 'viewRoute' => route($contacts->resourceName . '.index'),

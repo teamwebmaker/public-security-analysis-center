@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\AppliesLocalScopes;
+use App\Http\Controllers\Traits\HandlesFileUpload;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -9,11 +11,16 @@ use Illuminate\Support\Facades\Route;
 
 abstract class CrudController extends Controller
 {
+
+    use AppliesLocalScopes, HandlesFileUpload;
     protected string $modelClass;
     protected string $contextField;
     protected string $contextFieldPlural;
 
     protected array $belongsTo = [];
+
+    // If model have local scopes type name without "scope" prefix. In morel with prefix in here without
+    protected array $localScopes = [];
 
     protected string $resourceName;
 
@@ -38,7 +45,11 @@ abstract class CrudController extends Controller
     public function index()
     {
         $model = app($this->modelClass);
-        // sorting
+
+        // Apply local scopes -> you now have a query builder
+        $query = $this->applyLocalScopes($model);
+
+        // Sorting
         $orderBy = $this->getOrderBy();
         $direction = $this->getOrderDirection();
 
@@ -48,13 +59,13 @@ abstract class CrudController extends Controller
                 ? explode(",", $this->belongsTo)
                 : []);
 
-        // Query with or without relations
+        // Use your original branching logic — just use $query instead of $model
         $data = !empty($relations)
-            ? $model
+            ? $query
                 ->with($relations)
                 ->orderBy($orderBy, $direction)
                 ->paginate(6)
-            : $model->orderBy($orderBy, $direction)->paginate(6);
+            : $query->orderBy($orderBy, $direction)->paginate(6);
 
         // Pass plural field and resource name to the view
         $baseData = [
@@ -136,36 +147,5 @@ abstract class CrudController extends Controller
         return redirect()
             ->route("{$this->resourceName}.index")
             ->with("success", "წარმატებით წაიშალა.");
-    }
-
-    protected function handleFileUpload(
-        Request $request,
-        string $fieldName,
-        string $destinationPath,
-        string $oldFile = null
-    ) {
-        $fileName = null;
-
-        // Upload new file
-        if ($request->file($fieldName)) {
-            $file = $request->file($fieldName);
-            $fileName =
-                uniqid() .
-                "-" .
-                time() .
-                "." .
-                $file->getClientOriginalExtension();
-            $file->move(public_path($destinationPath), $fileName);
-        }
-
-        // Delete old file if needed
-        if ($request->file($fieldName) && $oldFile) {
-            $oldFilePath = public_path($destinationPath . $oldFile);
-            if (File::exists($oldFilePath)) {
-                File::delete($oldFilePath);
-            }
-        }
-
-        return $fileName;
     }
 }
