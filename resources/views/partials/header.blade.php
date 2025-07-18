@@ -72,10 +72,37 @@
 										href="{{ route($menu_item->link) }}">{{ $menu_item->title->ka}}</a>
 								</li>
 							@endforeach
-							<li class="nav-item">
-								<a class="nav-link truncate gold-text position-relative animated-line" href="#">
-									<i class="bi bi-person-bounding-box fs-5"></i>
-								</a>
+
+
+							<li class="nav-item dropdown">
+								@auth
+									@if(Auth::user()->role->name !== 'admin')
+										<button class="nav-link dropdown-toggle gold-text position-relative" id="userDropdown"
+											data-bs-toggle="dropdown" aria-expanded="false">
+
+											<img src="{{ asset('images/users/default-user-image.png') }}" alt="user image" width="32"
+												height="32" class="rounded-circle">
+
+										</button>
+										<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+											<li>
+												<a class="dropdown-item" href="#">Profile</a>
+											</li>
+											<li>
+												<form method="POST" action="{{ route('logout') }}">
+													@csrf
+													<button type="submit" class="dropdown-item">Logout</button>
+												</form>
+											</li>
+										</ul>
+									@endif
+
+								@else
+									<a class="nav-link truncate gold-text position-relative animated-line"
+										href="{{ route('login') }}">
+										<i class="bi bi-person-bounding-box fs-5"></i>
+									</a>
+								@endauth
 							</li>
 						</ul>
 					</div>

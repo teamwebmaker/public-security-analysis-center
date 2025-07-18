@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\InfoController;
@@ -34,6 +35,11 @@ Route::get('/publications', [PageController::class, 'publications'])->name('publ
 Route::get('/services', [PageController::class, 'services'])->name('services.page');
 Route::get('/programs', [PageController::class, 'programs'])->name('programs.page');
 Route::get('/projects', [PageController::class, 'projects'])->name('projects.page');
+
+// users login & auth
+Route::get('/login', [AuthController::class, 'login'])->name('login.page');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/login', [AuthController::class, 'auth'])->name('login');
 
 // Single resource show routes
 Route::resource('services', ServiceController::class)
