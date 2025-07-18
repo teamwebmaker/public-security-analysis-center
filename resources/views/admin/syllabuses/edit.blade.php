@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin.admin-dashboard')
 @section('title', 'რედაქტირება: ' . $syllabus->title->ka)
 
 @section('main')

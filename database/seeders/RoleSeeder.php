@@ -19,7 +19,7 @@ class RoleSeeder extends Seeder
          ],
          [
             'id' => 2,
-            'name' => 'company_admin',
+            'name' => 'company_leader',
             'display_name' => 'კომპანიის ადმინი'
          ],
          [

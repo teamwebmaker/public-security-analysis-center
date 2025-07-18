@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin.admin-dashboard')
 @section('title', 'პროგრამის დამატება')
 
 @section('main')

@@ -1,4 +1,5 @@
-@extends('layouts.dashboard')
+{{-- @extends('layouts.dashboard') --}}
+@extends('layouts.admin.admin-dashboard')
 @section('title', 'Admin Dashboard')
 @section('main')
     <div class="row align-items-center g-4">

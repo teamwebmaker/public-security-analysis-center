@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.admin.admin-dashboard')
 @section('title', 'პროექტის შექმნა')
 @section('main')
 	<x-admin.crud.form-container method="POST" title="პროექტის შექმნა" action="{{ route($resourceName . '.store') }}"
