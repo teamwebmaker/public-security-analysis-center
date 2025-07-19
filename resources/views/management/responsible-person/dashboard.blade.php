@@ -1,5 +1,5 @@
 @extends('layouts.management.management-dashboard')
-@section('title', 'ფილიალის მონაცემები')
+@section('title', 'მონაცემთა პანელი')
 
 
 @section('sidebar-content')
@@ -13,5 +13,5 @@
    </div>
 @endsection
 @section('main')
-   <h1>THIS IS A Responsible_person DASHBOARD DATA</h1>
+   <h1>THIS IS A WORKER DASHBOARD DATA</h1>
 @endsection

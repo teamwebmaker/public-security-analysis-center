@@ -42,8 +42,10 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        // Attempt to get user
-        $user = User::where('email', $request->email)->first();
+        // Attempt to get admin users 
+        $user = User::where('email', $request->phone)
+            ->whereHas('role', fn($q) => $q->where('name', '==', 'admin'))
+            ->first();
 
         // Authentication check
         if (!$user || !Hash::check($request->password, $user->password)) {

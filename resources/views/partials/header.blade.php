@@ -57,14 +57,18 @@
 		<div class="container">
 			<nav class="navbar navbar-expand-xl py-1">
 				<div class="container-fluid">
+					<!-- Logo -->
 					<a class="navbar-brand" href="{{ route('home.page') }}">
 						<img src="{{ asset('images/themes/logo-psac.png') }}" class="page-logo" alt="psac-main-logo" />
 					</a>
+					<!-- Menu Toggle Button -->
 					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
 						aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 						<i class="bi bi-list gold-text"></i>
 					</button>
+
 					<div class="collapse navbar-collapse" id="navbarNav">
+						<!-- Menu Items -->
 						<ul class="navbar-nav justify-content-end w-100">
 							@foreach($MainMenu as $menu_item)
 								<li class="nav-item">
@@ -73,10 +77,12 @@
 								</li>
 							@endforeach
 
-							<li class="nav-item" style="padding-block: 3px; padding-left: 10px;">
+							<li class="nav-item">
 								@auth
 									@if(Auth::user()->role->name !== 'admin')
-										<x-management.user-avatar-dropdown />
+										<div style="padding-block: 3px; padding-left: 10px;">
+											<x-management.user-avatar-dropdown />
+										</div>
 									@else
 										<a class="nav-link truncate gold-text position-relative animated-line"
 											href="{{ route('login') }}">

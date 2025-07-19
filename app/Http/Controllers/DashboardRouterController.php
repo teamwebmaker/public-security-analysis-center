@@ -25,8 +25,8 @@ class DashboardRouterController extends Controller
                 return app()->call('App\Http\Controllers\CompanyLeaderController@displayDashboard');
             case 'responsible_person':
                 return app()->call('App\Http\Controllers\ResponsiblePersonController@displayDashboard');
-            // case 'worker':
-            //     return app()->call('App\Http\Controllers\CompanyLeaderDashboardController@show');
+            case 'worker':
+                return app()->call('App\Http\Controllers\WorkerController@displayDashboard');
             default:
                 abort(403);
         }
