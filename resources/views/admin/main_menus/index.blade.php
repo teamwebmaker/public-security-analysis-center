@@ -4,7 +4,7 @@
 
 <x-admin.index-view :items="$main_menus" :resourceName="$resourceName">
     @foreach($main_menus as $main_menu)
-        <x-admin-card :document="$main_menu" :title="$main_menu->title->ka" :resourceName='$resourceName'>
+        <x-admin.card :document="$main_menu" :title="$main_menu->title->ka" :resourceName='$resourceName'>
             <x-slot name="cardDetails">
                 <ul class="list-group list-group-flush mb-3">
                     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
@@ -21,6 +21,6 @@
                     </li>
                 </ul>
             </x-slot>
-        </x-admin-card>
+        </x-admin.card>
     @endforeach
 </x-admin.index-view>

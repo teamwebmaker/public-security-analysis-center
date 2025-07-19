@@ -9,13 +9,17 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Display login form or Redirect to dashboard
+     */
     public function login()
     {
-        // If user is already logged in, redirect based on role
+        // Redirect authenticated user based on role
         if (Auth::check()) {
-            return $this->redirectToDashboard(Auth::user());
+            return redirect()->route('management.dashboard.page');
         }
 
+        // Display login form
         return view('pages.login');
     }
 
@@ -39,26 +43,15 @@ class AuthController extends Controller
         }
 
         Auth::login($user);
-        return $this->redirectToDashboard($user);
+        return redirect()->route('management.dashboard.page');
     }
 
+    /**
+     * Logout authenticated user
+     */
     public function logout()
     {
         Auth::logout();
         return redirect()->route('home.page');
-    }
-
-    /**
-     * Redirect the user based on their role after login.
-     */
-    private function redirectToDashboard(User $user)
-    {
-        return redirect()->route('home.page');
-        // match ($user->role->name) {
-        //     'company_leader' => redirect()->route('company.dashboard'),
-        //     'responsible_person' => redirect()->route('responsible.dashboard'),
-        //     'worker' => redirect()->route('worker.dashboard'),
-        //     default => redirect()->route('home.page'),
-        // };
     }
 }

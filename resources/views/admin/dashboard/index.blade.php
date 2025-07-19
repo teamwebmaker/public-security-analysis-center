@@ -1,4 +1,3 @@
-{{-- @extends('layouts.dashboard') --}}
 @extends('layouts.admin.admin-dashboard')
 @section('title', 'Admin Dashboard')
 @section('main')
@@ -17,7 +16,7 @@
                 <!-- Side-by-side equal-width cards -->
                 <div class="d-flex flex-column flex-md-row gap-3">
                     <div class="w-100 w-md-50">
-                        @include('components.desk-card', [
+                        @include('components.admin.dashboard.dashboard-card', [
                             'icon' => 'bi-tools',
                             'title' => $services->title,
                             'count' => $services->count,
@@ -27,7 +26,7 @@
                     </div>
 
                     <div class="w-100 w-md-50">
-                        @include('components.desk-card', [
+                        @include('components.admin.dashboard.dashboard-card', [
                             'icon' => 'bi-ui-radios-grid',
                             'title' => $service_categories->title,
                             'count' => $service_categories->count,
@@ -52,7 +51,7 @@
                 <!-- Side-by-side equal-width cards -->
                 <div class="d-flex flex-wrap flex-column flex-md-row gap-3">
                     <div class="col">
-                        @include('components.desk-card', [
+                        @include('components.admin.dashboard.dashboard-card', [
                             'icon' => 'bi-briefcase',
                             'title' => $programs->title,
                             'count' => $programs->count,
@@ -61,7 +60,7 @@
                         ])
                     </div>
                     <div class="col">
-                        @include('components.desk-card', [
+                        @include('components.admin.dashboard.dashboard-card', [
                             'icon' => 'bi-file-earmark-text',
                             'title' => $syllabuses->title,
                             'count' => $syllabuses->count,
@@ -70,7 +69,7 @@
                         ])
                     </div>
                     <div class="col">
-                        @include('components.desk-card', [
+                        @include('components.admin.dashboard.dashboard-card', [
                             'icon' => 'bi-person-vcard',
                             'title' => $mentors->title,
                             'count' => $mentors->count,
@@ -84,7 +83,7 @@
 
         <!-- Projects Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-folder-plus',
                 'title' => $projects->title,
                 'count' => $projects->count,
@@ -95,7 +94,7 @@
 
         <!-- Partners Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-people',
                 'title' => $partners->title,
                 'count' => $partners->count,
@@ -106,7 +105,7 @@
 
         <!-- Publications Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-book',
                 'title' => $publications->title,
                 'count' => $publications->count,
@@ -118,7 +117,7 @@
         
         <!-- contacts Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-mailbox-flag',
                 'title' => $contacts->title,
                 'count' => $contacts->count,
@@ -128,7 +127,7 @@
 
         <!-- infos Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-book',
                 'title' => $infos->title,
                 'count' => $infos->count,
@@ -138,7 +137,7 @@
         
         <!-- main_menus Card -->
         <div class="col-12 col-md-6 col-xl-4">
-            @include('components.desk-card', [
+            @include('components.admin.dashboard.dashboard-card', [
                 'icon' => 'bi-book',
                 'title' => $main_menus->title,
                 'count' => $main_menus->count,

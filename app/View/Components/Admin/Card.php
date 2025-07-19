@@ -1,14 +1,13 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Admin;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
 
-
-class AdminCard extends Component
+class Card extends Component
 {
     public Model $document;
 
@@ -20,7 +19,6 @@ class AdminCard extends Component
     public ?bool $hasDelete;
     public ?bool $hasEdit;
     public ?bool $hasVisibility;
-
     /**
      * Create a new component instance.
      */
@@ -36,6 +34,7 @@ class AdminCard extends Component
         ?bool $hasEdit = true,
         ?bool $hasVisibility = true
     ) {
+        //
         $this->image = $image;
         $this->title = $title;
         $this->document = $document;
@@ -47,8 +46,11 @@ class AdminCard extends Component
         $this->hasVisibility = $hasVisibility;
     }
 
+    /**
+     * Get the view / contents that represent the component.
+     */
     public function render(): View|Closure|string
     {
-        return view('components.admin-card');
+        return view('components.admin.card');
     }
 }

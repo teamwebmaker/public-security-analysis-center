@@ -3,7 +3,7 @@
 
 <head>
     @extends('partials.head')
-    @section('title', 'ადმინის ავტორიზაცია')
+    @section('title', 'ადმინისტრატორის ავტორიზაცია')
 </head>
 
 <body data-language="en" style="font-family: 'Nunito', sans-serif">

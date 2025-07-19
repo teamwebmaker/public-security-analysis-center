@@ -51,6 +51,36 @@ class User extends Authenticatable
     }
 
     /**
+     * List of management roles
+     * @var array
+     */
+    public const MANAGEMENT_ROLES = [
+        'company_leader',
+        'responsible_person',
+        'worker',
+    ];
+    public const ADMIN_ROLE = 'admin';
+
+
+    /**
+     * Determine user is an admin or not
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role->name === self::ADMIN_ROLE;
+    }
+
+    /**
+     * Determine if the user role is in management roles
+     * @return bool
+     */
+    public function isManagementUser(): bool
+    {
+        return in_array($this->role->name, self::MANAGEMENT_ROLES);
+    }
+
+    /**
      * Get the user's role name (e.g., "admin").
      */
     public function getRoleName(): string
@@ -61,6 +91,10 @@ class User extends Authenticatable
     public function scopeWithoutAdmins($query)
     {
         // Assuming role_id 1 = admin
-        return $query->where('role_id', '!=', 1);
+        return $query->whereHas(
+            'role',
+            fn($q) =>
+            $q->where('name', '!=', self::ADMIN_ROLE)
+        );
     }
 }

@@ -4,7 +4,7 @@
 
 <x-admin.index-view :items="$mentors" :resourceName="$resourceName">
     @foreach($mentors as $mentor)
-        <x-admin-card :document="$mentor" :title="$mentor->full_name" :image="$mentor->image" :resourceName='$resourceName'>
+        <x-admin.card :document="$mentor" :title="$mentor->full_name" :image="$mentor->image" :resourceName='$resourceName'>
             <x-slot name="cardDetails">
                 <ul class="list-group list-group-flush mb-3">
                     <span>პროგრამა:</span>
@@ -19,6 +19,6 @@
                     @endforeach
                 </ul>
             </x-slot>
-        </x-admin-card>
+        </x-admin.card>
     @endforeach
 </x-admin.index-view>

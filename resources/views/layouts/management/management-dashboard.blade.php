@@ -1,12 +1,9 @@
-@extends('layouts.dashboard')
+@extends('layouts.master-dashboard')
 
 @section('sidebar')
-   <div class="sidebar-brand d-flex align-items-center justify-content-between justify-content-md-center p-3">
-
-      <button class="btn-close d-md-none" aria-label="Close"></button>
-   </div>
+   <x-management.dashboard.sidebar-header />
    <div class="pt-3">
-      @include('partials.management.sidebar')
+      @yield('sidebar-content')
    </div>
 @endsection
 

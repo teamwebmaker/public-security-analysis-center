@@ -14,7 +14,7 @@
     </div>
 
     @foreach($subscriptions as $subscription)
-        <x-admin-card :document="$subscription" :title="$subscription->browser ?? 'Browser not detected'"
+        <x-admin.card :document="$subscription" :title="$subscription->browser ?? 'Browser not detected'"
             :resourceName="$resourceName" :hasEdit="false" :hasDelete="false" :hasVisibility="false">
             <x-slot name="cardDetails">
                 <x-admin.push-subscriptions.details-list :subscription="$subscription" />
@@ -22,7 +22,7 @@
             <x-slot name='cardFooter'>
                 <x-admin.push-subscriptions.card-footer :subscription="$subscription" />
             </x-slot>
-        </x-admin-card>
+        </x-admin.card>
     @endforeach
 </x-admin.index-view>
 

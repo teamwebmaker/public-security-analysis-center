@@ -5,7 +5,7 @@
 @section('main')
     <x-admin.index-view :items="$publications" :resourceName="$resourceName">
         @foreach($publications as $publication)
-            <x-admin-card :document="$publication" :title="$publication->title->ka" :image="$publication->image"
+            <x-admin.card :document="$publication" :title="$publication->title->ka" :image="$publication->image"
                 :resourceName="$resourceName">
                 <x-slot name="cardDetails">
                     @if ($publication->file)
@@ -15,7 +15,7 @@
                         </a>
                     @endif
                 </x-slot>
-            </x-admin-card>
+            </x-admin.card>
         @endforeach
     </x-admin.index-view>
 @endsection

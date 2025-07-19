@@ -3,7 +3,7 @@
 
 <head>
   @extends('partials.head')
-  @section('title', 'Log in page')
+  @section('title', 'მომხმარებლის ავტორიზაცია')
 
 </head>
 

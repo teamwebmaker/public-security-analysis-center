@@ -22,9 +22,13 @@ use Illuminate\Support\Facades\Session;
 class AdminController extends Controller
 {
     public object $user;
+
+    /**
+     * Display admin login form or redirect to dashboard
+     */
     public function login()
     {
-        if (Auth::check() && Auth::user()->getRoleName() == "admin") {
+        if (Auth::check()) {
             return redirect()->route("admin.dashboard.page");
         }
         return view("admin.login");
@@ -38,21 +42,23 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        // Manual authentication check
+        // Attempt to get user
         $user = User::where('email', $request->email)->first();
 
+        // Authentication check
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'email' => 'პაროლი ან ელ.ფოსტა არასწორია',
+                'error' => 'პაროლი ან ელ.ფოსტა არასწორია',
             ]);
         }
 
-        // Session::put('admin', $user);
-        Auth::login($user);
+        Auth::login($user); // Login user
         return redirect()->route('admin.dashboard.page');
     }
 
-
+    /**
+     * Display admin dashboard page with all necessary data
+     */
     public function dashboard()
     {
         $resources = [
@@ -83,9 +89,12 @@ class AdminController extends Controller
                 ]
             ];
         });
-        return view("admin.desk", $data->all());
+        return view("admin.dashboard.index", $data->all());
     }
 
+    /**
+     * Logout admin
+     */
     public function logout()
     {
         Auth::logout();
