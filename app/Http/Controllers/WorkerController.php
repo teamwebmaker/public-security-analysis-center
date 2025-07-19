@@ -8,6 +8,6 @@ class WorkerController extends Controller
 {
     public function displayDashboard()
     {
-        return view('management.responsible-person.dashboard');
+        return view('management.worker.dashboard');
     }
 }

@@ -28,7 +28,7 @@ class AdminController extends Controller
      */
     public function login()
     {
-        if (Auth::check()) {
+        if (Auth::check() && Auth::user()->isAdmin()) {
             return redirect()->route("admin.dashboard.page");
         }
         return view("admin.login");
@@ -42,10 +42,10 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        // Attempt to get admin users 
-        $user = User::where('email', $request->phone)
-            ->whereHas('role', fn($q) => $q->where('name', '==', 'admin'))
+        $user = User::where('email', $request->email) // <-- must match the input name
+            ->whereHas('role', fn($q) => $q->where('name', 'admin')) // <-- use '=' not '=='
             ->first();
+
 
         // Authentication check
         if (!$user || !Hash::check($request->password, $user->password)) {
