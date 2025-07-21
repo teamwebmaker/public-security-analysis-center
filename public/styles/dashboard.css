@@ -129,8 +129,9 @@ body {
    border-radius: 0.5rem;
 }
 
-/* Bootstrap equivalent to (lg) */
-@media (max-width: 992px) {
+
+/* Bootstrap equivalent to (xl) */
+@media (max-width: 1200px) {
    .sidebar {
       margin-left: calc(var(--sidebar-width) * -1);
 
