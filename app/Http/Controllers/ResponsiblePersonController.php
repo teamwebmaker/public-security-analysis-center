@@ -8,6 +8,7 @@ class ResponsiblePersonController extends Controller
 {
     public function displayDashboard()
     {
-        return view('management.responsible-person.dashboard');
+        $sidebarItems = config('sidebar.responsible-person');
+        return view('management.responsible-person.dashboard', compact('sidebarItems'));
     }
 }

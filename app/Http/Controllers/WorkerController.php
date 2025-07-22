@@ -8,6 +8,7 @@ class WorkerController extends Controller
 {
     public function displayDashboard()
     {
-        return view('management.worker.dashboard');
+        $sidebarItems = config('sidebar.worker');
+        return view('management.worker.dashboard', compact('sidebarItems'));
     }
 }

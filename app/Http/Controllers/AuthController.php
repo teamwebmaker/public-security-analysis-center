@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function login()
     {
         // Redirect authenticated user based on role
-        if (Auth::check()) {
+        if (Auth::check() && Auth::user()->isManagementUser()) {
             return redirect()->route('management.dashboard.page');
         }
 

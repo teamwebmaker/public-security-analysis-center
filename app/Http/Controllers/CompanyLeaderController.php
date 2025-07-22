@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 class CompanyLeaderController extends Controller
 {
+
     public function displayDashboard()
     {
-        return view('management.company-leader.dashboard');
+        $sidebarItems = config('sidebar.company-leader');
+        return view('management.company-leader.dashboard', compact('sidebarItems'));
     }
 }

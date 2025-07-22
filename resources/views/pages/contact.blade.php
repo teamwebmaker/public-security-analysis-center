@@ -63,7 +63,7 @@
                                 <div class="col-md-6 mb-2">
                                     <div class="mb-3">
                                         <x-form.input type="tel" name="phone" class="form-control" placeholder="Phone"
-                                            value="{{ old('phone') }}" minlength="5" autocomplete="tel" />
+                                            value="{{ old('phone') }}" :required="false" minlength="5" autocomplete="tel" />
                                     </div>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>როლი:</span>
         <span class="badge bg-primary rounded-pill">
-            {{ $user->role->name }}
+            {{ $user->role->display_name }}
             @php
              @endphp
         </span>
