@@ -67,14 +67,14 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
             <!-- description -->
             @if ($descriptionText)
                 <div @if($shouldTruncate) x-data="{ expanded: false }" @endif class="mb-4">
-                    <p class="card-text text-muted mb-0"
-                    :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
-                    style="@if($shouldTruncate)--bs-line-clamp: 3;@endif">
+                    <p class="card-text text-muted mb-0" :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
+                        style="@if($shouldTruncate)--bs-line-clamp: 3;@endif">
                         {{ $descriptionText }}
                     </p>
 
                     @if ($shouldTruncate)
-                        <button @click="expanded = !expanded" class="btn btn-link p-0 d-inline-flex align-items-center gap-1" type="button">
+                        <button @click="expanded = !expanded" class="btn btn-link p-0 d-inline-flex align-items-center gap-1"
+                            type="button">
                             <span x-show="!expanded">See more <i class="bi bi-chevron-down"></i></span>
                             <span x-show="expanded">See less <i class="bi bi-chevron-up"></i></span>
                         </button>

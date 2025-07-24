@@ -5,8 +5,10 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardRouterController;
+use App\Http\Controllers\EconomicActivityTypeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\MainMenuController;
@@ -18,7 +20,6 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,11 @@ Route::prefix('admin')->group(function () {
 
         // Management related routes register users
         Route::resource('users', UserController::class)->except('show');
+        Route::resource('companies', CompanyController::class)->except('show');
+        Route::resource('economic_activities_types', EconomicActivityTypeController::class)
+            ->parameters(['economic_activities_types' => 'economic_activity_type'])
+            ->except('show');
+
 
         // CRUD: Projects, Partners, Publications
         Route::resource('projects', ProjectController::class)->except('show');

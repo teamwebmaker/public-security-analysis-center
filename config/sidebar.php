@@ -47,6 +47,26 @@ return [
                   ['name' => 'users.create', 'label' => 'მომხმარებლის შექმნა', 'icon' => 'bi-plus-circle'],
 
                ],
+            ],
+            [
+               'id' => 'companies',
+               'icon' => 'bi-building',
+               'label' => 'კომპანიები',
+               'routes' => [
+                  ['name' => 'companies.index', 'label' => 'კომპანიების სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'companies.create', 'label' => 'კომპანიის შექმნა', 'icon' => 'bi-plus-circle'],
+
+               ],
+            ],
+            [
+               'id' => 'economic_activities_types',
+               'icon' => 'bi-tags',
+               'label' => 'ეკონომიკური საქმიანობის ტიპები',
+               'routes' => [
+                  ['name' => 'economic_activities_types.index', 'label' => 'ეკონომიკური საქმიანობის ტიპების სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'economic_activities_types.create', 'label' => 'ეკონომიკური საქმიანობის ტიპის შექმნა', 'icon' => 'bi-plus-circle'],
+
+               ],
             ]
          ],
       ],

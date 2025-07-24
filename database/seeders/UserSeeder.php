@@ -25,7 +25,37 @@ class UserSeeder extends Seeder
                 'is_active' => true,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
+            [
+                'full_name' => 'user1',
+                'email' => null,
+                'phone' => '111111111',
+                'password' => bcrypt('111111111'),
+                'role_id' => 2,
+                'is_active' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'full_name' => 'user2',
+                'email' => null,
+                'phone' => '222222222',
+                'password' => bcrypt('222222222'),
+                'role_id' => 3,
+                'is_active' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'full_name' => 'user3',
+                'email' => null,
+                'phone' => '333333333',
+                'password' => bcrypt('333333333'),
+                'role_id' => 4,
+                'is_active' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }
