@@ -55,19 +55,20 @@ return [
                'routes' => [
                   ['name' => 'companies.index', 'label' => 'კომპანიების სია', 'icon' => 'bi-list-ul'],
                   ['name' => 'companies.create', 'label' => 'კომპანიის შექმნა', 'icon' => 'bi-plus-circle'],
-
+                  ['name' => 'economic_activities_types.index', 'label' => 'ეკონომიკური საქმიანობის ტიპების სია', 'icon' => 'bi-tags '],
+                  ['name' => 'economic_activities_types.create', 'label' => 'ეკონომიკური საქმიანობის ტიპის შექმნა', 'icon' => 'bi-plus-circle'],
                ],
             ],
             [
-               'id' => 'economic_activities_types',
-               'icon' => 'bi-tags',
-               'label' => 'ეკონომიკური საქმიანობის ტიპები',
+               'id' => 'branches',
+               'icon' => 'bi-diagram-3',
+               'label' => 'ფილიალები',
                'routes' => [
-                  ['name' => 'economic_activities_types.index', 'label' => 'ეკონომიკური საქმიანობის ტიპების სია', 'icon' => 'bi-list-ul'],
-                  ['name' => 'economic_activities_types.create', 'label' => 'ეკონომიკური საქმიანობის ტიპის შექმნა', 'icon' => 'bi-plus-circle'],
+                  ['name' => 'branches.index', 'label' => 'ფილიალების სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'branches.create', 'label' => 'ფილიალის შექმნა', 'icon' => 'bi-plus-circle'],
 
                ],
-            ]
+            ],
          ],
       ],
       [

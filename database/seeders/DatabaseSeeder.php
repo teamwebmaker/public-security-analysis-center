@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             EconomicActivityType::class,
             CompanySeeder::class,
+            BranchSeeder::class
         ]);
     }
 }

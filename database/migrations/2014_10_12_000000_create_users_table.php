@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::disableForeignKeyConstraints();
 
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('full_name', 100);
             $table->string('email', 100)->unique()->nullable();
             $table->string('phone', 20)->unique();
@@ -21,8 +21,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->boolean('is_active')->default(true);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

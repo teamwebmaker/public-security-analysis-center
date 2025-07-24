@@ -22,4 +22,9 @@ class Company extends Model
     {
         return $this->belongsTo(EconomicActivityType::class);
     }
+
+    public function branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
 }

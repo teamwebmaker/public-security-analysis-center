@@ -5,6 +5,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardRouterController;
@@ -100,6 +101,8 @@ Route::prefix('admin')->group(function () {
         Route::resource('economic_activities_types', EconomicActivityTypeController::class)
             ->parameters(['economic_activities_types' => 'economic_activity_type'])
             ->except('show');
+        Route::resource('branches', BranchController::class)->except('show');
+
 
 
         // CRUD: Projects, Partners, Publications

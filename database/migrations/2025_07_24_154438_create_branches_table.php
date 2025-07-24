@@ -12,12 +12,11 @@ return new class extends Migration {
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('branches', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->unsignedSmallInteger('economic_activity_type_id');
-            $table->foreign('economic_activity_type_id')->references('id')->on('economic_activity_types');
-            $table->string('identification_code', 50)->unique();
+            $table->string('address', 255);
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('branches');
     }
 };

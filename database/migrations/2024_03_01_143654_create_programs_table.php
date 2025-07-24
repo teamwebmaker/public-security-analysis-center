@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->json('days'); // {ka: [], en: [] }
             $table->json('hour')->nullable(); // { start: '00:00', end: '00:00' }
             $table->string('duration');
-            $table->string('address')->nullable(); 
+            $table->string('address')->nullable();
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->tinyInteger('sortable')->default(1);
             $table->timestamps();
