@@ -2,22 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Project;
-use App\Models\Publication;
-use App\Models\Partner;
-use App\Models\Contact;
-use App\Models\Info;
-use App\Models\MainMenu;
-use App\Models\Mentor;
-use App\Models\Program;
-use App\Models\Service;
-use App\Models\ServiceCategory;
-use App\Models\Syllabus;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -35,6 +23,9 @@ class AdminController extends Controller
         return view("admin.login");
     }
 
+    /**
+     * Handle admin user authentication
+     */
     public function auth(Request $request)
     {
         // Validate request (auto-redirects with errors if failed)
@@ -67,35 +58,44 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $resources = [
-            // services
-            'services' => ['title' => 'სერვისები', 'model' => Service::class],
-            'service_categories' => ['title' => 'სერვის კატეგორიები', 'model' => ServiceCategory::class],
+        $resourceGroups = config('adminDashboardIndexData');
 
-            // program
-            'programs' => ['title' => 'პროგრამები', 'model' => Program::class],
-            'syllabuses' => ['title' => 'სილაბუსები', 'model' => Syllabus::class],
-            'mentors' => ['title' => 'მენტორები', 'model' => Mentor::class],
+        // Build structured dashboard data from grouped resources,
+        $dashboardData = collect($resourceGroups)->map(function ($groups) {
+            return collect($groups)->map(function ($group) {
+                $processedResources = collect($group['resources'])->mapWithKeys(function ($item, $key) {
+                    $data = (object) [
+                        'title' => $item['title'],
+                        'icon' => $item['icon'],
+                        'count' => $item['model']::count(),
+                        'resourceName' => $key,
+                        'hasIndex' => $item['hasIndex'] ?? true,
+                        'hasCreate' => $item['hasCreate'] ?? true,
+                    ];
 
-            'projects' => ['title' => 'პროექტები', 'model' => Project::class],
-            'partners' => ['title' => 'პარტნიორები', 'model' => Partner::class],
-            'publications' => ['title' => 'პუბლიკაციები', 'model' => Publication::class],
+                    if ($data->hasIndex) {
+                        $data->viewRoute = route($key . '.index');
+                    }
 
-            'contacts' => ['title' => 'შეტყობინებები', 'model' => Contact::class],
-            'infos' => ['title' => 'ჩვენს შესახებ', 'model' => Info::class],
-            'main_menus' => ['title' => 'მენიუ', 'model' => MainMenu::class],
-        ];
+                    if ($data->hasCreate) {
+                        $data->createRoute = route($key . '.create');
+                    }
 
-        $data = collect($resources)->mapWithKeys(function ($item, $key) {
-            return [
-                $key => (object) [
-                    'title' => $item['title'],
-                    'count' => $item['model']::count(),
-                    'resourceName' => $key,
-                ]
-            ];
+                    return [$key => $data];
+                });
+
+                return (object) [
+                    'label' => $group['label'] ?? null,
+                    'icon' => $group['icon'] ?? null,
+                    'resources' => $processedResources,
+                ];
+            });
         });
-        return view("admin.dashboard.index", $data->all());
+
+
+        return view('admin.dashboard.index', [
+            'dashboardData' => $dashboardData,
+        ]);
     }
 
     /**

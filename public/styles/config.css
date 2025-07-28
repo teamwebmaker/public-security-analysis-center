@@ -23,7 +23,7 @@ i {
 button:focus {
     outline: none !important;
     box-shadow: none !important;
-      box-shadow: 0 0 0 0.3px rgb(34, 34, 34) !important;
+      /* box-shadow: 0 0 0 0.3px rgb(34, 34, 34) !important; */
 }
 
 /* Custom focus style for all .form-control elements */

@@ -1,7 +1,7 @@
 @extends('layouts.admin.admin-dashboard')
-@section('title', 'პროექტის შექმნა')
+@section('title', 'კომპანიის შექმნა')
 @section('main')
-	<x-admin.crud.form-container method="POST" title="პროექტის შექმნა" action="{{ route($resourceName . '.store') }}"
+	<x-admin.crud.form-container method="POST" title="კომპანიის შექმნა" action="{{ route($resourceName . '.store') }}"
 		:backRoute="$resourceName . '.index'">
 
 		<!-- name and identification_code -->

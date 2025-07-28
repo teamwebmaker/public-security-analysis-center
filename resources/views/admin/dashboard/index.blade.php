@@ -1,149 +1,39 @@
 @extends('layouts.admin.admin-dashboard')
 @section('title', 'Admin Dashboard')
 @section('main')
-    <div class="row align-items-center g-4">
-
-        <!-- Grouped Service + Category Card -->
-        <div class="col-12">
-            <div class="card border border-white shadow-sm bg-light rounded-4 h-100 p-3">
-
-                <!-- Optional title -->
-                <h6 class="text-muted mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-layers text-secondary"></i>
-                    სერვისები და კატეგორიები
-                </h6>
-
-                <!-- Side-by-side equal-width cards -->
-                <div class="d-flex flex-column flex-md-row gap-3">
-                    <div class="w-100 w-md-50">
-                        @include('components.admin.dashboard.dashboard-card', [
-                            'icon' => 'bi-tools',
-                            'title' => $services->title,
-                            'count' => $services->count,
-                            'viewRoute' => route($services->resourceName . '.index'),
-                            'createRoute' => route($services->resourceName . '.create'),
-                        ])
-                    </div>
-
-                    <div class="w-100 w-md-50">
-                        @include('components.admin.dashboard.dashboard-card', [
-                            'icon' => 'bi-ui-radios-grid',
-                            'title' => $service_categories->title,
-                            'count' => $service_categories->count,
-                            'viewRoute' => route($service_categories->resourceName . '.index'),
-                            'createRoute' => route($service_categories->resourceName . '.create'),
-                        ])
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Grouped Programs, Syllabuses, Mentors -->
-        <div class="col-12">
-            <div class="card border border-white shadow-sm bg-light rounded-4 h-100 p-3">
-
-                <!-- Optional title -->
-                <h6 class="text-muted mb-3 d-flex align-items-center gap-2">
-                    <i class="bi bi-layers text-secondary"></i>
-                    სპეც პროგრამები და სილაბუსები
-                </h6>
-
-                <!-- Side-by-side equal-width cards -->
-                <div class="d-flex flex-wrap flex-column flex-md-row gap-3">
-                    <div class="col">
-                        @include('components.admin.dashboard.dashboard-card', [
-                            'icon' => 'bi-briefcase',
-                            'title' => $programs->title,
-                            'count' => $programs->count,
-                            'viewRoute' => route($programs->resourceName . '.index'),
-                            'createRoute' => route($programs->resourceName . '.create'),
-                        ])
-                    </div>
-                    <div class="col">
-                        @include('components.admin.dashboard.dashboard-card', [
-                            'icon' => 'bi-file-earmark-text',
-                            'title' => $syllabuses->title,
-                            'count' => $syllabuses->count,
-                            'viewRoute' => route($syllabuses->resourceName . '.index'),
-                            'createRoute' => route($syllabuses->resourceName . '.create'),
-                        ])
-                    </div>
-                    <div class="col">
-                        @include('components.admin.dashboard.dashboard-card', [
-                            'icon' => 'bi-person-vcard',
-                            'title' => $mentors->title,
-                            'count' => $mentors->count,
-                            'viewRoute' => route($mentors->resourceName . '.index'),
-                            'createRoute' => route($mentors->resourceName . '.create'),
-                        ])
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Projects Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-folder-plus',
-                'title' => $projects->title,
-                'count' => $projects->count,
-                'viewRoute' => route($projects->resourceName . '.index'),
-                'createRoute' => route($projects->resourceName . '.create'),
-            ])
-        </div>
-
-        <!-- Partners Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-people',
-                'title' => $partners->title,
-                'count' => $partners->count,
-                'viewRoute' => route($partners->resourceName . '.index'),
-                'createRoute' => route($partners->resourceName . '.create'),
-            ])
-        </div>
-
-        <!-- Publications Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-book',
-                'title' => $publications->title,
-                'count' => $publications->count,
-                'viewRoute' => route($publications->resourceName . '.index'),
-                'createRoute' => route($publications->resourceName . '.create'),
-            ])
-        </div>
-
-        
-        <!-- contacts Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-mailbox-flag',
-                'title' => $contacts->title,
-                'count' => $contacts->count,
-                'viewRoute' => route($contacts->resourceName . '.index'),
-            ])
-        </div>
-
-        <!-- infos Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-book',
-                'title' => $infos->title,
-                'count' => $infos->count,
-                'viewRoute' => route($infos->resourceName . '.index'),
-            ])
-        </div>
-        
-        <!-- main_menus Card -->
-        <div class="col-12 col-md-6 col-xl-4">
-            @include('components.admin.dashboard.dashboard-card', [
-                'icon' => 'bi-book',
-                'title' => $main_menus->title,
-                'count' => $main_menus->count,
-                'viewRoute' => route($main_menus->resourceName . '.index'),
-                'createRoute' => route($main_menus->resourceName . '.create'),
-            ])
-        </div>
-    </div>
+	<x-ui.tabs contentContainerClass="tab-content" :tabs="[
+			['id' => 'web_content', 'label' => 'ვებგვერდის კონტენტი'],
+			['id' => 'management', 'label' => 'მენეჯმენტი'],
+		]">
+		@foreach($dashboardData as $groupKey => $resourceGroups)
+			<div class="tab-pane mt-2 fade {{ $loop->first ? 'show active' : '' }}" id="{{ $groupKey }}-tab-content"
+				role="tabpanel" aria-labelledby="{{ $groupKey }}-tab">
+				<div class="row">
+					@foreach($resourceGroups as $resourceGroup)
+						<div class="col">
+							<div class="card border border-white mb-2 rounded-4 bg-light p-3">
+								@if(!empty($resourceGroup->icon) || !empty($resourceGroup->label))
+									<h6 class="text-muted d-flex align-items-center gap-2">
+										@isset($resourceGroup->icon)
+											<i class="bi {{ $resourceGroup->icon }} text-secondary"></i>
+										@endisset
+										{{ $resourceGroup->label ?? '' }}
+									</h6>
+								@endif
+								<div class="d-flex flex-row flex-wrap gap-3">
+									@foreach($resourceGroup->resources as $resource)
+										<div class="col" style="min-width: 230px">
+											<x-admin.dashboard.dashboard-card :icon="$resource->icon" :title="$resource->title"
+												:count="$resource->count" :viewRoute="$resource->viewRoute ?? null"
+												:createRoute="$resource->createRoute ?? null" />
+										</div>
+									@endforeach
+								</div>
+							</div>
+						</div>
+					@endforeach
+				</div>
+			</div>
+		@endforeach
+	</x-ui.tabs>
 @endsection

@@ -8,12 +8,13 @@ use Illuminate\View\Component;
 
 class Tabs extends Component
 {
+    public string $contentContainerClass;
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($contentContainerClass = 'tab-content p-3 border border-top-0 rounded-bottom')
     {
-        //
+        $this->contentContainerClass = $contentContainerClass;
     }
 
     /**
