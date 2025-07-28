@@ -24,7 +24,7 @@ class ProjectController extends CrudController
      */
     public function show(string $id)
     {
-        $item = Project::findOrFail($id);
+        $item = $this->modelClass::findOrFail($id);
 
         return view("pages.show", [
             "language" => App::getLocale(),
@@ -41,7 +41,7 @@ class ProjectController extends CrudController
     {
         $data = $request->validated();
         $projectData = $this->prepareProjectData($request, $data);
-        Project::create($projectData);
+        $this->modelClass::create($projectData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

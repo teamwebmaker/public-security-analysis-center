@@ -21,7 +21,7 @@ class ServiceCategoryController extends CrudController
     {
         $data = $request->validated();
         $serviceCategoryData = $this->prepareServiceCategoryData($data);
-        ServiceCategory::create($serviceCategoryData);
+        $this->modelClass::create($serviceCategoryData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

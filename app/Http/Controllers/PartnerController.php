@@ -26,7 +26,7 @@ class PartnerController extends CrudController
         $data = $request->validated();
         $partnerData = $this->preparePartnerData($request, $data);
 
-        Partner::create($partnerData);
+        $this->modelClass::create($partnerData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

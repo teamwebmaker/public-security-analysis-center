@@ -18,6 +18,7 @@ use App\Models\Syllabus;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
@@ -42,19 +43,22 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email) // <-- must match the input name
-            ->whereHas('role', fn($q) => $q->where('name', 'admin')) // <-- use '=' not '=='
+        // Get all admin users
+        $user = User::where('email', $request->email)
+            ->whereHas('role', fn($q) => $q->where('name', 'admin'))
             ->first();
 
 
         // Authentication check
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->withErrors([
-                'error' => 'პაროლი ან ელ.ფოსტა არასწორია',
+            throw ValidationException::withMessages([
+                'error' => 'პაროლი ან ელ.ფოსტა არასწორია'
             ]);
+            // ]);
         }
 
         Auth::login($user); // Login user
+        $request->session()->regenerate(); // Regenerate session for security
         return redirect()->route('admin.dashboard.page');
     }
 

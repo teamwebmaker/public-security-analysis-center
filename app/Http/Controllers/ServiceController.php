@@ -25,7 +25,7 @@ class ServiceController extends CrudController
      */
     public function show(string $id)
     {
-        $item = Service::findOrFail($id);
+        $item = $this->modelClass::findOrFail($id);
         return view("pages.show", [
             "language" => App::getLocale(),
             "item" => $item,
@@ -55,7 +55,7 @@ class ServiceController extends CrudController
     {
         $data = $request->validated();
         $serviceData = $this->prepareServiceData($request, $data);
-        Service::create($serviceData);
+        $this->modelClass::create($serviceData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

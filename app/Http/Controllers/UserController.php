@@ -32,7 +32,7 @@ class UserController extends CrudController
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
-        User::create($data);
+        $this->modelClass::create($data);
 
         return redirect()
             ->route("{$this->resourceName}.index")

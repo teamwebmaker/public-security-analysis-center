@@ -29,7 +29,7 @@ class MentorController extends CrudController
         $data = $request->validated();
         // dd($data);
         $mentorData = $this->prepareMentorData($request, $data);
-        $mentor = Mentor::create($mentorData);
+        $mentor = $this->modelClass::create($mentorData);
 
 
         if (!empty($data['program_ids'])) {

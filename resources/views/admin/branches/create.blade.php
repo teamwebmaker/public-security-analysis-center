@@ -18,8 +18,7 @@
 		<!-- company_id and visibility -->
 		<div class="row">
 			<div class="col-md-6">
-				<x-form.select name="company_id" :options="$companies" value="{{ old('company_id') }}"
-					label="მშობელი კომპანია" />
+				<x-form.select name="company_id" :options="$companies" label="მშობელი კომპანია" />
 			</div>
 			<div class="col-md-6">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"

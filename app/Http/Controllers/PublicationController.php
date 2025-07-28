@@ -22,7 +22,7 @@ class PublicationController extends CrudController
      */
     public function show(string $id)
     {
-        $item = Publication::findOrFail($id);
+        $item = $this->modelClass::findOrFail($id);
         return view("pages.show", [
             "language" => App::getLocale(),
             "item" => $item,
@@ -38,7 +38,7 @@ class PublicationController extends CrudController
     {
         $data = $request->validated();
         $publicationData = $this->preparePublicationData($request, $data);
-        Publication::create($publicationData);
+        $this->modelClass::create($publicationData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

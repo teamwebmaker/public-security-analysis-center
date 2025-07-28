@@ -7,12 +7,13 @@
 
 		<!-- partner title -->
 		<div class="mb-3">
-			<x-form.input name="title" label="სათაური" placeholder="შეიყვანეთ სათაური" />
+			<x-form.input name="title" label="სათაური" placeholder="შეიყვანეთ სათაური" value="{{ old('title') }}" />
 		</div>
 
 		<!-- partner link -->
 		<div class="mb-4">
-			<x-form.input name="link" label="ლინკი" type="url" icon="link-45deg" placeholder="პარტნიორის ლინკი" />
+			<x-form.input name="link" label="ლინკი" type="url" icon="link-45deg" placeholder="პარტნიორის ლინკი"
+				value="{{ old('link') }}" />
 		</div>
 
 		<div class="row">

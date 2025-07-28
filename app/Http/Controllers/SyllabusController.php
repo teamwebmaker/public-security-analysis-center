@@ -26,7 +26,7 @@ class SyllabusController extends CrudController
     {
         $data = $request->validated();
         $syllabusData = $this->prepareSyllabusData($request, $data);
-        Syllabus::create($syllabusData);
+        $this->modelClass::create($syllabusData);
 
         return redirect()
             ->route("{$this->resourceName}.index")

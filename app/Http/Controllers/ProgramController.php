@@ -43,7 +43,7 @@ class ProgramController extends CrudController
     {
         $data = $request->validated();
         $programData = $this->prepareProgramData($request, $data);
-        $program = Program::create($programData);
+        $program = $this->modelClass::create($programData);
 
         if (!empty($data['mentor_ids'])) {
             $program->mentors()->sync($data['mentor_ids']);
@@ -99,7 +99,7 @@ class ProgramController extends CrudController
     // Displays the details of a single program
     public function show(string $id)
     {
-        $item = Program::with(["syllabuses", "mentors"])->findOrFail($id);
+        $item = $this->modelClass::with(["syllabuses", "mentors"])->findOrFail($id);
         return view("pages.show-program", [
             "item" => $item,
             "language" => App::getLocale(),

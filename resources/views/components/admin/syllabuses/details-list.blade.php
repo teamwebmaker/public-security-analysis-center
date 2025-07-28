@@ -13,7 +13,12 @@
             <!-- program title -->
             <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
                 <span>პროგრამა:</span>
-                <span class="badge bg-secondary">{{ $syllabus->program->title->ka }}</span>
+
+                <label class="text-truncate d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="custom-tooltip" data-bs-title="{{ $syllabus->program->title->ka }}"
+                    style="max-width: 150px; cursor: pointer;">
+                    <span>{{ $syllabus->program->title->ka }}</span>
+                </label>
             </li>
         @endif
     @endisset

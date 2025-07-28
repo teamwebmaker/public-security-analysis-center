@@ -12,7 +12,9 @@
         {{ $slot }}
         <!-- Log out-->
         <li>
-            <form method="POST" action="{{ route('logout') }}">
+            <!-- Decide which logout route to use -->
+            <form method="POST" @if (Auth::user()->isAdmin()) action="{{ route('admin.logout') }}" @else
+            action="{{ route('logout') }}" @endif">
                 @csrf
                 <button type="submit" class="dropdown-item rounded-2">გასვლა</button>
             </form>

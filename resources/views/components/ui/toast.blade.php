@@ -86,43 +86,45 @@
         pointer-events: auto;
     }
 </style>
-<div class="toast-container position-fixed top-0 start-50 translate-middle-x px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2" style="z-index: 1100;">
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x px-3 m-2 mt-3 pb-3 d-flex flex-column gap-2"
+    style="z-index: 1100;">
     @foreach ($messages as $message)
-    <div x-data="{ show: true }" x-show="show" x-transition @if($type === 'success')
-        x-init="setTimeout(() => show = false, 4000)" @endif class="toast mb-1 {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }} rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg" style="max-width: 350px;"
-        role="alert" aria-live="assertive" aria-atomic="true">
+        <div x-data="{ show: true }" x-show="show" x-transition @if($type === 'success')
+        x-init="setTimeout(() => show = false, 4000)" @else x-init="setTimeout(() => show = false, 10000)" @endif
+            class="toast mb-1 {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }} rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg"
+            style="max-width: 350px;" role="alert" aria-live="assertive" aria-atomic="true">
 
-        <div class="d-flex align-items-center p-1">
-            <div class="d-flex align-items-center gap-1 flex-grow-1">
-                <div class="position-relative" style="width: 40px; height: 40px; isolation: isolate;">
-                    <div class="position-absolute top-50 start-50 translate-middle 
-                            {{ $type === 'success' ? 'pulse-ring-success' : 'pulse-ring-error' }}">
+            <div class="d-flex align-items-center p-1">
+                <div class="d-flex align-items-center gap-1 flex-grow-1">
+                    <div class="position-relative" style="width: 40px; height: 40px; isolation: isolate;">
+                        <div class="position-absolute top-50 start-50 translate-middle 
+                                        {{ $type === 'success' ? 'pulse-ring-success' : 'pulse-ring-error' }}">
+                        </div>
+                        @if($type === 'success')
+                            <i class="bi bi-check-circle-fill fs-5 position-absolute top-50 start-50 translate-middle"
+                                style="color: #61D345;"></i>
+                        @else
+                            <i class="bi bi-x-circle-fill fs-5 position-absolute top-50 start-50 translate-middle"
+                                style="color: #dc3545;"></i>
+                        @endif
                     </div>
-                    @if($type === 'success')
-                        <i class="bi bi-check-circle-fill fs-5 position-absolute top-50 start-50 translate-middle"
-                            style="color: #61D345;"></i>
-                    @else
-                        <i class="bi bi-x-circle-fill fs-5 position-absolute top-50 start-50 translate-middle"
-                            style="color: #dc3545;"></i>
-                    @endif
+                    <div class="toast-body p-0"
+                        style="cursor: default; color: {{ $type === 'success' ? '#27541c' : '#842029' }};">
+                        {{ $message }}
+                    </div>
                 </div>
-                <div class="toast-body p-0"
-                    style="cursor: default; color: {{ $type === 'success' ? '#27541c' : '#842029' }};">
-                    {{ $message }}
-                </div>
+
+                <button type="button" class="btn-close btn-close-dark mx-2" @click="show = false"
+                    aria-label="Close"></button>
             </div>
 
-            <button type="button" class="btn-close btn-close-dark mx-2" @click="show = false"
-                aria-label="Close"></button>
+            @if($type === 'success')
+                <div class="progress rounded-0 rounded-bottom bg-white" style="height: 4px;">
+                    <div class="progress-bar" role="progressbar" x-init="setTimeout(() => $el.style.width = '0%', 50)"
+                        style="width: 100%; transition: width 4s linear; background-color: #61D345;">
+                    </div>
+                </div>
+            @endif
         </div>
-
-        @if($type === 'success')
-            <div class="progress rounded-0 rounded-bottom bg-white" style="height: 4px;">
-                <div class="progress-bar" role="progressbar" x-init="setTimeout(() => $el.style.width = '0%', 50)"
-                    style="width: 100%; transition: width 4s linear; background-color: #61D345;">
-                </div>
-            </div>
-        @endif
-    </div>
     @endforeach
 </div>
