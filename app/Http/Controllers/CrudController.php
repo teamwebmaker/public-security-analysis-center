@@ -31,6 +31,8 @@ abstract class CrudController extends Controller
     protected string $defaultOrderBy = 'updated_at';
     protected string $defaultOrderDirection = 'desc';
 
+    protected int $perPage = 6;
+
     protected function getOrderBy(): string
     {
         return $this->defaultOrderBy;
@@ -64,8 +66,8 @@ abstract class CrudController extends Controller
             ? $query
                 ->with($relations)
                 ->orderBy($orderBy, $direction)
-                ->paginate(6)
-            : $query->orderBy($orderBy, $direction)->paginate(6);
+                ->paginate($this->perPage)
+            : $query->orderBy($orderBy, $direction)->paginate($this->perPage);
 
         // Pass plural field and resource name to the view
         $baseData = [

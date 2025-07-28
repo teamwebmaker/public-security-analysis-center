@@ -4,7 +4,7 @@ $descriptionText = is_object($document->description)
     ? $document->description->ka ?? ($document->description->en ?? "")
     : $document->description;
 $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
-
+$confirmMessage = $message ?? "ნამდვილად გსურთ დოკუმენტი {$title} წაიშალოს?";
 ?>
 
 <div class="{{ $containerClass }}">
@@ -50,8 +50,8 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
                 </h3>
             </div>
             <!-- Created Date -->
-            <div class="d-flex gap-3  mb-3">
-                <small class="text-muted d-flex align-items-center gap-1">
+            <div class="d-flex flex-wrap mb-3 pt-1">
+                <small class="text-muted me-3 d-flex align-items-center gap-1">
                     <i class="bi bi-calendar"></i>
                     {{ $document->created_at->format('Y-m-d') }}
                 </small>
@@ -90,29 +90,32 @@ $shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
 
         <!-- Card Footer -->
         <div class="card-footer border-0 pt-0 pb-3 px-4 bg-transparent">
-            <div class="d-flex justify-content-between gap-2">
+            <div class="d-flex flex-wrap justify-content-between gap-2">
                 {{ $cardFooter ?? '' }}
                 <!-- Edit Button -->
                 @if ($hasEdit)
                     <a href="{{ route($resourceName . '.edit', $document) }}"
                         class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2">
                         <i class="bi bi-pencil-square"></i>
-                        <span>Edit</span>
+                        <span>რედაქტირება</span>
                     </a>
                 @endif
 
                 @if ($hasDelete)
                     <!-- Delete Button -->
+
+
                     <form method="POST" action="{{ route($resourceName . '.destroy', $document) }}"
-                        onsubmit="return confirm('ნამდვილად გსურთ დოკუმენტი {{ $title }} წაიშალოს?')" class="flex-grow-1">
+                        onsubmit="return confirm('{{ $confirmMessage }}')" class="flex-grow-1">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
                             class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
                             <i class="bi bi-trash"></i>
-                            <span>Delete</span>
+                            <span>წაშლა</span>
                         </button>
                     </form>
+
                 @endif
             </div>
         </div>

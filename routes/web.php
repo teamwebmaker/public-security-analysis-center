@@ -20,6 +20,7 @@ use App\Http\Controllers\PushController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -102,6 +103,7 @@ Route::prefix('admin')->group(function () {
             ->parameters(['economic_activities_types' => 'economic_activity_type'])
             ->except('show');
         Route::resource('branches', BranchController::class)->except('show');
+        Route::resource('tasks', TaskController::class)->except('show');
 
 
 

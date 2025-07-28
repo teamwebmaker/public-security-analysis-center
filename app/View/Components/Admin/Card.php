@@ -13,12 +13,15 @@ class Card extends Component
 
     public string $title;
     public string $resourceName;
+
     public ?string $image;
     public ?string $containerClass;
     public ?string $cardClass;
     public ?bool $hasDelete;
     public ?bool $hasEdit;
     public ?bool $hasVisibility;
+    public ?string $message;
+
     /**
      * Create a new component instance.
      */
@@ -29,6 +32,7 @@ class Card extends Component
         ?string $image = null,
         ?string $containerClass = 'col-xl-4 col-lg-6 mb-4',
         ?string $cardClass = 'card h-100 border-0 bg-white overflow-hidden position-relative',
+        ?string $message = null,
 
         ?bool $hasDelete = true,
         ?bool $hasEdit = true,
@@ -44,6 +48,7 @@ class Card extends Component
         $this->hasDelete = $hasDelete;
         $this->hasEdit = $hasEdit;
         $this->hasVisibility = $hasVisibility;
+        $this->message = $message;
     }
 
     /**

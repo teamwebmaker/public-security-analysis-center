@@ -41,6 +41,7 @@ body {
 .topbar-content {
    margin-left: var(--sidebar-width);
    flex: 1;
+   overflow: hidden;
 }
 
 .topbar {
@@ -129,6 +130,26 @@ body {
    border-radius: 0.5rem;
 }
 
+/* table */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 2px 0 0 red; 
+}
+.sticky-col::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background-color:#cccfd2;
+}
+thead .sticky-col {
+    z-index: 3; 
+
+}
 
 /* Bootstrap equivalent to (xl) */
 @media (max-width: 1200px) {

@@ -20,7 +20,7 @@
     @endif
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 pt-3">
             {!! $items->withQueryString()->links('pagination::bootstrap-5') !!}
         </div>
     </div>

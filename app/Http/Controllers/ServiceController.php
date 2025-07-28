@@ -26,11 +26,11 @@ class ServiceController extends CrudController
     public function show(string $id)
     {
         $item = Service::findOrFail($id);
-        return view('pages.show', [
-            'language' => App::getLocale(),
-            'item' => $item,
-            'category' => 'services',
-            'partners' => Partner::all(),
+        return view("pages.show", [
+            "language" => App::getLocale(),
+            "item" => $item,
+            "category" => "services",
+            "partners" => Partner::all(),
         ]);
     }
 
@@ -39,8 +39,12 @@ class ServiceController extends CrudController
      */
     protected function additionalIndexData(): array
     {
+        $reqBranchId = request()->query()
+            ? (int) array_keys(request()->query())[0]
+            : null;
         return [
-            'serviceCategories' => ServiceCategory::all(),
+            "serviceCategories" => ServiceCategory::all(),
+            "selectedServiceId" => $reqBranchId,
         ];
     }
 
@@ -94,21 +98,35 @@ class ServiceController extends CrudController
     private function getServiceFormData(): array
     {
         return [
-            'serviceCategories' => ServiceCategory::all()->pluck('name.ka', 'id')->toArray(),
-            'services' => Service::select('id', 'service_category_id', 'sortable')->get(),
+            "serviceCategories" => ServiceCategory::all()
+                ->pluck("name.ka", "id")
+                ->toArray(),
+            "services" => Service::select(
+                "id",
+                "service_category_id",
+                "sortable"
+            )->get(),
         ];
     }
 
     /**
      * Prepare service data for storing or updating.
      */
-    private function prepareServiceData(Request $request, array $data, ?Service $service = null): array
-    {
+    private function prepareServiceData(
+        Request $request,
+        array $data,
+        ?Service $service = null
+    ): array {
         // Handle image upload
         $files = collect($this->fileFields)
             ->mapWithKeys(function ($path, $field) use ($request, $service) {
                 $existing = $service?->$field;
-                $file = $this->handleFileUpload($request, $field, $path, $existing);
+                $file = $this->handleFileUpload(
+                    $request,
+                    $field,
+                    $path,
+                    $existing
+                );
                 return $file ? [$field => $file] : [];
             })
             ->toArray();

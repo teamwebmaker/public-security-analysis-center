@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\ServiceCategory;
+use App\Models\TaskStatus;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +18,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             EconomicActivityType::class,
             CompanySeeder::class,
-            BranchSeeder::class
+            BranchSeeder::class,
+            TaskStatusSeeder::class,
+            TaskSeeder::class,
+            ServiceCategorySeeder::class,
+            ServiceSeeder::class
         ]);
     }
 }

@@ -49,6 +49,16 @@ return [
                ],
             ],
             [
+               'id' => 'tasks',
+               'icon' => 'bi-card-list',
+               'label' => 'სამუშაოები',
+               'routes' => [
+                  ['name' => 'tasks.index', 'label' => 'სამუშაოების სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'tasks.create', 'label' => 'სამუშაოების შექმნა', 'icon' => 'bi-plus-circle'],
+
+               ],
+            ],
+            [
                'id' => 'companies',
                'icon' => 'bi-building',
                'label' => 'კომპანიები',

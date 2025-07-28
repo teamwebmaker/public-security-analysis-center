@@ -1,7 +1,7 @@
 @props(['service'])
 
 <ul class="list-group list-group-flush">
-    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+    <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
         <span>კატეგორია:</span>
         @if ($service->category)
             <span class="badge bg-primary"> {{ $service->category->name->ka }}</span>
@@ -14,7 +14,7 @@
         @endif
     </li>
     @if ($service->category)
-        <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+        <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
             <span>რიგით:</span>
             <span class="badge bg-primary"> {{ $service->sortable }}</span>
         </li>

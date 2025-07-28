@@ -12,9 +12,17 @@ class BranchController extends CrudController
     protected string $contextField = "branch";
     protected string $contextFieldPlural = "branches";
     protected string $resourceName = "branches";
-    protected array $belongsTo = ['company'];
+    protected array $belongsTo = ["company"];
 
-
+    protected function additionalIndexData(): array
+    {
+        $reqBranchId = request()->query()
+            ? (int) array_keys(request()->query())[0]
+            : null;
+        return [
+            "selectedBranchId" => $reqBranchId,
+        ];
+    }
     protected function additionalCreateData(): array
     {
         return $this->getCompanyFormData();
@@ -53,7 +61,9 @@ class BranchController extends CrudController
     public function getCompanyFormData()
     {
         return [
-            'companies' => Company::all()->pluck('name', 'id')->toArray()
+            "companies" => Company::all()
+                ->pluck("name", "id")
+                ->toArray(),
         ];
     }
 }

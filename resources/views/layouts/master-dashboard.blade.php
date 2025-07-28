@@ -20,7 +20,7 @@
             @yield('topbar')
 
             {{-- Main Page Content --}}
-            <div class="container-fluid p-4 px-5">
+            <div class="container-fluid  p-4">
                 @yield('main')
             </div>
         </div>
