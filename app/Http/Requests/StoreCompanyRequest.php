@@ -23,7 +23,7 @@ class StoreCompanyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'economic_activity_type_id' => 'required|exists:economic_activity_types,id',
+            'economic_activity_type_id' => 'nullable|exists:economic_activity_types,id',
             'identification_code' => 'required|string|max:50|unique:companies,identification_code',
             'visibility' => 'required|in:0,1',
         ];

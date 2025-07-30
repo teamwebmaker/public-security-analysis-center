@@ -15,8 +15,8 @@ return new class extends Migration {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->unsignedSmallInteger('economic_activity_type_id');
-            $table->foreign('economic_activity_type_id')->references('id')->on('economic_activity_types');
+            $table->unsignedSmallInteger('economic_activity_type_id')->nullable();
+            $table->foreign('economic_activity_type_id')->references('id')->on('economic_activity_types')->onDelete('set null');
             $table->string('identification_code', 50)->unique();
             $table->enum('visibility', ['0', '1'])->default('1');
             $table->timestamps();

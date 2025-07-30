@@ -17,7 +17,7 @@ class ProgramController extends CrudController
     protected string $contextField = "program";
     protected string $contextFieldPlural = "programs";
 
-    protected array $belongsTo = ["mentors"];
+    protected array $modelRelations = ["mentors"];
     protected string $resourceName = "programs";
     protected string $uploadPath = "images/programs/";
 

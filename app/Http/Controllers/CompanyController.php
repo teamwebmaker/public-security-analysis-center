@@ -13,7 +13,7 @@ class CompanyController extends CrudController
     protected string $contextField = "company";
     protected string $contextFieldPlural = "companies";
     protected string $resourceName = "companies";
-    protected array $belongsTo = ['economic_activity_type'];
+    protected array $modelRelations = ['economic_activity_type'];
 
     protected function additionalCreateData(): array
     {

@@ -15,7 +15,7 @@ class SyllabusController extends CrudController
     protected string $contextFieldPlural = "syllabuses";
     protected string $resourceName = "syllabuses";
 
-    protected array $belongsTo = ["program"];
+    protected array $modelRelations = ["program"];
     protected array $fileFields = ["pdf" => "documents/syllabuses/",];
 
 

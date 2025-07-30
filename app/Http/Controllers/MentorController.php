@@ -13,7 +13,7 @@ class MentorController extends CrudController
     protected string $modelClass = Mentor::class;
     protected string $contextField = "mentor";
     protected string $contextFieldPlural = "mentors";
-    protected array $belongsTo = ["programs"];
+    protected array $modelRelations = ["programs"];
     protected string $resourceName = "mentors";
 
     protected array $fileFields = [

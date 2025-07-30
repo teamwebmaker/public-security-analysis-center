@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\AppliesLocalScopes;
 use App\Http\Controllers\Traits\HandlesFileUpload;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
 
 abstract class CrudController extends Controller
 {
@@ -17,7 +14,7 @@ abstract class CrudController extends Controller
     protected string $contextField;
     protected string $contextFieldPlural;
 
-    protected array $belongsTo = [];
+    protected array $modelRelations = [];
 
     // If model have local scopes type name without "scope" prefix. In morel with prefix in here without
     protected array $localScopes = [];
@@ -55,10 +52,10 @@ abstract class CrudController extends Controller
         $orderBy = $this->getOrderBy();
         $direction = $this->getOrderDirection();
 
-        $relations = is_array($this->belongsTo)
-            ? $this->belongsTo
-            : (is_string($this->belongsTo)
-                ? explode(",", $this->belongsTo)
+        $relations = is_array($this->modelRelations)
+            ? $this->modelRelations
+            : (is_string($this->modelRelations)
+                ? explode(",", $this->modelRelations)
                 : []);
 
         // Use your original branching logic — just use $query instead of $model

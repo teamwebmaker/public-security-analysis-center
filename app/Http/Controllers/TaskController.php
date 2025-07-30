@@ -17,7 +17,7 @@ class TaskController extends CrudController
     protected string $contextField = "task";
     protected string $contextFieldPlural = "tasks";
     protected string $resourceName = "tasks";
-    protected array $belongsTo = ["status", "branch", "service"];
+    protected array $modelRelations = ["status", "branch", "service"];
 
     protected int $perPage = 10;
 

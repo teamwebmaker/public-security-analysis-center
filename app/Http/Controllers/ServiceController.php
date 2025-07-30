@@ -16,7 +16,7 @@ class ServiceController extends CrudController
     protected string $contextField = "service";
     protected string $contextFieldPlural = "services";
 
-    protected array $belongsTo = ["category"];
+    protected array $modelRelations = ["category"];
     protected string $resourceName = "services";
     protected array $fileFields = ["image" => "images/services/"];
 

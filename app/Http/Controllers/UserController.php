@@ -16,7 +16,7 @@ class UserController extends CrudController
     protected string $contextField = "user";
     protected string $contextFieldPlural = "users";
     protected string $resourceName = "users";
-    protected array $belongsTo = ['role', 'companies'];
+    protected array $modelRelations = ['role', 'companies'];
 
     protected array $localScopes = ['withoutAdmins'];
 

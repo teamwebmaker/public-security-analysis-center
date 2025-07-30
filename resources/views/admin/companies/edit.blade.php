@@ -23,7 +23,7 @@
 			<div class="col-md-6">
 				<x-form.select name="economic_activity_type_id" :options="$economic_activity_types"
 					selected="{{ old('economic_activity_type_id', $company->economic_activity_type_id) }}"
-					label="ეკონომიკური საქ ტიპი" />
+					label=" ეკონომიკური საქ ტიპი" :required="false" />
 			</div>
 			<div class="col-md-6">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"

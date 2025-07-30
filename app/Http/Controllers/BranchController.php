@@ -12,7 +12,7 @@ class BranchController extends CrudController
     protected string $contextField = "branch";
     protected string $contextFieldPlural = "branches";
     protected string $resourceName = "branches";
-    protected array $belongsTo = ["company"];
+    protected array $modelRelations = ["company"];
 
     protected function additionalIndexData(): array
     {

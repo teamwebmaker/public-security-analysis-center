@@ -3,7 +3,7 @@
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ეკონომიკური საქ ტიპი:</span>
         <span class="badge bg-primary rounded-pill">
-            {{ $company->economic_activity_type->display_name }}
+            {{ $company->economic_activity_type ? $company->economic_activity_type->name : 'არ არის მითითებული' }}
         </span>
     </li>
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">

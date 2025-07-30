@@ -5,9 +5,13 @@
 @endif
 
 <select id="{{ $id }}" name="{{ $name }}" class="{{ $class }}@error($name) is-invalid @enderror" @if($required) required
-@endif {{ $attributes }}>
+@endif @if (empty($options)) disabled @endif {{ $attributes }}>
+    @if (empty($options))
+        <option value="" disabled selected>ვარიანტები ვერ მოიძებნა</option>
+    @endif
 
-    @if(is_null($selected))
+
+    @if(!empty($options) && (is_null($selected) || $selected === ''))
         <option value="" disabled selected>-- აირჩიეთ ვარიანტი --</option>
     @endif
 

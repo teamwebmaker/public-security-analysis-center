@@ -13,6 +13,7 @@ class EconomicActivityTypeController extends CrudController
     protected string $contextField = "economic_activity_type";
     protected string $contextFieldPlural = "economic_activities_types";
     protected string $resourceName = "economic_activities_types";
+    protected array $modelRelations = ['companies'];
 
     /**
      * Store a newly created resource in storage.
