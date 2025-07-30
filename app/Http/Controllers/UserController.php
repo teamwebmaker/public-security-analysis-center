@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\SyncsRelations;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Branch;
@@ -12,11 +13,13 @@ use Illuminate\Http\Request;
 
 class UserController extends CrudController
 {
+
+    use SyncsRelations;
     protected string $modelClass = User::class;
     protected string $contextField = "user";
     protected string $contextFieldPlural = "users";
     protected string $resourceName = "users";
-    protected array $modelRelations = ['role', 'companies'];
+    protected array $modelRelations = ['role', 'companies', 'branches'];
 
     protected array $localScopes = ['withoutAdmins'];
 
@@ -31,14 +34,15 @@ class UserController extends CrudController
      */
     public function store(StoreUserRequest $request)
     {
-        // dd($request->input('company_ids', []), $request->input('branch_ids', []));
-
         $data = $request->validated();
         $user = $this->modelClass::create($data);
 
-        if (!empty($data['program_ids'])) {
-            $user->companies()->sync($data['company_ids']);
-        }
+        // Sync companies and branches (remove ones unchecked)
+        $this->syncRelations($user, $data, [
+            'companies' => 'company_ids',
+            'branches' => 'branch_ids',
+        ]);
+
 
         return redirect()
             ->route("{$this->resourceName}.index")
@@ -60,8 +64,12 @@ class UserController extends CrudController
         $data = $request->validated();
         $user->update($data);
 
-        // Sync companies (remove ones unchecked, add new ones)
-        $user->companies()->sync($request->input('company_ids', []));
+
+        // Sync companies and branches (remove ones unchecked)
+        $this->syncRelations($user, $data, [
+            'companies' => 'company_ids',
+            'branches' => 'branch_ids',
+        ]);
 
         return redirect()
             ->back()

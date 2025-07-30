@@ -17,11 +17,11 @@
 
 		<!-- economic_activity_type_id and visibility -->
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-6 mb-3">
 				<x-form.select name="economic_activity_type_id" :options="$economic_activity_types"
 					value="{{ old('economic_activity_type_id') }}" label="ეკონომიკური საქ ტიპი" :required="false" />
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-6 mb-3">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
 			</div>

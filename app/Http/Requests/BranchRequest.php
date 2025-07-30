@@ -26,6 +26,8 @@ class BranchRequest extends FormRequest
             'address' => ['required', 'string', 'max:255'],
             'company_id' => ['required', 'integer', 'exists:companies,id'],
             'visibility' => 'required|in:1,0',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'nullable|integer|exists:users,id',
         ];
     }
 }

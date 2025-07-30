@@ -1,30 +1,85 @@
+@php
+    $uid = 'dropdown-' . uniqid();
+    $optionList = collect($options);
+@endphp
+
 @if($label)
     <label for="{{ $id }}" class="form-label">
-        {{ $label }}&#xa0;@if($required)<span class="text-danger">*</span>@endif
+        {{ $label }}@if($required) <span class="text-danger">*</span> @endif
     </label>
 @endif
 
-<select id="{{ $id }}" name="{{ $name }}" class="{{ $class }}@error($name) is-invalid @enderror" @if($required) required
-@endif @if (empty($options)) disabled @endif {{ $attributes }}>
-    @if (empty($options))
-        <option value="" disabled selected>ვარიანტები ვერ მოიძებნა</option>
-    @endif
+<div x-data="selectDropdown('{{ $uid }}', {{ $optionList->count() >= 6 ? 'true' : 'false' }}, '{{ (string) $selected }}', {{ $required ? 'true' : 'false' }})"
+    x-init="init()" data-options='@json($optionList)' class="position-relative">
+
+    <input type="hidden" id="{{ $id }}" name="{{ $name }}" :value="selected">
+
+    <div class="form-select" x-on:click="toggle()" x-text="selectedText || 'აირჩიეთ ვარიანტი'"
+        :class="{ 'is-invalid': @json($errors->has($name)) }" style="cursor: pointer;"></div>
 
 
-    @if(!empty($options) && (is_null($selected) || $selected === ''))
-        <option value="" disabled selected>-- აირჩიეთ ვარიანტი --</option>
-    @endif
+    <div x-show="open" x-cloak @click.outside="close()"
+        class="border mt-1 bg-white w-100 position-absolute z-3 rounded shadow-sm"
+        style="max-height: 250px; overflow-y: auto;" x-transition>
+        <template x-if="searchable">
+            <div class="p-2">
+                <input type="text" x-model="search" class="form-control form-control-sm" placeholder="ძიება...">
+            </div>
+        </template>
 
-    @foreach($options as $value => $text)
-        <option value="{{ $value }}" data-content="{{ $text }}" @if((string) $selected === (string) $value) selected @endif>
-            {{ $text }}
-        </option>
-    @endforeach
-</select>
-
-
-@error($name)
-    <div class="invalid-feedback">
-        {{ $message }}
+        <ul class="list-group list-group-flush">
+            @foreach($options as $value => $text)
+                <li class="list-group-item list-group-item-action"
+                    x-show="search === '' || '{{ Str::lower($text) }}'.includes(search.toLowerCase())"
+                    x-on:click="select('{{ $value }}', '{{ $text }}')" style="cursor: pointer;">
+                    {{ $text }}
+                </li>
+            @endforeach
+        </ul>
     </div>
-@enderror
+
+    @error($name)
+        <div class="invalid-feedback d-block">
+            {{ $message }}
+        </div>
+    @enderror
+</div>
+
+
+<script>
+
+    function selectDropdown(id, searchable = false, preselectedValue = '', required = false) {
+        return {
+            open: false,
+            selected: preselectedValue,
+            selectedText: '',
+            search: '',
+            searchable: searchable,
+            required: required,
+
+            init() {
+                // try to get text from the DOM (Blade side has rendered it already)
+                const textMap = JSON.parse(this.$el.dataset.options || '{}');
+                if (this.selected && textMap[this.selected]) {
+                    this.selectedText = textMap[this.selected];
+                }
+            },
+
+            toggle() {
+                this.open = !this.open;
+            },
+
+            close() {
+                this.open = false;
+            },
+
+            select(value, text) {
+                this.selected = value;
+                this.selectedText = text;
+                this.search = '';
+                this.close();
+            }
+        }
+    }
+
+</script>

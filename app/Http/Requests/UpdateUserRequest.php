@@ -41,6 +41,10 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users')->ignore($userId)
             ],
             'role_id' => 'required|exists:roles,id',
+            'company_ids' => 'nullable|array',
+            'company_ids.*' => 'exists:companies,id',
+            'branch_ids' => 'nullable|array',
+            'branch_ids.*' => 'exists:branches,id',
         ];
 
         // Only validate password if it's provided

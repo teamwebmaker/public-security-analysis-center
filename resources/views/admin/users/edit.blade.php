@@ -52,8 +52,8 @@
 
 		<!-- Responsible Person Section -->
 		<div class="col-md-5 role-dependent" data-role="responsible_person" style="display: none;">
-			{{-- <x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name"
-				:selected="old('branch_ids', $user->branches->pluck('id')->toArray())	" /> --}}
+			<x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name"
+				:selected="old('branch_ids', $user->branches->pluck('id')->toArray())	" />
 		</div>
 	</x-admin.crud.form-container>
 @endsection

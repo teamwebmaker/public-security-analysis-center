@@ -8,7 +8,7 @@
             message="დარწმუნებული ხარ, რომ გსურს ფილიალი „{{ $branch->name }}“ წაიშალოს? რადან მასთან დაკავშირებული სამუშაოები მხოლოდ ფილიალის სახელს შეინარჩუნებენ და სხვა მონაცემები წაიშლება"
             cardClass="card h-100 border-0 overflow-hidden position-relative {{ $selectedBranchId == $branch->id ? ' shadow-sm bg-dark-subtle' : '' }}">
             <x-slot name="cardDetails">
-                <x-admin.branches.details-list :branch="$branch" />
+                <x-admin.branches.details-list :branch="$branch" :users="$branch->users" />
             </x-slot>
         </x-admin.card>
     @endforeach

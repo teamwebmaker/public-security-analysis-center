@@ -29,6 +29,10 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', RulesPassword::min(6), 'confirmed'], // requires "password_confirmation" field
             'password_confirmation' => 'required|same:password',
             'role_id' => 'required|exists:roles,id',
+            'company_ids' => 'nullable|array',
+            'company_ids.*' => 'exists:companies,id',
+            'branch_ids' => 'nullable|array',
+            'branch_ids.*' => 'exists:branches,id',
         ];
     }
 }

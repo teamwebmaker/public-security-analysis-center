@@ -101,6 +101,10 @@ class User extends Authenticatable
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'company_leaders');
+        return $this->belongsToMany(Company::class, 'company_leaders')->withTimestamps();
+    }
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'responsible_person_branch')->withTimestamps();
     }
 }

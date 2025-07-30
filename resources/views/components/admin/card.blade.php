@@ -52,7 +52,7 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
             <!-- Created Date -->
             <div class="d-flex flex-wrap mb-3 pt-1">
                 <small class="text-muted me-3 d-flex align-items-center gap-1">
-                    <i class="bi bi-calendar"></i>
+                    <i class="bi bi-calendar-week"></i>
                     {{ $document->created_at->format('Y-m-d') }}
                 </small>
                 @if (!isset($image))

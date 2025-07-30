@@ -10,12 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('company_leaders', function (Blueprint $table) {
+        Schema::disableForeignKeyConstraints();
+
+        Schema::create('responsible_person_branch', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('company_id')->constrained()->onDelete('cascade');
-            $table->primary(['user_id', 'company_id']);
+            $table->foreignId('branch_id')->constrained()->onDelete('cascade');
+            $table->primary(['user_id', 'branch_id']);
             $table->timestamps();
+
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -23,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('company_leaders');
+        Schema::dropIfExists('responsible_person_branch');
     }
 };

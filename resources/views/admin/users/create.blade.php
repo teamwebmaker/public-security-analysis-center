@@ -31,10 +31,10 @@
 			</div>
 		</div>
 		<div class="row mb-4">
-			<div class="col-md-6">
+			<div class="col-md-6 mb-3">
 				<x-form.input type="password" name="password" label="პაროლი" placeholder=" შეიყვანეთ პაროლი" />
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-6 mb-3">
 				<x-form.input type="password" name="password_confirmation" label="პაროლის დადასტურება"
 					value="{{ old('password') }}" placeholder="გაიმეორეთ პაროლი" />
 			</div>
@@ -47,7 +47,7 @@
 
 		<!-- Responsible Person Section  -->
 		<div class="col-md-5 role-dependent" data-role="responsible_person" style="display: none;">
-			{{-- <x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name" /> --}}
+			<x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name" />
 		</div>
 	</x-admin.crud.form-container>
 @endsection
@@ -58,5 +58,4 @@
 		window.roles = @json($roles->pluck('name', 'id'));
 	</script>
 	{!! load_script('scripts/user/userCreate.js') !!}
-
 @endsection

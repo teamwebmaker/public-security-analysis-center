@@ -6,14 +6,15 @@
 
 <div class="dropdown position-relative w-100">
     @php
-        $isItemsEmpty = $items->isEmpty();
+        $isItemsEmpty = count($items) === 0;
     @endphp
     <button class="btn border dropdown-toggle text-start" type="button" id="dropdown-{{ $dropdownId }}"
         data-bs-toggle="dropdown" aria-expanded="false" {{ $isItemsEmpty ? 'disabled' : '' }}>
         @if ($isItemsEmpty)
             {{ $label }} ვერ მოიძებნა
         @else
-            შეარჩიე ერთი ან რამდენიმე
+
+            აირჩიეთ ვარიანტი
         @endif
     </button>
 
@@ -29,7 +30,8 @@
                 <input class="form-check-input" type="checkbox" name="{{ $name }}[]" value="{{ $itemId }}"
                     id="dropdown-{{ $dropdownId }}-item-{{ $itemId }}" @if(collect($selected)->contains($itemId)) checked
                     @endif>
-                <label class="form-check-label" for="dropdown-{{ $dropdownId }}-item-{{ $itemId }}">
+                <label class="form-check-label" style="user-select: none;"
+                    for="dropdown-{{ $dropdownId }}-item-{{ $itemId }}">
                     {{ $itemLabel }}
                 </label>
             </div>
@@ -38,7 +40,7 @@
         @endforelse
     </div>
 </div>
-
+<div class="form-text">შეგიძლიათ შეარჩიოთ ერთი ან რამდენიმე</div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('dropdown-{{ $dropdownId }}').parentNode;

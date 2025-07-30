@@ -18,6 +18,11 @@ class Branch extends Model
         'visibility',
     ];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'responsible_person_branch')->withTimestamps();
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

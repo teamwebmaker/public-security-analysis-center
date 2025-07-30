@@ -47,8 +47,8 @@ export function enableSmoothScroll(selector, offset = 100) {
  * @param {string} id
  * @returns {HTMLElement|null}
  */
-export function getById(id) {
-  return document.getElementById(id);
+export function getById(id, parent = document) {
+  return parent.getElementById(id);
 }
 
 /**
@@ -56,8 +56,8 @@ export function getById(id) {
  * @param {string} selector
  * @returns {Element|null}
  */
-export function getOne(selector) {
-  return document.querySelector(selector);
+export function getOne(selector, parent = document) {
+  return parent.querySelector(selector);
 }
 
 /**
@@ -65,8 +65,8 @@ export function getOne(selector) {
  * @param {string} selector
  * @returns {NodeListOf<Element>}
  */
-export function getAll(selector) {
-  return document.querySelectorAll(selector);
+export function getAll(selector, parent = document) {
+  return parent.querySelectorAll(selector);
 }
 
 /**

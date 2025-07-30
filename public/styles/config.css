@@ -12,6 +12,9 @@
     --gold-alfa: 1;
     --gold: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
 }
+
+/* alpine */
+    [x-cloak] { display: none !important; }
 /* bootstrap  */
 
 /* icons */
