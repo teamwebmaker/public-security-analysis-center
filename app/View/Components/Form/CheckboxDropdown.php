@@ -16,12 +16,12 @@ class CheckboxDropdown extends Component
     public string $dropdownId;
 
     public function __construct(
-        $label = 'აირჩიე',
+        $label,
         $items = [],
         $name = 'items',
         $selected = [],
         $labelField = 'name',
-        $idField = 'id'
+        $idField = 'id',
     ) {
         $this->label = $label;
         $this->items = $items;

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Branch;
+use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,16 +16,14 @@ class UserController extends CrudController
     protected string $contextField = "user";
     protected string $contextFieldPlural = "users";
     protected string $resourceName = "users";
-    protected array $belongsTo = ['role'];
+    protected array $belongsTo = ['role', 'companies'];
 
     protected array $localScopes = ['withoutAdmins'];
 
 
     protected function additionalCreateData(): array
     {
-        return [
-            'roles' => $this->prepareRoleData(),
-        ];
+        return $this->prepareRoleData();
     }
 
     /**
@@ -31,8 +31,14 @@ class UserController extends CrudController
      */
     public function store(StoreUserRequest $request)
     {
+        // dd($request->input('company_ids', []), $request->input('branch_ids', []));
+
         $data = $request->validated();
-        $this->modelClass::create($data);
+        $user = $this->modelClass::create($data);
+
+        if (!empty($data['program_ids'])) {
+            $user->companies()->sync($data['company_ids']);
+        }
 
         return redirect()
             ->route("{$this->resourceName}.index")
@@ -42,10 +48,9 @@ class UserController extends CrudController
 
     protected function additionalEditData(): array
     {
-        return [
-            'roles' => $this->prepareRoleData(),
-        ];
+        return $this->prepareRoleData();
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -55,6 +60,9 @@ class UserController extends CrudController
         $data = $request->validated();
         $user->update($data);
 
+        // Sync companies (remove ones unchecked, add new ones)
+        $user->companies()->sync($request->input('company_ids', []));
+
         return redirect()
             ->back()
             ->with("success", "მომხმარებელი განახლდა წარმატებით");
@@ -62,7 +70,10 @@ class UserController extends CrudController
 
     protected function prepareRoleData()
     {
-        return Role::WithoutAdmins()->get()->pluck('display_name', 'id')->toArray();
+        return [
+            'roles' => Role::WithoutAdmins()->get(),
+            'companies' => Company::select('id', 'name')->get(),
+            'branches' => Branch::select('id', 'name')->get()
+        ];
     }
-
 }

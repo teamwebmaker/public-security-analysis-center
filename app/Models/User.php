@@ -45,11 +45,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
     /**
      * List of management roles
      * @var array
@@ -96,5 +91,16 @@ class User extends Authenticatable
             fn($q) =>
             $q->where('name', '!=', self::ADMIN_ROLE)
         );
+    }
+
+    // Connections 
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_leaders');
     }
 }

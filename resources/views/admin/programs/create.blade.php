@@ -109,14 +109,14 @@
 					</div>
 				</div>
 				<div class="row" x-data="{
-							startTime: '{{ old('hour_start') }}',
-							endTime: '{{ old('hour_end') }}',
-							get timeError() {
-								return this.startTime && this.endTime && this.endTime <= this.startTime
-									? 'დასრულების დრო უნდა აღემატებოდეს დაწყების დროს'
-									: null;
-							}
-						 }">
+								startTime: '{{ old('hour_start') }}',
+								endTime: '{{ old('hour_end') }}',
+								get timeError() {
+									return this.startTime && this.endTime && this.endTime <= this.startTime
+										? 'დასრულების დრო უნდა აღემატებოდეს დაწყების დროს'
+										: null;
+								}
+							 }">
 
 					<div class="col-md-6 mb-3">
 						<x-form.input type="time" name="hour_start" label="დაწყების დრო" x-model="startTime" />
@@ -145,9 +145,7 @@
 			</div>
 			<!-- Mentors -->
 			<div class="col-md-5 mb-3">
-				<label for="mentor_ids" class="form-label">მენტორები</label>
-				<x-form.checkbox-dropdown label="აირჩიე მენტორები" :items="$mentors" name="mentor_ids"
-					labelField="full_name" />
+				<x-form.checkbox-dropdown label="მენტორები" :items="$mentors" name="mentor_ids" labelField="full_name" />
 			</div>
 		</div>
 

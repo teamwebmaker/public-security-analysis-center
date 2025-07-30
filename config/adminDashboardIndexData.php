@@ -39,12 +39,12 @@ return [
       ],
       [
          'resources' => [
-            'publications' => ['title' => 'პუბლიკაციები', 'icon' => 'bi-book', 'model' => Publication::class],
             'contacts' => ['title' => 'შეტყობინებები', 'icon' => 'bi-mailbox-flag', 'hasCreate' => false, 'model' => Contact::class],
+            'projects' => ['title' => 'პროექტები', 'icon' => 'bi-folder-plus', 'model' => Project::class],
+            'publications' => ['title' => 'პუბლიკაციები', 'icon' => 'bi-book', 'model' => Publication::class],
+            'partners' => ['title' => 'პარტნიორები', 'icon' => 'bi-people', 'model' => Partner::class],
             'infos' => ['title' => 'ჩვენს შესახებ', 'icon' => 'bi-info-circle', 'hasCreate' => false, 'model' => Info::class],
             'main_menus' => ['title' => 'მენიუ', 'icon' => 'bi-menu-button', 'model' => MainMenu::class],
-            'projects' => ['title' => 'პროექტები', 'icon' => 'bi-folder-plus', 'model' => Project::class],
-            'partners' => ['title' => 'პარტნიორები', 'icon' => 'bi-people', 'model' => Partner::class],
          ]
       ],
    ],

@@ -18,6 +18,12 @@ class Company extends Model
         'visibility'
     ];
 
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function economic_activity_type()
     {
         return $this->belongsTo(EconomicActivityType::class);
