@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
                 // Tasks
             TaskStatusSeeder::class,
             TaskSeeder::class,
-
+            TaskWorkerSeeder::class
         ]);
     }
 }

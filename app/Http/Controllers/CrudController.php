@@ -14,6 +14,10 @@ abstract class CrudController extends Controller
     protected string $contextField;
     protected string $contextFieldPlural;
 
+    /**
+     * eager load relations
+     * @var array
+     */
     protected array $modelRelations = [];
 
     // If model have local scopes type name without "scope" prefix. In morel with prefix in here without

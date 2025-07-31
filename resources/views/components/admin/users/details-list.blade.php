@@ -1,4 +1,4 @@
-@props(['user', 'companies', 'branches', 'services'])
+@props(['user', 'companies', 'branches', 'services', 'tasks'])
 <ul class="list-group list-group-flush mb-3">
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>როლი:</span>
@@ -71,6 +71,32 @@
                         style="width: 100%; height: 100%;">
                         @foreach ($services as $service)
                             <option> {{ $service->title->ka ?? $service->title->en }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @else
+                <span class="badge bg-secondary rounded-pill"><i class="bi bi-x-lg"></i></span>
+            @endif
+        </div>
+    </li>
+    <li class="list-group-item">
+        <div class="d-flex justify-content-between flex-wrap align-items-center">
+            <span>სამუშაოები:</span>
+            @if ($tasks->isNotEmpty())
+
+                <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
+                    <!-- The icon -->
+                    <div class=" d-flex justify-content-center align-items-center gap-1">
+                        <i class="bi bi-list-ol fs-4 text-primary-emphasis"></i>
+                        <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
+                    </div>
+                    <!-- Invisible select over the icon -->
+                    <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
+                        style="width: 100%; height: 100%;">
+                        @foreach ($tasks as $task)
+                            <option> {{ $task->status->display_name }} /
+                                {{ $task->service->title->ka ?? $task->service->title->en }}
+                            </option>
                         @endforeach
                     </select>
                 </div>

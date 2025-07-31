@@ -27,9 +27,25 @@ class Task extends Model
         'visibility',
     ];
 
+    /**
+     * Returns task statuses that are eligible for worker assignment.
+     * In other words, This method defines which task statuses are eligible for assignment or display
+     * when a user is being associated with tasks. 
+     * @return string[]
+     */
+    public static function workerAssignableTaskStatuses(): array
+    {
+        return ['pending', 'in_progress', 'on_hold'];
+    }
+
     public function status()
     {
         return $this->belongsTo(TaskStatus::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class);
     }
 
     public function branch()

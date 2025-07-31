@@ -112,4 +112,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Service::class, 'responsible_person_service')->withTimestamps();
     }
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_workers')->withTimestamps();
+    }
 }

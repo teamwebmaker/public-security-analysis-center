@@ -51,7 +51,6 @@
 		</div>
 
 		<!-- Responsible Person Section -->
-
 		<div class="row">
 			<div class="col-md-6 mb-3 role-dependent" data-role="responsible_person" style="display: none;">
 				<x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name"
@@ -61,6 +60,12 @@
 				<x-form.checkbox-dropdown label="სერვისებიზე წვდომა" :items="$services" name="service_ids"
 					labelField="title.ka" :selected="old('service_ids', $user->services->pluck('id')->toArray())" />
 			</div>
+		</div>
+
+		<!-- Worker Section -->
+		<div class="col-md-5 mb-3 role-dependent" data-role="worker" style="display: none;">
+			<x-form.checkbox-dropdown label="სამუშაოები" :items="$tasks" name="task_ids" labelField="name"
+				:selected="old('task_ids', $user->tasks->pluck('id')->toArray())" />
 		</div>
 	</x-admin.crud.form-container>
 @endsection
