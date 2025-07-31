@@ -46,8 +46,14 @@
 		</div>
 
 		<!-- Responsible Person Section  -->
-		<div class="col-md-5 role-dependent" data-role="responsible_person" style="display: none;">
-			<x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name" />
+		<div class="row">
+			<div class="col-md-6 mb-3 role-dependent" data-role="responsible_person" style="display: none;">
+				<x-form.checkbox-dropdown label="ფილიალები" :items="$branches" name="branch_ids" labelField="name" />
+			</div>
+			<div class="col-md-6 mb-3 role-dependent" data-role="responsible_person" style="display: none;">
+				<x-form.checkbox-dropdown label="სერვისებიზე წვდომა" :items="$services" name="service_ids"
+					labelField="title.ka" />
+			</div>
 		</div>
 	</x-admin.crud.form-container>
 @endsection

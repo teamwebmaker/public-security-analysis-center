@@ -45,6 +45,8 @@ class UpdateUserRequest extends FormRequest
             'company_ids.*' => 'exists:companies,id',
             'branch_ids' => 'nullable|array',
             'branch_ids.*' => 'exists:branches,id',
+            'service_ids' => 'nullable|array',
+            'service_ids.*' => 'exists:services,id',
         ];
 
         // Only validate password if it's provided

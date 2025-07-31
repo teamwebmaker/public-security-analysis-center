@@ -5,7 +5,7 @@
 
 @if($label)
     <label for="{{ $id }}" class="form-label">
-        {{ $label }}@if($required) <span class="text-danger">*</span> @endif
+        {{ $label }}@if($required)&#xa0;<span class="text-danger">*</span> @endif
     </label>
 @endif
 
@@ -19,8 +19,8 @@
 
 
     <div x-show="open" x-cloak @click.outside="close()"
-        class="border mt-1 bg-white w-100 position-absolute z-3 rounded shadow-sm"
-        style="max-height: 250px; overflow-y: auto;" x-transition>
+        class="border mt-1 bg-white w-100 position-absolute rounded shadow-sm"
+        style="max-height: 250px; overflow-y: auto; z-index: 100;" x-transition>
         <template x-if="searchable">
             <div class="p-2">
                 <input type="text" x-model="search" class="form-control form-control-sm" placeholder="ძიება...">

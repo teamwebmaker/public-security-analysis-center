@@ -107,4 +107,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Branch::class, 'responsible_person_branch')->withTimestamps();
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'responsible_person_service')->withTimestamps();
+    }
 }

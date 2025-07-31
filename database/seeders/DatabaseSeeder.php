@@ -19,15 +19,17 @@ class DatabaseSeeder extends Seeder
             EconomicActivityType::class,
             CompanySeeder::class,
             CompanyLeadersSeeder::class,
+                // Services
+            ServiceCategorySeeder::class,
+            ServiceSeeder::class,
                 // Branches
             BranchSeeder::class,
             ResponsiblePersonBranchSeeder::class,
+            ResponsiblePersonServiceSeeder::class,
                 // Tasks
             TaskStatusSeeder::class,
             TaskSeeder::class,
-                // Services
-            ServiceCategorySeeder::class,
-            ServiceSeeder::class
+
         ]);
     }
 }

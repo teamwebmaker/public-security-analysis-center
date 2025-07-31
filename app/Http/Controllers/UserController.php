@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Role;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -41,6 +42,7 @@ class UserController extends CrudController
         $this->syncRelations($user, $data, [
             'companies' => 'company_ids',
             'branches' => 'branch_ids',
+            'services' => 'service_ids'
         ]);
 
 
@@ -69,6 +71,7 @@ class UserController extends CrudController
         $this->syncRelations($user, $data, [
             'companies' => 'company_ids',
             'branches' => 'branch_ids',
+            'services' => 'service_ids'
         ]);
 
         return redirect()
@@ -81,7 +84,8 @@ class UserController extends CrudController
         return [
             'roles' => Role::WithoutAdmins()->get(),
             'companies' => Company::select('id', 'name')->get(),
-            'branches' => Branch::select('id', 'name')->get()
+            'branches' => Branch::select('id', 'name')->get(),
+            'services' => Service::select('id', 'title')->get()
         ];
     }
 }

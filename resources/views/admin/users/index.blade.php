@@ -7,7 +7,8 @@
     <x-admin.card :document="$user" :title="$user->full_name" :hasVisibility="false" :resourceName='$resourceName'>
     <x-slot name="cardDetails">
 
-      <x-admin.users.details-list :user="$user" :companies="$user->companies" :branches="$user->branches" />
+      <x-admin.users.details-list :user="$user" :companies="$user->companies" :branches="$user->branches"
+      :services="$user->services" />
     </x-slot>
     </x-admin.card>
   @endforeach
