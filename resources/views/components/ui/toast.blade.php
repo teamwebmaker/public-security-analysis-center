@@ -96,7 +96,7 @@
 
             <div class="d-flex align-items-center p-1">
                 <div class="d-flex align-items-center gap-1 flex-grow-1">
-                    <div class="position-relative m-2" style="width: 40px; height: 40px; isolation: isolate;">
+                    <div class="position-relative mx-1" style="width: 40px; height: 40px; isolation: isolate;">
                         <div
                             class="position-absolute top-50 start-50 translate-middle {{ $type === 'success' ? 'pulse-ring-success' : 'pulse-ring-error' }}">
                         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\SyncsRelations;
 use App\Http\Requests\StoreMentorRequest;
 use App\Http\Requests\UpdateMentorRequest;
 use App\Models\Mentor;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 
 class MentorController extends CrudController
 {
+    use SyncsRelations;
     protected string $modelClass = Mentor::class;
     protected string $contextField = "mentor";
     protected string $contextFieldPlural = "mentors";
@@ -27,15 +29,13 @@ class MentorController extends CrudController
     public function store(StoreMentorRequest $request)
     {
         $data = $request->validated();
-        // dd($data);
         $mentorData = $this->prepareMentorData($request, $data);
         $mentor = $this->modelClass::create($mentorData);
 
-
-        if (!empty($data['program_ids'])) {
-            $mentor->programs()->sync($data['program_ids']);
-        }
-
+        // Sync programs (remove unchecked)
+        $this->syncRelations($mentor, $data, [
+            'programs' => 'program_ids',
+        ]);
 
         return redirect()
             ->route("{$this->resourceName}.index")
@@ -61,8 +61,10 @@ class MentorController extends CrudController
         $mentorData = $this->prepareMentorData($request, $data, $mentor);
         $mentor->update($mentorData);
 
-        // Sync programs (remove ones unchecked, add new ones)
-        $mentor->programs()->sync($request->input('program_ids', []));
+        // Sync programs (remove unchecked)
+        $this->syncRelations($mentor, $data, [
+            'programs' => 'program_ids',
+        ]);
 
         return redirect()
             ->back()

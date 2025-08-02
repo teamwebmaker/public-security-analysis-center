@@ -63,7 +63,7 @@ class UserController extends CrudController
             return redirect()
                 ->route("{$this->resourceName}.edit", $user->id)
                 ->withErrors([
-                    'success' => 'მომხმარებელი ' . $user->name . 'შეიქნმა მაგრამ პრობლემის გამო მოხდა რედაქტირების გვერდზე გადამისამართება',
+                    'redirectAlert' => 'მომხმარებელი ' . $user->name . 'შეიქმნა მაგრამ პრობლემის გამო მოხდა რედაქტირების გვერდზე გადამისამართება',
                     'error' => $e->getMessage()
                 ]);
         }

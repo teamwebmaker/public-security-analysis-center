@@ -48,7 +48,8 @@
 		</div>
 
 		<div class="col-md-5">
-			<x-form.checkbox-dropdown label="პროგრამები" :items="$programs" name="program_ids" labelField="title.ka" />
+			<x-form.checkbox-dropdown label="პროგრამები" :items="$programs" name="program_ids" labelField="title.ka"
+				:selected="old('program_ids')" />
 		</div>
 
 	</x-admin.crud.form-container>
