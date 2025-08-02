@@ -14,45 +14,12 @@
         </span>
     </li>
 
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>დღეები:</span>
-            <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                <!-- The icon -->
-                <div class=" d-flex justify-content-center align-items-center gap-2">
-                    <i class="bi bi-calendar2-week-fill fs-4 text-primary-emphasis"></i>
-                    <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                </div>
-                <!-- Invisible select over the icon -->
-                <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                    style="width: 100%; height: 100%;">
-                    @foreach($program->days->ka ?? [] as $day)
-                        <option>{{ $day }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </li>
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>მენტორები:</span>
+    <x-ui.info-dropdown-item label="დღეები" icon="bi bi-calendar2-week-fill" name="days_dropdown"
+        :items="collect($program->days->ka ?? [])" :getItemText="fn($day) => $day" />
 
-            <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                <!-- The icon -->
-                <div class=" d-flex justify-content-center align-items-center gap-2">
-                    <i class="bi bi-person-lines-fill text-primary-emphasis fs-4"></i>
-                    <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                </div>
-                <!-- Invisible select over the icon -->
-                <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                    style="width: 100%; height: 100%;">
-                    @foreach ($program->mentors as $mentor)
-                        <option>{{ $mentor->full_name }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </li>
+    <x-ui.info-dropdown-item label="მენტორები" icon="bi bi-person-lines-fill" name="mentors_dropdown"
+        :items="$program->mentors" :getItemText="fn($mentor) => $mentor->full_name" />
+
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ხანგრძლივობა:</span>
         <span>{{ $program->duration }}</span>
@@ -69,8 +36,6 @@
         <span>დასრულება:</span>
         <span>{{ $program->end_date }}</span>
     </li>
-
-
 
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ლოკაცია:</span>

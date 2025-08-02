@@ -6,105 +6,46 @@
             {{ $user->role->display_name }}
         </span>
     </li>
+    @switch($user->getRoleName())
+        @case('company_leader')
+            <x-ui.info-dropdown-item 
+                label="კომპანიები" 
+                icon="bi bi-building" 
+                name="companies_dropdown" 
+                :items="$companies"
+                :getItemText="fn($company) => $company->name" 
+            />  
+            @break
 
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>კომპანიები:</span>
-            @if ($companies->isNotEmpty())
+        @case('responsible_person')
+            <x-ui.info-dropdown-item 
+                label="ფილიალები" 
+                icon="bi bi-diagram-3" 
+                name="branches_dropdown" 
+                :items="$branches"
+                :getItemText="fn($branch) => $branch->name" 
+            />
 
-                <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                    <!-- The icon -->
-                    <div class=" d-flex justify-content-center align-items-center gap-1">
-                        <i class="bi bi-building fs-4 text-primary-emphasis"></i>
-                        <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                    </div>
-                    <!-- Invisible select over the icon -->
-                    <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                        style="width: 100%; height: 100%;">
-                        @foreach ($companies as $company)
-                            <option> {{ $company->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            @else
-                <span class="badge bg-secondary rounded-pill"><i class="bi bi-x-lg"></i></span>
-            @endif
-        </div>
-    </li>
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>ფილიალები:</span>
-            @if ($branches->isNotEmpty())
+            <x-ui.info-dropdown-item 
+                label="წვდომა სერვისებზე" 
+                icon="bi bi-ui-checks" 
+                name="services_dropdown"
+                :items="$services" 
+                :getItemText="fn($service) => $service->title->ka ?? $service->title->en" 
+            />
+            @break
 
-                <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                    <!-- The icon -->
-                    <div class=" d-flex justify-content-center align-items-center gap-1">
-                        <i class="bi bi-diagram-3 fs-4 text-primary-emphasis"></i>
-                        <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                    </div>
-                    <!-- Invisible select over the icon -->
-                    <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                        style="width: 100%; height: 100%;">
-                        @foreach ($branches as $branch)
-                            <option> {{ $branch->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            @else
-                <span class="badge bg-secondary rounded-pill"><i class="bi bi-x-lg"></i></span>
-            @endif
-        </div>
-    </li>
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>წვდომა სერვისებზე:</span>
-            @if ($services->isNotEmpty())
+        @case('worker')
+            <x-ui.info-dropdown-item 
+                label="სამუშაოები" 
+                icon="bi bi-list-ol" 
+                name="tasks_dropdown" 
+                :items="$tasks"
+                :getItemText="fn($task) => $task->status->display_name . ' / ' . ($task->service->title->ka ?? $task->service->title->en)" 
+            />
+            @break
+    @endSwitch
 
-                <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                    <!-- The icon -->
-                    <div class=" d-flex justify-content-center align-items-center gap-1">
-                        <i class="bi bi-ui-checks fs-4 text-primary-emphasis"></i>
-                        <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                    </div>
-                    <!-- Invisible select over the icon -->
-                    <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                        style="width: 100%; height: 100%;">
-                        @foreach ($services as $service)
-                            <option> {{ $service->title->ka ?? $service->title->en }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            @else
-                <span class="badge bg-secondary rounded-pill"><i class="bi bi-x-lg"></i></span>
-            @endif
-        </div>
-    </li>
-    <li class="list-group-item">
-        <div class="d-flex justify-content-between flex-wrap align-items-center">
-            <span>სამუშაოები:</span>
-            @if ($tasks->isNotEmpty())
-
-                <div class="position-relative d-inline-block" style="width: 50px; height: 25px;">
-                    <!-- The icon -->
-                    <div class=" d-flex justify-content-center align-items-center gap-1">
-                        <i class="bi bi-list-ol fs-4 text-primary-emphasis"></i>
-                        <i class=" bi bi-caret-down-fill text-primary-emphasis"></i>
-                    </div>
-                    <!-- Invisible select over the icon -->
-                    <select name="mentors_dropdown" class="position-absolute top-0 start-0 opacity-0"
-                        style="width: 100%; height: 100%;">
-                        @foreach ($tasks as $task)
-                            <option> {{ $task->status->display_name }} /
-                                {{ $task->service->title->ka ?? $task->service->title->en }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            @else
-                <span class="badge bg-secondary rounded-pill"><i class="bi bi-x-lg"></i></span>
-            @endif
-        </div>
-    </li>
     @if ($user->phone)
         <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
             <span>ნომერი:</span>
