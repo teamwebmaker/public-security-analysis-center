@@ -36,8 +36,8 @@ class FormContainer extends Component
         string $cardBodyClass = 'p-4',
         string $titleClass = 'card-header bg-white h4 ps-4 py-4',
         string $formClass = 'needs-validation dirty-check-form',
-        string $submitButtonText = 'დამატება',
-        string $submitButtonIcon = 'bi bi-check-lg',
+        string $submitButtonText = 'დადასტურება',
+        string $submitButtonIcon = 'bi-check-lg',
         string $backRoute = ''
     ) {
         $this->title = $title;

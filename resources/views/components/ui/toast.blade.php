@@ -90,15 +90,15 @@
     style="z-index: 1100;">
     @foreach ($messages as $message)
         <div x-data="{ show: true }" x-show="show" x-transition @if($type === 'success')
-        x-init="setTimeout(() => show = false, 4000)" @else x-init="setTimeout(() => show = false, 10000)" @endif
+        x-init="setTimeout(() => show = false, 4000)" @else x-init="setTimeout(() => show = false, 14000)" @endif
             class="toast mb-1 {{ $type === 'success' ? 'toast-fade-in-out-success' : 'toast-fade-in-out-error' }} rounded-top-2 rounded-bottom-1 show w-100 mx-auto bg-white border-0 shadow-lg"
             style="max-width: 350px;" role="alert" aria-live="assertive" aria-atomic="true">
 
             <div class="d-flex align-items-center p-1">
                 <div class="d-flex align-items-center gap-1 flex-grow-1">
-                    <div class="position-relative" style="width: 40px; height: 40px; isolation: isolate;">
-                        <div class="position-absolute top-50 start-50 translate-middle 
-                                        {{ $type === 'success' ? 'pulse-ring-success' : 'pulse-ring-error' }}">
+                    <div class="position-relative m-2" style="width: 40px; height: 40px; isolation: isolate;">
+                        <div
+                            class="position-absolute top-50 start-50 translate-middle {{ $type === 'success' ? 'pulse-ring-success' : 'pulse-ring-error' }}">
                         </div>
                         @if($type === 'success')
                             <i class="bi bi-check-circle-fill fs-5 position-absolute top-50 start-50 translate-middle"

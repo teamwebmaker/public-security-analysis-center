@@ -50,20 +50,29 @@ class UserController extends CrudController
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
-        // Just a temporary model instance (by this we are avoiding to create the user if getAuthorizedRelations fails)
-        $user = new User($data);
 
-        // Attach only allowed relations according to user role
-        $authorizedRelations = $this->getAuthorizedRelations($user, $data);
-        $this->syncRelations($user, $data, $authorizedRelations);
+        // Create the user first
+        $user = $this->modelClass::create($data);
 
-        // If no errors occurred, create the user
-        $this->modelClass::create($data);
+        try {
+            // attempt to sync only allowed relations according to user role
+            $authorizedRelations = $this->getAuthorizedRelations($user, $data);
+            $this->syncRelations($user, $data, $authorizedRelations);
+        } catch (\Throwable $e) {
+            // Redirect to edit with error message because the user was created
+            return redirect()
+                ->route("{$this->resourceName}.edit", $user->id)
+                ->withErrors([
+                    'success' => 'მომხმარებელი ' . $user->name . 'შეიქნმა მაგრამ პრობლემის გამო მოხდა რედაქტირების გვერდზე გადამისამართება',
+                    'error' => $e->getMessage()
+                ]);
+        }
 
         return redirect()
             ->route("{$this->resourceName}.index")
             ->with("success", "მომხმარებელი შეიქმნა წარმატებით");
     }
+
 
     /**
      * Updates an existing user and syncs only authorized relations (based on role).
@@ -73,7 +82,7 @@ class UserController extends CrudController
         $data = $request->validated();
         $user->update($data);
 
-        // Attach only allowed relations according to user role
+        // Attempt to sync only allowed relations according to user role
         $authorizedRelations = $this->getAuthorizedRelations($user, $data);
         $this->syncRelations($user, $data, $authorizedRelations);
 
@@ -144,7 +153,7 @@ class UserController extends CrudController
                 // Throw if unauthorized relation has submitted data
                 if (!empty($data[$inputKey] ?? [])) {
                     throw ValidationException::withMessages([
-                        $inputKey => "Role '{$user->getRoleName()}' cannot be assigned to {$relation}.",
+                        $inputKey => "Role '{$user->role->display_name}' cannot be assigned to {$relation}.",
                     ]);
                 }
 
