@@ -59,12 +59,13 @@ class MentorController extends CrudController
 
         $data = $request->validated();
         $mentorData = $this->prepareMentorData($request, $data, $mentor);
-        $mentor->update($mentorData);
 
         // Sync programs (remove unchecked)
         $this->syncRelations($mentor, $data, [
             'programs' => 'program_ids',
         ]);
+
+        $mentor->update($mentorData);
 
         return redirect()
             ->back()

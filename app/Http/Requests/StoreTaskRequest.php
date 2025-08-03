@@ -33,6 +33,9 @@ class StoreTaskRequest extends FormRequest
 
             'visibility' => ['required', 'boolean'],
             'archived' => ['sometimes', 'boolean'],
+
+            'user_ids' => ['nullable', 'array'],
+            'user_ids.*' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 }

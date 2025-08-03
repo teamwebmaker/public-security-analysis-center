@@ -3,7 +3,7 @@
 @section('title', 'სამუშაოების სია')
 
 @php
-    $headers = ['#', 'სტატუსი', 'საწყისი თარიღი', 'ფილიალი', 'სერვისი', 'ხილვადობა', 'შექმნის თარიღი', 'განახლების თარიღი'];
+    $headers = ['#', 'სტატუსი', 'შემსრულებელი', 'საწყისი თარიღი', 'ფილიალი', 'სერვისი', 'ხილვადობა', 'შექმნის თარიღი', 'განახლების თარიღი'];
 
     $statusColors = [
         'pending' => 'warning',
@@ -35,6 +35,18 @@
         return [
             'id' => $task->id,
             'status' => $makeBadge($statusLabel, $statusColor),
+            'worker' => match (true) {
+                $task->users->count() === 1 => '<select class="form-select form-select-sm" disabled> <option selected>' . e($task->users->first()->full_name) . '</option> </select>',
+                $task->users->count() >= 2 => '<select class="form-select form-select-sm">' .
+                '<option selected>სია...</option>' .  // One selected option before the list
+                $task->users->map(
+                    fn($user) =>
+                    '<option disabled>' . e($user->full_name) . '</option>'
+                )->implode('') .
+                '</select>',
+                default => $makeBadge('არ ჰყავს', 'danger')
+            },
+
             'start_date' => e($task->start_date->diffForHumans()),
             'branch' => $makeLinkOrFallback($task->branch, 'branches.index', $task->branch?->name, $task->branch_name),
             'service' => $makeLinkOrFallback(

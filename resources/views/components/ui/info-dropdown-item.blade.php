@@ -1,4 +1,4 @@
-<li class="list-group-item">
+<li class="list-group-item  bg-transparent">
     <div class="d-flex justify-content-between flex-wrap align-items-center">
         <span>{{ $label }}:</span>
         @if ($items->isNotEmpty())

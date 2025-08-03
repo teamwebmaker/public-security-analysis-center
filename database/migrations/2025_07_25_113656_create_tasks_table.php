@@ -32,12 +32,13 @@ return new class extends Migration {
                 ->index();
             // if branch deleted, branch_name will be saved
             $table->string("branch_name")->nullable();
+            
             $table
                 ->foreignId("service_id")
                 ->nullable()
                 ->constrained("services")
-                ->onDelete("set null")
                 ->name("tasks_service_id_foreign")
+                ->onDelete("cascade")
                 ->index();
             // if service deleted, service_name will be saved
             $table->string("service_name")->nullable();

@@ -41,8 +41,7 @@
                 icon="bi bi-list-ol" 
                 name="tasks_dropdown" 
                 :items="$tasks"
-                :getItemText="fn($task) => $task->status->display_name . ' / ' . ($task->service->title->ka ?? $task->service->title->en)" 
-            />
+                :getItemText="fn($task) => $task->status->display_name . ' / ' . ($task->service?->title ? $task->service->title->ka : $task->service_name)"/>
             @break
     @endSwitch
 

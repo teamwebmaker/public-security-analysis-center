@@ -80,11 +80,12 @@ class UserController extends CrudController
     public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
-        $user->update($data);
 
         // Attempt to sync only allowed relations according to user role
         $authorizedRelations = $this->getAuthorizedRelations($user, $data);
         $this->syncRelations($user, $data, $authorizedRelations);
+
+        $user->update($data);
 
         return redirect()
             ->back()

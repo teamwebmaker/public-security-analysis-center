@@ -18,6 +18,18 @@ class Branch extends Model
         'visibility',
     ];
 
+    // If the name of the branch is updated, update the branch name field in tasks
+    protected static function booted()
+    {
+        static::updated(function ($branch) {
+            $changes = $branch->getChanges();
+            if (array_key_exists('name', $changes)) {
+                $branch->tasks()->update(['branch_name' => $branch->name]);
+            }
+        });
+
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'responsible_person_branch')->withTimestamps();
