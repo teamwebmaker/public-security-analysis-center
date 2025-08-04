@@ -43,7 +43,35 @@ class TaskSeeder extends Seeder
                 'visibility' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
+            [
+                'id' => 3,
+                'branch_id' => 3,
+                'branch_name' => 'AgroWorld ფილიალი',
+                'service_id' => 3,
+                'service_name' => 'მომხმარებლების პასუხი',
+                'status_id' => 1,
+                'start_date' => now(),
+                'end_date' => now(),
+                'archived' => '0',
+                'visibility' => '1',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id' => 4,
+                'branch_id' => 4,
+                'branch_name' => 'AgroWorld ფილიალი',
+                'service_id' => 4,
+                'service_name' => 'მომხმარებლების პასუხი',
+                'status_id' => 1,
+                'start_date' => now(),
+                'end_date' => now(),
+                'archived' => '0',
+                'visibility' => '1',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

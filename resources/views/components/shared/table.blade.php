@@ -1,101 +1,70 @@
-{{-- <div style="width: 100%; overflow-x: auto;">
-	<table class="table table-hover align-middle mb-0" style="min-width: 1300px;">
+ <div class="position-relative" style="width: 100%; overflow-x: auto; overflow-y: visible;">
+	<table class="table table-hover align-middle mb-0" style="min-width: 1400px;">
 		<thead class="table-light text-uppercase">
 			<tr>
 				@foreach($headers as $header)
-				<th scope="col" class="{{ $loop->first ? 'text-center sticky-col' : '' }}">
-					{{ $header }}
-				</th>
-				@endforeach
-			</tr>
-		</thead>
-		<tbody>
-			@foreach($rows as $row)
-			<tr>
-				@foreach($row as $key => $value)
-				@if ($loop->first)
-				<th scope="row" class="text-nowrap text-dark fw-semibold text-center sticky-col">
-					<div>{!! $value !!}</div>
-				</th>
-				@else
-				<td>
-					@php $hasTooltip = in_array($key, $tooltipColumns); @endphp
-					<span @if($hasTooltip) class="text-truncate" data-bs-toggle="tooltip" data-bs-placement="top"
-						data-bs-custom-class="custom-tooltip" data-bs-title="{{ strip_tags($value) }}" @endif
-						style="max-width: 200px; cursor: pointer; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-						{!! $value !!}
-					</span>
-				</td>
-				@endif
-				@endforeach
-			</tr>
-			@endforeach
-		</tbody>
-	</table>
-</div> --}}
+					@php
+						$field = $sortableMap[$header] ?? null;
+						$isSorted = ltrim($currentSort, '-') === $field;
+						$dir = str_starts_with($currentSort, '-') ? 'desc' : 'asc';
+						$next = $isSorted && $dir === 'asc' ? "-$field" : $field;
+					@endphp
 
-
-<div class="position-relative" style="width: 100%; overflow-x: auto; overflow-y: visible;">
-	<table class="table table-hover align-middle mb-0" style="min-width: 1300px;">
-		<thead class="table-light text-uppercase">
-			<tr>
-				@foreach($headers as $header)
-					<th scope="col" class="{{ $loop->first ? 'text-center sticky-col' : '' }}">
-						{{ $header }}
+					<th class="{{ $loop->first ? 'text-center sticky-col' : '' }}">
+						@if ($field)
+							<a href="{{ request()->fullUrlWithQuery(['sort' => $next]) }}" class="text-dark text-decoration-none d-flex gap-1 align-items-center">
+								<span>{{ $header }}</span>
+								@if ($isSorted)
+									<i class="bi bi-caret-{{ $dir === 'asc' ? 'up' : 'down' }}-fill"></i>
+								@endif
+							</a>
+						@else
+							{{ $header }}
+						@endif
 					</th>
 				@endforeach
-				@if (!empty($actions) && $actions)
-					<th scope="col" class="text-end"></th> {{-- No title for actions column --}}
+
+				@if ($actions ?? false)
+					<th class="text-end"></th>
 				@endif
 			</tr>
 		</thead>
 		<tbody>
-			@foreach($rows as $index => $row)
-				@php
-					$document = $items[$index]; // Get the original model if needed
-				@endphp
+			@foreach($rows as $i => $row)
+				@php $model = $items[$i]; @endphp
 				<tr>
 					@foreach($row as $key => $value)
 						@if ($loop->first)
-							<th scope="row" class="text-nowrap text-dark fw-semibold text-center sticky-col">
-								<div>{!! $value !!}</div>
-							</th>
+							<th class="text-center sticky-col text-dark fw-semibold">{!! $value !!}</th>
 						@else
 							<td>
-								@php $hasTooltip = in_array($key, $tooltipColumns); @endphp
-								<span @if($hasTooltip) class="text-truncate" data-bs-toggle="tooltip" data-bs-placement="top"
-								data-bs-custom-class="custom-tooltip" data-bs-title="{{ strip_tags($value) }}" @endif
-									style="max-width: 200px; cursor: pointer; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+								@php $tooltip = in_array($key, $tooltipColumns ?? []); @endphp
+								<span @if($tooltip) class="text-truncate d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+            					data-bs-custom-class="custom-tooltip" data-bs-title="{{ strip_tags($value) }}"@endif
+									style="max-width: 200px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
 									{!! $value !!}
 								</span>
 							</td>
 						@endif
 					@endforeach
 
-					@if (!empty($actions) && $actions)
+					@if ($actions ?? false)
 						<td class="text-end">
 							<div class="dropdown dropstart">
-								<button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown"
-									aria-expanded="false">
+								<button class="btn btn-sm btn-light border-0" data-bs-toggle="dropdown">
 									<i class="bi bi-three-dots-vertical"></i>
 								</button>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="{{ route($resourceName . '.edit', $document) }}"
-											class="dropdown-item bg-transparent d-flex align-items-center gap-2 text-primary">
-											<i class="bi bi-pencil-square"></i>
-											<span>რედაქტირება</span>
+										<a href="{{ route($resourceName . '.edit', $model) }}" class="dropdown-item text-primary d-flex gap-2">
+											<i class="bi bi-pencil-square"></i><span>რედაქტირება</span>
 										</a>
 									</li>
 									<li>
-										<form method="POST" action="{{ route($resourceName . '.destroy', $document) }}"
-											onsubmit="return confirm('ნამდვილად გსურთ სამუშაო {{ $document->service->title->ka ?? '' }} წაიშალოს?')">
-											@csrf
-											@method('DELETE')
-											<button type="submit"
-												class="dropdown-item bg-transparent d-flex align-items-center gap-2 text-danger">
-												<i class="bi bi-trash"></i>
-												<span>წაშლა</span>
+										<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}" onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
+											@csrf @method('DELETE')
+											<button type="submit" class="dropdown-item text-danger d-flex gap-2">
+												<i class="bi bi-trash"></i><span>წაშლა</span>
 											</button>
 										</form>
 									</li>

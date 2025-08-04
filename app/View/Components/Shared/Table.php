@@ -16,12 +16,12 @@ class Table extends Component
     public $resourceName;
     public $actions;
     public array $tooltipColumns;
-
-
+    public ?array $sortableMap;
+    public ?string $currentSort;
     /**
      * Create a new component instance.
      */
-    public function __construct($headers, $rows, $items, $resourceName, $actions = false, $tooltipColumns = [])
+    public function __construct($headers, $rows, $items, $resourceName, $actions = false, $tooltipColumns = [], $sortableMap = [], $currentSort = null)
     {
         $this->headers = $headers;
         $this->rows = $rows;
@@ -29,6 +29,8 @@ class Table extends Component
         $this->resourceName = $resourceName;
         $this->actions = $actions;
         $this->tooltipColumns = $tooltipColumns;
+        $this->sortableMap = $sortableMap;
+        $this->currentSort = $currentSort;
     }
 
     /**

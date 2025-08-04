@@ -36,6 +36,28 @@ class ServiceSeeder extends Seeder
                 'sortable' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+            ],
+            [
+                'id' => 3,
+                'title' => json_encode(['ka' => 'ფერების გამართვა', 'en' => 'customer service']),
+                'description' => json_encode(['ka' => 'ფერების გამართვა', 'en' => 'Additional service educationeducationeducation']),
+                'service_category_id' => 1,
+                'image' => '/public/images/services/service_img-3.jpg',
+                'visibility' => '1',
+                'sortable' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id' => 4,
+                'title' => json_encode(['ka' => 'მაგიდის სერვისი', 'en' => 'customer service']),
+                'description' => json_encode(['ka' => 'მაგიდის სერვისი', 'en' => 'Additional service educationeducationeducation']),
+                'service_category_id' => 2,
+                'image' => '/public/images/services/service_img-3.jpg',
+                'visibility' => '1',
+                'sortable' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]
         ]);
     }

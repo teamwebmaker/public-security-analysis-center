@@ -1,73 +1,50 @@
 @extends('layouts.admin.admin-dashboard')
 
 @section('title', 'სამუშაოების სია')
-
 @php
-    $headers = ['#', 'სტატუსი', 'შემსრულებელი', 'საწყისი თარიღი', 'ფილიალი', 'სერვისი', 'ხილვადობა', 'შექმნის თარიღი', 'განახლების თარიღი'];
-
-    $statusColors = [
-        'pending' => 'warning',
-        'in_progress' => 'info',
-        'completed' => 'success',
-        'on_hold' => 'secondary',
-        'cancelled' => 'danger',
+    $headers = ['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'ხილვადობა','საწყისი თარიღი', 'შექმნის თარიღი', 'განახლების თარიღი'];
+    $sortableMap = [
+        'საწყისი თარიღი' => 'start_date',
+        'შექმნის თარიღი' => 'created_at',
+        'განახლების თარიღი' => 'updated_at',
     ];
-
-    /**
-     * Generate a badge span with a Bootstrap background color
-     */
-    $makeBadge = fn(string $text, string $color) => '<span class="badge bg-' . e($color) . '">' . e($text) . '</span>';
-
-    /**
-     * Create a linked value or fallback to line-through text
-     */
-    $makeLinkOrFallback = function ($model, $routeName, $label, $fallback) {
-        return $model
-            ? '<a href="' . route($routeName, $model->id) . '" class="text-decoration-underline text-dark">' . e($label) . '</a>'
-            : '<span style="text-decoration: line-through;">' . e($fallback) . '</span>';
-    };
-
-    $rows = $tasks->map(function ($task) use ($statusColors, $makeBadge, $makeLinkOrFallback) {
-        $statusName = $task->status?->name ?? 'unknown';
-        $statusColor = $statusColors[$statusName] ?? 'secondary';
-        $statusLabel = $task->status?->display_name ?? 'უცნობი სტატუსი';
-
-        return [
-            'id' => $task->id,
-            'status' => $makeBadge($statusLabel, $statusColor),
-            'worker' => match (true) {
-                $task->users->count() === 1 => '<select class="form-select form-select-sm" disabled> <option selected>' . e($task->users->first()->full_name) . '</option> </select>',
-                $task->users->count() >= 2 => '<select class="form-select form-select-sm">' .
-                '<option selected>სია...</option>' .  // One selected option before the list
-                $task->users->map(
-                    fn($user) =>
-                    '<option disabled>' . e($user->full_name) . '</option>'
-                )->implode('') .
-                '</select>',
-                default => $makeBadge('არ ჰყავს', 'danger')
-            },
-
-            'start_date' => e($task->start_date->diffForHumans()),
-            'branch' => $makeLinkOrFallback($task->branch, 'branches.index', $task->branch?->name, $task->branch_name),
-            'service' => $makeLinkOrFallback(
-                $task->service,
-                'services.index',
-                $task->service?->title->ka ?? $task->service?->title->en ?? 'უცნობი',
-                $task->service_name
-            ),
-            'visibility' => $makeBadge(
-                $task->visibility ? 'ხილული' : 'დამალული',
-                $task->visibility ? 'success' : 'danger'
-            ),
-            'created_at' => e($task->created_at->diffForHumans()),
-            'updated_at' => e($task->updated_at->diffForHumans()),
-        ];
-    });
-
-    $tooltipColumns = ['branch', 'service'];
 @endphp
 
 <x-admin.index-view :items="$tasks" :resourceName="$resourceName" containerClass="position-relative">
-    <x-shared.table :items="$tasks" :resourceName="$resourceName" :headers="$headers" :rows="$rows" :actions="true"
-        :tooltipColumns="$tooltipColumns" />
+   {{-- <form method="GET" class="mb-3 row row-cols-1 row-cols-sm-auto g-2 justify-content-end">
+      <div class="col">
+         <input name="search" value="{{ request('search') }}" type="text" class="form-control w-100"
+            placeholder="ძიება...">
+      </div>
+      <div class="col">
+         <button type="submit" class="btn btn-primary w-100">ძიება</button>
+      </div>
+      <div class="col">
+         <a href="{{ route($resourceName . '.index') }}" class="btn btn-danger w-100">
+            <i class="bi bi-trash-fill"></i>
+         </a>
+      </div>
+   </form> --}}
+   <form method="GET" class="mb-3 row row-cols-1 row-cols-sm-auto g-2 justify-content-end">
+      <div class="col">
+         <input name="filter[search]" value="{{ request('filter.search') }}" type="text"
+            class="form-control w-100" placeholder="ძიება...">
+      </div>
+      <div class="col">
+         <button type="submit" class="btn btn-primary w-100">ძიება</button>
+      </div>
+      <div class="col">
+         <a href="{{ route($resourceName . '.index') }}" class="btn btn-danger w-100">
+            <i class="bi bi-trash-fill"></i>
+         </a>
+      </div>
+   </form>
+   @if(request('filter.search'))
+      <p class="text-muted">საძიებო სიტყვა: <strong>{{ request('filter.search') }}</strong></p>
+   @endif
+
+   
+   <x-shared.table :items="$tasks" :headers="$headers" :rows="$rows" :actions="true"
+      :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :currentSort="request('sort')"
+      :resourceName="$resourceName" />
 </x-admin.index-view>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\AppliesLocalScopes;
 use App\Http\Controllers\Traits\HandlesFileUpload;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 abstract class CrudController extends Controller
@@ -45,7 +46,7 @@ abstract class CrudController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
         $model = app($this->modelClass);
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\SyncsRelations;
 use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\TaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Branch;
 use App\Models\Role;
@@ -12,7 +11,10 @@ use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
+use App\Support\TableHelper;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class TaskController extends CrudController
 {
@@ -21,14 +23,83 @@ class TaskController extends CrudController
     protected string $contextField = "task";
     protected string $contextFieldPlural = "tasks";
     protected string $resourceName = "tasks";
-    protected array $modelRelations = ["status", 'users', "branch", "service"];
+    protected array $modelRelations = ["status", "users", "branch", "service"];
 
     protected int $perPage = 10;
 
+    /**
+     * Display a listing of the resource.
+     * And accept a searching and filtering
+     */
+    public function index(Request $request)
+    {
+        $query = QueryBuilder::for(Task::class)
+            ->allowedIncludes(["status", "users", "branch", "service"])
+            // Allowed sorting fields
+            ->allowedSorts([
+                "created_at",
+                "branch_name",
+                "service_name",
+                "start_date",
+                "updated_at",
+            ])
+            // Allowed Search fields
+            ->allowedFilters([
+                AllowedFilter::callback("search", function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->orWhereHas(
+                            "branch",
+                            fn($q) => $q->where("name", "LIKE", "%$value%")
+                        )
+                            ->orWhereHas(
+                                "service",
+                                fn($q) => $q->where(
+                                    "title->ka",
+                                    "LIKE",
+                                    "%$value%"
+                                )
+                            ) // or `title`, based on your schema
+                            ->orWhereHas(
+                                "status",
+                                fn($q) => $q->where(
+                                    "display_name",
+                                    "LIKE",
+                                    "%$value%"
+                                )
+                            )
+                            ->orWhereHas(
+                                "users",
+                                fn($q) => $q->where(
+                                    "full_name",
+                                    "LIKE",
+                                    "%$value%"
+                                )
+                            );
+                    });
+                }),
+            ])
+            ->with(["status", "users", "branch", "service"])
+            ->paginate($this->perPage)
+            ->appends(request()->query());
+
+        // Row formatted data
+        $rows = $query->map(fn($task) => TableHelper::formatTaskRow($task));
+
+        return view("admin.{$this->resourceName}.index", [
+            $this->contextFieldPlural => $query,
+            "rows" => $rows,
+            "resourceName" => $this->resourceName,
+        ]);
+    }
+
+    /**
+     * pass additional data to create form
+     */
     protected function additionalCreateData(): array
     {
         return $this->prepareTaskFormData();
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -40,7 +111,7 @@ class TaskController extends CrudController
 
         // Sync users (remove unchecked)
         $this->syncRelations($task, $data, [
-            'users' => 'user_ids',
+            "users" => "user_ids",
         ]);
 
         return redirect()
@@ -57,7 +128,7 @@ class TaskController extends CrudController
 
         // Sync users (remove unchecked)
         $this->syncRelations($task, $data, [
-            'users' => 'user_ids',
+            "users" => "user_ids",
         ]);
 
         $task->update($data);
@@ -72,7 +143,9 @@ class TaskController extends CrudController
         return $this->prepareTaskFormData();
     }
 
-
+    /**
+     * Prepares data for create/edit task forms.
+     */
     public function prepareTaskFormData(): array
     {
         return [
@@ -80,13 +153,24 @@ class TaskController extends CrudController
                 ->pluck("title.ka", "id")
                 ->map(fn($ka, $id) => $ka ?: Service::find($id)->title->en)
                 ->toArray(),
-            "statuses" => TaskStatus::orderBy('id')->pluck("display_name", "id")->toArray(),
+            "statuses" => TaskStatus::orderBy("id")
+                ->pluck("display_name", "id")
+                ->toArray(),
             "branches" => Branch::pluck("name", "id")->toArray(),
             // only workers
-            "users" => User::where('role_id', Role::where('name', 'worker')->value('id'))->select('id', 'full_name')->get()
+            "users" => User::where(
+                "role_id",
+                Role::where("name", "worker")->value("id")
+            )
+                ->select("id", "full_name")
+                ->get(),
         ];
     }
 
+    
+    /**
+     * Prepares task data for create/update by getting service and branch names and assigning them to the data array.
+     */
     protected function prepareTaskData(array $data, Task $task = null): array
     {
         // Get branch and service names and assign them
