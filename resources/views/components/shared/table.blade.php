@@ -1,4 +1,4 @@
- <div class="position-relative" style="width: 100%; overflow-x: auto; overflow-y: visible;">
+<div class="position-relative" style="width: 100%; overflow-x: auto; overflow-y: visible;">
 	<table class="table table-hover align-middle mb-0" style="min-width: 1400px;">
 		<thead class="table-light text-uppercase">
 			<tr>
@@ -12,7 +12,8 @@
 
 					<th class="{{ $loop->first ? 'text-center sticky-col' : '' }}">
 						@if ($field)
-							<a href="{{ request()->fullUrlWithQuery(['sort' => $next]) }}" class="text-dark text-decoration-none d-flex gap-1 align-items-center">
+							<a href="{{ request()->fullUrlWithQuery(['sort' => $next]) }}"
+								class="text-dark text-decoration-none d-flex gap-1 align-items-center">
 								<span>{{ $header }}</span>
 								@if ($isSorted)
 									<i class="bi bi-caret-{{ $dir === 'asc' ? 'up' : 'down' }}-fill"></i>
@@ -40,7 +41,7 @@
 							<td>
 								@php $tooltip = in_array($key, $tooltipColumns ?? []); @endphp
 								<span @if($tooltip) class="text-truncate d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
-            					data-bs-custom-class="custom-tooltip" data-bs-title="{{ strip_tags($value) }}"@endif
+								data-bs-custom-class="custom-tooltip" data-bs-title="{{ strip_tags($value) }}" @endif
 									style="max-width: 200px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
 									{!! $value !!}
 								</span>
@@ -48,7 +49,7 @@
 						@endif
 					@endforeach
 
-					@if ($actions ?? false)
+					@if (isset($resourceName) && $actions)
 						<td class="text-end">
 							<div class="dropdown dropstart">
 								<button class="btn btn-sm btn-light border-0" data-bs-toggle="dropdown">
@@ -56,12 +57,14 @@
 								</button>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="{{ route($resourceName . '.edit', $model) }}" class="dropdown-item text-primary d-flex gap-2">
+										<a href="{{ route($resourceName . '.edit', $model) }}"
+											class="dropdown-item text-primary d-flex gap-2">
 											<i class="bi bi-pencil-square"></i><span>რედაქტირება</span>
 										</a>
 									</li>
 									<li>
-										<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}" onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
+										<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
+											onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
 											@csrf @method('DELETE')
 											<button type="submit" class="dropdown-item text-danger d-flex gap-2">
 												<i class="bi bi-trash"></i><span>წაშლა</span>

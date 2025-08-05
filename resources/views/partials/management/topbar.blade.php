@@ -5,7 +5,7 @@
 
    <div class="d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
       <div>
-         breadcrumb
+         {{ Auth::user()->full_name ?? ''}}
       </div>
       <div class="d-flex align-items-center gap-2">
          <!-- messages  -->

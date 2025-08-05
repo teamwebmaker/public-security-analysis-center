@@ -22,6 +22,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Support\RoleDashboardResolver;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +82,11 @@ Route::prefix('management')
 
         // Decide which user dashboard to display
         Route::get('/dashboard', [DashboardRouterController::class, 'handle'])->name('dashboard.page');
+
+        Route::get('/dashboard/tasks', function () {
+            $controller = RoleDashboardResolver::getController();
+            return app()->call("{$controller}@displayTasks");
+        })->name('dashboard.tasks');
     });
 
 

@@ -12,25 +12,25 @@ class Table extends Component
 {
     public $headers;
     public $rows;
-    public Collection|LengthAwarePaginator $items;
-    public $resourceName;
+    public $items;
     public $actions;
+    public ?string $resourceName;
     public array $tooltipColumns;
     public ?array $sortableMap;
     public ?string $currentSort;
     /**
      * Create a new component instance.
      */
-    public function __construct($headers, $rows, $items, $resourceName, $actions = false, $tooltipColumns = [], $sortableMap = [], $currentSort = null)
+    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], $currentSort = null)
     {
         $this->headers = $headers;
         $this->rows = $rows;
         $this->items = $items;
-        $this->resourceName = $resourceName;
         $this->actions = $actions;
-        $this->tooltipColumns = $tooltipColumns;
         $this->sortableMap = $sortableMap;
         $this->currentSort = $currentSort;
+        $this->resourceName = $resourceName;
+        $this->tooltipColumns = $tooltipColumns;
     }
 
     /**

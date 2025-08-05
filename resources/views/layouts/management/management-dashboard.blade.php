@@ -10,3 +10,5 @@
 @section('topbar')
    @include('partials.management.topbar')
 @endsection
+
+<!-- main,title and script sections will be populated by child layouts -->

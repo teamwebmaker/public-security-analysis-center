@@ -2,15 +2,12 @@
 
 // Management sidebar
 $dashboardItem = ['label' => 'პანელი', 'route' => 'management.dashboard.page', 'icon' => 'bi bi-speedometer2'];
-$taskItem = ['label' => 'სამუშაოები', 'route' => '#', 'icon' => 'bi bi-list-ul'];
-$companyItem = ['label' => 'კომპანიები', 'route' => '#', 'icon' => 'bi bi-buildings'];
-$branchItem = ['label' => 'ფილიალები', 'route' => '#', 'icon' => 'bi bi-diagram-3'];
-$personItem = ['label' => 'პასუხისმგებელი პირები', 'route' => '#', 'icon' => 'bi bi-person-badge'];
+$taskItem = ['label' => 'სამუშაოები', 'route' => 'management.dashboard.tasks', 'icon' => 'bi bi-list-ul'];
 
-$commonMenu = [$dashboardItem, $taskItem, $companyItem, $branchItem];
+$commonMenu = [$dashboardItem, $taskItem];
 return [
 
-   'company-leader' => array_merge($commonMenu, [$personItem]),
+   'company-leader' => array_merge($commonMenu),
    'responsible-person' => $commonMenu,
    'worker' => $commonMenu,
    'admin' => [
