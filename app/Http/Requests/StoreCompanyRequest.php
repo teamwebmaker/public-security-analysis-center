@@ -26,6 +26,8 @@ class StoreCompanyRequest extends FormRequest
             'economic_activity_type_id' => 'nullable|exists:economic_activity_types,id',
             'identification_code' => 'required|string|max:50|unique:companies,identification_code',
             'visibility' => 'required|in:0,1',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'exists:users,id',
         ];
     }
 }

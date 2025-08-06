@@ -27,5 +27,10 @@
 			</div>
 		</div>
 
+		<div class="col-md-5">
+			<x-form.checkbox-dropdown label="შემსრულებლები" :items="$users" name="user_ids" labelField="full_name"
+				:selected="old('user_ids')" />
+		</div>
+
 	</x-admin.crud.form-container>
 @endsection

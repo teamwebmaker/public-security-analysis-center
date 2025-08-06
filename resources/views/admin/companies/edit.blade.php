@@ -29,5 +29,10 @@
 					selected="{{ old('visibility', $company->visibility) }}" label="ხილვადობა" />
 			</div>
 		</div>
+
+		<div class="col-md-5">
+			<x-form.checkbox-dropdown label="ლიდერები" :items="$users" name="user_ids" labelField="full_name"
+				:selected="old('user_ids', $company->users->pluck('id')->toArray())" />
+		</div>
 	</x-admin.crud.form-container>
 @endsection

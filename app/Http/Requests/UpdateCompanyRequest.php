@@ -24,6 +24,8 @@ class UpdateCompanyRequest extends FormRequest
                 Rule::unique('companies', 'identification_code')->ignore($this->route('company')->id),
             ],
             'visibility' => 'required|in:0,1',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'exists:users,id',
         ];
     }
 }
