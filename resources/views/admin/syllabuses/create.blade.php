@@ -35,7 +35,8 @@
 			</div>
 			<!-- program_id -->
 			<div class="col-md-6">
-				<x-form.select name="program_id" id="program_id" :options="$programs" label="პროგრამა" />
+				<x-form.select name="program_id" id="program_id" :options="$programs" label="პროგრამა"
+					:selected="old('program_id')" />
 			</div>
 		</div>
 

@@ -6,7 +6,7 @@
 		<!--  services & tatuses -->
 		<div class="row">
 			<div class="col-md-6 mb-3">
-				<x-form.select name="service_id" :options="$services" label="სერვისი" />
+				<x-form.select name="service_id" :options="$services" label="სერვისი" selected="{{ old('service_id') }}" />
 			</div>
 			<div class="col-md-6 mb-3">
 				<x-form.select name="status_id" :options="$statuses" selected="1" label="სტატუსი" />
@@ -16,7 +16,8 @@
 		<!-- branches & visibility  -->
 		<div class="row">
 			<div class="col-md-6 mb-3">
-				<x-form.select name="branch_id" :options="$branches" :selected="null" label="სამიზნე ფილიალი" />
+				<x-form.select name="branch_id" :options="$branches" selected="{{ old('branch_id') }}"
+					label="სამიზნე ფილიალი" />
 
 			</div>
 			<div class="col-md-6 mb-3">
