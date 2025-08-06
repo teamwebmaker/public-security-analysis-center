@@ -1,4 +1,4 @@
-@extends('management.company-leader.master')
+@extends('management.master')
 @section('title', 'კომპანიის მონაცემები')
 
 @section('main')

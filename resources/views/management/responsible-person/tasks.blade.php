@@ -4,7 +4,7 @@
 
 @section('main')
 
-	<!-- search-->
+	<!-- search -->
 	<form method="GET" class="row row-cols-sm-auto justify-content-between align-items-center ">
 		<div>
 			<p class="fw-bold fs-5 m-0 text-center">ყველა სამუშაო</p>
@@ -33,8 +33,6 @@
 		</div>
 
 	</form>
-
-
 	<!-- Tasks -->
 	<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
 		<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'საწყისი თარიღი', 'შექმნის თარიღი', 'განახლების თარიღი']" :rows="$userTableRows" :sortableMap="['საწყისი თარიღი' => 'start_date', 'შექმნის თარიღი' => 'created_at', 'განახლების თარიღი' => 'updated_at',]" :tooltipColumns="['branch', 'service']"

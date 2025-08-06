@@ -5,9 +5,10 @@
 				@foreach($headers as $header)
 					@php
 						$field = $sortableMap[$header] ?? null;
+						$currentSort = request()->query('sort');
 						$isSorted = ltrim($currentSort, '-') === $field;
 						$dir = str_starts_with($currentSort, '-') ? 'desc' : 'asc';
-						$next = $isSorted && $dir === 'asc' ? "-$field" : $field;
+						$next = $isSorted ? ($dir === 'asc' ? "-$field" : $field) : $field;
 					@endphp
 
 					<th class="{{ $loop->first ? 'text-center sticky-col' : '' }}">
@@ -16,7 +17,9 @@
 								class="text-dark text-decoration-none d-flex gap-1 align-items-center">
 								<span>{{ $header }}</span>
 								@if ($isSorted)
-									<i class="bi bi-caret-{{ $dir === 'asc' ? 'up' : 'down' }}-fill"></i>
+									<i class="bi bi-arrow-{{ $dir === 'asc' ? 'up' : 'down' }} text-primary"></i>
+								@else
+									<i class="bi bi-arrow-down-up"></i>
 								@endif
 							</a>
 						@else

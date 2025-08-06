@@ -11,7 +11,7 @@ use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
-use App\Presenters\TaskPresenter;
+use App\Presenters\TableRowDataPresenter;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -84,7 +84,7 @@ class TaskController extends CrudController
 
       // Row formatted data
       // $rows = $query->map(fn($task) => TableHelper::formatTaskRow($task));
-      $rows = $query->map(fn($task) => TaskPresenter::format($task, 'admin'));
+      $rows = $query->map(fn($task) => TableRowDataPresenter::format($task, 'admin'));
 
       return view("admin.{$this->resourceName}.index", [
          $this->contextFieldPlural => $query,

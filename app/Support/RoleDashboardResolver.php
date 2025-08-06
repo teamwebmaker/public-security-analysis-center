@@ -13,7 +13,7 @@ class RoleDashboardResolver
 
       return match ($role) {
          'company_leader' => \App\Http\Controllers\CompanyLeaderController::class,
-         // 'responsible_person' => \App\Http\Controllers\ResponsiblePersonController::class,
+         'responsible_person' => \App\Http\Controllers\ResponsiblePersonController::class,
          // 'worker' => \App\Http\Controllers\WorkerController::class,
          default => abort(403),
       };

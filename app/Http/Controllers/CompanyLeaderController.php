@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use App\Presenters\TaskPresenter;
+use App\Presenters\TableRowDataPresenter;
 use GuzzleHttp\Psr7\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -77,10 +77,9 @@ class CompanyLeaderController extends Controller
         // Optional: count
         $uniqueUserCount = count($userBranchMap);
 
-        // Sidebar nav items
-        $userTableRows = $tasks->map(fn($task) => TaskPresenter::format($task, 'company_leader'));
+        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
 
-        return view('management.company-leader.dashboard', [
+        return view("management.{$this->resourceName}.dashboard", [
 
             'inProgressTasks' => $inProgressTasks,
             'userCompanies' => $userCompanies,
@@ -148,7 +147,7 @@ class CompanyLeaderController extends Controller
             ->paginate(10)
             ->appends(request()->query());
 
-        $userTableRows = $tasks->map(fn($task) => TaskPresenter::format($task, 'company_leader'));
+        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
 
         return view("management.{$this->resourceName}.tasks", [
             'resourceName' => $this->resourceName,

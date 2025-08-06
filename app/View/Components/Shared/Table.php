@@ -17,18 +17,16 @@ class Table extends Component
     public ?string $resourceName;
     public array $tooltipColumns;
     public ?array $sortableMap;
-    public ?string $currentSort;
     /**
      * Create a new component instance.
      */
-    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], $currentSort = null)
+    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], )
     {
         $this->headers = $headers;
         $this->rows = $rows;
         $this->items = $items;
         $this->actions = $actions;
         $this->sortableMap = $sortableMap;
-        $this->currentSort = $currentSort;
         $this->resourceName = $resourceName;
         $this->tooltipColumns = $tooltipColumns;
     }

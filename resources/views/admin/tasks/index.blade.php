@@ -30,5 +30,5 @@
    @endif
 
 
-   <x-shared.table :items="$tasks" :headers="$headers" :rows="$rows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :currentSort="request('sort')" :resourceName="$resourceName" />
+   <x-shared.table :items="$tasks" :headers="$headers" :rows="$rows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :resourceName="$resourceName" />
 </x-admin.index-view>
