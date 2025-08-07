@@ -13,6 +13,7 @@ use App\Models\TaskStatus;
 use App\Models\User;
 use App\Presenters\TableRowDataPresenter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
@@ -197,5 +198,61 @@ class TaskController extends CrudController
       }
 
       return $data;
+   }
+
+
+   /**
+    * @route PUT management/tasks/{task}
+    * route is under management. prefix
+    * Currently used from worker dashboard 
+    * @param \App\Models\Task $task
+    * @return \Illuminate\Http\RedirectResponse
+    */
+   public function editStatus(Task $task)
+   {
+      try {
+         // Retrieve status IDs
+         $pendingStatusId = TaskStatus::where("name", "pending")->value("id");
+         $inProgressStatusId = TaskStatus::where("name", "in_progress")->value("id");
+         $completedStatusId = TaskStatus::where("name", "completed")->value("id");
+
+         // Check if all required statuses exist
+         if (!$pendingStatusId || !$inProgressStatusId || !$completedStatusId) {
+            return redirect()
+               ->back()
+               ->with('error', 'მოხდა გაუთვალისწინებელი შეცდომა, სტატუსების დაყენება ვერ მოხერხდა, გთხოვთ დაუკავშირდით დახმარებას.');
+         }
+
+         // Update status based on current state
+         if ($task->status_id === $pendingStatusId) {
+            $task->status_id = $inProgressStatusId;
+            $task->start_date = now(); // When in progress set start date
+         } elseif ($task->status_id === $inProgressStatusId) {
+            $task->status_id = $completedStatusId;
+            $task->end_date = now(); // When completed set end date
+         } else {
+            return redirect()
+               ->back()
+               ->with('warning', 'სამუშაო უკვე დასრულებულია ან არასწორი სტატუსია.');
+         }
+
+         $task->save();
+         // Redirect back with success message
+         return redirect()
+            ->back()
+            ->with('success', 'სამუშაოს სტატუსი განახლდა წარმატებით');
+
+      } catch (\Exception $e) {
+         // Log the error
+         Log::error('Task status update failed from worker dashboard', [
+            'task_id' => $task->id,
+            'error' => $e->getMessage(),
+         ]);
+
+         // If try catch fails return error
+         return redirect()
+            ->back()
+            ->with('error', 'სამუშაოს სტატუსის განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ თავიდან.');
+      }
    }
 }

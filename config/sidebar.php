@@ -7,9 +7,9 @@ $taskItem = ['label' => 'სამუშაოები', 'route' => 'management
 $commonMenu = [$dashboardItem, $taskItem];
 return [
 
-   'company-leader' => array_merge($commonMenu),
+   'company-leader' => $commonMenu,
    'responsible-person' => $commonMenu,
-   'worker' => $commonMenu,
+   'worker' => [$dashboardItem],
    'admin' => [
       [
          'id' => 'contacts_wrapper',

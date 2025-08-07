@@ -22,7 +22,6 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
-use App\Support\RoleDashboardResolver;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,16 +76,16 @@ Route::prefix('management')
     ->as('management.')
     ->middleware(['management_users.guard'])
     ->group(function () {
+
         // Redirect from /management to /management/dashboard
         Route::get('/', [DashboardRouterController::class, 'redirect'])->name('dashboard.redirect');
 
-        // Decide which user dashboard to display
-        Route::get('/dashboard', [DashboardRouterController::class, 'handle'])->name('dashboard.page');
+        // Edit task status used from worker dashboard
+        Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');
 
-        Route::get('/dashboard/tasks', function () {
-            $controller = RoleDashboardResolver::getController();
-            return app()->call("{$controller}@displayTasks");
-        })->name('dashboard.tasks');
+        // Dynamically resolving the appropriate controller based on user role
+        Route::get('/dashboard', [DashboardRouterController::class, 'redirectDashboard'])->name('dashboard.page');
+        Route::get('/dashboard/tasks', [DashboardRouterController::class, 'redirectTask'])->name('dashboard.tasks');
     });
 
 
@@ -146,6 +145,4 @@ Route::prefix('admin')->group(function () {
         // Admin logout
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
     });
-
-
 });

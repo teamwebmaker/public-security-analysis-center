@@ -1,6 +1,8 @@
 <div class="position-relative" style="width: 100%; overflow-x: auto; overflow-y: visible;">
 	<table class="table table-hover align-middle mb-0" style="min-width: 1400px;">
+		<!-- Table headers with sorting  -->
 		<thead class="table-light text-uppercase">
+
 			<tr>
 				@foreach($headers as $header)
 					@php
@@ -34,6 +36,8 @@
 			</tr>
 		</thead>
 		<tbody>
+
+			<!-- Table rows -->
 			@foreach($rows as $i => $row)
 				@php $model = $items[$i]; @endphp
 				<tr>
@@ -52,6 +56,7 @@
 						@endif
 					@endforeach
 
+					<!-- Table default actions -->
 					@if (isset($resourceName) && $actions)
 						<td class="text-end">
 							<div class="dropdown dropstart">
@@ -59,23 +64,55 @@
 									<i class="bi bi-three-dots-vertical"></i>
 								</button>
 								<ul class="dropdown-menu">
+									<!--  edit link -->
 									<li>
 										<a href="{{ route($resourceName . '.edit', $model) }}"
-											class="dropdown-item text-primary d-flex gap-2">
+											class="dropdown-item text-primary d-flex align-items-center justify-center gap-2">
 											<i class="bi bi-pencil-square"></i><span>რედაქტირება</span>
 										</a>
 									</li>
-									<li>
-										<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
-											onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
-											@csrf @method('DELETE')
-											<button type="submit" class="dropdown-item text-danger d-flex gap-2">
-												<i class="bi bi-trash"></i><span>წაშლა</span>
-											</button>
-										</form>
-									</li>
+									<!--  delete action -->
+									@if ($action_delete == true)
+										<li>
+											<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
+												onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
+												@csrf @method('DELETE')
+												<button type="submit"
+													class="dropdown-item text-danger d-flex align-items-center justify-center gap-2">
+													<i class="bi bi-trash"></i><span>წაშლა</span>
+												</button>
+											</form>
+										</li>
+									@endif
+
 								</ul>
 							</div>
+						</td>
+					@endif
+
+					<!--  custom actions -->
+					@if (isset($customActions))
+						@php
+							$actions = is_callable($customActions) ? $customActions($model) : [];
+						@endphp
+						<td class="text-end">
+							@foreach ($actions as $action)
+								<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm']))
+								onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
+									@csrf
+									@if ($action['method'] !== 'POST')
+										@method($action['method'])
+									@endif
+
+									<button type="submit"
+										class="dropdown-item {{ $action['class'] ?? '' }} d-flex align-items-center justify-center gap-2">
+										@if (!empty($action['icon']))
+											<i class="bi {{ $action['icon'] }}"></i>
+										@endif
+										<span>{{ $action['label'] }}</span>
+									</button>
+								</form>
+							@endforeach
 						</td>
 					@endif
 				</tr>

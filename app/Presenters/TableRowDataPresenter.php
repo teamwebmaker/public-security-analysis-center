@@ -27,6 +27,10 @@ class TableRowDataPresenter
          return self::formatManagement($model);
       }
 
+      if ($context === 'management_worker') {
+         return self::formatManagementWorker($model);
+      }
+
       if ($context === 'branches') {
          return self::formatBranches($model);
       }
@@ -68,6 +72,7 @@ class TableRowDataPresenter
       ];
    }
 
+
    /**
     * Format task data for management users context.
     *
@@ -91,6 +96,30 @@ class TableRowDataPresenter
          'start_date' => e($model->start_date->diffForHumans()),
          'created_at' => e($model->created_at->diffForHumans()),
          'updated_at' => e($model->updated_at->diffForHumans()),
+      ];
+   }
+
+   /**
+    * Format task data for worker tasks context.
+    *
+    * @param Model $model
+    * @return array
+    *
+    * @throws InvalidArgumentException
+    */
+   private static function formatManagementWorker(Model $model): array
+   {
+      if (!$model instanceof Task) {
+         throw new InvalidArgumentException('Expected instance of Task');
+      }
+
+      return [
+         'id' => $model->id,
+         'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
+         'branch' => $model->branch_name ?? 'უცნობი',
+         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
+         'start_date' => e($model->start_date->diffForHumans()),
+         'end_date' => e($model->end_date?->diffForHumans()),
       ];
    }
 

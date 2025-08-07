@@ -17,10 +17,14 @@ class Table extends Component
     public ?string $resourceName;
     public array $tooltipColumns;
     public ?array $sortableMap;
+
+    public int $action_delete;
+
+    public ?Closure $customActions;
     /**
      * Create a new component instance.
      */
-    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], )
+    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], $action_delete = true, $customActions = null)
     {
         $this->headers = $headers;
         $this->rows = $rows;
@@ -29,7 +33,10 @@ class Table extends Component
         $this->sortableMap = $sortableMap;
         $this->resourceName = $resourceName;
         $this->tooltipColumns = $tooltipColumns;
+        $this->action_delete = $action_delete;
+        $this->customActions = $customActions;
     }
+
 
     /**
      * Get the view / contents that represent the component.
