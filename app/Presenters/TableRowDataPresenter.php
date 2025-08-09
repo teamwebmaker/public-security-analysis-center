@@ -66,9 +66,9 @@ class TableRowDataPresenter
             $model->visibility ? 'ხილული' : 'დამალული',
             $model->visibility ? 'success' : 'danger'
          ),
-         'start_date' => e($model->start_date->diffForHumans()),
-         'created_at' => e($model->created_at->diffForHumans()),
-         'updated_at' => e($model->updated_at->diffForHumans()),
+         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
+         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
+         'created_at' => optional($model->created_at)->diffForHumans() ?? '---',
       ];
    }
 
@@ -93,9 +93,10 @@ class TableRowDataPresenter
          'worker' => self::formatWorker($model),
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
-         'start_date' => e($model->start_date->diffForHumans()),
-         'created_at' => e($model->created_at->diffForHumans()),
-         'updated_at' => e($model->updated_at->diffForHumans()),
+
+         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
+         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
+
       ];
    }
 
@@ -118,9 +119,32 @@ class TableRowDataPresenter
          'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
-         'start_date' => e($model->start_date->diffForHumans()),
-         'end_date' => e($model->end_date?->diffForHumans()),
+         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
+         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
       ];
+   }
+
+   /**
+    * Helper: Format worker display depending on the number of assigned users.
+    *
+    * @param Task $task
+    * @return string
+    */
+   private static function formatWorker(Task $task): string
+   {
+      $count = $task->users->count();
+
+      if ($count === 1) {
+         return self::badge(e($task->users->first()->full_name), 'secondary');
+      }
+
+      if ($count >= 2) {
+         return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
+            $task->users->map(fn($u) => '<option disabled>' . e($u->full_name) . '</option>')->implode('') .
+            '</select>';
+      }
+
+      return self::badge('არ ჰყავს', 'danger');
    }
 
    /**
@@ -142,7 +166,7 @@ class TableRowDataPresenter
          'name' => $model->name ?? 'უცნობი',
          'address' => $model->address ?? 'უცნობი',
          'company' => $model->company->name ?? 'არ ჰყავს',
-         'created_at' => e($model->created_at->diffForHumans()),
+         'created_at' => optional($model->created_at)->diffForHumans() ?? '---',
       ];
    }
 
@@ -191,26 +215,4 @@ class TableRowDataPresenter
       ][$task->status?->name] ?? 'secondary';
    }
 
-   /**
-    * Helper: Format worker display depending on the number of assigned users.
-    *
-    * @param Task $task
-    * @return string
-    */
-   private static function formatWorker(Task $task): string
-   {
-      $count = $task->users->count();
-
-      if ($count === 1) {
-         return self::badge(e($task->users->first()->full_name), 'secondary');
-      }
-
-      if ($count >= 2) {
-         return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
-            $task->users->map(fn($u) => '<option disabled>' . e($u->full_name) . '</option>')->implode('') .
-            '</select>';
-      }
-
-      return self::badge('არ ჰყავს', 'danger');
-   }
 }

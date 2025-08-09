@@ -9,7 +9,7 @@
       </div>
       <div class="d-flex align-items-center gap-2">
          <!-- messages  -->
-         <x-ui.link-icon icon="bell-fill " />
+         {{-- <x-ui.link-icon icon="bell-fill " /> --}}
          <!-- user avatar -->
          <x-management.user-avatar-dropdown />
       </div>

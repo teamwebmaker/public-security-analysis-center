@@ -1,5 +1,10 @@
 <x-shared.user-avatar>
     <li>
-        <a class="dropdown-item rounded-2 " href="{{ route('management.dashboard.page') }}">ჩემი სივრცე</a>
+
+        @if (request()->is('management*'))
+            <a class="dropdown-item rounded-2" href="{{ route('home.page') }}">სახლი</a>
+        @else
+            <a class="dropdown-item rounded-2" href="{{ route('management.dashboard.page') }}">ჩემი პანელი</a>
+        @endif
     </li>
 </x-shared.user-avatar>

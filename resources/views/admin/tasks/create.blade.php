@@ -25,9 +25,10 @@
 					label="ხილვადობა" />
 			</div>
 		</div>
-		<!-- start_date & end_date  -->
 		<div class="row">
-			<div class="col-md-6 mb-3">
+
+			<!-- start_date & end_date disabled -->
+			{{-- <div class="col-md-6 mb-3">
 				<x-form.input type="datetime-local" name="start_date" label="საწყისი თარიღი" value="{{ old('start_date') }}"
 					min="{{ date('Y-m-d') }}" />
 
@@ -35,8 +36,9 @@
 			<div class="col-md-6 mb-3">
 				<x-form.input type="datetime-local" name="end_date" label="დასასრული თარიღი" value="{{ old('end_date') }}"
 					min="{{ date('Y-m-d') }}" :required="false" />
-			</div>
+			</div> --}}
 
+			<!-- worker users -->
 			<div class="col-md-6">
 				<x-form.checkbox-dropdown label="შემსრულებლები" :items="$users" name="user_ids" labelField="full_name"
 					:selected="old('user_ids')" />

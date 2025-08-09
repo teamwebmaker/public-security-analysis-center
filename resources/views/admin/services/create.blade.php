@@ -45,8 +45,13 @@
 				<x-form.image-upload-preview id="image" />
 			</div>
 			<div class="col-md-6">
-				<x-form.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
-					label="კატეგორია" />
+				<!-- One that causes errors  can't get value from it :/-->
+				{{-- <x-form.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
+					label="კატეგორია" /> --}}
+				<!-- One that works fine temp usage -->
+				<x-admin.services.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
+					:selected="old('service_category_id')" label="კატეგორია" />
+
 			</div>
 		</div>
 
@@ -74,7 +79,7 @@
 			</div>
 
 			<div class="col-md-6">
-				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="none"
+				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
 			</div>
 		</div>

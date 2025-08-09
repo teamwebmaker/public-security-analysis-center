@@ -42,6 +42,7 @@ class TaskController extends CrudController
             "branch_name",
             "service_name",
             "start_date",
+            "end_date",
             "updated_at",
          ])
          // Allowed Search fields

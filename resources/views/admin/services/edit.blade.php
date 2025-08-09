@@ -52,9 +52,12 @@
 				<x-form.image-upload-preview id="image" />
 			</div>
 			<div class="col-md-6">
-				<x-form.select name="service_category_id" :options="$serviceCategories" label="კატეგორია"
-					:selected="old('service_category_id', $service->service_category_id ?? null)" :required="false" />
-
+				<!-- One that causes errors  can't get value from it :/-->
+				{{-- <x-form.select name="service_category_id" :options="$serviceCategories" label="კატეგორია"
+					:selected="old('service_category_id', $service->service_category_id ?? null)" :required="false" /> --}}
+				<!-- One that works fine temp usage-->
+				<x-admin.services.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
+					:selected="old('service_category_id', $service->service_category_id ?? null)" label="კატეგორია" />
 			</div>
 		</div>
 

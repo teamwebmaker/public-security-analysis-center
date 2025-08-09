@@ -46,16 +46,6 @@ return [
                ],
             ],
             [
-               'id' => 'tasks',
-               'icon' => 'bi-card-list',
-               'label' => 'სამუშაოები',
-               'routes' => [
-                  ['name' => 'tasks.index', 'label' => 'სამუშაოების სია', 'icon' => 'bi-list-ul'],
-                  ['name' => 'tasks.create', 'label' => 'სამუშაოების შექმნა', 'icon' => 'bi-plus-circle'],
-
-               ],
-            ],
-            [
                'id' => 'companies',
                'icon' => 'bi-building',
                'label' => 'კომპანიები',
@@ -73,6 +63,16 @@ return [
                'routes' => [
                   ['name' => 'branches.index', 'label' => 'ფილიალების სია', 'icon' => 'bi-list-ul'],
                   ['name' => 'branches.create', 'label' => 'ფილიალის შექმნა', 'icon' => 'bi-plus-circle'],
+
+               ],
+            ],
+            [
+               'id' => 'tasks',
+               'icon' => 'bi-card-list',
+               'label' => 'სამუშაოები',
+               'routes' => [
+                  ['name' => 'tasks.index', 'label' => 'სამუშაოების სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'tasks.create', 'label' => 'სამუშაოების შექმნა', 'icon' => 'bi-plus-circle'],
 
                ],
             ],

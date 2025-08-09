@@ -45,7 +45,7 @@ class CompanyLeaderController extends Controller
         $tasks = QueryBuilder::for(Task::class)
             ->whereIn('branch_id', $branchIds)
             ->allowedIncludes(['status', 'users', 'branch', 'service'])
-            ->allowedSorts(['created_at', 'start_date', 'updated_at'])
+            ->allowedSorts(['start_date', 'end_date',])
             ->latest('created_at') // newest first
             ->take(10)             // only 10 results
             ->get();
@@ -102,11 +102,10 @@ class CompanyLeaderController extends Controller
             ->allowedIncludes(["status", "users", "branch", "service"])
             // Allowed sorting fields
             ->allowedSorts([
-                "created_at",
                 "branch_name",
                 "service_name",
                 "start_date",
-                "updated_at",
+                "end_date",
             ])
             // Allowed Search fields
             ->allowedFilters([

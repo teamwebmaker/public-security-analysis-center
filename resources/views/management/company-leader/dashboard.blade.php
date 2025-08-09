@@ -18,10 +18,14 @@
 	</div>
 
 	<!-- Tasks -->
-	<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
-		<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'საწყისი თარიღი', 'შექმნის თარიღი', 'განახლების თარიღი']" :rows="$userTableRows" :sortableMap="['საწყისი თარიღი' => 'start_date', 'შექმნის თარიღი' => 'created_at', 'განახლების თარიღი' => 'updated_at',]" :tooltipColumns="['branch', 'service']"
-			:actions="false" />
-	</div>
+	@if ($tasks->isNotEmpty())
+
+		<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
+			<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'საწყისი თარიღი', 'დასრულების თარიღი',]" :rows="$userTableRows" :sortableMap="['საწყისი თარიღი' => 'start_date', 'დასრულების თარიღი' => 'end_date',]" :tooltipColumns="['branch', 'service']" :actions="false" />
+		</div>
+	@else
+		<x-ui.empty-state-message :resourceName="null" :overlay="false" />
+	@endif
 
 	<!-- company & branches-->
 	<div class="accordion" id="companyAccordion">

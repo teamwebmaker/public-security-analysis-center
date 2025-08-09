@@ -16,20 +16,20 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
                 // Companies
-            EconomicActivityType::class,
-            CompanySeeder::class,
-            CompanyLeadersSeeder::class,
-                // Services
-            ServiceCategorySeeder::class,
-            ServiceSeeder::class,
-                // Branches
-            BranchSeeder::class,
-            ResponsiblePersonBranchSeeder::class,
-            ResponsiblePersonServiceSeeder::class,
-                // Tasks
-            TaskStatusSeeder::class,
-            TaskSeeder::class,
-            TaskWorkerSeeder::class
+            // EconomicActivityType::class,
+            // CompanySeeder::class,
+            // CompanyLeadersSeeder::class,
+            //     // Services
+            // ServiceCategorySeeder::class,
+            // ServiceSeeder::class,
+            //     // Branches
+            // BranchSeeder::class,
+            // ResponsiblePersonBranchSeeder::class,
+            // ResponsiblePersonServiceSeeder::class,
+            //     // Tasks
+            // TaskStatusSeeder::class,
+            // TaskSeeder::class,
+            // TaskWorkerSeeder::class
         ]);
     }
 }

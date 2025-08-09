@@ -105,7 +105,7 @@
 									@endif
 
 									<button type="submit"
-										class="dropdown-item {{ $action['class'] ?? '' }} d-flex align-items-center justify-center gap-2">
+										class="dropdown-item {{ $action['class'] ?? '' }} d-flex align-items-center justify-items-center gap-2">
 										@if (!empty($action['icon']))
 											<i class="bi {{ $action['icon'] }}"></i>
 										@endif

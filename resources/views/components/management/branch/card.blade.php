@@ -11,8 +11,6 @@
             </h6>
 
             <x-management.branch.task-stats :branch="$branch" />
-
-            <x-management.branch.view-more />
         </div>
     </div>
 </div>

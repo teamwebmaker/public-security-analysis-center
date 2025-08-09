@@ -27,8 +27,8 @@ class StoreTaskRequest extends FormRequest
             'branch_id' => ['required', 'exists:branches,id'],
             'branch_name' => ['nullable', 'string', 'max:255'],
 
-            'start_date' => ['required', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            // 'start_date' => ['required', 'date'],
+            // 'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
 
 
             'visibility' => ['required', 'boolean'],

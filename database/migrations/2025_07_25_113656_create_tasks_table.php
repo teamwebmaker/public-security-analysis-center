@@ -21,7 +21,7 @@ return new class extends Migration {
                 ->on("task_statuses")
                 ->onDelete("restrict");
 
-            $table->dateTime('start_date');
+            $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
 
             $table
@@ -32,7 +32,7 @@ return new class extends Migration {
                 ->index();
             // if branch deleted, branch_name will be saved
             $table->string("branch_name")->nullable();
-            
+
             $table
                 ->foreignId("service_id")
                 ->nullable()

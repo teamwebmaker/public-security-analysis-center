@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Presenters\TableRowDataPresenter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -36,6 +37,10 @@ class ResponsiblePersonController extends Controller
         $sidebarItems = config('sidebar.responsible-person');
 
         $userTableRows = $inProgressTasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+        // Remove start_date and end_date for dashboard, dashboard displays only in_progress tasks and they don't have end_date
+        $userTableRowsWithoutEndDate = $userTableRows->map(function ($row) {
+            return Arr::except($row, ['end_date']);
+        });
         $branchTableRows = $userBranches->map(fn($task) => TableRowDataPresenter::format($task, 'branches'));
 
 
@@ -44,7 +49,8 @@ class ResponsiblePersonController extends Controller
             'userBranches' => $userBranches,
             'branchTableRows' => $branchTableRows,
             'inProgressTasks' => $inProgressTasks,
-            'userTableRows' => $userTableRows
+            'userTableRows' => $userTableRows,
+            'userTableRowsWithoutEndDate' => $userTableRowsWithoutEndDate
         ]);
     }
 
@@ -62,11 +68,10 @@ class ResponsiblePersonController extends Controller
             ->whereIn('service_id', $allowedServiceIds)
             ->allowedIncludes(['status', 'users', 'branch', 'service'])
             ->allowedSorts([
-                'created_at',
                 'branch_name',
                 'service_name',
                 'start_date',
-                'updated_at',
+                'end_date'
             ])
             ->allowedFilters([
                 AllowedFilter::callback('search', function ($query, $value) {

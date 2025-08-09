@@ -21,7 +21,6 @@ class WorkerController extends Controller
         $tasks = QueryBuilder::for($user->tasks())
             ->allowedIncludes(['status', 'branch', 'service'])
             ->allowedSorts([
-                'created_at',
                 'branch_name',
                 'service_name',
                 'start_date',
@@ -96,12 +95,12 @@ class WorkerController extends Controller
         };
 
         return view("management.{$this->resourceName}.dashboard", [
+            'tasks' => $tasks,
             'taskTableRows' => $taskTableRows,
-            'pendingTasks' => $pendingTasks,
             'inProgressTasks' => $inProgressTasks,
             'completedTasks' => $completedTasks,
+            'pendingTasks' => $pendingTasks,
             'onHoldTasks' => $onHoldTasks,
-            'tasks' => $tasks,
             'sidebarItems' => $sidebarItems,
             'customActionBtns' => $customActionBtns
         ]);
