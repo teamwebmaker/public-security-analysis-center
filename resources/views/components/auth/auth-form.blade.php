@@ -11,4 +11,23 @@
         {{ $slot }}
         <button type="submit" class="btn btn-primary w-100">{{$type == 'login' ? 'შესვლა' : 'რეგისტრაცია'}}</button>
     </form>
+    <!-- Optional extra buttons -->
+    @isset($buttons)
+        @if($separator !== 'none')
+            <div class="d-flex align-items-center justify-content-center gap-2 my-3">
+                @if($separator === 'or')
+                    <hr class="flex-grow-1">
+                    ან
+                    <hr class="flex-grow-1">
+                @elseif($separator === 'line')
+                    <hr class="flex-grow-1">
+                @endif
+            </div>
+        @endif
+
+        <div class="d-grid gap-2 {{ $separator === 'none' ? 'mt-3' : '' }}">
+            {{ $buttons }}
+        </div>
+    @endisset
+
 </div>
