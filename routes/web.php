@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +48,9 @@ Route::get('/projects', [PageController::class, 'projects'])->name('projects.pag
 Route::get('/login', [AuthController::class, 'login'])->name('login.page');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/login', [AuthController::class, 'auth'])->name('login');
+
+// language switch
+Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
 
 // Resource routes
 Route::resource('publications', PublicationController::class)

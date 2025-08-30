@@ -32,12 +32,12 @@
 			<!-- Navigation Links -->
 			<div class="col-lg-5  align-self-start">
 				<div class="w-75 m-auto">
-					<h6 class="fw-bold gold-text text-center text-lg-start mb-3">ბმულები</h6>
+					<h6 class="fw-bold gold-text text-center text-lg-start mb-3">{{ __('static.footer.links')}}</h6>
 					<div
 						class="d-flex flex-wrap gap-2 col-5 col-lg-12 m-auto m-lg-0 justify-content-center justify-content-lg-start">
 						@foreach($MainMenu as $menu_item)
 							<a href="{{ route($menu_item->link) }}" class="text-white btn-sm text-decoration-none px-1">
-								<span class="position-relative z-1">{{ $menu_item->title->ka }}</span>
+								<span class="position-relative z-1">{{ $menu_item->title->$language }}</span>
 							</a>
 						@endforeach
 					</div>
@@ -48,7 +48,7 @@
 			<!-- Contact Info -->
 			<div class="col-lg-3 text-center text-lg-start align-self-start">
 				<div class="m-auto m-lg-0 ms-lg-auto" style="width: max-content;">
-					<h6 class="text-uppercase fw-bold gold-text mb-3">კონტაქტი</h6>
+					<h6 class="fw-bold gold-text mb-3">{{ __('static.footer.contact')}}</h6>
 					<ul class="list-unstyled small text-center text-lg-end ">
 						<li class="mb-3 d-flex justify-content-center justify-content-lg-start align-items-center gap-2">
 							<i class="bi bi-telephone-fill gold-text"></i>
@@ -77,7 +77,7 @@
 					<small class="gold-text d-block">Created By Webmaker.team</small>
 				</div>
 				<div class="col-md-3 text-md-end">
-					<small class="gold-text d-block ">© {{ date('Y') }} ყველა უფლება დაცულია</small>
+					<small class="gold-text d-block ">© 2025 - {{ date('Y') }} {{__('static.footer.copyright')}}</small>
 
 				</div>
 			</div>

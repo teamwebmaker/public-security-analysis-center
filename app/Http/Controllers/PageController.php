@@ -13,14 +13,12 @@ use App\Models\Info;
 use App\Models\Project;
 use App\Models\Publication;
 use App\Models\ServiceCategory;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PageController extends Controller
 {
     public string $language;
-    public function __construct()
-    {
-        $this->language = App::getLocale();
-    }
+
 
     public function home(Request $request)
     {
@@ -63,7 +61,6 @@ class PageController extends Controller
         $partners = Partner::all(); // Global scope still applies here
 
         return view("pages.home", [
-            "language" => $this->language,
             "articles" => $results,
             "partners" => $partners,
         ]);
@@ -74,7 +71,6 @@ class PageController extends Controller
         $item = Info::all()->first();
         return view("pages.about-us", [
             "item" => $item,
-            "language" => App::getLocale(),
             "partners" => Partner::all(),
             "category" => "infos",
         ]);
@@ -90,7 +86,6 @@ class PageController extends Controller
                 ->orderBy("created_at", $sortOrder)
                 ->paginate(6),
             "partners" => Partner::all(),
-            "language" => App::getLocale(),
         ]);
     }
     public function contact(): view
@@ -109,7 +104,6 @@ class PageController extends Controller
                 ->orderBy("created_at", $sortOrder)
                 ->paginate(6),
             "partners" => Partner::all(),
-            "language" => App::getLocale(),
         ]);
     }
 
@@ -122,13 +116,11 @@ class PageController extends Controller
                 perPage: 6
             ),
             "partners" => Partner::all(),
-            "language" => App::getLocale(),
         ]);
     }
 
     public function services()
     {
-        $language = App::getLocale();
 
         // First get all categories with their services to avoid N+1 problem
         $categories = ServiceCategory::with([
@@ -139,7 +131,6 @@ class PageController extends Controller
         return view("pages.services", [
             "categories" => $categories,
             "partners" => Partner::all(),
-            "language" => $language,
         ]);
     }
 }

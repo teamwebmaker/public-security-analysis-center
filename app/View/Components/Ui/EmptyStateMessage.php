@@ -17,9 +17,9 @@ class EmptyStateMessage extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(string $message = 'დოკუმენტები ვერ მოიძებნა', bool $overlay = false, ?string $minHeight = '50dvh', ?string $resourceName = null)
+    public function __construct(string $message = null, bool $overlay = false, ?string $minHeight = '50dvh', ?string $resourceName = null)
     {
-        $this->message = $message;
+        $this->message = $message ?? __('static.doc_not_found.plural');
         $this->overlay = $overlay;
         $this->minHeight = $minHeight;
         $this->resourceName = $resourceName;

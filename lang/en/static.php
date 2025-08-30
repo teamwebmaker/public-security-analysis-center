@@ -28,8 +28,8 @@ return [
         ]
     ],
     'page' => [
-      'title' => 'Public Safety Analytic Center',
-      'more' => 'View More'
+        'title' => 'Public Safety Analytic Center',
+        'more' => 'View More'
     ],
     'meta' => [
         'description' => 'Public Safety Analytic Center',
@@ -41,5 +41,18 @@ return [
         'message' => 'Message',
         'send' => 'Send',
         'subscription' => 'Subscription'
+    ],
+    'footer' => [
+        'copyright' => 'All rights reserved',
+        'links' => 'Links',
+        'contact' => 'Contact'
+    ],
+    'sort' => [
+        'newest' => 'Newest to Oldest',
+        'oldest' => 'Oldest to Newest'
+    ],
+    'doc_not_found' => [
+        'singular' => 'Document not found',
+        'plural' => 'Documents not found'
     ]
 ];

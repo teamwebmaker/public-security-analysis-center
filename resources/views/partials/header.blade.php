@@ -42,10 +42,12 @@
 					</div>
 				</div>
 				<div class="col-auto d-flex justify-content-end align-self-start gap-2">
-					<a class="language-switcher  active-language text-decoration-none black-text" href="#">
+					<a class="language-switcher {{ App::isLocale('ka') ? 'active-language' : '' }} text-decoration-none black-text"
+						href="{{ route('lang.switch', 'ka') }}">
 						KA
 					</a>
-					<a class="language-switcher text-decoration-none black-text" href="#">
+					<a class="language-switcher {{ App::isLocale('en') ? 'active-language' : '' }} text-decoration-none black-text"
+						href="{{ route('lang.switch', 'en') }}">
 						EN
 					</a>
 				</div>
@@ -73,7 +75,7 @@
 							@foreach($MainMenu as $menu_item)
 								<li class="nav-item">
 									<a class="nav-link truncate gold-text position-relative animated-line"
-										href="{{ route($menu_item->link) }}">{{ $menu_item->title->ka}}</a>
+										href="{{ route($menu_item->link) }}">{{ $menu_item->title->$language}}</a>
 								</li>
 							@endforeach
 

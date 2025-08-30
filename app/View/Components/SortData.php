@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class SortData extends Component
-    {
+{
     public string $name;
     public array $options;
     public string $selected;
@@ -15,18 +15,17 @@ class SortData extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(    
-        string $name, 
-        array $options = [
-        'newest' => 'Newest to Oldest',
-        'oldest' => 'Oldest to Newest'
-        ],
-        string $selected = 'newest', 
+    public function __construct(
+        string $name,
+        array $options = [],
+        string $selected = 'newest',
         string $class = ''
-        )
-    {
-             $this->name = $name;
-        $this->options = $options;
+    ) {
+        $this->name = $name;
+        $this->options = $options ?: [
+            'newest' => __('static.sort.newest'),
+            'oldest' => __('static.sort.oldest'),
+        ];
         $this->selected = $selected;
         $this->class = $class;
     }

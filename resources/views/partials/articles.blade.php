@@ -9,8 +9,7 @@
         </div>
 
         @if ($articles->isEmpty())
-            {{-- {{ __('No articles found') }} --}}
-            <x-ui.empty-state-message :message="'დოკუმენტები ვერ მოიძებნა'" minHeight="60dvh" />
+            <x-ui.empty-state-message minHeight="60dvh" />
         @endif
         <!-- Responsive Grid -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
