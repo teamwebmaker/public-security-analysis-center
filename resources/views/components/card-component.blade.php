@@ -33,7 +33,7 @@
                     <div>
                         @if(isset($link) && $link)
                             <a href="{{ $link }}" class="btn btn-sm view-more">
-                                <span>{{ __("static.page.more") }}</span>
+                                <span>{{ __("static.card_component.more") }}</span>
                                 <i class="bi bi-arrow-right-short "></i>
                             </a>
                         @endif

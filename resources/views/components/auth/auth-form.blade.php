@@ -4,12 +4,13 @@
             style="width: 50px; height: 50px;">
             <i class="bi bi-box-arrow-in-right fs-4"></i>
         </div>
-        <h3 class="fw-bold"> {{$type == 'login' ? 'შესვლა' : 'რეგისტრაცია'}}</h3>
+        <h3 class="fw-bold"> {{$type == 'login' ? __('static.login.title') : __('static.signup.title')}}</h3>
     </div>
     <form method="POST" action="{{ route($route) }}" class="needs-validation" novalidate>
         @csrf
         {{ $slot }}
-        <button type="submit" class="btn btn-primary w-100">{{$type == 'login' ? 'შესვლა' : 'რეგისტრაცია'}}</button>
+        <button type="submit"
+            class="btn btn-primary w-100">{{$type == 'login' ? __('static.login.title') : __('static.signup.title')}}</button>
     </form>
     <!-- Optional extra buttons -->
     @isset($buttons)

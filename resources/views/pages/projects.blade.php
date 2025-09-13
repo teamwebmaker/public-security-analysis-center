@@ -1,12 +1,12 @@
 @extends('layouts.master')
-@section('title', 'Projects Page')
+@section('title', __('static.pages.projects.title'))
 
 @section('main')
     <main>
         <div class="container-fluid pt-2">
             <div class="container-xxl">
                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between py-4 ">
-                    <h2 class="mb-3 mb-md-0">პროექტები</h2>
+                    <h2 class="mb-3 mb-md-0">{{ __('static.pages.projects.heading') }} </h2>
 
                     <!-- Fixed Filter Component -->
                     @if ($projects->isNotEmpty())
@@ -21,8 +21,7 @@
                                 :link="route('projects.show', ['id' => $project->id])" />
                         </div>
                     @empty
-                        {{-- {{ __('No projects found') }} --}}
-                        <x-ui.empty-state-message :message="'პროექტები ვერ მოიძებნა'" />
+                        <x-ui.empty-state-message />
                     @endforelse
 
                 </div>

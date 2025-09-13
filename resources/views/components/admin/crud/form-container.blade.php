@@ -66,6 +66,9 @@
             </div>
         </div>
         <!-- Floating Speed Dial Button -->
-        <x-admin.speed-dial :resourceName="$indexResourceName" />
+        @if ($hasSpeedDial)
+            <x-admin.speed-dial :resourceName="$indexResourceName" />
+        @endif
+
     </div>
 </div>

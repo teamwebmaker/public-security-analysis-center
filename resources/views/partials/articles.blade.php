@@ -1,7 +1,7 @@
 <div class="container-fluid pt-2">
     <div class="container">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between py-4">
-            <h2 class="mb-3 mb-md-0">{{ __('static.section.articles.title') }}</h2>
+            <h2 class="mb-3 mb-md-0">{{ __('static.pages.articles.heading') }}</h2>
             <!-- Fixed Filter Component -->
             @if ($articles->isNotEmpty())
                 <x-sort-data name="sort" :selected="request()->query('sort', 'newest')" />

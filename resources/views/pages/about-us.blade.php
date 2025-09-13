@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'About us Page')
+@section('title', __('static.pages.about-us.title'))
 @section('main')
 	<main>
 		@if ($item)
@@ -35,12 +35,12 @@
 									@if ($hasExperience)
 										<div class="flex-fill">
 											<h4 class="fw-bold gold-text mb-1">{{ $item->experience }}&nbsp;+</h4>
-											<p class="mb-0 text-muted">Years Experience</p>
+											<p class="mb-0 text-muted">{{ __('static.pages.about-us.experience') }}</p>
 										</div>
 									@endif
 
 									@if ($hasExperience && $hasGraduates)
-										<!-- Divider: horizontal on mobile, vertical on desktop -->
+										<!-- Divider -->
 										<div class="d-block d-sm-none" style="height:1px; background:#ddd;"></div>
 										<div class="d-none d-sm-block vr"></div>
 									@endif
@@ -48,7 +48,7 @@
 									@if ($hasGraduates)
 										<div class="flex-fill">
 											<h4 class="fw-bold gold-text mb-1">{{ $item->graduates }}&nbsp;+</h4>
-											<p class="mb-0 text-muted">Graduates</p>
+											<p class="mb-0 text-muted">{{ __('static.pages.about-us.graduates') }}</p>
 										</div>
 									@endif
 								</div>

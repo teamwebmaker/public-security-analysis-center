@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Jobs\SendContactNotificationJob;
 use App\Http\Requests\StoreContactRequest;
+use App\Models\Service;
 
 class ContactsController extends Controller
 {
@@ -28,20 +29,78 @@ class ContactsController extends Controller
     }
 
 
+    // public function store(StoreContactRequest $request)
+    // {
+    //     $validated = $request->validated();
+
+    //     $contact = Contact::create([
+    //         'subject' => $request->filled('subject') ? $request->subject : 'without subject',
+    //         ...$validated,
+    //     ]);
+
+    //     // Dispatch the job ( send the notification )
+    //     dispatch(new SendContactNotificationJob($contact));
+
+    //     return redirect()->back()->with('success', 'Your message has been sent.');
+    // }
+
+
     public function store(StoreContactRequest $request)
     {
         $validated = $request->validated();
+        $locale = app()->getLocale(); // 'ka' or 'en'
+
+        // Services lookup
+        $services = [];
+        if (!empty($validated['service_ids'])) {
+            $rawServices = Service::whereIn('id', $validated['service_ids'])->get();
+
+            $services = $rawServices->map(function ($service) use ($locale) {
+                // Prefer localized title, fallback to English
+                return $service->title->ka ?? $service->title->en ?? '';
+            })->filter()->toArray();
+        }
+
+        // Subject fallback
+        $subject = $request->filled('subject') ? $request->subject : 'თემის გარეშე';
+
+        // Build extra info
+        $extraInfoParts = [];
+
+        if (!empty($validated['company_name'])) {
+            $extraInfoParts[] = "🏢 კომპანია: {$validated['company_name']}";
+        }
+
+        if (!empty($services)) {
+            $extraInfoParts[] = "🛠 სერვისები: " . implode(', ', $services);
+        }
+
+        $extraInfo = implode("\n", $extraInfoParts);
+
+        // Final message
+        $finalMessage = $validated['message'] ?? '';
+
+        if ($finalMessage && $extraInfo) {
+            $finalMessage =
+                "📩 მესიჯი:\n{$finalMessage}\n\n" .
+                "───\n" .
+                "{$extraInfo}";
+        } elseif (!$finalMessage) {
+            $finalMessage = $extraInfo;
+        }
 
         $contact = Contact::create([
-            'subject' => $request->filled('subject') ? $request->subject : 'without subject',
             ...$validated,
+            'subject' => $subject,
+            'message' => $finalMessage,
         ]);
 
-        // Dispatch the job ( send the notification )
         dispatch(new SendContactNotificationJob($contact));
 
-        return redirect()->back()->with('success', 'Your message has been sent.');
+        $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება წარმატებით გაგზავნა.';
+        return redirect()->back()->with('success', $req_message);
     }
+
 
     /**
      * Remove the specified resource from storage.

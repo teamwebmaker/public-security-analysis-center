@@ -1,83 +1,54 @@
-<form id="serviceForm" class="p-3 text-start">
+@props(['services'])
+<form method="POST" id="serviceForm" class="needs-validation dirty-check-form p-3 text-start" novalidate
+    action="{{ route('contacts.store') }}">
+
+    @csrf
+
+    <input type="hidden" name="subject" value="{{ old('subject', __('static.pages.services.request_service')) }}">
+
+
+    {{-- Name --}}
     <div class="mb-3">
-        <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+        <x-form.input name="full_name" label="{{ __('static.form.full_name') }}" value="{{ old('full_name') }}"
+            placeholder="{{ __('static.form.placeholders.full_name') }}" />
     </div>
 
+    {{-- Company Name --}}
     <div class="mb-3">
-        <label for="company" class="form-label">Company Name <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="company" name="company" placeholder="Enter your company" required>
+        <x-form.input name="company_name" label="{{ __('static.form.company_name') }}" value="{{ old('company_name') }}"
+            placeholder="{{ __('static.form.placeholders.company_name') }}" />
     </div>
 
+    {{-- email --}}
     <div class="mb-3">
-        <label for="contact" class="form-label">Contact Information <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="contact" name="contact" placeholder="Email or Phone" required>
+        <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
+            placeholder="{{ __('static.form.placeholders.email') }}" />
     </div>
 
-    <div class="mb-3">
-        <label for="service1" class="form-label">Services <span class="text-danger">*</span></label>
-        <div class="accordion" id="servicesAccordion">
-            <div class="accordion-item p-0">
-                <h2 class="accordion-header" id="servicesHeading">
-                    <button class="accordion-button collapsed py-2 ps-3 lh-base" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#servicesCollapse" aria-expanded="false" aria-controls="servicesCollapse">
-                        Select Services
-                    </button>
-                </h2>
-                <div id="servicesCollapse" class="accordion-collapse collapse" aria-labelledby="servicesHeading"
-                    data-bs-parent="#servicesAccordion">
-                    <div class="accordion-body">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="Web Development"
-                                id="service1">
-                            <label class="form-check-label" for="service1">Web Development</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="SEO Optimization"
-                                id="service2">
-                            <label class="form-check-label" for="service2">SEO Optimization</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="Graphic Design"
-                                id="service3">
-                            <label class="form-check-label" for="service3">Graphic Design</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="Digital Marketing"
-                                id="service4">
-                            <label class="form-check-label" for="service4">Digital Marketing</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="services[]" value="App Development"
-                                id="service5">
-                            <label class="form-check-label" for="service5">App Development</label>
-                        </div>
-                        <div class="form-text text-muted">Please select at least one service.</div>
-                    </div>
-                </div>
-            </div>
+    {{-- Services & Phone --}}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
+                placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
+        </div>
+        <div class="col-md-6">
+            <x-form.checkbox-dropdown label="{{ __('static.form.services') }}" :items="$services" name="service_ids"
+                labelField="{{ 'title.' . $language }}" :selected=" old('service_ids')" />
         </div>
     </div>
+
+    {{-- Message --}}
     <div class="mb-3">
-        <label for="message" class="form-label">Message</label>
-        <textarea class="form-control" id="message" name="message" rows="5"
-            placeholder="Have a message? Type here..."></textarea>
+        <x-form.textarea name="message" label="{{ __('static.form.message') }}" class="form-control"
+            :placeholder="__('static.form.placeholders.message')" value="{{ old('message') }}" minlength="5"
+            maxlength="500" />
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="consent" required>
-            <label class="form-check-label" for="consent" data-bs-toggle="tooltip" data-bs-placement="top"
-                data-bs-custom-class="custom-tooltip"
-                data-bs-title="By checking this box and clicking Send, Gmail will open a new email draft with all your form details pre-filled for easy review and sending.">
-                <span style="text-decoration: underline;  text-decoration-color: #0984e3 ;">
-                    Send via Gmail
-                </span>
-            </label>
-        </div>
-
+    {{-- Consent & Send --}}
+    <div class="d-flex justify-content-end align-items-center mt-4">
         <button type="submit" class="btn view-more--secondary px-4">
-            <i class="bi bi-send-fill me-1"></i> <span>Send</span>
+            <i class="bi bi-send-fill me-1"></i>
+            <span>{{ __('static.form.send') }}</span>
         </button>
     </div>
 </form>

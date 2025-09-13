@@ -5,11 +5,11 @@
 
 	<div class="clearfix">
 		<!-- Float only on md and above -->
-		{{--TODO: View Pdf should be variable for KA/EN --}}
 		<div @class([
 			'position-relative d-inline-block mb-3 mb-lg-0 float-lg-end ms-lg-4',
 			'overlay-label-wrapper' => $isPdfMarkerDisplayed
-		]) @if($isPdfMarkerDisplayed) data-label="View PDF" data-alpha="0.5" @endif>
+		]) @if($isPdfMarkerDisplayed) data-label="{{ __('static.view_pdf.title') }}"
+data-alpha="0.5" @endif>
 			@if ($isPdfMarkerDisplayed)
 				<a href="#" data-bs-toggle="modal" data-bs-target="#publications-pdfModal" style="display: inline-block;">
 					<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"

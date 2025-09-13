@@ -25,9 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $MainMenu = MainMenu::orderBy('sorted', 'ASC')->with('subMenu')->get();
-        $language = App::getLocale();
-        $contact = Info::select('email', 'phone')->first();
         View::composer('*', function ($view) {
             $view->with([
                 'MainMenu' => cache()->rememberForever(

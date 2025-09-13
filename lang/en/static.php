@@ -12,40 +12,106 @@ return [
     | has failed, such as for an invalid token or invalid new password.
     |
     */
-    'curse' => [
-        'details' => 'Course Details',
-        'duration' => 'Course Duration',
-        'day' => 'Day',
-        'hour' => 'Hour',
-        'starting_hours' => 'Starting Hours',
-        'price' => 'Price',
-        'location' => 'Location',
-        'register_date' => 'Registration Date'
-    ],
-    'section' => [
+
+    'pages' => [
+        'home' => [
+            'title' => 'Home Page'
+        ],
         'articles' => [
-            'title' => 'Center News'
+            'heading' => 'Center News'
+        ],
+        'about-us' => [
+            'title' => 'About Us Page',
+            'experience' => 'Years Experience',
+            'graduates' => 'Graduates'
+        ],
+        'publications' => [
+            'title' => 'Publications Page',
+            'heading' => 'Publications'
+        ],
+
+        'projects' => [
+            'title' => 'Projects Page',
+            'heading' => 'Projects'
+        ],
+        'programs' => [
+            'title' => 'Programs Page',
+            'heading' => 'Programs',
+            'details' => [
+                'about' => 'About the Course',
+                'price' => 'Price',
+                'duration' => 'Duration',
+                'starting_date' => 'Course Starts',
+                'schedule' => 'Schedule',
+                'location' => 'Location'
+            ]
+        ],
+        'services' => [
+            'title' => 'Services Page',
+            'heading' => 'Services',
+            'request_service' => 'Request a Service'
+        ],
+        'contact' => [
+            'title' => 'Contact Page',
+        ],
+        'login' => [
+            'title' => 'Login',
         ]
+
     ],
-    'page' => [
-        'title' => 'Public Safety Analytic Center',
-        'more' => 'View More'
-    ],
+
     'meta' => [
         'description' => 'Public Safety Analytic Center',
         'keywords' => 'Security, Services, Publications'
     ],
     'form' => [
-        'email' => 'E-mail',
+        'name' => 'Name',
+        'full_name' => 'Full Name',
+        'company_name' => 'Company Name',
+        'contact_information' => 'Contact Information',
+        'services' => 'Services',
+        'email' => 'Email',
+        'phone' => 'Phone',
         'subject' => 'Subject',
         'message' => 'Message',
-        'send' => 'Send',
-        'subscription' => 'Subscription'
+        'password' => 'Password',
+        'send' => 'Send Message',
+        'placeholders' => [
+            'name' => 'Enter your Name',
+            'full_name' => 'Enter your Full Name',
+            'company_name' => 'Enter your Company Name',
+            'contact_information' => 'Enter your Email or Phone',
+            'services' => 'Select Services',
+
+            'email' => 'Enter your Email',
+            'phone' => 'Enter your Phone',
+            'subject' => 'Enter Subject',
+            'message' => 'Enter Message',
+            'password' => 'Enter Password',
+        ],
+        'dropdown' => [
+            'not_found' => ':label not found',
+            'select_option' => 'Select an option',
+            'empty' => 'empty',
+            'help_text' => 'You can select one or more',
+        ],
+    ],
+    'login' => [
+        'title' => 'Login',
+    ],
+    'signup' => [
+        'title' => 'Sign Up',
+    ],
+    'register' => [
+        'title' => 'Register',
     ],
     'footer' => [
         'copyright' => 'All rights reserved',
         'links' => 'Links',
         'contact' => 'Contact'
+    ],
+    'card_component' => [
+        'more' => 'View More'
     ],
     'sort' => [
         'newest' => 'Newest to Oldest',
@@ -54,5 +120,17 @@ return [
     'doc_not_found' => [
         'singular' => 'Document not found',
         'plural' => 'Documents not found'
+    ],
+    'user_avatar' => [
+        'logout' => 'Lopout',
+    ],
+    'user_avatar_dropdown' => [
+        'home' => 'Home',
+        'dashboard' => 'Dashboard',
+
+    ],
+
+    'view_pdf' => [
+        'title' => 'View PDF'
     ]
 ];

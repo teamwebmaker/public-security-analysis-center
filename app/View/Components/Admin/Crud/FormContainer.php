@@ -12,8 +12,8 @@ class FormContainer extends Component
     public string $action;
     public string $method;
     public string $insertMethod;
-
     public bool $hasFileUpload;
+    public bool $hasSpeedDial;
     public string $cardClass;
     public string $cardWrapperClass;
     public string $cardBodyClass;
@@ -23,13 +23,13 @@ class FormContainer extends Component
     public string $submitButtonIcon;
     public string $backRoute;
 
-
     public function __construct(
         string $title,
         string $action,
         string $method = 'POST',
         string $insertMethod = '',
         bool $hasFileUpload = false,
+        bool $hasSpeedDial = true,
 
         string $cardWrapperClass = 'col col-lg-9',
         string $cardClass = 'border-0 shadow-sm',
@@ -45,6 +45,7 @@ class FormContainer extends Component
         $this->method = $method;
         $this->insertMethod = $insertMethod;
         $this->hasFileUpload = $hasFileUpload;
+        $this->hasSpeedDial = $hasSpeedDial;
 
         $this->cardWrapperClass = $cardWrapperClass;
         $this->cardClass = $cardClass;
@@ -63,6 +64,7 @@ class FormContainer extends Component
             'method' => $this->method,
             'insertMethod' => $this->insertMethod,
             'hasFileUpload' => $this->hasFileUpload,
+            'hasSpeedDial' => $this->hasSpeedDial,
             'cardWrapperClass' => $this->cardWrapperClass,
             'cardClass' => $this->cardClass,
             'cardBodyClass' => $this->cardBodyClass,

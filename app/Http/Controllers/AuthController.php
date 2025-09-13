@@ -38,7 +38,7 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'error' => 'პაროლი ან ტელეფონი არასწორია',
+                'error' => __('auth.wrong_credentials'),
             ]);
         }
 

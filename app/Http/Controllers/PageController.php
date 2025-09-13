@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
-use App\Models\Service;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Models\Partner;
 use App\Models\Info;
 use App\Models\Project;
 use App\Models\Publication;
+use App\Models\Service;
 use App\Models\ServiceCategory;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class PageController extends Controller
 {
@@ -128,7 +126,10 @@ class PageController extends Controller
                 $query->orderBy("sortable");
             },
         ])->get();
+
+        // dd(Service::select('id', 'title')->get());
         return view("pages.services", [
+            'services' => Service::select('id', 'title')->get(),
             "categories" => $categories,
             "partners" => Partner::all(),
         ]);

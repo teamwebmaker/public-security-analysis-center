@@ -33,19 +33,21 @@
 					<ul class="list-unstyled fs-6 lh-lg">
 						<li class="mb-2 me-2">
 							<i class="bi bi-currency-exchange me-2"></i>
-							<strong class="pe-1">Price:</strong> {{ $item->price }} ₾
+							<strong class="pe-1">{{__('static.pages.programs.details.price')}}:</strong> {{ $item->price }} ₾
 						</li>
 						<li class="mb-2 me-2">
 							<i class="bi bi-clock-fill me-2"></i>
-							<strong class="pe-1">Duration:</strong> {{ $item->duration }}
+							<strong class="pe-1">{{__('static.pages.programs.details.duration')}}:</strong>
+							{{ $item->duration }}
 						</li>
 						<li class="mb-2 me-2">
 							<i class="bi bi-calendar-event-fill me-2"></i>
-							<strong class="pe-1">Course Starts:</strong> {{ date('d.m.Y', strtotime($item->start_date)) }}
+							<strong class="pe-1">{{__('static.pages.programs.details.starting_date')}}:</strong>
+							{{ date('d.m.Y', strtotime($item->start_date)) }}
 						</li>
 						<li class="mb-2 me-2">
 							<i class="bi bi-calendar-week-fill mb-2 me-2"></i>
-							<strong class="pe-1">Schedule:</strong>
+							<strong class="pe-1">{{__('static.pages.programs.details.schedule')}}:</strong>
 							{{ collect($item->days->$language)->map(fn($day) => mb_substr(trim($day), 0, 3))->implode(', ') }}
 							|
 							{{ $item->hour->start }} - {{ $item->hour->end }}
@@ -54,7 +56,7 @@
 						@if ($item->address)
 							<li class="mb-2 me-2 d-flex align-items-center">
 								<i class="bi bi-geo-alt-fill me-2"></i>
-								<strong class="pe-1">Location:</strong>
+								<strong class="pe-1">{{__('static.pages.programs.details.location')}}:</strong>
 								<span class="text-truncate d-inline-block" style="max-width: 150px;" data-bs-toggle="tooltip"
 									data-bs-placement="top" title="{{ $item->address }}">
 									<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($item->address) }} "
@@ -68,8 +70,7 @@
 					</ul>
 
 					<div class="mt-4 d-flex flex-wrap gap-3">
-						<a href="#" class="btn view-more--secondary px-4">Register</a>
-						<a href="#" class="btn border-dark px-4">For Companies</a>
+						<a href="#" class="btn view-more--secondary px-4">{{__('static.register.title')}}</a>
 					</div>
 				</div>
 
@@ -79,7 +80,7 @@
 
 	<!-- About Section -->
 	<section class="container py-5 px-3 px-sm-5">
-		<h2 class="gold-text fw-bold mb-4">About the Course</h2>
+		<h2 class="gold-text fw-bold mb-4">{{__('static.pages.programs.details.about')}}</h2>
 		<div class="row g-4 align-items-start">
 			<div class="col-md-9">
 				<p class="fs-5 fw-light lh-md justified-text">

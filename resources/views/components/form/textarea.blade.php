@@ -49,11 +49,10 @@
     <!-- Live character counter badge -->
     <div class="badge rounded-pill bg-white border border-muted "
         style="position: absolute; bottom: -11px; right: 17px; pointer-events: none; ">
-        <span :class="badgeClass" x-html="hasLimit ? `${length} / ${max}` : `${length} / <i class='bi bi-infinity fs-7'></i>`">
+        <span :class="badgeClass"
+            x-html="hasLimit ? `${length} / ${max}` : `${length} / <i class='bi bi-infinity fs-7'></i>`">
         </span>
-        <template x-if="hasLimit">
-            <span class="text-muted"> chars</span>
-        </template>
+
     </div>
 
     @error($name)

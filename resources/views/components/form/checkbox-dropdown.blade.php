@@ -12,9 +12,9 @@
     <button class="btn border dropdown-toggle text-start" type="button" id="dropdown-{{ $dropdownId }}"
         data-bs-toggle="dropdown" aria-expanded="false" {{ $isItemsEmpty ? 'disabled' : '' }}>
         @if ($isItemsEmpty)
-            {{ $label }} ვერ მოიძებნა
+            {{ __('static.form.dropdown.not_found', ['label' => $label]) }}
         @else
-            აირჩიეთ ვარიანტი
+            {{ __('static.form.dropdown.select_option') }}
         @endif
     </button>
 
@@ -36,20 +36,22 @@
                 </label>
             </div>
         @empty
-            <div class="text-muted">empty</div>
+            <div class="text-muted">{{ __('static.form.dropdown.empty') }}</div>
         @endforelse
     </div>
 </div>
 
-<div class="form-text">შეგიძლიათ შეარჩიოთ ერთი ან რამდენიმე</div>
+<div class="form-text">{{ __('static.form.dropdown.help_text') }}</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('dropdown-{{ $dropdownId }}').parentNode;
         const button = document.getElementById('dropdown-{{ $dropdownId }}');
         const checkboxes = dropdown.querySelectorAll('.form-check-input');
-        const defaultText = 'აირჩიეთ ვარიანტი';
-        const emptyText = '{{ $label }} ვერ მოიძებნა';
+
+        const defaultText = @json(__('static.form.dropdown.select_option'));
+        const emptyText = @json(__('static.form.dropdown.not_found', ['label' => $label]));
+        const selectedTextTemplate = @json(__('static.form.dropdown.selected_count'));
 
         // Prevent menu from closing when clicking inside
         dropdown.querySelector('.dropdown-menu').addEventListener('click', function (e) {
@@ -60,7 +62,7 @@
         function updateButtonText() {
             const count = dropdown.querySelectorAll('.form-check-input:checked').length;
             if (count > 0) {
-                button.textContent = `არჩეულია ${count}`;
+                button.textContent = selectedTextTemplate.replace(':count', count);
             } else {
                 button.textContent = checkboxes.length === 0 ? emptyText : defaultText;
             }
