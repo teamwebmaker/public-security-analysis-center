@@ -64,37 +64,34 @@ class ContactsController extends Controller
         // Subject fallback
         $subject = $request->filled('subject') ? $request->subject : 'თემის გარეშე';
 
-        // Build extra info
-        $extraInfoParts = [];
+        // Final message formatting
+        $finalMessage = $validated['message'] ?? '';
+
+        $formattedParts = [];
+
+        if ($finalMessage) {
+            $formattedParts[] = "📩 მესიჯი: {$finalMessage}";
+        }
 
         if (!empty($validated['company_name'])) {
-            $extraInfoParts[] = "🏢 კომპანია: {$validated['company_name']}";
+            $formattedParts[] = "🏢 კომპანია: {$validated['company_name']}";
         }
 
         if (!empty($services)) {
-            $extraInfoParts[] = "🛠 სერვისები: " . implode(', ', $services);
+            $formattedParts[] = "🛠 სერვისები: " . implode(', ', $services);
         }
 
-        $extraInfo = implode("\n", $extraInfoParts);
+        // Join each part with a newline
+        $finalMessage = implode("\n", $formattedParts);
 
-        // Final message
-        $finalMessage = $validated['message'] ?? '';
-
-        if ($finalMessage && $extraInfo) {
-            $finalMessage =
-                "📩 მესიჯი:\n{$finalMessage}\n\n" .
-                "───\n" .
-                "{$extraInfo}";
-        } elseif (!$finalMessage) {
-            $finalMessage = $extraInfo;
-        }
-
+        // Save contact
         $contact = Contact::create([
             ...$validated,
             'subject' => $subject,
             'message' => $finalMessage,
         ]);
 
+        // Dispatch notification
         dispatch(new SendContactNotificationJob($contact));
 
         $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება გაიგზავნა წარმატებით.';

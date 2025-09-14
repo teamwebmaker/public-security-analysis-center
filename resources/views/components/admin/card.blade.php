@@ -69,7 +69,7 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
                 <div @if($shouldTruncate) x-data="{ expanded: false }" @endif class="mb-4">
                     <p class="card-text text-muted mb-0" :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
                         style="@if($shouldTruncate)--bs-line-clamp: 3;@endif">
-                        {{ $descriptionText }}
+                        {!! nl2br(e($descriptionText)) !!}
                     </p>
 
                     @if ($shouldTruncate)
