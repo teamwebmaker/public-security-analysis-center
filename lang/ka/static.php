@@ -31,6 +31,7 @@ return [
         'programs' => [
             'title' => 'პროგრამების გვერდი',
             'heading' => 'პროგრამები',
+            'register_to_program' => 'პროგრამაზე რეგისტრაცია',
             'details' => [
                 'about' => 'კურსის შესახებ',
                 'price' => 'ფასი',
@@ -59,7 +60,7 @@ return [
     'form' => [
         'name' => 'სახელი',
         'full_name' => 'სრული სახელი',
-        'company_name' => 'კომპანისს სახელი',
+        'company_name' => 'კომპანიის სახელი',
         'contact_information' => 'საკონტაქტო ინფორმაცია',
         'services' => 'სერვისები',
         'phone' => 'ტელეფონის ნომერი',

@@ -1,22 +1,14 @@
-@props(['services'])
-<form method="POST" id="serviceForm" class="needs-validation dirty-check-form p-3 text-start" novalidate
+<form method="POST" id="register_to_program_form" class="needs-validation dirty-check-form p-3 text-start" novalidate
     action="{{ route('contacts.store') }}">
 
     @csrf
-
-    <input type="hidden" name="subject" value="{{ old('subject', 'Register to Service') }}">
-
+    {{-- Subject --}}
+    <input type="hidden" name="subject" value="{{ old('subject', 'Register to program') }}">
 
     {{-- Name --}}
     <div class="mb-3">
         <x-form.input name="full_name" label="{{ __('static.form.full_name') }}" value="{{ old('full_name') }}"
             placeholder="{{ __('static.form.placeholders.full_name') }}" />
-    </div>
-
-    {{-- Company Name --}}
-    <div class="mb-3">
-        <x-form.input name="company_name" label="{{ __('static.form.company_name') }}" value="{{ old('company_name') }}"
-            placeholder="{{ __('static.form.placeholders.company_name') }}" />
     </div>
 
     {{-- email --}}
@@ -25,23 +17,24 @@
             placeholder="{{ __('static.form.placeholders.email') }}" />
     </div>
 
+    {{-- Company Name --}}
+    <div class="mb-3">
+        <x-form.input name="company_name" label="{{ __('static.form.company_name') }}" value="{{ old('company_name') }}"
+            placeholder="{{ __('static.form.placeholders.company_name') }}" :required="false" />
+    </div>
+
+
     {{-- Services & Phone --}}
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
-                placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
-        </div>
-        <div class="col-md-6 mb-3">
-            <x-form.checkbox-dropdown label="{{ __('static.form.services') }}" :items="$services" name="service_ids"
-                labelField="{{ 'title.' . $language }}" :selected=" old('service_ids')" />
-        </div>
+    <div class="mb-3">
+        <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
+            placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
     </div>
 
     {{-- Message --}}
     <div class="mb-3">
         <x-form.textarea name="message" label="{{ __('static.form.message') }}" class="form-control"
             :placeholder="__('static.form.placeholders.message')" value="{{ old('message') }}" minlength="-1"
-            maxlength="500" :required="false" />
+            maxlength="250" :required="false" />
     </div>
 
     {{-- Consent & Send --}}

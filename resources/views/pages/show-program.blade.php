@@ -2,6 +2,16 @@
 @section('title', $item->title->$language)
 
 @section('main')
+	<!-- Global Success Display -->
+	@if(session()->has('success'))
+		<x-ui.toast :messages="[session('success')]" type="success" />
+	@endif
+
+	<!-- Global Error Display -->
+	@if ($errors->any())
+		<x-ui.toast :messages="$errors->all()" type="error" />
+	@endif
+
 	<!-- Course Header -->
 	<section class="gold-bg border-bottom border-1 border-gold-bg--light rounded-bottom-4">
 		<div class="container py-5 px-3 px-sm-5">
@@ -70,7 +80,12 @@
 					</ul>
 
 					<div class="mt-4 d-flex flex-wrap gap-3">
-						<a href="#" class="btn view-more--secondary px-4">{{__('static.register.title')}}</a>
+						<a href="#" data-bs-toggle="modal" data-bs-target="#register_to_program_modal"
+							class="btn view-more--secondary px-4">{{__('static.register.title')}}</a>
+						<x-modal id="register_to_program_modal" :title="__('static.pages.programs.register_to_program')"
+							size="md" height="min-content">
+							<x-register-to-program-form />
+						</x-modal>
 					</div>
 				</div>
 

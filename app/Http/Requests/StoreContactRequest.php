@@ -26,7 +26,7 @@ class StoreContactRequest extends FormRequest
             'subject' => 'string|min:3|max:200',
             'email' => 'required|email|min:5|max:500',
             'phone' => 'nullable|min:5|max:20',
-            'message' => 'required|min:5',
+            'message' => 'nullable|min:5',
             'service_ids' => 'nullable|array',
             'company_name' => 'nullable|string|min:3|max:200'
         ];

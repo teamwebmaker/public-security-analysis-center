@@ -97,7 +97,7 @@ class ContactsController extends Controller
 
         dispatch(new SendContactNotificationJob($contact));
 
-        $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება წარმატებით გაგზავნა.';
+        $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება გაიგზავნა წარმატებით.';
         return redirect()->back()->with('success', $req_message);
     }
 

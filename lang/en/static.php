@@ -37,6 +37,7 @@ return [
         'programs' => [
             'title' => 'Programs Page',
             'heading' => 'Programs',
+            'register_to_program' => 'Register to the Program',
             'details' => [
                 'about' => 'About the Course',
                 'price' => 'Price',
@@ -94,6 +95,7 @@ return [
             'select_option' => 'Select an option',
             'empty' => 'empty',
             'help_text' => 'You can select one or more',
+            'selected_count' => 'You have selected :count'
         ],
     ],
     'login' => [
