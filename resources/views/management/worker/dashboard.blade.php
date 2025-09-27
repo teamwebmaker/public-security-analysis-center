@@ -7,7 +7,7 @@
 @section('main')
 	<!-- Stats -->
 	<div class="row g-3">
-		<x-management.stat-card label="მოლოდინში (ელოდება დადასტურებას)" :count="$pendingTasks->count()"
+		<x-management.stat-card label="ელოდება სამუშაოს დადასტურებას" :count="$pendingTasks->count()"
 			icon="bi bi-hourglass-split" iconWrapperClasses=" bg-warning bg-opacity-10 text-warning" />
 
 		<x-management.stat-card label="აქტიური სამუშაოები" :count="$inProgressTasks->count()" icon="bi bi-ui-radios"
@@ -56,13 +56,14 @@
 					'სტატუსი',
 					'ფილიალი',
 					'სერვისი',
-					'საწყისი თარიღი',
-					'დასრულების თარიღი',
+					'სამუშაოს დაწყება',
+					'სამუშაოს დასრულება',
 					'___',
 				]" :rows="$taskTableRows" :sortableMap="[
-					'საწყისი თარიღი' => 'start_date',
-					'დასრულების თარიღი' => 'end_date',
-				]" :tooltipColumns="['branch', 'service']" :actions="false" :customActions="$customActionBtns" />
+					'სამუშაოს დაწყება' => 'start_date',
+					'სამუშაოს დასრულება' => 'end_date',
+				]" :tooltipColumns="['branch', 'service']" :actions="false"
+				:customActions="$customActionBtns" />
 		</div>
 
 	@else

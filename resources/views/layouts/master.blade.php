@@ -3,6 +3,7 @@
 
 <head>
   @include('partials.head')
+  @yield('head-custom')
 </head>
 
 <body data-languge="ka">

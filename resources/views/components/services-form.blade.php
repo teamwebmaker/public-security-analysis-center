@@ -19,17 +19,17 @@
             placeholder="{{ __('static.form.placeholders.company_name') }}" />
     </div>
 
-    {{-- email --}}
+    {{-- Phone --}}
     <div class="mb-3">
-        <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
-            placeholder="{{ __('static.form.placeholders.email') }}" />
+        <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
+            placeholder="{{ __('static.form.placeholders.phone') }}" />
     </div>
 
-    {{-- Services & Phone --}}
+    {{-- Services & email --}}
     <div class="row">
-        <div class="col-md-6 mb-3">
-            <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
-                placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
+        <div class="mb-3 col-md-6">
+            <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
+                placeholder="{{ __('static.form.placeholders.email') }}" :required="false" />
         </div>
         <div class="col-md-6 mb-3">
             <x-form.checkbox-dropdown label="{{ __('static.form.services') }}" :items="$services" name="service_ids"

@@ -66,9 +66,9 @@ class TableRowDataPresenter
             $model->visibility ? 'ხილული' : 'დამალული',
             $model->visibility ? 'success' : 'danger'
          ),
-         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
-         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
-         'created_at' => optional($model->created_at)->diffForHumans() ?? '---',
+         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
+         'created_at' => optional($model->created_at)->format('Y-m-d H:i') ?? '---',
       ];
    }
 
@@ -94,8 +94,8 @@ class TableRowDataPresenter
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
 
-         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
-         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
+         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
 
       ];
    }
@@ -119,8 +119,8 @@ class TableRowDataPresenter
          'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
-         'start_date' => optional($model->start_date)->diffForHumans() ?? '---',
-         'end_date' => optional($model->end_date)->diffForHumans() ?? '---',
+         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
       ];
    }
 
@@ -166,7 +166,7 @@ class TableRowDataPresenter
          'name' => $model->name ?? 'უცნობი',
          'address' => $model->address ?? 'უცნობი',
          'company' => $model->company->name ?? 'არ ჰყავს',
-         'created_at' => optional($model->created_at)->diffForHumans() ?? '---',
+         'created_at' => optional($model->created_at)->format('Y-m-d H:i') ?? '---',
       ];
    }
 

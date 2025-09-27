@@ -16,7 +16,8 @@
 		<div class="my-4">
 			<p class="fw-bold fs-5">აქტიური სამუშაოები</p>
 			<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
-				<x-shared.table :items="$inProgressTasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'საწყისი თარიღი',]" :rows="$userTableRowsWithoutEndDate" :sortableMap="['საწყისი თარიღი' => 'start_date',]" :tooltipColumns="['branch', 'service']" :actions="false" />
+				<x-shared.table :items="$inProgressTasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'სამუშაოს დაწყება',]" :rows="$userTableRowsWithoutEndDate" :sortableMap="['სამუშაოს დაწყება' => 'start_date',]"
+					:tooltipColumns="['branch', 'service']" :actions="false" />
 			</div>
 		</div>
 

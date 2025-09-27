@@ -137,7 +137,6 @@
 				</ul>
 			</div>
 		</section>
-
 	@endif
 
 	<!-- Instructors Section -->
@@ -167,4 +166,8 @@
 			</div>
 		</section>
 	@endif
+@endsection
+
+@section('scripts')
+	{!! load_script('scripts/bootstrap/bootstrapValidation.js') !!}
 @endsection

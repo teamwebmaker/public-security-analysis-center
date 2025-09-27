@@ -15,10 +15,9 @@ return [
 
     'pages' => [
         'home' => [
-            'title' => 'Home Page'
-        ],
-        'articles' => [
-            'heading' => 'Center News'
+            'title' => 'Home Page',
+            "heading" => 'Security Research, Scientific-Educational, Analytical Center',
+            'headline' => 'Center News'
         ],
         'about-us' => [
             'title' => 'About Us Page',

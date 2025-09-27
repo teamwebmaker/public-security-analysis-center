@@ -29,6 +29,14 @@ button:focus {
       /* box-shadow: 0 0 0 0.3px rgb(34, 34, 34) !important; */
 }
 
+/* Custom font BPG paata Caps */
+.font-paata {
+    font-family: "BPG Paata Caps", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+
 /* Custom focus style for all .form-control elements */
 .form-control:focus {
     border-color: none !important;
