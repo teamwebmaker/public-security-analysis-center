@@ -1,4 +1,4 @@
-import { getById } from "./heplers.js";
+import { getById } from "./helpers.js";
 
 // Handle image preview and removal on file input change
 class ImageUploader {

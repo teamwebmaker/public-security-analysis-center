@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -92,9 +93,32 @@ class AdminController extends Controller
             });
         });
 
+        // Temp fake data
+        $fakeUsers = collect([
+            (object) ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com'],
+            (object) ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com'],
+            (object) ['id' => 3, 'name' => 'Giorgi Bekauri', 'email' => 'gio@example.com'],
+            (object) ['id' => 4, 'name' => 'Davit Bekauri', 'email' => 'dato@example.com'],
+        ]);
+
+        $fakeCompanies = collect([
+            (object) ['id' => 1, 'name' => 'Acme Inc', 'identification_number' => '3323423423'],
+            (object) ['id' => 2, 'name' => 'Globex Corp', 'identification_number' => '786728672'],
+        ]);
+
+
+        $users = User::withoutAdmins()
+            ->latest()
+            ->take(5)
+            ->get(['id', 'full_name', 'phone', 'email']);
+
+
+        $companies = Company::latest()->take(5)->get();
 
         return view('admin.dashboard.index', [
             'dashboardData' => $dashboardData,
+            'users' => $users,
+            'companies' => $companies
         ]);
     }
 

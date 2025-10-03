@@ -106,8 +106,9 @@ Route::prefix('admin')->group(function () {
         // Dashboard 
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
 
+
         // Management related routes register users
-        Route::resource('users', UserController::class)->except('show');
+        Route::resource('users', UserController::class);
         Route::resource('companies', CompanyController::class)->except('show');
         Route::resource('economic_activities_types', EconomicActivityTypeController::class)
             ->parameters(['economic_activities_types' => 'economic_activity_type'])

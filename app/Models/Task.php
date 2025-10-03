@@ -38,6 +38,21 @@ class Task extends Model
         return ['pending', 'in_progress', 'on_hold'];
     }
 
+    /**
+     * Returns the recent tasks with their associated users, status, service and branch company.
+     * The tasks are filtered to only include completed, in_progress and pending tasks.
+     * The results are ordered in descending order by start date and limited to the specified count.
+     */
+    public function scopeRecentWithRelations($query, $limit = 5)
+    {
+        return $query->whereHas('status', function ($q) {
+            $q->whereIn('name', ['completed', 'in_progress', 'pending']);
+        })
+            ->with(['users', 'status', 'service', 'branch.company'])
+            ->orderByDesc('start_date')
+            ->take($limit);
+    }
+
     public function status()
     {
         return $this->belongsTo(TaskStatus::class);

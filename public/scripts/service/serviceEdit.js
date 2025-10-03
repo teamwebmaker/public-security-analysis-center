@@ -1,4 +1,4 @@
-import { getById } from '../heplers.js';
+import { getById } from '../helpers.js';
 import { initSortableSuggestions } from './index.js';
 
 document.addEventListener('DOMContentLoaded', function() {

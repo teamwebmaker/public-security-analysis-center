@@ -1,6 +1,6 @@
 import '../bootstrap/bootstrapValidation.js' // Bootstrap form validation
 import { imageValidation, pdfValidation } from './validation.js';
-import { getAll, loadFancyboxCDN } from "../heplers.js";
+import { getAll, loadFancyboxCDN } from "../helpers.js";
 
 
 document.addEventListener('DOMContentLoaded', function() {

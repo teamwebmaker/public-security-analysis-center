@@ -1,4 +1,4 @@
-import { getOne } from "../heplers.js";
+import { getOne } from "../helpers.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 

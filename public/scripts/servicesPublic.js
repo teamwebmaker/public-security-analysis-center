@@ -1,4 +1,4 @@
-import { enableSmoothScroll, getOne, getById, getAll } from './heplers.js';
+import { enableSmoothScroll, getOne } from './helpers.js';
 
 // Dom elements
 const scrollLink = getOne('scroll-link') // scroll related

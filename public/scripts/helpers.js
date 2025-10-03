@@ -79,3 +79,25 @@ export function scrollToElement(selector) {
     element.scrollIntoView({ behavior: 'smooth' });
   }
 }
+
+
+
+
+/**
+ * Format a date string to a human-readable format
+ * @param {string} dateString - The date string to format
+ * @returns {string} - The formatted date string
+ * @example
+ * formatDateTime('2022-01-01T12:30:00.000Z') // '2022-01-01 12:30'
+ */
+export const formatDateTime = (dateString) => {
+  if (!dateString) return '-';
+  
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};

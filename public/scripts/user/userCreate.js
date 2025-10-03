@@ -1,5 +1,4 @@
-
-import { getAll, getById } from "../heplers.js";
+import { getAll, getById } from "../helpers.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const roleInput = getById('role_id'); // Now this is a hidden input
