@@ -30,7 +30,7 @@ class DashboardRouterController extends Controller
 
         // Skip certain roles for specific methods
         if ($method === 'displayTasks' && $role === 'worker') {
-            abort(403);
+            // abort(403);
         }
 
         $controller = $roleControllers[$role] ?? null;

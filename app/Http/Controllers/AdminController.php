@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class AdminController extends Controller
 {
@@ -93,32 +95,28 @@ class AdminController extends Controller
             });
         });
 
-        // Temp fake data
-        $fakeUsers = collect([
-            (object) ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com'],
-            (object) ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com'],
-            (object) ['id' => 3, 'name' => 'Giorgi Bekauri', 'email' => 'gio@example.com'],
-            (object) ['id' => 4, 'name' => 'Davit Bekauri', 'email' => 'dato@example.com'],
-        ]);
 
-        $fakeCompanies = collect([
-            (object) ['id' => 1, 'name' => 'Acme Inc', 'identification_number' => '3323423423'],
-            (object) ['id' => 2, 'name' => 'Globex Corp', 'identification_number' => '786728672'],
-        ]);
-
-
-        $users = User::withoutAdmins()
+        $users = QueryBuilder::for(User::class)
+            ->withoutAdmins()
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $q->where('full_name', 'LIKE', "%{$value}%")
+                            ->orWhere('phone', 'LIKE', "%{$value}%")
+                            ->orWhere('email', 'LIKE', "%{$value}%")
+                            ->orWhereHas('role', fn($q) => $q->where('name', 'LIKE', "%{$value}%"));
+                    });
+                }),
+            ])
+            ->with(['role:id,name,display_name'])
             ->latest()
-            ->take(5)
-            ->get(['id', 'full_name', 'phone', 'email']);
-
-
-        $companies = Company::latest()->take(5)->get();
+            ->take(10)
+            ->get(['id', 'full_name', 'phone', 'email', 'role_id']);
 
         return view('admin.dashboard.index', [
             'dashboardData' => $dashboardData,
             'users' => $users,
-            'companies' => $companies
+
         ]);
     }
 

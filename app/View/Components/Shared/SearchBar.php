@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\Admin\Dashboard\Explorer;
+namespace App\View\Components\Shared;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class SearchEntity extends Component
+class SearchBar extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class SearchEntity extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.admin.dashboard.explorer.search-entity');
+        return view('components.shared.search-bar');
     }
 }

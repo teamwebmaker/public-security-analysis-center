@@ -29,8 +29,8 @@
           style="min-height: 40dvh;">
           <x-auth.auth-form route="login" type="login">
             <div class="mb-3">
-              <x-form.input type="tel" name="phone" :label="__('static.form.phone')" :displayError="false"
-                :placeholder="__('static.form.placeholders.phone')" autocomplete="tel" />
+              <x-form.input type="tel" name="phone" :value="old('phone')" :label="__('static.form.phone')"
+                :displayError="false" :placeholder="__('static.form.placeholders.phone')" autocomplete="tel" />
             </div>
             <div class="mb-4">
               <x-form.input type="password" name="password" :label="__('static.form.password')" :displayError="false"
