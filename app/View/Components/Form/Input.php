@@ -25,7 +25,7 @@ class Input extends Component
     public ?string $icon;
     public ?string $iconPosition;
 
-
+    public ?string $infoMessage;
 
     public ?int $minlength = null;
     public ?int $maxlength = null;
@@ -42,6 +42,7 @@ class Input extends Component
         string $placeholder = '',
         ?string $label = null,
         ?string $icon = null,
+        ?string $infoMessage = null,
         ?string $iconPosition = 'left',
         string $accept = 'image/jpeg,image/png,image/webp'
     ) {
@@ -56,6 +57,7 @@ class Input extends Component
         $this->placeholder = $placeholder;
         $this->label = $label;
         $this->icon = $icon;
+        $this->infoMessage = $infoMessage;
         $this->iconPosition = $iconPosition;
         $this->accept = $accept;
 

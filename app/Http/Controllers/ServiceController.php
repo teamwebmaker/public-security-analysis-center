@@ -18,7 +18,7 @@ class ServiceController extends CrudController
 
     protected array $modelRelations = ["category"];
     protected string $resourceName = "services";
-    protected array $fileFields = ["image" => "images/services/"];
+    protected array $fileFields = ["image" => "images/services/", 'document' => "documents/services/"];
 
     /**
      * Display the specified resource.
@@ -117,7 +117,7 @@ class ServiceController extends CrudController
         array $data,
         ?Service $service = null
     ): array {
-        // Handle image upload
+        // Handle image & document upload
         $files = collect($this->fileFields)
             ->mapWithKeys(function ($path, $field) use ($request, $service) {
                 $existing = $service?->$field;
@@ -141,7 +141,7 @@ class ServiceController extends CrudController
             "ka" => $data["description_ka"],
             "en" => $data["description_en"],
         ];
-
+        // dd($files);
         return [
             ...$data,
             ...$files,

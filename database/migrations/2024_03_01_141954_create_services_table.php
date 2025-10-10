@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->json('title');
             $table->json('description');
             $table->string('image');
+            $table->string('document')->nullable();
 
             // Connection to service_category
             $table->unsignedBigInteger('service_category_id')->nullable();

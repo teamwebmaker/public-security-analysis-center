@@ -28,6 +28,7 @@ class StoreServiceRequest extends FormRequest
             'description_ka' => 'required|string|min:10',
             'description_en' => 'required|string|min:10',
             'image' => 'required|image|mimes:jpg,jpeg,webp,png|max:2048',
+            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048',
             'visibility' => 'required|in:1,0',
             'sortable' => [
                 'required',

@@ -38,12 +38,21 @@
 			</x-ui.tabs>
 		</div>
 
-		<!-- Image and category id -->
+		<!-- Image and document  -->
 		<div class="row mb-4">
 			<div class="col-md-6">
 				<x-form.input type="file" id="image" name="image" label="სურათი" />
 				<x-form.image-upload-preview id="image" />
 			</div>
+			<div class="col-md-6">
+				<x-form.input type="file" name="document" label="დოკუმენტი" :isImage="false"
+					accept=".pdf, .doc, .docx, .xls, .xlsx" infoMessage="მხარდაჭერილი ფორმატები: .pdf, .doc, .docx, .xls, .xlsx"
+					:required="false" />
+			</div>
+		</div>
+
+		<!-- category and visibility -->
+		<div class="row">
 			<div class="col-md-6">
 				<!-- One that causes errors  can't get value from it :/-->
 				{{-- <x-form.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
@@ -51,36 +60,32 @@
 				<!-- One that works fine temp usage -->
 				<x-admin.services.select name="service_category_id" id="service_category_id" :options="$serviceCategories"
 					:selected="old('service_category_id')" label="კატეგორია" />
-
-			</div>
-		</div>
-
-		<!-- Sortable and visibility -->
-		<div class="row">
-			<div class="col-md-6">
-				<x-form.input type="number" id="sortable" name="sortable" label="რიგითობა"
-					placeholder="უნიკალური რიგი კატეგორიაში" min="1" />
-
-				<!-- Next available sortable value -->
-				<div class="mt-2" id="next-sortable-container">
-					<span class="text-muted">შემდეგი თავისუფალი რიგი: <span class="fw-bold"
-							id="next-sortable-value"></span></span>
-				</div>
-
-				<!-- Already used sortable numbers -->
-				<div class="mt-2" id="used-sortables-container" style="display: none;">
-					<label class="form-label">უკვე გამოყენებული რიგები:</label>
-					<div class="d-flex flex-wrap gap-2" id="used-sortables-badges"></div>
-				</div>
-
-				<div class="form-text mt-2">
-					რიგის ნომერი უნდა იყოს უნიკალური თითოეულ კატეგორიაში
-				</div>
 			</div>
 
 			<div class="col-md-6">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1"
 					label="ხილვადობა" />
+			</div>
+		</div>
+
+		<!-- Sortable (order) -->
+		<div class="col-md-5 mt-4">
+			<x-form.input type="number" id="sortable" name="sortable" label="რიგითობა"
+				placeholder="უნიკალური რიგი კატეგორიაში" min="1" />
+
+			<!-- Next available sortable value -->
+			<div class="mt-2" id="next-sortable-container">
+				<span class="text-muted">შემდეგი თავისუფალი რიგი: <span class="fw-bold" id="next-sortable-value"></span></span>
+			</div>
+
+			<!-- Already used sortable numbers -->
+			<div class="mt-2" id="used-sortables-container" style="display: none;">
+				<label class="form-label">უკვე გამოყენებული რიგები:</label>
+				<div class="d-flex flex-wrap gap-2" id="used-sortables-badges"></div>
+			</div>
+
+			<div class="form-text mt-2">
+				რიგის ნომერი უნდა იყოს უნიკალური თითოეულ კატეგორიაში
 			</div>
 		</div>
 

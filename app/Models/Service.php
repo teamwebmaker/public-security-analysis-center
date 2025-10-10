@@ -16,6 +16,7 @@ class Service extends Model
         "title",
         "description",
         "image",
+        "document",
         "visibility",
         "sortable",
         "service_category_id",

@@ -29,6 +29,10 @@
 
 </div>
 
-@if ($type == 'file' && $isImage)
-    <div class="form-text">მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 2MB</div>
+@if ($infoMessage)
+    <div class="form-text">{{ $infoMessage }}</div>
+@elseif ($type === 'file' && $isImage)
+    <div class="form-text">
+        მხარდაჭერილი ფორმატები: JPG, PNG, WEBP. მაქსიმალური ზომა: 2MB
+    </div>
 @endif
