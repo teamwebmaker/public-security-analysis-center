@@ -62,10 +62,14 @@ class TableRowDataPresenter
             $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
             $model->service_name
          ),
+         'document' => $model->document
+            ? self::documentLink('/tasks/' . $model->document)
+            : '---',
          'visibility' => self::badge(
             $model->visibility ? 'ხილული' : 'დამალული',
             $model->visibility ? 'success' : 'danger'
          ),
+
          'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
          'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
          'created_at' => optional($model->created_at)->format('Y-m-d H:i') ?? '---',
@@ -213,6 +217,36 @@ class TableRowDataPresenter
          'on_hold' => 'secondary',
          'cancelled' => 'danger',
       ][$task->status?->name] ?? 'secondary';
+   }
+
+
+   /**
+    * Helper: Render a document link using Fancybox for PDFs, download for others.
+    *
+    * @param string $path
+    * @return string
+    */
+   private static function documentLink(string $path): string
+   {
+      $url = asset('documents/' . ltrim($path, '/'));
+      $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+      $label = strtoupper($extension) . ' ფაილი';
+
+      // PDFs open in Fancybox
+      if ($extension === 'pdf') {
+         return '<a data-fancybox data-type="pdf" data-src="' . e($url) . '" href="javascript:;" 
+                    class="text-primary text-decoration-underline">'
+            . '<i class="bi bi-file-earmark-pdf-fill me-1 text-danger"></i>'
+            . e($label)
+            . '</a>';
+      }
+
+      // Other document types trigger download
+      return '<a href="' . e($url) . '" download 
+                class="text-primary text-decoration-underline">'
+         . '<i class="bi bi-file-earmark-arrow-down me-1 text-success"></i>'
+         . e($label)
+         . '</a>';
    }
 
 }

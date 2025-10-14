@@ -21,6 +21,7 @@ class Task extends Model
         'branch_id',
         'branch_name',
         'service_name',
+        'document',
         'start_date',
         'end_date',
         'archived',

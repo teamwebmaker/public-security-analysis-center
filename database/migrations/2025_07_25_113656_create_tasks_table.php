@@ -42,6 +42,7 @@ return new class extends Migration {
                 ->index();
             // if service deleted, service_name will be saved
             $table->string("service_name")->nullable();
+            $table->string('document')->nullable();
 
             $table->enum("archived", ["0", "1"])->default("0");
             $table->enum("visibility", ["0", "1"])->default("1");

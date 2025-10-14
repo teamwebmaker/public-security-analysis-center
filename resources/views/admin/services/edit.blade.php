@@ -56,7 +56,6 @@
 				<x-form.input type="file" name="document" label="დოკუმენტი" :isImage="false"
 					accept=".pdf, .doc, .docx, .xls, .xlsx" infoMessage="მხარდაჭერილი ფორმატები: .pdf, .doc, .docx, .xls, .xlsx"
 					:required="false" />
-
 			</div>
 		</div>
 

@@ -26,6 +26,7 @@ class UpdateTaskRequest extends FormRequest
             'status_id' => ['required', 'exists:task_statuses,id'],
             'branch_id' => ['sometimes', 'exists:branches,id'],
             'branch_name' => ['nullable', 'string', 'max:255'],
+            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048',
 
             // 'start_date' => ['required', 'date'],
             // 'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],

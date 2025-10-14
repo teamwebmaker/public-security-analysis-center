@@ -28,6 +28,8 @@ class TaskController extends CrudController
 
    protected int $perPage = 10;
 
+   protected array $fileFields = ['document' => "documents/tasks/"];
+
    /**
     * Display a listing of the resource.
     * And accept a searching and filtering
@@ -108,7 +110,9 @@ class TaskController extends CrudController
     */
    public function store(StoreTaskRequest $request)
    {
-      $data = $this->prepareTaskData($request->validated());
+      $validatedData = $request->validated();
+
+      $data = $this->prepareTaskData($request, $validatedData);
 
       $task = $this->modelClass::create($data);
 
@@ -127,7 +131,8 @@ class TaskController extends CrudController
     */
    public function update(UpdateTaskRequest $request, Task $task)
    {
-      $data = $this->prepareTaskData($request->validated(), $task);
+      $validatedData = $request->validated();
+      $data = $this->prepareTaskData($request, $validatedData, $task);
 
       // Sync users (remove unchecked)
       $this->syncRelations($task, $data, [
@@ -174,9 +179,24 @@ class TaskController extends CrudController
    /**
     * Prepares task data for create/update by getting service and branch names and assigning them to the data array.
     */
-   protected function prepareTaskData(array $data, Task $task = null): array
+   protected function prepareTaskData(Request $request, $data, Task $task = null): array
    {
-      // Get branch and service names and assign them
+
+      // Handle document upload
+      $files = collect($this->fileFields)
+         ->mapWithKeys(function ($path, $field) use ($request, $task) {
+            $existing = $task?->$field;
+            $file = $this->handleFileUpload(
+               $request,
+               $field,
+               $path,
+               $existing
+            );
+            return $file ? [$field => $file] : [];
+         })
+         ->toArray();
+
+      // Handle branch name saving
       if (
          !empty($data["branch_id"]) &&
          (!$task || $data["branch_id"] !== $task->branch_id)
@@ -186,7 +206,7 @@ class TaskController extends CrudController
             $data["branch_name"] = $branch->name;
          }
       }
-
+      // Handle branch name saving
       if (
          !empty($data["service_id"]) &&
          (!$task || $data["service_id"] !== $task->service_id)
@@ -198,7 +218,10 @@ class TaskController extends CrudController
          }
       }
 
-      return $data;
+      return [
+         ...$data,
+         ...$files,
+      ];
    }
 
 
