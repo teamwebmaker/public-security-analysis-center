@@ -227,56 +227,111 @@ class TaskController extends CrudController
 
    /**
     * @route PUT management/tasks/{task}
-    * route is under management. prefix
-    * Currently used from worker dashboard 
-    * @param \App\Models\Task $task
-    * @return \Illuminate\Http\RedirectResponse
+    * Route is under management prefix.
+    * Used from worker dashboard to set task as in progress.
     */
    public function editStatus(Task $task)
    {
       try {
-         // Retrieve status IDs
+         // Retrieve required statuses
          $pendingStatusId = TaskStatus::where("name", "pending")->value("id");
          $inProgressStatusId = TaskStatus::where("name", "in_progress")->value("id");
-         $completedStatusId = TaskStatus::where("name", "completed")->value("id");
 
-         // Check if all required statuses exist
-         if (!$pendingStatusId || !$inProgressStatusId || !$completedStatusId) {
+         if (!$pendingStatusId || !$inProgressStatusId) {
             return redirect()
                ->back()
-               ->with('error', 'მოხდა გაუთვალისწინებელი შეცდომა, სტატუსების დაყენება ვერ მოხერხდა, გთხოვთ დაუკავშირდით დახმარებას.');
+               ->with('error', 'მოხდა გაუთვალისწინებელი შეცდომა, გთხოვთ დაუკავშირდით დახმარებას.');
          }
 
-         // Update status based on current state
+         // Move only from Pending → In Progress
          if ($task->status_id === $pendingStatusId) {
-            $task->status_id = $inProgressStatusId;
-            $task->start_date = now(); // When in progress set start date
-         } elseif ($task->status_id === $inProgressStatusId) {
-            $task->status_id = $completedStatusId;
-            $task->end_date = now(); // When completed set end date
-         } else {
+            $task->update([
+               'status_id' => $inProgressStatusId,
+               'start_date' => now(),
+            ]);
+
             return redirect()
                ->back()
-               ->with('warning', 'სამუშაო უკვე დასრულებულია ან არასწორი სტატუსია.');
+               ->with('success', 'სამუშაო დაწყებულად მოინიშნა წარმატებით.');
          }
 
-         $task->save();
-         // Redirect back with success message
          return redirect()
             ->back()
-            ->with('success', 'სამუშაოს სტატუსი განახლდა წარმატებით');
+            ->with('error', 'სამუშაოს სტატუსის შეცვლა ამ ეტაპზე შეუძლებელია.');
 
       } catch (\Exception $e) {
-         // Log the error
          Log::error('Task status update failed from worker dashboard', [
             'task_id' => $task->id,
             'error' => $e->getMessage(),
          ]);
 
-         // If try catch fails return error
          return redirect()
             ->back()
             ->with('error', 'სამუშაოს სტატუსის განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ თავიდან.');
       }
    }
+
+
+   /**
+    * @route PUT management/tasks/{task}/document
+    * Route is under management prefix.
+    * Used by workers to upload a task document and set status as completed.
+    */
+   public function uploadDocument(Request $request, Task $task)
+   {
+      try {
+         // Validate the uploaded file
+         $validated = $request->validate([
+            'document' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
+         ], [
+            'document.required' => 'გთხოვთ ატვირთოთ სამუშაოს დოკუმენტი.',
+            'document.mimes' => 'დოკუმენტის ფორმატი არასწორია. ნებადართულია: PDF, Word, Excel.',
+            'document.max' => 'ფაილის ზომა არ უნდა აღემატებოდეს 5MB-ს.',
+         ]);
+
+         // Upload or replace the file
+         $uploadedFile = $this->handleFileUpload(
+            $request,
+            'document',
+            $this->fileFields['document'],
+            $task->document
+         );
+
+         if (!$uploadedFile) {
+            return redirect()
+               ->back()
+               ->with('error', 'დოკუმენტის ატვირთვა ვერ მოხერხდა, სცადეთ თავიდან.');
+         }
+
+         // Retrieve status IDs
+         $inProgressStatusId = TaskStatus::where("name", "in_progress")->value("id");
+         $completedStatusId = TaskStatus::where("name", "completed")->value("id");
+
+         // Update document and mark as completed if applicable
+         $updateData = ['document' => $uploadedFile];
+
+         if ($task->status_id === $inProgressStatusId && $completedStatusId) {
+            $updateData['status_id'] = $completedStatusId;
+            $updateData['end_date'] = now();
+         }
+
+         $task->update($updateData);
+
+         return redirect()
+            ->back()
+            ->with('success', 'დოკუმენტი წარმატებით აიტვირთა და სამუშაო დასრულებულად მოინიშნა.');
+
+      } catch (\Exception $e) {
+         Log::error('Task document upload failed', [
+            'task_id' => $task->id,
+            'error' => $e->getMessage(),
+         ]);
+
+         return redirect()
+            ->back()
+            ->with('error', 'დოკუმენტის ატვირთვისას მოხდა შეცდომა, გთხოვთ სცადოთ თავიდან.');
+      }
+   }
+
+
 }

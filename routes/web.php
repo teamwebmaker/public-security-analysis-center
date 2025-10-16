@@ -88,6 +88,10 @@ Route::prefix('management')
         // Edit task status used from worker dashboard
         Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');
 
+        // Task Document Upload
+        Route::put('tasks/{task}/document', [TaskController::class, 'uploadDocument'])
+            ->name('tasks.upload-document');
+
         // Dynamically resolving the appropriate controller based on user role
         Route::get('/dashboard', [DashboardRouterController::class, 'redirectDashboard'])->name('dashboard.page');
         Route::get('/dashboard/tasks', [DashboardRouterController::class, 'redirectTask'])->name('dashboard.tasks');

@@ -80,18 +80,23 @@ class WorkerController extends Controller
                     'confirm' => 'ნამდვილად გსურთ სამუშაოს დაწყება?',
                     'class' => 'text-success',
                 ];
-            } elseif ($task->status->name === 'in_progress') {
-                $actions[] = [
-                    'label' => 'დასრულება',
-                    'icon' => 'bi-check2-circle',
-                    'route_name' => "{$taskRoute}.edit",
-                    'method' => 'PUT',
-                    'confirm' => 'ნამდვილად გსურთ სამუშაოს დასრულება?',
-                    'class' => 'text-primary',
-                ];
             }
 
             return $actions;
+        };
+
+
+        $modalTriggerBtns = function ($task) use ($taskRoute) {
+            $modalTriggers = [];
+            if ($task->status->name === 'in_progress') {
+                $modalTriggers[] = [
+                    'label' => 'დასრულება',
+                    'class' => '',
+                    'icon' => 'bi-upload',
+                    'modal_id' => 'uploadDocumentModal_' . $task->id,
+                ];
+            }
+            return $modalTriggers;
         };
 
         return view("management.{$this->resourceName}.dashboard", [
@@ -102,7 +107,8 @@ class WorkerController extends Controller
             'pendingTasks' => $pendingTasks,
             'onHoldTasks' => $onHoldTasks,
             'sidebarItems' => $sidebarItems,
-            'customActionBtns' => $customActionBtns
+            'customActionBtns' => $customActionBtns,
+            'modalTriggerBtns' => $modalTriggerBtns
         ]);
     }
 }

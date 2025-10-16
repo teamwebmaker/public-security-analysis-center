@@ -115,6 +115,24 @@
 							@endforeach
 						</td>
 					@endif
+
+					@if (isset($modalTriggers))
+						@php
+							$modals = is_callable($modalTriggers) ? $modalTriggers($model) : $modalTriggers;
+						 @endphp
+
+						<td class="text-end">
+							@foreach ($modals as $modalTrigger)
+								<a href="#" data-bs-toggle="modal" data-bs-target="#{{ $modalTrigger['modal_id'] }}"
+									class="btn btn-light btn-sm px-3 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm {{ $modalTrigger['class'] ?? '' }}">
+									@if (!empty($modalTrigger['icon']))
+										<i class="bi {{ $modalTrigger['icon'] }}"></i>
+									@endif
+									<span>{{ $modalTrigger['label'] }}</span>
+								</a>
+							@endforeach
+						</td>
+					@endif
 				</tr>
 			@endforeach
 		</tbody>

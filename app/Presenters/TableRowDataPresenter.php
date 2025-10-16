@@ -97,7 +97,9 @@ class TableRowDataPresenter
          'worker' => self::formatWorker($model),
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
-
+         'document' => $model->document
+            ? self::documentLink('/tasks/' . $model->document)
+            : '---',
          'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
          'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
 
@@ -123,6 +125,15 @@ class TableRowDataPresenter
          'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
          'branch' => $model->branch_name ?? 'უცნობი',
          'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
+         'Coworker' => self::formatWorker(
+            $model->setRelation(
+               'users',
+               $model->users->where('id', '!=', auth()->id())
+            )
+         ),
+         'document' => $model->document
+            ? self::documentLink('/tasks/' . $model->document)
+            : '---',
          'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
          'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
       ];

@@ -11,7 +11,7 @@
 
 		<!-- Tasks -->
 		<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
-			<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'სამუშაოს დაწყება', 'სამუშაოს დასრულება',]" :rows="$userTableRows" :sortableMap="['სამუშაოს დაწყება' => 'start_date', 'სამუშაოს დასრულება' => 'end_date',]" :tooltipColumns="['branch', 'service']" :actions="false" />
+			<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'დოკუმენტი', 'სამუშაოს დაწყება', 'სამუშაოს დასრულება',]" :rows="$userTableRows" :sortableMap="['სამუშაოს დაწყება' => 'start_date', 'სამუშაოს დასრულება' => 'end_date',]" :tooltipColumns="['branch', 'service']" :actions="false" />
 		</div>
 
 	@else

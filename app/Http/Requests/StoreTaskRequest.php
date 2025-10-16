@@ -26,7 +26,7 @@ class StoreTaskRequest extends FormRequest
             'status_id' => ['required', 'exists:task_statuses,id'],
             'branch_id' => ['required', 'exists:branches,id'],
             'branch_name' => ['nullable', 'string', 'max:255'],
-            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048',
+            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
 
             // 'start_date' => ['required', 'date'],
             // 'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],

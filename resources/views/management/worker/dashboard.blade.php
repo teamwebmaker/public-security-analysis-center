@@ -1,6 +1,22 @@
 @extends('management.master')
 @section('title', 'მონაცემთა პანელი')
 
+<!-- Global Success Display -->
+@if(session()->has('success'))
+	<x-ui.toast :messages="[session('success')]" type="success" />
+@endif
+
+<!-- Global Error Display -->
+@if(session()->has('error'))
+	<x-ui.toast :messages="[session('error')]" type="error" />
+@endif
+
+<!-- Validation Errors -->
+@if ($errors->any())
+	<x-ui.toast :messages="$errors->all()" type="error" />
+@endif
+
+
 @section('sidebar-content')
 	<x-management.dashboard.sidebar-menu :items="$sidebarItems" />
 @endsection
@@ -31,14 +47,21 @@
 						'სტატუსი',
 						'ფილიალი',
 						'სერვისი',
+						'კოლეგა',
+						'დოკუმენტი',
 						'სამუშაოს დაწყება',
 						'სამუშაოს დასრულება',
-						'___',
+
 					]" :rows="$taskTableRows" :sortableMap="[
 						'სამუშაოს დაწყება' => 'start_date',
 						'სამუშაოს დასრულება' => 'end_date',
 					]" :tooltipColumns="['branch', 'service']" :actions="false"
-					:customActions="$customActionBtns" />
+					:customActions="$customActionBtns" :modalTriggers="$modalTriggerBtns" />
+
+				@foreach ($tasks as $task)
+					<x-management.worker.upload-modal :task="$task" />
+				@endforeach
+
 			</div>
 
 		@else

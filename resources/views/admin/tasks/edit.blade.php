@@ -30,13 +30,13 @@
 		<!-- worker users -->
 		<div class="row">
 			<div class="col-md-6">
+				<x-form.checkbox-dropdown label="შემსრულებლები" :items="$users" name="user_ids" labelField="full_name"
+					:selected="old('user_ids', $task->users->pluck('id')->toArray())" />
+			</div>
+			<div class="col-md-6">
 				<x-form.input type="file" name="document" label="დოკუმენტი" :isImage="false"
 					accept=".pdf, .doc, .docx, .xls, .xlsx" infoMessage="მხარდაჭერილი ფორმატები: .pdf, .doc, .docx, .xls, .xlsx"
 					:required="false" />
-			</div>
-			<div class="col-md-6">
-				<x-form.checkbox-dropdown label="შემსრულებლები" :items="$users" name="user_ids" labelField="full_name"
-					:selected="old('user_ids', $task->users->pluck('id')->toArray())" />
 			</div>
 		</div>
 	</x-admin.crud.form-container>
