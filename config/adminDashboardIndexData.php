@@ -4,6 +4,7 @@ use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Info;
+use App\Models\Instruction;
 use App\Models\MainMenu;
 use App\Models\Mentor;
 use App\Models\Partner;
@@ -54,6 +55,13 @@ return [
             'companies' => ['title' => 'კომპანიები', 'icon' => 'bi-building', 'model' => Company::class],
             'branches' => ['title' => 'ფილიალები', 'icon' => 'bi-diagram-3', 'model' => Branch::class],
             'tasks' => ['title' => 'სამუშაოები', 'icon' => 'bi-card-list', 'model' => Task::class],
+         ]
+      ]
+   ],
+   'resources' => [
+      [
+         'resources' => [
+            'instructions' => ['title' => 'ინსტრუქტაჟები', 'icon' => 'bi-person-video3', 'model' => Instruction::class],
          ]
       ]
    ],

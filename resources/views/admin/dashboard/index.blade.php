@@ -6,6 +6,7 @@
 			['id' => 'info', 'label' => 'ინფორმაცია'],
 			['id' => 'web_content', 'label' => 'ვებგვერდის კონტენტი'],
 			['id' => 'management', 'label' => 'მენეჯმენტი'],
+			['id' => 'resources', 'label' => 'რესურსები'],
 		]">
 
 		<!-- New custom tab -->

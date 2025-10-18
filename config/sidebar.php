@@ -156,6 +156,26 @@ return [
                ]
             ],
          ]
-      ]
+      ],
+
+      [
+         'id' => 'resources',
+         'icon' => 'bi-sd-card',
+         'label' => 'რესურსები',
+         'parent' => 'dashboard',
+         'children' => [
+            [
+
+               'id' => 'instructions',
+               'icon' => 'bi-person-video3',
+               'label' => 'ინსტრუქტაჟები',
+               'routes' => [
+                  ['name' => 'instructions.index', 'label' => 'ინსტრუქტაჟების ნახვა', 'icon' => 'bi-list-ul'],
+                  ['name' => 'instructions.create', 'label' => 'ინსტრუქტაჟების შექმნა', 'icon' => 'bi-plus-circle'],
+               ]
+
+            ],
+         ],
+      ],
    ],
 ];

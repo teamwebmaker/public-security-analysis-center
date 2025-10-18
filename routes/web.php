@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardRouterController;
 use App\Http\Controllers\EconomicActivityTypeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\InfoController;
+use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\MainMenuController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PublicationController;
@@ -119,7 +120,7 @@ Route::prefix('admin')->group(function () {
             ->except('show');
         Route::resource('branches', BranchController::class)->except('show');
         Route::resource('tasks', TaskController::class)->except('show');
-
+        Route::resource('instructions', InstructionController::class)->except('show');
 
 
         // CRUD: Projects, Partners, Publications

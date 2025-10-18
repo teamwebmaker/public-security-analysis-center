@@ -117,4 +117,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Task::class, 'task_workers')->withTimestamps();
     }
+
+    public function instructions()
+    {
+        return $this->belongsToMany(Instruction::class, 'instructions_workers')->withTimestamps();
+    }
 }
