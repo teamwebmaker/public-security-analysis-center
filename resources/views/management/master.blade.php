@@ -1,5 +1,4 @@
 @extends('layouts.management.management-dashboard')
-@php $sidebarItems = config('sidebar.company-leader');@endphp
 
 <!-- Global Success Display -->
 @if(session()->has('success'))

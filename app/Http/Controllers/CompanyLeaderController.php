@@ -74,6 +74,9 @@ class CompanyLeaderController extends Controller
             }
         }
 
+        // Sidebar menu items
+        $sidebarItems = config('sidebar.company-leader');
+
         // Optional: count
         $uniqueUserCount = count($userBranchMap);
 
@@ -87,6 +90,7 @@ class CompanyLeaderController extends Controller
             'branchUsersCount' => $uniqueUserCount,
             'tasks' => $tasks,
             'userTableRows' => $userTableRows,
+            'sidebarItems' => $sidebarItems,
         ]);
 
     }
@@ -147,12 +151,13 @@ class CompanyLeaderController extends Controller
             ->appends(request()->query());
 
         $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
-
+        // Sidebar menu items
+        $sidebarItems = config('sidebar.company-leader');
         return view("management.{$this->resourceName}.tasks", [
             'resourceName' => $this->resourceName,
             'tasks' => $tasks,
             'userTableRows' => $userTableRows,
-
+            'sidebarItems' => $sidebarItems,
         ]);
     }
 }

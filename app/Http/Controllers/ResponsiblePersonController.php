@@ -87,14 +87,15 @@ class ResponsiblePersonController extends Controller
             ->paginate(10)
             ->appends(request()->query());
 
-
+        // Sidebar menu items
+        $sidebarItems = config('sidebar.responsible-person');
         $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
 
         return view("management.{$this->resourceName}.tasks", [
             'resourceName' => $this->resourceName,
             'tasks' => $tasks,
             'userTableRows' => $userTableRows,
-
+            'sidebarItems' => $sidebarItems,
         ]);
     }
 }

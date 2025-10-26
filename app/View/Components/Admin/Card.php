@@ -17,6 +17,8 @@ class Card extends Component
     public ?string $image;
     public ?string $containerClass;
     public ?string $cardClass;
+
+    public ?bool $hasTimeStamps;
     public ?bool $hasDelete;
     public ?bool $hasEdit;
     public ?bool $hasVisibility;
@@ -34,6 +36,8 @@ class Card extends Component
         ?string $cardClass = 'card h-100 border-0 bg-white overflow-hidden position-relative',
         ?string $message = null,
 
+
+        ?bool $hasTimeStamps = true,
         ?bool $hasDelete = true,
         ?bool $hasEdit = true,
         ?bool $hasVisibility = true
@@ -45,6 +49,8 @@ class Card extends Component
         $this->resourceName = $resourceName;
         $this->containerClass = $containerClass;
         $this->cardClass = $cardClass;
+
+        $this->hasTimeStamps = $hasTimeStamps;
         $this->hasDelete = $hasDelete;
         $this->hasEdit = $hasEdit;
         $this->hasVisibility = $hasVisibility;

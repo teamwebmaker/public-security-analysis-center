@@ -16,12 +16,15 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
                 <x-admin.image-header :src="$image" :folder="$resourceName" :caption="'სურათი ' . $title" />
 
                 <!-- Updated Date Overlay -->
-                <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-white rounded-pill" style="z-index: 7777;">
-                    <span class="d-flex align-items-center gap-1 text-muted badge">
-                        <i class="bi bi-pencil"></i>
-                        {{ $document->updated_at->diffForHumans() }}
-                    </span>
-                </div>
+                @if ($hasTimeStamps)
+                    <div class="position-absolute top-0 start-0 m-2 shadow-sm bg-white rounded-pill" style="z-index: 7777;">
+                        <span class="d-flex align-items-center gap-1 text-muted badge">
+                            <i class="bi bi-pencil"></i>
+                            {{ $document->updated_at->diffForHumans() }}
+                        </span>
+                    </div>
+                @endif
+
             @endif
 
             <!-- Visibility Overlay -->
@@ -45,23 +48,26 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
         <div class="card-body d-flex flex-column bg-transparent">
             <div class="d-flex align-items-start gap-2">
                 <!-- title -->
-                <h3 class="card-title h5 mb-0 text-wrap">
+                <h3 class="card-title h5 @if (!$hasTimeStamps) mb-3 @endif  mb-0 text-wrap">
                     {{ $title }}
                 </h3>
             </div>
+            {{-- add mb-3 to title if hasTimeStamps is false --}}
             <!-- Created Date -->
-            <div class="d-flex flex-wrap mb-3 pt-1">
-                <small class="text-muted me-3 d-flex align-items-center gap-1">
-                    <i class="bi bi-calendar-week"></i>
-                    {{ $document->created_at->format('Y-m-d') }}
-                </small>
-                @if (!isset($image))
-                    <small class="text-muted d-flex align-items-center gap-1">
-                        <i class="bi bi-pencil"></i>
-                        {{ $document->updated_at->diffForHumans() }}
+            @if ($hasTimeStamps)
+                <div class="d-flex flex-wrap mb-3 pt-1">
+                    <small class="text-muted me-3 d-flex align-items-center gap-1">
+                        <i class="bi bi-calendar-week"></i>
+                        {{ $document->created_at->format('Y-m-d') }}
                     </small>
-                @endif
-            </div>
+                    @if (!isset($image))
+                        <small class="text-muted d-flex align-items-center gap-1">
+                            <i class="bi bi-pencil"></i>
+                            {{ $document->updated_at->diffForHumans() }}
+                        </small>
+                    @endif
+                </div>
+            @endif
 
 
             <!-- description -->
@@ -88,36 +94,35 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
             </div>
         </div>
 
-        <!-- Card Footer -->
-        <div class="card-footer border-0 pt-0 pb-3 px-4 bg-transparent">
-            <div class="d-flex flex-wrap justify-content-between gap-2">
-                {{ $cardFooter ?? '' }}
-                <!-- Edit Button -->
-                @if ($hasEdit)
-                    <a href="{{ route($resourceName . '.edit', $document) }}"
-                        class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>რედაქტირება</span>
-                    </a>
-                @endif
+        @if ($hasEdit || $hasDelete || !empty($cardFooter))
+            <!-- Card Footer -->
+            <div class="card-footer border-0 pt-0 pb-3 px-4 bg-transparent">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    {{ $cardFooter ?? '' }}
 
-                @if ($hasDelete)
-                    <!-- Delete Button -->
+                    @if ($hasEdit)
+                        <a href="{{ route($resourceName . '.edit', $document) }}"
+                            class="btn btn-outline-primary btn-sm flex-grow-1 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-pencil-square"></i>
+                            <span>რედაქტირება</span>
+                        </a>
+                    @endif
 
-
-                    <form method="POST" action="{{ route($resourceName . '.destroy', $document) }}"
-                        onsubmit="return confirm('{{ $confirmMessage }}')" class="flex-grow-1">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-trash"></i>
-                            <span>წაშლა</span>
-                        </button>
-                    </form>
-
-                @endif
+                    @if ($hasDelete)
+                        <form method="POST" action="{{ route($resourceName . '.destroy', $document) }}"
+                            onsubmit="return confirm('{{ $confirmMessage }}')" class="flex-grow-1">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-trash"></i>
+                                <span>წაშლა</span>
+                            </button>
+                        </form>
+                    @endif
+                </div>
             </div>
-        </div>
+        @endif
+
     </div>
 </div>

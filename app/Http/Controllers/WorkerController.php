@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Presenters\TableRowDataPresenter;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -109,6 +110,20 @@ class WorkerController extends Controller
             'sidebarItems' => $sidebarItems,
             'customActionBtns' => $customActionBtns,
             'modalTriggerBtns' => $modalTriggerBtns
+        ]);
+    }
+
+
+    public function displayInstructions()
+    {
+        $sidebarItems = config('sidebar.worker');
+
+        $instructions = Auth::user()->instructions()->paginate(10);
+
+        return view("management.{$this->resourceName}.instructions.index", [
+            'sidebarItems' => $sidebarItems,
+            'instructions' => $instructions,
+            'resourceName' => 'instructions'
         ]);
     }
 }

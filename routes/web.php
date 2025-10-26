@@ -24,6 +24,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -86,16 +87,25 @@ Route::prefix('management')
         // Redirect from /management to /management/dashboard
         Route::get('/', [DashboardRouterController::class, 'redirect'])->name('dashboard.redirect');
 
-        // Edit task status used from worker dashboard
+        // Dynamically resolving the appropriate controller based on user role
+        Route::get('/dashboard', [DashboardRouterController::class, 'redirectDashboard'])->name('dashboard.page');
+        Route::get('/dashboard/tasks', [DashboardRouterController::class, 'redirectTask'])->name('dashboard.tasks');
+    });
+
+// Allow authorized users worker
+Route::prefix('management')
+    ->as('management.')
+    ->middleware(['worker.guard'])
+    ->group(function () {
+
+        // Edit task status
         Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');
 
         // Task Document Upload
         Route::put('tasks/{task}/document', [TaskController::class, 'uploadDocument'])
             ->name('tasks.upload-document');
+        Route::get('instructions', [WorkerController::class, 'displayInstructions'])->name('worker.instructions.page');
 
-        // Dynamically resolving the appropriate controller based on user role
-        Route::get('/dashboard', [DashboardRouterController::class, 'redirectDashboard'])->name('dashboard.page');
-        Route::get('/dashboard/tasks', [DashboardRouterController::class, 'redirectTask'])->name('dashboard.tasks');
     });
 
 

@@ -14,7 +14,7 @@ abstract class CrudController extends Controller
     protected string $modelClass;
     protected string $contextField;
     protected string $contextFieldPlural;
-
+    protected string $viewPathPrefix = 'admin';
     /**
      * eager load relations
      * @var array
@@ -78,7 +78,7 @@ abstract class CrudController extends Controller
         ];
 
         return view(
-            "admin.{$this->resourceName}.index",
+            "{$this->viewPathPrefix}.{$this->resourceName}.index",
             array_merge($baseData, $this->additionalIndexData())
         );
     }
@@ -92,7 +92,7 @@ abstract class CrudController extends Controller
     public function create()
     {
         return view(
-            "admin.{$this->resourceName}.create",
+            "{$this->viewPathPrefix}.{$this->resourceName}.create",
             array_merge(
                 [
                     "resourceName" => $this->resourceName,
@@ -113,7 +113,7 @@ abstract class CrudController extends Controller
         $document = $this->modelClass::findOrFail($id);
 
         return view(
-            "admin.{$this->resourceName}.edit",
+            "{$this->viewPathPrefix}.{$this->resourceName}.edit",
             array_merge(
                 [
                     $this->contextField => $document,
