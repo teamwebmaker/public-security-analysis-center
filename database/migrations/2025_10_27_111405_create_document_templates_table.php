@@ -11,19 +11,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-
-        Schema::create('instructions_workers', function (Blueprint $table) {
-            $table->foreignId('instruction_id')
-                ->constrained('instructions')
-                ->onDelete('cascade');
-
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->onDelete('cascade');
+        Schema::create('document_templates', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('document');
+            $table->enum("visibility", ["0", "1"])->default("1");
             $table->timestamps();
-            $table->primary(['instruction_id', 'user_id']);
         });
-
         Schema::enableForeignKeyConstraints();
     }
 
@@ -32,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('instructions_workers');
+        Schema::dropIfExists('document_templates');
     }
 };

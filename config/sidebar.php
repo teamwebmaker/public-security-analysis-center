@@ -175,6 +175,17 @@ return [
                ]
 
             ],
+            [
+
+               'id' => 'document_templates',
+               'icon' => 'bi-file-earmark-richtext',
+               'label' => 'შაბლონები',
+               'routes' => [
+                  ['name' => 'document-templates.index', 'label' => 'შაბლონების ნახვა', 'icon' => 'bi-list-ul'],
+                  ['name' => 'document-templates.create', 'label' => 'შაბლონების შექმნა', 'icon' => 'bi-plus-circle'],
+               ]
+
+            ],
          ],
       ],
    ],

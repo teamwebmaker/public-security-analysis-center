@@ -3,6 +3,7 @@
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Contact;
+use App\Models\DocumentTemplate;
 use App\Models\Info;
 use App\Models\Instruction;
 use App\Models\MainMenu;
@@ -62,6 +63,7 @@ return [
       [
          'resources' => [
             'instructions' => ['title' => 'ინსტრუქტაჟები', 'icon' => 'bi-person-video3', 'model' => Instruction::class],
+            'document-templates' => ['title' => 'შაბლონები', 'icon' => 'bi-file-earmark-richtext', 'model' => DocumentTemplate::class],
          ]
       ]
    ],

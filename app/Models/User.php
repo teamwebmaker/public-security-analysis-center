@@ -122,4 +122,8 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Instruction::class, 'instructions_workers')->withTimestamps();
     }
+    public function document_templates()
+    {
+        return $this->belongsToMany(DocumentTemplate::class, 'user_document_templates')->withTimestamps();
+    }
 }

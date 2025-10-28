@@ -10,6 +10,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\DashboardRouterController;
+use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\EconomicActivityTypeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\InfoController;
@@ -131,6 +132,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('branches', BranchController::class)->except('show');
         Route::resource('tasks', TaskController::class)->except('show');
         Route::resource('instructions', InstructionController::class)->except('show');
+        Route::resource('document-templates', DocumentTemplateController::class)->except('show');
 
 
         // CRUD: Projects, Partners, Publications

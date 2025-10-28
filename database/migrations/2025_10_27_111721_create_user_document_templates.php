@@ -11,17 +11,17 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::disableForeignKeyConstraints();
-
-        Schema::create('instructions_workers', function (Blueprint $table) {
-            $table->foreignId('instruction_id')
-                ->constrained('instructions')
+        Schema::create('user_document_templates', function (Blueprint $table) {
+            $table->foreignId('document_template_id')
+                ->constrained('document_templates')
                 ->onDelete('cascade');
 
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
+
             $table->timestamps();
-            $table->primary(['instruction_id', 'user_id']);
+            $table->primary(['document_template_id', 'user_id']);
         });
 
         Schema::enableForeignKeyConstraints();
@@ -32,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('instructions_workers');
+        Schema::dropIfExists('user_document_templates');
     }
 };
