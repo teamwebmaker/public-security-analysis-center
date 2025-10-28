@@ -9,7 +9,7 @@ return [
 
    'company-leader' => $commonMenu,
    'responsible-person' => $commonMenu,
-   'worker' => [$dashboardItem, ['label' => 'ინსტრუქტაჟები', 'route' => 'management.worker.instructions.page', 'icon' => 'bi bi-person-video3']],
+   'worker' => [$dashboardItem, ['label' => 'ინსტრუქტაჟები', 'route' => 'management.worker.instructions.page', 'icon' => 'bi bi-person-video3'], ['label' => 'შაბლონები', 'route' => 'management.worker.document-templates.page', 'icon' => 'bi bi-file-earmark-richtext']],
    'admin' => [
       [
          'id' => 'contacts_wrapper',

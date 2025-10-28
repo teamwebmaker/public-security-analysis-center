@@ -19,25 +19,7 @@ class WorkerController extends Controller
         $user = auth()->user();
 
         // Step 1: Get user's tasks and their statuses/services and make filtering and searching available
-        $tasks = QueryBuilder::for($user->tasks())
-            ->allowedIncludes(['status', 'branch', 'service'])
-            ->allowedSorts([
-                'branch_name',
-                'service_name',
-                'start_date',
-                'end_date',
-            ])
-            ->allowedFilters([
-                AllowedFilter::callback('search', function ($query, $value) {
-                    $query->where(function ($q) use ($value) {
-                        $q->orWhereHas('branch', fn($q) => $q->where('name', 'LIKE', "%$value%"))
-                            ->orWhereHas('service', fn($q) => $q->where('title->ka', 'LIKE', "%$value%"))
-                            ->orWhereHas('status', fn($q) => $q->where('display_name', 'LIKE', "%$value%"));
-                    });
-                }),
-            ])
-            ->with(['status', 'branch', 'service'])
-            ->paginate($this->perPage)
+        $tasks = $this->buildTaskQuery($user->tasks())->paginate($this->perPage)
             ->appends(request()->query());
 
         // Step 2: Filter tasks by status
@@ -57,48 +39,10 @@ class WorkerController extends Controller
             return $task->status && $task->status->name === 'on_hold';
         });
 
-        // Step 3: Prepare data for the view
-
-        // Sidebar menu items
-        $sidebarItems = config('sidebar.worker');
 
         // Task table row data
         $taskTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management_worker'));
 
-        // PUT: management/tasks/{task}
-        $taskRoute = "management.{$this->resourceNameTasks}";
-
-        // Buttons based on task status
-        $customActionBtns = function ($task) use ($taskRoute) {
-            $actions = [];
-
-            if ($task->status->name === 'pending') {
-                $actions[] = [
-                    'label' => 'დაწყება',
-                    'icon' => 'bi-play',
-                    'route_name' => "{$taskRoute}.edit",
-                    'method' => 'PUT',
-                    'confirm' => 'ნამდვილად გსურთ სამუშაოს დაწყება?',
-                    'class' => 'text-success',
-                ];
-            }
-
-            return $actions;
-        };
-
-
-        $modalTriggerBtns = function ($task) use ($taskRoute) {
-            $modalTriggers = [];
-            if ($task->status->name === 'in_progress') {
-                $modalTriggers[] = [
-                    'label' => 'დასრულება',
-                    'class' => '',
-                    'icon' => 'bi-upload',
-                    'modal_id' => 'uploadDocumentModal_' . $task->id,
-                ];
-            }
-            return $modalTriggers;
-        };
 
         return view("management.{$this->resourceName}.dashboard", [
             'tasks' => $tasks,
@@ -107,23 +51,99 @@ class WorkerController extends Controller
             'completedTasks' => $completedTasks,
             'pendingTasks' => $pendingTasks,
             'onHoldTasks' => $onHoldTasks,
-            'sidebarItems' => $sidebarItems,
-            'customActionBtns' => $customActionBtns,
-            'modalTriggerBtns' => $modalTriggerBtns
+            'sidebarItems' => config('sidebar.worker'),
+            'customActionBtns' => $this->customActionButtons(),
+            'modalTriggerBtns' => $this->modalTriggerButtons(),
         ]);
     }
 
+    /**
+     * Build the query for tasks.
+     */
+    protected function buildTaskQuery($query)
+    {
+        return QueryBuilder::for($query)
+            ->allowedIncludes(['status', 'branch', 'service'])
+            ->allowedSorts(['branch_name', 'service_name', 'start_date', 'end_date'])
+            ->allowedFilters([
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($q) use ($value) {
+                        $like = "%{$value}%";
+                        $q->orWhereHas('branch', fn($b) => $b->where('name', 'LIKE', $like))
+                            ->orWhereHas('service', fn($s) => $s->where('title->ka', 'LIKE', $like))
+                            ->orWhereHas('status', fn($st) => $st->where('display_name', 'LIKE', $like));
+                    });
+                }),
+            ])
+            ->with(['status', 'branch', 'service']);
+    }
+
+    /**
+     * Custom action buttons depending on task status.
+     */
+    protected function customActionButtons()
+    {
+        $taskRoute = "management.{$this->resourceNameTasks}";
+
+        return function ($task) use ($taskRoute) {
+            if ($task->status?->name !== 'pending') {
+                return [];
+            }
+
+            return [
+                [
+                    'label' => 'დაწყება',
+                    'icon' => 'bi-play',
+                    'route_name' => "{$taskRoute}.edit",
+                    'method' => 'PUT',
+                    'confirm' => 'ნამდვილად გსურთ სამუშაოს დაწყება?',
+                    'class' => 'text-success',
+                ]
+            ];
+        };
+    }
+
+    /**
+     * Modal trigger buttons depending on task status.
+     */
+    protected function modalTriggerButtons()
+    {
+        return function ($task) {
+            if ($task->status?->name !== 'in_progress') {
+                return [];
+            }
+
+            return [
+                [
+                    'label' => 'დასრულება',
+                    'icon' => 'bi-upload',
+                    'modal_id' => "uploadDocumentModal_{$task->id}",
+                    'class' => '',
+                ]
+            ];
+        };
+
+    }
 
     public function displayInstructions()
     {
-        $sidebarItems = config('sidebar.worker');
+        return $this->renderPaginatedView('instructions', 'instructions.index');
 
-        $instructions = Auth::user()->instructions()->paginate(10);
+    }
 
-        return view("management.{$this->resourceName}.instructions.index", [
-            'sidebarItems' => $sidebarItems,
-            'instructions' => $instructions,
-            'resourceName' => 'instructions'
+    public function displayDocumentTemplates()
+    {
+        return $this->renderPaginatedView('document_templates', 'document-templates.index');
+    }
+
+    protected function renderPaginatedView(string $relation, string $viewPath)
+    {
+        $user = Auth::user();
+
+        return view("management.{$this->resourceName}.{$viewPath}", [
+            'sidebarItems' => config('sidebar.worker'),
+            'resourceName' => str_replace('_', '-', $relation),
+            $relation => $user->{$relation}()->paginate($this->perPage),
         ]);
     }
 }

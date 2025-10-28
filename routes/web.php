@@ -106,6 +106,7 @@ Route::prefix('management')
         Route::put('tasks/{task}/document', [TaskController::class, 'uploadDocument'])
             ->name('tasks.upload-document');
         Route::get('instructions', [WorkerController::class, 'displayInstructions'])->name('worker.instructions.page');
+        Route::get('document-templates', [WorkerController::class, 'displayDocumentTemplates'])->name('worker.document-templates.page');
 
     });
 
