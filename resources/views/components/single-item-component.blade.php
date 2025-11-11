@@ -8,7 +8,7 @@
 		<div @class([
 			'position-relative d-inline-block mb-3 mb-lg-0 float-lg-end ms-lg-4',
 			'overlay-label-wrapper' => $isPdfMarkerDisplayed
-		]) @if($isPdfMarkerDisplayed) data-label="{{ __('static.view_pdf.title') }}"
+		]) @if($isPdfMarkerDisplayed) data-label="{{ __('static.view_document.title') }}"
 data-alpha="0.5" @endif>
 			@if ($isPdfMarkerDisplayed)
 				<a href="#" data-bs-toggle="modal" data-bs-target="#publications-pdfModal" style="display: inline-block;">
@@ -27,9 +27,42 @@ data-alpha="0.5" @endif>
 			</p>
 		</div>
 	</div>
-	<!-- Modal for PDF Viewer -->
-	<x-modal :id="'publications-pdfModal'" :title=" $item->title->$language " size="xl">
-		<iframe src="{{ asset('documents/' . $category . '/' . $item->file) }}" class="w-100 h-100 border-0"
-			allowfullscreen></iframe>
+	<!-- Modal for PDF / Document Viewer -->
+	<x-modal :id="'publications-pdfModal'" :title="$item->title->$language" size="xl">
+
+		@php
+			$file = $item->file ?? $item->document;
+			$path = asset('documents/' . $category . '/' . $file);
+			$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+		@endphp
+
+		{{-- Viewer section --}}
+		@if (in_array($extension, ['pdf']))
+			{{-- Display PDF directly --}}
+			<iframe src="{{ $path }}" class="w-100 border-0" style="height:92%;" allowfullscreen>
+			</iframe>
+
+		@elseif (in_array($extension, ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']))
+			{{-- Microsoft Office Online viewer --}}
+			<iframe src="https://view.officeapps.live.com/op/embed.aspx?src={{ urlencode($path) }}" class="w-100 border-0"
+				style="height:92%;" allowfullscreen>
+			</iframe>
+
+		@else
+			{{-- No inline viewer available --}}
+			<div class="text-center py-5">
+				<p class="text-muted mb-3">
+					Preview not available for this file type ({{ strtoupper($extension) }}).
+				</p>
+			</div>
+		@endif
+
+		{{-- Always show a download button --}}
+		<div class="text-center py-2">
+			<a href="{{ $path }}" class="btn btn-sm btn-outline-primary" download>
+				<i class="fa fa-download me-1"></i> {{ __('static.view_document.download') }}
+			</a>
+		</div>
+
 	</x-modal>
 </section>

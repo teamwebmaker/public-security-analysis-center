@@ -133,7 +133,8 @@ return [
 
     ],
 
-    'view_pdf' => [
-        'title' => 'View PDF'
+    'view_document' => [
+        'title' => 'View Document',
+        'download' => 'Download'
     ]
 ];

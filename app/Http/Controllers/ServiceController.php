@@ -27,10 +27,13 @@ class ServiceController extends CrudController
     {
         $item = $this->modelClass::findOrFail($id);
         return view("pages.show", [
-            "language" => App::getLocale(),
             "item" => $item,
-            "category" => "services",
+            "category" => $this->resourceName,
             "partners" => Partner::all(),
+            "requestButton" => [
+                "route" => route('services.page'), // can be null
+                "label" => __("static.pages.services.request_service"),
+            ],
         ]);
     }
 

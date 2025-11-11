@@ -24,7 +24,6 @@ class PublicationController extends CrudController
     {
         $item = $this->modelClass::findOrFail($id);
         return view("pages.show", [
-            "language" => App::getLocale(),
             "item" => $item,
             "category" => $this->resourceName,
             "partners" => Partner::all(),

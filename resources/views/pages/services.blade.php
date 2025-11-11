@@ -24,7 +24,7 @@
 	@endif
 	<main>
 		<!-- Hero Section -->
-		<div class="container-fluid pt-5 pb-5 gold-bg border-bottom border-1 border-gold-bg--light rounded-bottom-4">
+		<div class="container-fluid pt-5 pb-5 gold-bg rounded-bottom-4">
 			<div class="container-xxl px-3 px-md-5">
 				<div class="text-center mb-4">
 					<h1 class="fw-bold display-5 text-white">{{__('static.pages.services.heading')}}</h1>
@@ -47,7 +47,7 @@
 					<div class="mt-3">
 						<a href="#" data-bs-toggle="modal" data-bs-target="#servicesModal"
 							class="btn btn-light btn-lg px-4 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm">
-							{{__('static.pages.services.request_service')}} <i class="bi bi-envelope-open"></i>
+							{{__('static.pages.services.request_service')}} <i class="bi bi-send"></i>
 						</a>
 						<x-modal id="servicesModal" :title="__('static.pages.services.request_service')" size="md"
 							height="min-content">

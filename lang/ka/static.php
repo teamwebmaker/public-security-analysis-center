@@ -127,7 +127,8 @@ return [
         'dashboard' => 'ჩემი პანელი',
     ],
 
-    'view_pdf' => [
-        'title' => 'PDF-ის ნახვა'
+    'view_document' => [
+        'title' => 'დოკუმენტის ნახვა',
+        'download' => 'ჩამოტვირთვა'
     ]
 ];
