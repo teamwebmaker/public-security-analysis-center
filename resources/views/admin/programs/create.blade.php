@@ -100,7 +100,7 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-6 mb-3">
-						<x-form.input type="date" name="start_date" label="საწყისი დრო" value="{{ old('start_date') }}"
+						<x-form.input type="date" name="start_date" label="საწყისი თარიღი" value="{{ old('start_date') }}"
 							min="{{ date('Y-m-d') }}" />
 					</div>
 					<div class="col-md-6 mb-3">
@@ -116,7 +116,7 @@
 										? 'დასრულების დრო უნდა აღემატებოდეს დაწყების დროს'
 										: null;
 								}
-							 }">
+							}">
 
 					<div class="col-md-6 mb-3">
 						<x-form.input type="time" name="hour_start" label="დაწყების დრო" x-model="startTime" />

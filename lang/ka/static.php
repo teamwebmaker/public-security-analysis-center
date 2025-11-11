@@ -31,6 +31,8 @@ return [
         'programs' => [
             'title' => 'პროგრამების გვერდი',
             'heading' => 'პროგრამები',
+            'syllabus' => 'სილაბუსი',
+            'mentors' => 'მენტორები',
             'register_to_program' => 'პროგრამაზე რეგისტრაცია',
             'details' => [
                 'about' => 'კურსის შესახებ',

@@ -116,7 +116,7 @@
 	@if(isset($item->syllabuses) && count($item->syllabuses) > 0)
 		<section class="border-top border-1 border-gold-bg--light">
 			<div class="container py-5 px-3 px-sm-5">
-				<h2 class="gold-text fw-bold mb-4">Syllabus</h2>
+				<h2 class="gold-text fw-bold mb-4">{{__('static.pages.programs.syllabus')}}</h2>
 				<ul class="list-group">
 					@foreach ($item->syllabuses as $index => $syllabus)
 						<li
@@ -143,7 +143,7 @@
 	@if (isset($item->mentors) && count($item->mentors) > 0)
 		<section class="bg-light py-5 rounded-top-5">
 			<div class="container px-3 px-sm-5">
-				<h2 class="fw-bold mb-5 gold-text text-center ">Instructors</h2>
+				<h2 class="fw-bold mb-5 gold-text text-center ">{{__('static.pages.programs.mentors')}}</h2>
 				<div class="row justify-content-center g-4">
 					@foreach($item->mentors as $mentor)
 						<div class="col-12 col-md-6 col-lg-4 d-flex">

@@ -32,7 +32,7 @@ class UpdateProgramsRequest extends FormRequest
             "price" => "required|numeric|min:0",
             "duration" => "required|string|max:100",
             "address" => "required|string|max:225",
-            "start_date" => "required|date|after_or_equal:today",
+            "start_date" => "required|date",
             "end_date" => "required|date|after_or_equal:start_date",
             "hour_start" => "required|date_format:H:i",
             "hour_end" => "required|date_format:H:i|after:hour_start",

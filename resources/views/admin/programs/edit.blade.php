@@ -118,12 +118,12 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-6 mb-3">
-						<x-form.input type="date" name="start_date" label="საწყისი დრო"
-							value="{{ old('start_time', $program->start_date) }}" min="{{ date('Y-m-d') }}" />
+						<x-form.input type="date" name="start_date" label="საწყისი თარიღი"
+							value="{{ old('start_date', $program->start_date) }}" />
 					</div>
 					<div class="col-md-6 mb-3">
 						<x-form.input type="date" name="end_date" label="დასასრული თარიღი"
-							value="{{ old('end_date', $program->end_date) }}" min="{{ date('Y-m-d') }}" />
+							value="{{ old('end_date', $program->end_date) }}" />
 					</div>
 				</div>
 				<div class="row" @php

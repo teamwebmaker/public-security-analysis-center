@@ -36,6 +36,8 @@ return [
         'programs' => [
             'title' => 'Programs Page',
             'heading' => 'Programs',
+            'syllabus' => 'Syllabus',
+            'mentors' => 'Mentors',
             'register_to_program' => 'Register to the Program',
             'details' => [
                 'about' => 'About the Course',
