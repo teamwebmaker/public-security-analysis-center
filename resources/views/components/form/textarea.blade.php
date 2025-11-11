@@ -7,7 +7,7 @@
 
 <!-- Textarea with dynamic character counter and validation indicator -->
 <div class="position-relative" x-data="{
-    text: '{{ old($name, $value) }}',
+    text: @js(old($name, $value) ?? ''),
     // Treat null as no limit (in maxlength case 0 is also treated as no limit) 
     // Treat min = 0 as min = 1 for UX clarity (In minlength case)
     max: {{ $maxlength ? $maxlength : 'null' }},
