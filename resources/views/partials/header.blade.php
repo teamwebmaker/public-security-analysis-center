@@ -54,8 +54,8 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="container-fluid black-bg">
+	<div class="sticky-nav-placeholder black-bg" data-sticky-placeholder aria-hidden="true"></div>
+	<div class="container-fluid black-bg sticky-nav" data-sticky-nav>
 		<div class="container">
 			<nav class="navbar navbar-expand-xl py-1">
 				<div class="container-fluid">

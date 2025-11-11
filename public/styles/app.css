@@ -30,9 +30,55 @@ button {
     background-color: transparent;
 }
 
+.hero-logo-banner {
+    position: relative;
+    padding-block: 80px;
+    overflow: hidden;
+}
+
+.hero-logo-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('../images/themes/logo.png') center/170px no-repeat;
+    opacity: 0.35;
+}
+
+.hero-logo-banner__heading {
+    position: relative;
+    z-index: 1;
+}
+
 
 .navbar-toggler {
     border: 1px solid var(--gold);
+}
+/* Sticky nav */
+.sticky-nav-placeholder {
+    display: block;
+    width: 100%;
+    height: 0;
+    pointer-events: none;
+}
+
+[data-sticky-nav] {
+    position: relative;
+    transition: top 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+[data-sticky-nav].is-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    background-color: hsla(var(--black-hue, 0), var(--black-saturation, 0%), var(--back-lightness, 0%), 0.96);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+[data-sticky-nav].is-sticky .navbar {
+    padding-block: 0.35rem;
 }
 
 /* Swiper partners */

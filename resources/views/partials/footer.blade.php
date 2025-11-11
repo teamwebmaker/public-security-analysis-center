@@ -1,5 +1,5 @@
 <footer class="bg-dark text-light">
-	<div class="py-5 mt-5 container">
+	<div class="py-3 mt-3 container">
 		<div class="row align-items-center justify-content-center gy-4">
 			<!-- Logo and Attribution -->
 			<div class="col-lg-4 align-self-center text-center text-lg-start">
@@ -70,7 +70,7 @@
 	</div>
 
 	<!-- Bottom Bar -->
-	<div class="py-3 border-top border-1 border-secondary ">
+	<div class="py-3 border-top border-secondary ">
 		<div class="container">
 			<div class="row text-center text-md-start align-items-center">
 				<div class="col-md-9 mb-2 mb-md-0">

@@ -6,24 +6,11 @@
 
 @section('main')
 	<main>
-		<div class="container-fluid bg-light" style="padding-block: 100px;">
-			<div class="text-center position-relative">
-
-				<!-- Logo as background layer -->
-				<div class="position-absolute top-50 start-50 translate-middle w-100 z-10">
-					<img src="{{ asset('images/themes/logo.png') }}" alt="psac-icon" class="img-fluid mx-auto d-block"
-						style="opacity: 0.4; max-width: 200px;">
-				</div>
-
-				<!-- Text above -->
-				<h1 class="fw-bold fs-4 fs-md-3 font-paata position-relative z-20">
-					{{ __('static.pages.home.heading') }}
-				</h1>
-
-			</div>
+		<div class="container-fluid hero-logo-banner black-bg text-center">
+			<h1 class="fw-bold fs-5 fs-md-3 text-white font-paata hero-logo-banner__heading">
+				{{ __('static.pages.home.heading') }}
+			</h1>
 		</div>
-
-
 
 		<div class="container my-5">
 			<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between py-4">

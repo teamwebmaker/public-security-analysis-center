@@ -13,7 +13,7 @@
 	@endif
 
 	<!-- Course Header -->
-	<section class="gold-bg border-bottom border-1 border-gold-bg--light rounded-bottom-4">
+	<section class="gold-bg  rounded-bottom-4">
 		<div class="container py-5 px-3 px-sm-5">
 			<div class="row g-3 g-sm-5 align-items-center">
 
@@ -114,7 +114,7 @@
 
 	<!-- Syllabus Section -->
 	@if(isset($item->syllabuses) && count($item->syllabuses) > 0)
-		<section class="border-top border-1 border-gold-bg--light">
+		<section class="border-top border border-gold-bg--light">
 			<div class="container py-5 px-3 px-sm-5">
 				<h2 class="gold-text fw-bold mb-4">{{__('static.pages.programs.syllabus')}}</h2>
 				<ul class="list-group">
