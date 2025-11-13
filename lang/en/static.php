@@ -125,7 +125,7 @@ return [
         'plural' => 'Documents not found'
     ],
     'user_avatar' => [
-        'logout' => 'Lopout',
+        'logout' => 'Logout',
     ],
     'user_avatar_dropdown' => [
         'home' => 'Home',

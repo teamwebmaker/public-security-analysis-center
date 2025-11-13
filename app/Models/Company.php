@@ -15,6 +15,10 @@ class Company extends Model
         'name',
         'economic_activity_type_id',
         'identification_code',
+        'economic_activity_code',
+        'high_risk_activities',
+        'risk_level',
+        'evacuation_plan',
         'visibility'
     ];
 

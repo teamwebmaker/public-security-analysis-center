@@ -26,6 +26,11 @@ class UpdateCompanyRequest extends FormRequest
             'visibility' => 'required|in:0,1',
             'user_ids' => 'nullable|array',
             'user_ids.*' => 'exists:users,id',
+
+            'economic_activity_code' => 'required|integer',
+            'high_risk_activities' => 'required|boolean',
+            'risk_level' => 'required|string|in:extremely high,very high,high,medium,low',
+            'evacuation_plan' => 'required|boolean',
         ];
     }
 }
