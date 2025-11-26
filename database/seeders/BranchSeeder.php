@@ -30,22 +30,22 @@ class BranchSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'name' => 'color ფილიალი',
-                'address' => 'Georgia,Tbilisi',
-                'company_id' => 1,
-                'visibility' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'table ფილიალი',
-                'address' => 'Georgia,Tbilisi',
-                'company_id' => 2,
-                'visibility' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
+            // [
+            //     'name' => 'color ფილიალი',
+            //     'address' => 'Georgia,Tbilisi',
+            //     'company_id' => 1,
+            //     'visibility' => '1',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'name' => 'table ფილიალი',
+            //     'address' => 'Georgia,Tbilisi',
+            //     'company_id' => 2,
+            //     'visibility' => '1',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ]
         ]);
     }
 }

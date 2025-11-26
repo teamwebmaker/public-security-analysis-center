@@ -25,7 +25,7 @@ return new class extends Migration {
                 'high',
                 'medium',
                 'low'
-            ])->default('low risk');
+            ])->default('low');
             $table->boolean('evacuation_plan');
 
             $table->string('identification_code', 50)->unique();

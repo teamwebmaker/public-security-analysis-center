@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TaskStatus extends Model
+class TaskOccurrenceStatus extends Model
 {
     use HasFactory;
+
 
     protected $fillable = [
         'name',
         'display_name',
     ];
-
-
-    public function tasks()
+    public function taskOccurrences()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(TaskOccurrence::class);
     }
 }

@@ -6,14 +6,14 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TaskStatusSeeder extends Seeder
+class TaskOccurrenceStatusSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('task_statuses')->insert([
+        DB::table('task_occurrence_statuses')->insert([
             [
                 'id' => 1,
                 'name' => 'pending',

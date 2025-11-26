@@ -16,8 +16,14 @@ class ResponsiblePersonBranchSeeder extends Seeder
     {
         DB::table('responsible_person_branch')->insert([
             [
-                'user_id' => 1,
+                'user_id' => 3, // responsible person
                 'branch_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'user_id' => 4, // responsible person
+                'branch_id' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]

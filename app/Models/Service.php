@@ -36,9 +36,9 @@ class Service extends Model
             }
         });
         // If the service is deleted, update the service field in tasks
-        static::deleting(function ($service) {
-            $service->tasks()->update(['service_id' => null,]);
-        });
+        // static::deleting(function ($service) {
+        //     $service->tasks()->update(['service_id' => null,]);
+        // });
 
     }
 

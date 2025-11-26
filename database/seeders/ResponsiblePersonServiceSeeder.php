@@ -23,7 +23,7 @@ class ResponsiblePersonServiceSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'user_id' => 3,
+                'user_id' => 4,
                 'service_id' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

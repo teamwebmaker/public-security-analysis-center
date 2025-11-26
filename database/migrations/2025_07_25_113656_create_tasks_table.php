@@ -14,15 +14,15 @@ return new class extends Migration {
         Schema::create("tasks", function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedTinyInteger("status_id");
-            $table
-                ->foreign("status_id", "tasks_status_id_foreign")
-                ->references("id")
-                ->on("task_statuses")
-                ->onDelete("restrict");
+            // $table->unsignedTinyInteger("status_id");
+            // $table
+            //     ->foreign("status_id", "tasks_status_id_foreign")
+            //     ->references("id")
+            //     ->on("task_statuses")
+            //     ->onDelete("restrict");
 
-            $table->dateTime('start_date')->nullable();
-            $table->dateTime('end_date')->nullable();
+            // $table->dateTime('start_date')->nullable();
+            // $table->dateTime('end_date')->nullable();
 
             $table
                 ->foreignId('branch_id')
@@ -38,15 +38,16 @@ return new class extends Migration {
                 ->nullable()
                 ->constrained("services")
                 ->name("tasks_service_id_foreign")
-                ->onDelete("cascade")
+                ->onDelete('set null')
                 ->index();
             // if service deleted, service_name will be saved
             $table->string("service_name")->nullable();
-            $table->string('document')->nullable();
+
+            $table->integer("recurrence_interval")->nullable();
+            $table->boolean('is_recurring')->default(false);
 
             $table->enum("archived", ["0", "1"])->default("0");
             $table->enum("visibility", ["0", "1"])->default("1");
-            $table->index(["start_date", "end_date"]);
             $table->timestamps();
         });
 
