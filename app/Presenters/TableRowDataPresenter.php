@@ -53,27 +53,92 @@ class TableRowDataPresenter
 
       return [
          'id' => $model->id,
-         'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
-         'worker' => self::formatWorker($model),
-         'branch' => self::link($model->branch, 'branches.index', $model->branch?->name, $model->branch_name),
-         'service' => self::link(
-            $model->service,
-            'services.index',
-            $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
-            $model->service_name
-         ),
-         'document' => $model->document
-            ? self::documentLink('/tasks/' . $model->document)
-            : '---',
          'visibility' => self::badge(
             $model->visibility ? 'ხილული' : 'დამალული',
             $model->visibility ? 'success' : 'danger'
          ),
-
-         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
+         'worker' => self::formatWorker($model),
+         'branch' => self::link(
+            $model->branch,
+            'branches.index',
+            $model->branch?->name ?? $model->branch_name_snapshot ?? '---',
+            $model->branch_name_snapshot ?? '---'
+         ),
+         'service' => self::link(
+            $model->service,
+            'services.index',
+            $model->service?->title->ka
+               ?? $model->service?->title->en
+               ?? $model->service_name_snapshot
+               ?? 'უცნობი',
+            $model->service_name_snapshot ?? 'უცნობი'
+         ),
+         'occ_status' => $model->latestOccurrence?->status
+            ? self::badge($model->latestOccurrence->status->display_name, self::statusColorForOccurrence($model->latestOccurrence))
+            : self::badge('უცნობი', 'secondary'),
+         'occ_document' => $model->latestOccurrence?->document_path
+            ? self::documentLink($model->latestOccurrence->document_path)
+            : '---',
+         'recurrence_interval' => $model->recurrence_interval ? $model->recurrence_interval . " დღე" : '---',
+         // 'is_recurring' => $model->is_recurring ? self::badge('დიახ', 'info') : self::badge('არა', 'secondary'),
+         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
          'created_at' => optional($model->created_at)->format('Y-m-d H:i') ?? '---',
       ];
+   }
+
+   /**
+    * Format task occurrence rows for table component.
+    *
+    * @param \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection $occurrences
+    * @param int|null $latestId
+    * @param callable|null $actionResolver optional resolver to generate actions per occurrence
+    * @param Task|null $task parent task to read branch/service/workers without extra queries
+    * @return \Illuminate\Support\Collection
+    */
+   public static function formatOccurrences($occurrences, ?int $latestId = null, ?callable $actionResolver = null, ?Task $task = null)
+   {
+      return $occurrences->map(function ($occurrence) use ($latestId, $actionResolver, $task) {
+         $isLatest = $latestId && $occurrence->id === $latestId;
+         $actions = $actionResolver ? $actionResolver($occurrence) : null;
+         $statusColor = self::statusColorForOccurrence($occurrence);
+
+         $branchModel = ($task && $task->branch && $task->branch->id === $occurrence->branch_id_snapshot)
+            ? $task->branch
+            : null;
+         $serviceModel = ($task && $task->service && $task->service->id === $occurrence->service_id_snapshot)
+            ? $task->service
+            : null;
+
+         return [
+            'id' => ($isLatest ? " <span class='badge bg-success ms-2'>$occurrence->id</span>" : $occurrence->id),
+            'branch' => self::snapshotLink(
+               $branchModel,
+               'branches.index',
+               $occurrence->branch_name_snapshot,
+               $branchModel?->name
+            ),
+            'service' => self::snapshotLink(
+               $serviceModel,
+               'services.index',
+               $occurrence->service_name_snapshot,
+               $serviceModel?->title->ka ?? $serviceModel?->title->en
+            ),
+            'workers' => self::formatOccurrenceWorkers($occurrence),
+            'visibility' => self::badge(
+               $occurrence->visibility ? 'ხილული' : 'დამალული',
+               $occurrence->visibility ? 'success' : 'danger'
+            ),
+            'status' => '<span class="badge bg-' . e($statusColor) . '">' . e($occurrence->status?->display_name ?? 'უცნობი') . '</span>',
+            'due_date' => optional($occurrence->due_date)->format('Y-m-d') ?? '---',
+            'start_date' => optional($occurrence->start_date)->format('Y-m-d H:i') ?? '---',
+            'end_date' => optional($occurrence->end_date)->format('Y-m-d H:i') ?? '---',
+            'document' => $occurrence->document_path
+               ? self::documentLink($occurrence->document_path)
+               : '---',
+            'actions' => $actions ?? '',
+         ];
+      });
    }
 
 
@@ -95,8 +160,8 @@ class TableRowDataPresenter
          'id' => $model->id,
          'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
          'worker' => self::formatWorker($model),
-         'branch' => $model->branch_name ?? 'უცნობი',
-         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
+         'branch' => $model->branch_name_snapshot ?? 'უცნობი',
+         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? $model->service_name_snapshot ?? 'უცნობი',
          'document' => $model->document
             ? self::documentLink('/tasks/' . $model->document)
             : '---',
@@ -123,8 +188,8 @@ class TableRowDataPresenter
       return [
          'id' => $model->id,
          'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
-         'branch' => $model->branch_name ?? 'უცნობი',
-         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? 'უცნობი',
+         'branch' => $model->branch_name_snapshot ?? 'უცნობი',
+         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? $model->service_name_snapshot ?? 'უცნობი',
          'Coworker' => self::formatWorker(
             $model->setRelation(
                'users',
@@ -147,19 +212,10 @@ class TableRowDataPresenter
     */
    private static function formatWorker(Task $task): string
    {
-      $count = $task->users->count();
-
-      if ($count === 1) {
-         return self::badge(e($task->users->first()->full_name), 'secondary');
-      }
-
-      if ($count >= 2) {
-         return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
-            $task->users->map(fn($u) => '<option disabled>' . e($u->full_name) . '</option>')->implode('') .
-            '</select>';
-      }
-
-      return self::badge('არ ჰყავს', 'danger');
+      return self::formatWorkersCollection(
+         $task->users,
+         fn($user) => $user->full_name
+      );
    }
 
    /**
@@ -230,6 +286,50 @@ class TableRowDataPresenter
       ][$task->status?->name] ?? 'secondary';
    }
 
+   /**
+    * Helper: Render snapshot label with link when model still exists. Warn if snapshot outdated.
+    */
+   private static function snapshotLink(?Model $model, string $route, ?string $snapshotName, ?string $currentName): string
+   {
+      $name = $snapshotName ?? $currentName ?? '---';
+
+      $isOutdated = $snapshotName && $currentName && $snapshotName !== $currentName;
+      $outdatedBadge = $isOutdated
+         ? "<span class='badge bg-warning text-dark me-1' title='ახლა: " . e($currentName) . "'><i class='bi bi-info-circle-fill'></i></span>"
+         : '';
+
+      if ($model) {
+         return $outdatedBadge . '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($name) . '</a>';
+      }
+
+      return $outdatedBadge . '<span class="text-decoration-line-through">' . e($name) . '</span>';
+   }
+
+   /**
+    * Helper: Format occurrence workers from snapshot records.
+    */
+   private static function formatOccurrenceWorkers($occurrence): string
+   {
+      return self::formatWorkersCollection(
+         $occurrence->workers ?? collect(),
+         fn($worker) => $worker->worker_name_snapshot ?? 'უცნობი',
+      );
+   }
+
+   /**
+    * Helper: Determine Bootstrap color class based on occurrence status.
+    */
+   private static function statusColorForOccurrence($occurrence): string
+   {
+      return [
+         'pending' => 'warning',
+         'in_progress' => 'info',
+         'completed' => 'success',
+         'on_hold' => 'secondary',
+         'cancelled' => 'danger',
+      ][$occurrence->status?->name] ?? 'secondary';
+   }
+
 
    /**
     * Helper: Render a document link using Fancybox for PDFs, download for others.
@@ -258,6 +358,34 @@ class TableRowDataPresenter
          . '<i class="bi bi-file-earmark-arrow-down me-1 text-success"></i>'
          . e($label)
          . '</a>';
+   }
+
+   /**
+    * Helper: Shared worker formatter for tasks and occurrences.
+    */
+   private static function formatWorkersCollection($workers, callable $nameResolver): string
+   {
+      $names = collect($workers)
+         ->map(fn($worker) => trim((string) $nameResolver($worker)))
+         ->filter();
+
+      $count = $names->count();
+
+      if ($count === 0) {
+         return self::badge('არ ჰყავს', 'danger');
+      }
+
+      if ($count === 1) {
+         return self::badge(e($names->first()), 'secondary');
+      }
+
+      $options = $names
+         ->map(fn($name) => '<option disabled>' . e($name) . '</option>')
+         ->implode('');
+
+      return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
+         $options .
+         '</select>';
    }
 
 }

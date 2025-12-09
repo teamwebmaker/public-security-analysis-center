@@ -23,20 +23,29 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             'service_id' => ['required', 'exists:services,id'],
-            'status_id' => ['required', 'exists:task_statuses,id'],
             'branch_id' => ['required', 'exists:branches,id'],
-            'branch_name' => ['nullable', 'string', 'max:255'],
-            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
+            'branch_name_snapshot' => ['nullable', 'string', 'max:255'],
+            // 'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
 
-            // 'start_date' => ['required', 'date'],
-            // 'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'is_recurring' => ['required', 'boolean'],
+            'recurrence_interval' => ['nullable', 'integer', 'min:1', 'max:31', 'required_if:is_recurring,true'],
 
-
-            'visibility' => ['required', 'boolean'],
-            'archived' => ['sometimes', 'boolean'],
+            // Task occurrences
+            'requires_document' => ['nullable', 'boolean'],
 
             'user_ids' => ['nullable', 'array'],
             'user_ids.*' => ['nullable', 'integer', 'exists:users,id'],
+
+            'visibility' => ['required', 'boolean'],
+
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_recurring' => filter_var($this->input('is_recurring'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+            'requires_document' => filter_var($this->input('requires_document'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+        ]);
     }
 }

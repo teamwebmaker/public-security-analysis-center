@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0"
-                style="height: {{ $height ?? '80dvh' }}; min-height: {{ $height ?? '80dvh' }}; overflow-y: hidden;">
+                style="height: {{ $height ?? '80dvh' }}; min-height: {{ $height ?? '80dvh' }}; overflow-y: scroll;">
                 {{ $slot }}
             </div>
         </div>

@@ -87,8 +87,10 @@
 				this.selectedText = text;
 				this.search = '';
 				this.close();
-
-
+				if (this.$refs.hidden) {
+					this.$refs.hidden.value = value;
+					this.$refs.hidden.dispatchEvent(new Event('change', { bubbles: true }));
+				}
 			}
 
 		}

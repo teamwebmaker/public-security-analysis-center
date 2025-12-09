@@ -30,8 +30,8 @@ return new class extends Migration {
                 ->constrained('branches')
                 ->onDelete('set null')
                 ->index();
-            // if branch deleted, branch_name will be saved
-            $table->string("branch_name")->nullable();
+            // snapshot of branch name in case branch is deleted/renamed
+            $table->string("branch_name_snapshot")->nullable();
 
             $table
                 ->foreignId("service_id")
@@ -40,8 +40,8 @@ return new class extends Migration {
                 ->name("tasks_service_id_foreign")
                 ->onDelete('set null')
                 ->index();
-            // if service deleted, service_name will be saved
-            $table->string("service_name")->nullable();
+            // snapshot of service name in case service is deleted/renamed
+            $table->string("service_name_snapshot")->nullable();
 
             $table->integer("recurrence_interval")->nullable();
             $table->boolean('is_recurring')->default(false);

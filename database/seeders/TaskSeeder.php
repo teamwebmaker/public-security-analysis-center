@@ -18,9 +18,9 @@ class TaskSeeder extends Seeder
             [
                 'id' => 1,
                 'branch_id' => 1,
-                'branch_name' => 'GeoTech ფილიალი',
+                'branch_name_snapshot' => 'GeoTech ფილიალი',
                 'service_id' => 1,
-                'service_name' => 'საძირკველის ჩაყრა',
+                'service_name_snapshot' => 'საძირკველის ჩაყრა',
                 'recurrence_interval' => 7,
                 'is_recurring' => true,
                 'archived' => '0',
@@ -32,9 +32,9 @@ class TaskSeeder extends Seeder
             [
                 'id' => 2,
                 'branch_id' => 2,
-                'branch_name' => 'AgroWorld ფილიალი',
+                'branch_name_snapshot' => 'AgroWorld ფილიალი',
                 'service_id' => 2,
-                'service_name' => 'მომხმარებლების პასუხი',
+                'service_name_snapshot' => 'მომხმარებლების პასუხი',
                 'recurrence_interval' => 30,
                 'is_recurring' => true,
                 'archived' => '0',

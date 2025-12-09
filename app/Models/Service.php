@@ -32,7 +32,7 @@ class Service extends Model
         static::updated(function ($service) {
             $changes = $service->getChanges();
             if (array_key_exists('title', $changes)) {
-                $service->tasks()->update(['service_name' => $service->title->ka ?? $service->title->en]);
+                $service->tasks()->update(['service_name_snapshot' => $service->title->ka ?? $service->title->en]);
             }
         });
         // If the service is deleted, update the service field in tasks

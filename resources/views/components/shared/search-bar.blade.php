@@ -22,7 +22,12 @@
 @php
 	$isLeft = $headingPosition === 'left';
 @endphp
-<form method="GET" id="searchForm-{{ md5($action) }}" action="{{ $action }}" class="{{ $formClass }}">
+<form method="GET"
+	id="searchForm-{{ md5($action . $name) }}"
+	action="{{ $action }}"
+	class="{{ $formClass }}"
+	data-search-bar
+	data-search-name="{{ $name }}">
 	<div class="{{ $wrapperClass }} flex-sm-{{ $isLeft ? 'row' : 'row-reverse' }}">
 		{{-- Heading --}}
 		@if($heading)
@@ -54,49 +59,6 @@
 	</div>
 </form>
 
-{{-- Script --}}
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const form = document.getElementById('searchForm-{{ md5($action) }}');
-		const input = form.querySelector('input[name="{{ $name }}"]');
-
-		// Function to check if search is applied in URL
-		const getSearchTerm = () => {
-			const urlParams = new URLSearchParams(window.location.search);
-			return urlParams.get("{{ $name }}")?.trim() || '';
-		};
-
-		const isSearchApplied = () => getSearchTerm().length > 0;
-
-		// Clear search button functionality
-		form.querySelectorAll('.clear-search').forEach(button => {
-			button.addEventListener('click', () => {
-				input.value = '';
-				form.submit();
-			});
-		});
-
-		// Detect manual clearing of input
-		if (input) {
-			input.addEventListener('input', () => {
-				if (input.value.trim() === '' && isSearchApplied()) {
-					form.submit();
-				}
-			});
-		}
-
-		// 🔍 Keep focus on input if search term matches URL param
-		const currentSearchTerm = getSearchTerm();
-		if (input && currentSearchTerm && input.value.trim() === currentSearchTerm) {
-			// Delay focusing slightly to ensure DOM is ready
-			setTimeout(() => {
-				input.focus();
-				// Optionally place cursor at end of text
-				const val = input.value;
-				input.value = '';
-				input.value = val;
-			}, 100);
-		}
-	});
-</script>
-
+@once
+	{!! load_script('scripts/components/search-bar.js') !!}
+@endonce

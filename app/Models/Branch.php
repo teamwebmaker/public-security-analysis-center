@@ -24,7 +24,7 @@ class Branch extends Model
         static::updated(function ($branch) {
             $changes = $branch->getChanges();
             if (array_key_exists('name', $changes)) {
-                $branch->tasks()->update(['branch_name' => $branch->name]);
+                $branch->tasks()->update(['branch_name_snapshot' => $branch->name]);
             }
         });
 

@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->string('service_name_snapshot');
 
             // Recurrence date (which cycle this belongs to)
-            $table->date('scheduled_for');
+            $table->date('due_date')->nullable();
 
             // Connection with task_occurrence_statuses
             $table->unsignedTinyInteger("status_id");
@@ -52,7 +52,7 @@ return new class extends Migration {
             // indexes
             $table->index('task_id');
             $table->index('status_id');
-            $table->index('scheduled_for');
+            $table->index('due_date');
             $table->index('payment_status');
         });
     }

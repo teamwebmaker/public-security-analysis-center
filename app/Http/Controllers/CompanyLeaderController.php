@@ -106,8 +106,8 @@ class CompanyLeaderController extends Controller
             ->allowedIncludes(["status", "users", "branch", "service"])
             // Allowed sorting fields
             ->allowedSorts([
-                "branch_name",
-                "service_name",
+                "branch_name_snapshot",
+                "service_name_snapshot",
                 "start_date",
                 "end_date",
             ])

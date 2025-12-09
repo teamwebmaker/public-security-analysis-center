@@ -14,13 +14,20 @@ class Task extends Model
 
     protected $fillable = [
         'branch_id',
-        'branch_name',
+        'branch_name_snapshot',
         'service_id',
-        'service_name',
+        'service_name_snapshot',
         'recurrence_interval',
         'is_recurring',
         'archived',
         'visibility',
+    ];
+
+    protected $casts = [
+        'is_recurring' => 'bool',
+        'recurrence_interval' => 'int',
+        // 'visibility' => 'bool',
+        'archived' => 'bool',
     ];
 
     // /**
@@ -60,6 +67,15 @@ class Task extends Model
     {
         return $this->hasMany(TaskOccurrence::class);
     }
+
+    /**
+     * Latest occurrence for quick access (by created_at).
+     */
+    public function latestOccurrence()
+    {
+        return $this->hasOne(TaskOccurrence::class)->latestOfMany('created_at');
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);

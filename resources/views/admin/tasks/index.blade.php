@@ -1,37 +1,41 @@
 @extends('layouts.admin.admin-dashboard')
 
 @section('title', 'სამუშაოების სია')
-@php
-	$headers = ['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'დოკუმენტი', 'ხილვადობა', 'სამუშაოს დაწყება', 'სამუშაოს დასრულება', 'სამუშაოს განსაზღვრა'];
-	$sortableMap = [
-		'სამუშაოს დაწყება' => 'start_date',
-		'სამუშაოს დასრულება' => 'end_date',
-		'სამუშაოს განსაზღვრა' => 'created_at',
-	];
-@endphp
 
+<!-- Display Tasks -->
 <x-admin.index-view :items="$tasks" :resourceName="$resourceName" containerClass="position-relative">
+	<!-- Filters & Search -->
+	<div class="d-flex flex-column flex-lg-row align-items-center mb-3 border-bottom">
+		<div class="flex-fill">
+			<x-shared.filter-bar :filters="$filters" :showBadges="false" :resetUrl="route($resourceName . '.index')" />
+		</div>
+		<div class="flex-fill flex-lg-grow-0">
+			<x-shared.search-bar headingPosition="left" :action="route($resourceName . '.index')" formClass="mb-0" />
+		</div>
+	</div>
+
+	<!-- Tasks -->
 	@if (!$tasks->isEmpty())
-
-		<form method="GET" class="mb-3 row row-cols-1 row-cols-sm-auto g-2 justify-content-end">
-			<div class="col">
-				<input name="filter[search]" value="{{ request('filter.search') }}" type="text" class="form-control w-100"
-					placeholder="ძიება...">
-			</div>
-			<div class="col">
-				<button type="submit" class="btn btn-primary w-100">ძიება</button>
-			</div>
-			<div class="col">
-				<a href="{{ route($resourceName . '.index') }}" class="btn btn-danger w-100">
-					<i class="bi bi-trash-fill"></i>
-				</a>
-			</div>
-		</form>
-		@if(request('filter.search'))
-			<p class="text-muted">საძიებო სიტყვა: <strong>{{ request('filter.search') }}</strong></p>
-		@endif
-
-		<x-shared.table :items="$tasks" :headers="$headers" :rows="$rows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :resourceName="$resourceName" />
+		<x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskRows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :resourceName="$resourceName" :modalTriggers="$occurrenceModalTriggers" />
 	@endif
-
 </x-admin.index-view>
+
+<!-- Display Task Occurrences -->
+@if(!$tasks->isEmpty())
+	@foreach($tasks as $task)
+		<x-modal :id="'task-occurrences-' . $task->id" :title="'ციკლები — სამუშაო #' . $task->id" size="xl">
+			<div class="d-flex justify-content-between align-items-center px-3 pt-3">
+				<a href="{{ route('tasks.edit', $task) }}" class="btn btn-outline-primary">ციკლების მართვა</a>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">დახურვა</button>
+			</div>
+			<div class="p-3">
+				@if(($task->taskOccurrences ?? collect())->isEmpty())
+					<p class="text-muted mb-0">ციკლები ჯერ არ არის.</p>
+				@else
+					<x-shared.table :items="$task->taskOccurrences" :headers="$occurrenceHeaders" :rows="$occurrenceRows[$task->id]"
+						:tooltipColumns="['branch', 'service']" />
+				@endif
+			</div>
+		</x-modal>
+	@endforeach
+@endif

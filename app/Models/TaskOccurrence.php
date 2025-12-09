@@ -19,7 +19,7 @@ class TaskOccurrence extends Model
         "branch_name_snapshot",
         "service_id_snapshot",
         "service_name_snapshot",
-        "scheduled_for",
+        "due_date",
         "status_id",
         "start_date",
         "end_date",
@@ -29,7 +29,7 @@ class TaskOccurrence extends Model
         "visibility",
     ];
     protected $casts = [
-        "scheduled_for" => "date",
+        "due_date" => "date",
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'requires_document' => 'bool',

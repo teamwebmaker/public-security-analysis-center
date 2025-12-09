@@ -22,15 +22,13 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'service_id' => ['sometimes', 'exists:services,id'],
-            'status_id' => ['required', 'exists:task_statuses,id'],
-            'branch_id' => ['sometimes', 'exists:branches,id'],
-            'branch_name' => ['nullable', 'string', 'max:255'],
-            'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
+            'service_id' => ['required', 'exists:services,id'],
+            'branch_id' => ['required', 'exists:branches,id'],
+            'branch_name_snapshot' => ['nullable', 'string', 'max:255'],
 
-            // 'start_date' => ['required', 'date'],
-            // 'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-
+            'is_recurring' => ['required', 'boolean'],
+            'recurrence_interval' => ['nullable', 'integer', 'min:1', 'max:31', 'required_if:is_recurring,true'],
+            'requires_document' => ['nullable', 'boolean'],
 
             'visibility' => ['required', 'boolean'],
             'archived' => ['sometimes', 'boolean'],
@@ -38,5 +36,13 @@ class UpdateTaskRequest extends FormRequest
             'user_ids' => ['nullable', 'array'],
             'user_ids.*' => ['nullable', 'integer', 'exists:users,id'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_recurring' => filter_var($this->input('is_recurring'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+            'requires_document' => filter_var($this->input('requires_document'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
+        ]);
     }
 }

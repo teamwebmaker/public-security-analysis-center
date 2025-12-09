@@ -42,7 +42,7 @@ const TaskRowComponent = (task, includeCompany) => {
   return `
     <tr>
       <td>
-        <strong>${task.service_name}</strong>
+        <strong>${task.service_name_snapshot}</strong>
         ${task.service?.title?.en ? `<br><small class="text-muted">${task.service.title.en}</small>` : ''}
       </td>
       <td>${formatUser(task.users)}</td>
@@ -53,7 +53,7 @@ const TaskRowComponent = (task, includeCompany) => {
       </td>
       ${includeCompany ? `
         <td>${task.branch?.company?.name || '-'}</td>
-        <td>${task.branch?.name || '-'}</td>
+        <td>${task.branch?.name || task.branch_name_snapshot || '-'}</td>
       ` : ''}
       <td>${formatDateTime(task.created_at)}</td>
       <td>${formatDateTime(task.start_date)}</td>

@@ -68,8 +68,8 @@ class ResponsiblePersonController extends Controller
             ->whereIn('service_id', $allowedServiceIds)
             ->allowedIncludes(['status', 'users', 'branch', 'service'])
             ->allowedSorts([
-                'branch_name',
-                'service_name',
+                'branch_name_snapshot',
+                'service_name_snapshot',
                 'start_date',
                 'end_date'
             ])

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->tinyIncrements('id');
             $table->string('name', 50)->unique();
             $table->string('display_name', 50)->unique();
+            $table->timestamps();
         });
     }
 

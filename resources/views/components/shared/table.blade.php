@@ -2,7 +2,11 @@
 	<table class="table table-hover align-middle mb-0" style="min-width: 1400px;">
 		<!-- Table headers with sorting  -->
 		<thead class="table-light text-uppercase">
-
+			@php
+				$hasCustomActions = isset($customActions);
+				$hasModalTriggers = isset($modalTriggers);
+				$hasDefaultActions = isset($resourceName) && ($actions ?? false);
+			@endphp
 			<tr>
 				@foreach($headers as $header)
 					@php
@@ -30,8 +34,12 @@
 					</th>
 				@endforeach
 
-				@if ($actions ?? false)
-					<th class="text-end"></th>
+				@if($hasCustomActions || $hasModalTriggers)
+					<th class="text-end text-nowrap">ქმედებები</th>
+				@endif
+
+				@if ($hasDefaultActions)
+					<th class="text-end"><i class="bi bi-pencil-square"></i></th>
 				@endif
 			</tr>
 		</thead>
@@ -56,7 +64,47 @@
 						@endif
 					@endforeach
 
-					<!-- Table default actions -->
+
+
+					<!-- Combined custom actions / modal triggers -->
+					@if ($hasCustomActions || $hasModalTriggers)
+						<td class="text-end d-flex flex-wrap gap-2 justify-content-end">
+							@php
+								$actionsList = $hasCustomActions ? (is_callable($customActions) ? $customActions($model) : $customActions) : [];
+								$modals = $hasModalTriggers ? (is_callable($modalTriggers) ? $modalTriggers($model) : $modalTriggers) : [];
+							@endphp
+
+							@foreach ($modals as $modalTrigger)
+								<a href="#" data-bs-toggle="modal" data-bs-target="#{{ $modalTrigger['modal_id'] }}"
+									class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2 {{ $modalTrigger['class'] ?? '' }}">
+									@if (!empty($modalTrigger['icon']))
+										<i class="bi {{ $modalTrigger['icon'] }}"></i>
+									@endif
+									<span>{{ $modalTrigger['label'] }}</span>
+								</a>
+							@endforeach
+
+							@foreach ($actionsList as $action)
+								<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm']))
+								onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
+									@csrf
+									@if (($action['method'] ?? 'POST') !== 'POST')
+										@method($action['method'])
+									@endif
+
+									<button type="submit"
+										class="btn btn-sm {{ $action['class'] ?? 'btn-outline-secondary' }} d-inline-flex align-items-center gap-2">
+										@if (!empty($action['icon']))
+											<i class="bi {{ $action['icon'] }}"></i>
+										@endif
+										<span>{{ $action['label'] }}</span>
+									</button>
+								</form>
+							@endforeach
+						</td>
+					@endif
+
+					<!-- Table default actions (pencil / delete) -->
 					@if (isset($resourceName) && $actions)
 						<td class="text-end">
 							<div class="dropdown dropstart">
@@ -87,50 +135,6 @@
 
 								</ul>
 							</div>
-						</td>
-					@endif
-
-					<!--  custom actions -->
-					@if (isset($customActions))
-						@php
-							$actions = is_callable($customActions) ? $customActions($model) : [];
-						@endphp
-						<td class="text-end">
-							@foreach ($actions as $action)
-								<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm']))
-								onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
-									@csrf
-									@if ($action['method'] !== 'POST')
-										@method($action['method'])
-									@endif
-
-									<button type="submit"
-										class="dropdown-item {{ $action['class'] ?? '' }} d-flex align-items-center justify-items-center gap-2">
-										@if (!empty($action['icon']))
-											<i class="bi {{ $action['icon'] }}"></i>
-										@endif
-										<span>{{ $action['label'] }}</span>
-									</button>
-								</form>
-							@endforeach
-						</td>
-					@endif
-
-					@if (isset($modalTriggers))
-						@php
-							$modals = is_callable($modalTriggers) ? $modalTriggers($model) : $modalTriggers;
-						 @endphp
-
-						<td class="text-end">
-							@foreach ($modals as $modalTrigger)
-								<a href="#" data-bs-toggle="modal" data-bs-target="#{{ $modalTrigger['modal_id'] }}"
-									class="btn btn-light btn-sm px-3 rounded-pill d-inline-flex align-items-center gap-2 shadow-sm {{ $modalTrigger['class'] ?? '' }}">
-									@if (!empty($modalTrigger['icon']))
-										<i class="bi {{ $modalTrigger['icon'] }}"></i>
-									@endif
-									<span>{{ $modalTrigger['label'] }}</span>
-								</a>
-							@endforeach
 						</td>
 					@endif
 				</tr>

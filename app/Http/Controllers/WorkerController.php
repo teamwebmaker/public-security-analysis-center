@@ -64,7 +64,7 @@ class WorkerController extends Controller
     {
         return QueryBuilder::for($query)
             ->allowedIncludes(['status', 'branch', 'service'])
-            ->allowedSorts(['branch_name', 'service_name', 'start_date', 'end_date'])
+            ->allowedSorts(['branch_name_snapshot', 'service_name_snapshot', 'start_date', 'end_date'])
             ->allowedFilters([
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($q) use ($value) {
