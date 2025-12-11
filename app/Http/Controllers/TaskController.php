@@ -126,10 +126,26 @@ class TaskController extends CrudController
          $rows = TableRowDataPresenter::formatOccurrences(
             $occurrences,
             $latestId,
-            function ($occurrence) use ($task) {
-               return '<a href="' . route('tasks.edit', $task) . '" class="btn btn-sm btn-outline-primary">ჩასწორება</a>';
-            },
-            $task
+            function ($occurrence) {
+               $editUrl = route('task-occurrences.edit', $occurrence);
+               $deleteUrl = route('task-occurrences.destroy', $occurrence);
+               $isLatest = $occurrence->isLatest();
+
+               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="d-inline">'
+                  . csrf_field()
+                  . method_field('DELETE')
+                  . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
+                  . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
+                  . '>'
+                  . '<i class="bi bi-trash"></i>'
+                  . '</button>'
+                  . '</form>';
+
+               return '<div class="d-flex gap-2 justify-content-end">'
+                  . '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i> ჩასწორება</a>'
+                  . $deleteButton
+                  . '</div>';
+            }
          );
 
          return [$task->id => $rows];

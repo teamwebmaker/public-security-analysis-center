@@ -33,6 +33,7 @@ class TaskOccurrence extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'requires_document' => 'bool',
+        'visibility' => 'string',
     ];
 
 
@@ -59,5 +60,14 @@ class TaskOccurrence extends Model
     public function workers()
     {
         return $this->hasMany(TaskOccurrenceWorker::class);
+    }
+
+    /**
+     * Determine if this occurrence is the latest for its task.
+     */
+    public function isLatest(): bool
+    {
+        $latestId = $this->task?->latestOccurrence?->id;
+        return $latestId !== null && (int) $latestId === (int) $this->id;
     }
 }

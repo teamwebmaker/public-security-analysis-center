@@ -24,9 +24,8 @@
 @if(!$tasks->isEmpty())
 	@foreach($tasks as $task)
 		<x-modal :id="'task-occurrences-' . $task->id" :title="'ციკლები — სამუშაო #' . $task->id" size="xl">
-			<div class="d-flex justify-content-between align-items-center px-3 pt-3">
-				<a href="{{ route('tasks.edit', $task) }}" class="btn btn-outline-primary">ციკლების მართვა</a>
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">დახურვა</button>
+			<div class="d-flex justify-content-end px-3 pt-3">
+				<a href="{{ route('tasks.edit', $task) }}" class="btn btn-outline-primary">სამუშაოს რედაქტირება</a>
 			</div>
 			<div class="p-3">
 				@if(($task->taskOccurrences ?? collect())->isEmpty())

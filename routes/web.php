@@ -24,6 +24,7 @@ use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskOccurrenceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Session;
@@ -134,6 +135,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('tasks', TaskController::class)->except('show');
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
+        Route::resource('task-occurrences', TaskOccurrenceController::class)->only(['edit', 'update', 'destroy', 'show'])->parameters(['task-occurrences' => 'taskOccurrence']);
 
 
         // CRUD: Projects, Partners, Publications
