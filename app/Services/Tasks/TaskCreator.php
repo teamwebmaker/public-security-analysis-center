@@ -44,7 +44,7 @@ class TaskCreator
          : null;
 
       // task_id is set by the relation; snapshots capture current task metadata
-      $task->taskOccurrences()->create([
+      $occurrence = $task->taskOccurrences()->create([
          'branch_id_snapshot' => $task->branch_id,
          'branch_name_snapshot' => $task->branch_name_snapshot,
          'service_id_snapshot' => $task->service_id,
@@ -54,5 +54,17 @@ class TaskCreator
          'requires_document' => (bool) ($data['requires_document'] ?? false),
          'visibility' => $task->visibility ?? '1',
       ]);
+
+      // Snapshot current task workers into the occurrence
+      if ($task->users()->exists()) {
+         $occurrence->workers()->createMany(
+            $task->users
+               ->map(fn($user) => [
+                  'worker_id_snapshot' => $user->id,
+                  'worker_name_snapshot' => $user->full_name,
+               ])
+               ->all()
+         );
+      }
    }
 }

@@ -103,12 +103,8 @@ class TableRowDataPresenter
          $actions = $actionResolver ? $actionResolver($occurrence) : null;
          $statusColor = self::statusColorForOccurrence($occurrence);
 
-         $branchModel = ($task && $task->branch && $task->branch->id === $occurrence->branch_id_snapshot)
-            ? $task->branch
-            : null;
-         $serviceModel = ($task && $task->service && $task->service->id === $occurrence->service_id_snapshot)
-            ? $task->service
-            : null;
+         $branchModel = $task?->branch;
+         $serviceModel = $task?->service;
 
          return [
             'id' => ($isLatest ? " <span class='badge bg-success ms-2'>$occurrence->id</span>" : $occurrence->id),
@@ -291,8 +287,10 @@ class TableRowDataPresenter
     */
    private static function snapshotLink(?Model $model, string $route, ?string $snapshotName, ?string $currentName): string
    {
+      // Always display the snapshot name when available; fallback to current name.
       $name = $snapshotName ?? $currentName ?? '---';
 
+      // Only warn if both values exist and differ. Prefer current name in tooltip for clarity.
       $isOutdated = $snapshotName && $currentName && $snapshotName !== $currentName;
       $outdatedBadge = $isOutdated
          ? "<span class='badge bg-warning text-dark me-1' title='ახლა: " . e($currentName) . "'><i class='bi bi-info-circle-fill'></i></span>"
@@ -302,7 +300,9 @@ class TableRowDataPresenter
          return $outdatedBadge . '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($name) . '</a>';
       }
 
-      return $outdatedBadge . '<span class="text-decoration-line-through">' . e($name) . '</span>';
+      // If we have a snapshot name but no model, use snapshot; otherwise show placeholder.
+      $fallback = $snapshotName ?? '---';
+      return $outdatedBadge . '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
    }
 
    /**
@@ -314,6 +314,34 @@ class TableRowDataPresenter
          $occurrence->workers ?? collect(),
          fn($worker) => $worker->worker_name_snapshot ?? 'უცნობი',
       );
+   }
+   
+   /**
+    * Helper: Shared worker formatter for tasks and occurrences.
+    */
+   private static function formatWorkersCollection($workers, callable $nameResolver): string
+   {
+      $names = collect($workers)
+         ->map(fn($worker) => trim((string) $nameResolver($worker)))
+         ->filter();
+
+      $count = $names->count();
+
+      if ($count === 0) {
+         return self::badge('არ ჰყავს', 'danger');
+      }
+
+      if ($count === 1) {
+         return self::badge(e($names->first()), 'secondary');
+      }
+
+      $options = $names
+         ->map(fn($name) => '<option disabled>' . e($name) . '</option>')
+         ->implode('');
+
+      return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
+         $options .
+         '</select>';
    }
 
    /**
@@ -359,33 +387,4 @@ class TableRowDataPresenter
          . e($label)
          . '</a>';
    }
-
-   /**
-    * Helper: Shared worker formatter for tasks and occurrences.
-    */
-   private static function formatWorkersCollection($workers, callable $nameResolver): string
-   {
-      $names = collect($workers)
-         ->map(fn($worker) => trim((string) $nameResolver($worker)))
-         ->filter();
-
-      $count = $names->count();
-
-      if ($count === 0) {
-         return self::badge('არ ჰყავს', 'danger');
-      }
-
-      if ($count === 1) {
-         return self::badge(e($names->first()), 'secondary');
-      }
-
-      $options = $names
-         ->map(fn($name) => '<option disabled>' . e($name) . '</option>')
-         ->implode('');
-
-      return '<select class="form-select form-select-sm"><option selected>სია...</option>' .
-         $options .
-         '</select>';
-   }
-
 }

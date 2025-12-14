@@ -16,7 +16,7 @@
 
 	<!-- Tasks -->
 	@if (!$tasks->isEmpty())
-		<x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskRows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :resourceName="$resourceName" :modalTriggers="$occurrenceModalTriggers" />
+		<x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskRows" :actions="true" :tooltipColumns="['branch', 'service']" :sortableMap="$sortableMap" :resourceName="$resourceName" :modalTriggers="$occurrenceModalTriggers" deleteMessage="ნამდვილად გსურთ სამუშაოს წაშლა? ამ მოქმედებით ასევე წაიშლება მასთან დაკავშირებული ციკლები." />
 	@endif
 </x-admin.index-view>
 

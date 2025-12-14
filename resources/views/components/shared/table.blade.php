@@ -123,7 +123,7 @@
 									@if ($action_delete == true)
 										<li>
 											<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
-												onsubmit="return confirm('ნამდვილად გსურთ წაშლა?')">
+												onsubmit="return confirm('{{ $deleteMessage }}')">
 												@csrf @method('DELETE')
 												<button type="submit"
 													class="dropdown-item text-danger d-flex align-items-center justify-center gap-2">

@@ -14,6 +14,7 @@ class Table extends Component
     public $rows;
     public $items;
     public $actions;
+    public $deleteMessage;
     public ?string $resourceName;
     public array $tooltipColumns;
     public ?array $sortableMap;
@@ -25,12 +26,13 @@ class Table extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $tooltipColumns = [], $sortableMap = [], $action_delete = true, $customActions = null, $modalTriggers = null)
+    public function __construct($headers, $rows, $items, $resourceName = null, $actions = false, $deleteMessage = 'ნამდვილად გსურთ წაშლა?', $tooltipColumns = [], $sortableMap = [], $action_delete = true, $customActions = null, $modalTriggers = null)
     {
         $this->headers = $headers;
         $this->rows = $rows;
         $this->items = $items;
         $this->actions = $actions;
+        $this->deleteMessage = $deleteMessage;
         $this->sortableMap = $sortableMap;
         $this->resourceName = $resourceName;
         $this->tooltipColumns = $tooltipColumns;

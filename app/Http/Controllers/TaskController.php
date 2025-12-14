@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Traits\SyncsRelations;
-use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\UpdateTaskRequest;
-use App\Models\Branch;
-use App\Models\Role;
-use App\Models\Service;
+ use App\Http\Requests\StoreTaskRequest;
+ use App\Http\Requests\UpdateTaskRequest;
+ use App\Models\Branch;
+ use App\Models\Role;
+ use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\User;
@@ -16,16 +15,14 @@ use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Tasks\TaskCreator;
+use App\Services\Tasks\TaskUpdater;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 
 class TaskController extends CrudController
 {
-   use SyncsRelations;
-
    protected string $modelClass = Task::class;
    protected string $contextField = "task";
    protected string $contextFieldPlural = "tasks";
@@ -37,10 +34,12 @@ class TaskController extends CrudController
    protected array $fileFields = [];
 
    protected TaskCreator $taskCreator;
+   protected TaskUpdater $taskUpdater;
 
-   public function __construct(TaskCreator $taskCreator)
+   public function __construct(TaskCreator $taskCreator, TaskUpdater $taskUpdater)
    {
       $this->taskCreator = $taskCreator;
+      $this->taskUpdater = $taskUpdater;
    }
 
    /**
@@ -145,7 +144,8 @@ class TaskController extends CrudController
                   . '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i> ჩასწორება</a>'
                   . $deleteButton
                   . '</div>';
-            }
+            },
+            $task
          );
 
          return [$task->id => $rows];
@@ -282,73 +282,18 @@ class TaskController extends CrudController
 
    public function update(UpdateTaskRequest $request, Task $task)
    {
-      DB::transaction(function () use ($request, $task) {
+      $validated = $request->validated();
+      $data = $this->prepareTaskData($request, $validated, $task);
 
-         $validated = $request->validated();
-         $data = $this->prepareTaskData($request, $validated, $task);
+      if (!($data['is_recurring'] ?? false)) {
+         $data['recurrence_interval'] = null;
+      }
 
-         if (!($data['is_recurring'] ?? false)) {
-            $data['recurrence_interval'] = null;
-         }
+      $requiresDocument = $request->has('requires_document')
+         ? $request->boolean('requires_document')
+         : null;
 
-         $latestOccurrence = $task->latestOccurrence()->first();
-         $requiresDocument = $request->has('requires_document')
-            ? $request->boolean('requires_document')
-            : optional($latestOccurrence)->requires_document;
-
-         $this->syncRelations($task, $data, [
-            'users' => 'user_ids',
-         ]);
-
-         $task->update($data);
-         $task->load('users');
-
-         $recalculateDueDate = $task->wasChanged('recurrence_interval') || $task->wasChanged('is_recurring');
-
-         $updateOccurrences = ['requires_document' => $requiresDocument];
-
-         if ($task->wasChanged('visibility')) {
-            // Enum column expects "0"/"1"
-            $updateOccurrences['visibility'] = $task->visibility ? '1' : '0';
-         }
-
-         // Only push changes when we have a concrete value
-         if (!is_null($requiresDocument) || array_key_exists('visibility', $updateOccurrences)) {
-            $task->taskOccurrences()->update($updateOccurrences);
-         }
-
-         // Sync latest occurrence snapshots to match task data
-         if ($latest = $latestOccurrence) {
-            $latestUpdates = [
-               'branch_id_snapshot' => $task->branch_id,
-               'branch_name_snapshot' => $task->branch_name_snapshot,
-               'service_id_snapshot' => $task->service_id,
-               'service_name_snapshot' => $task->service_name_snapshot,
-            ];
-
-            // Recalculate due date if needed
-            if ($recalculateDueDate) {
-               $interval = (int) ($task->recurrence_interval ?? 0);
-               $latestUpdates['due_date'] = $task->is_recurring && $interval > 0
-                  ? now()->addDays($interval)
-                  : null;
-            }
-
-            $latest->update($latestUpdates);
-
-            // Sync latest occurrence workers to match task workers (snapshot)
-            $latest->workers()->delete();
-            if ($task->users->isNotEmpty()) {
-               $latest->workers()->createMany(
-                  $task->users->map(fn($user) => [
-                     'worker_id_snapshot' => $user->id,
-                     'worker_name_snapshot' => $user->full_name,
-                  ])->all()
-               );
-            }
-
-         }
-      });
+      $this->taskUpdater->updateTask($task, $data, $requiresDocument);
 
       return redirect()
          ->back()
