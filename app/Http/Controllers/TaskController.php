@@ -382,46 +382,6 @@ class TaskController extends CrudController
     * Route is under management prefix.
     * Used from worker dashboard to set task as in progress.
     */
-   // public function editStatus(Task $task)
-   // {
-   //    try {
-   //       // Retrieve required statuses
-   //       $pendingStatusId = TaskStatus::where("name", "pending")->value("id");
-   //       $inProgressStatusId = TaskStatus::where("name", "in_progress")->value("id");
-
-   //       if (!$pendingStatusId || !$inProgressStatusId) {
-   //          return redirect()
-   //             ->back()
-   //             ->with('error', 'მოხდა გაუთვალისწინებელი შეცდომა, გთხოვთ დაუკავშირდით დახმარებას.');
-   //       }
-
-   //       // Move only from Pending → In Progress
-   //       if ($task->status_id === $pendingStatusId) {
-   //          $task->update([
-   //             'status_id' => $inProgressStatusId,
-   //             'start_date' => now(),
-   //          ]);
-
-   //          return redirect()
-   //             ->back()
-   //             ->with('success', 'სამუშაო დაწყებულად მოინიშნა წარმატებით.');
-   //       }
-
-   //       return redirect()
-   //          ->back()
-   //          ->with('error', 'სამუშაოს სტატუსის შეცვლა ამ ეტაპზე შეუძლებელია.');
-
-   //    } catch (\Exception $e) {
-   //       Log::error('Task status update failed from worker dashboard', [
-   //          'task_id' => $task->id,
-   //          'error' => $e->getMessage(),
-   //       ]);
-
-   //       return redirect()
-   //          ->back()
-   //          ->with('error', 'სამუშაოს სტატუსის განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ თავიდან.');
-   //    }
-   // }
 
 
    /**
@@ -429,61 +389,6 @@ class TaskController extends CrudController
     * Route is under management prefix.
     * Used by workers to upload a task document and set status as completed.
     */
-   // public function uploadDocument(Request $request, Task $task)
-   // {
-   //    try {
-   //       // Validate the uploaded file
-   //       $validated = $request->validate([
-   //          'document' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
-   //       ], [
-   //          'document.required' => 'გთხოვთ ატვირთოთ სამუშაოს დოკუმენტი.',
-   //          'document.mimes' => 'დოკუმენტის ფორმატი არასწორია. ნებადართულია: PDF, Word, Excel.',
-   //          'document.max' => 'ფაილის ზომა არ უნდა აღემატებოდეს 5MB-ს.',
-   //       ]);
-
-   //       // Upload or replace the file
-   //       $uploadedFile = $this->handleFileUpload(
-   //          $request,
-   //          'document',
-   //          $this->fileFields['document'],
-   //          $task->document
-   //       );
-
-   //       if (!$uploadedFile) {
-   //          return redirect()
-   //             ->back()
-   //             ->with('error', 'დოკუმენტის ატვირთვა ვერ მოხერხდა, სცადეთ თავიდან.');
-   //       }
-
-   //       // Retrieve status IDs
-   //       $inProgressStatusId = TaskStatus::where("name", "in_progress")->value("id");
-   //       $completedStatusId = TaskStatus::where("name", "completed")->value("id");
-
-   //       // Update document and mark as completed if applicable
-   //       $updateData = ['document' => $uploadedFile];
-
-   //       if ($task->status_id === $inProgressStatusId && $completedStatusId) {
-   //          $updateData['status_id'] = $completedStatusId;
-   //          $updateData['end_date'] = now();
-   //       }
-
-   //       $task->update($updateData);
-
-   //       return redirect()
-   //          ->back()
-   //          ->with('success', 'დოკუმენტი წარმატებით აიტვირთა და სამუშაო დასრულებულად მოინიშნა.');
-
-   //    } catch (\Exception $e) {
-   //       Log::error('Task document upload failed', [
-   //          'task_id' => $task->id,
-   //          'error' => $e->getMessage(),
-   //       ]);
-
-   //       return redirect()
-   //          ->back()
-   //          ->with('error', 'დოკუმენტის ატვირთვისას მოხდა შეცდომა, გთხოვთ სცადოთ თავიდან.');
-   //    }
-   // }
 
 
 }

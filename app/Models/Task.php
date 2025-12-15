@@ -30,35 +30,6 @@ class Task extends Model
         'archived' => 'bool',
     ];
 
-    // /**
-    //  * Returns task statuses that are eligible for worker assignment.
-    //  * In other words, This method defines which task statuses are eligible for assignment or display
-    //  * when a user is being associated with tasks. 
-    //  * @return string[]
-    //  */
-    // public static function workerAssignableTaskStatuses(): array
-    // {
-    //     return ['pending', 'in_progress', 'on_hold'];
-    // }
-
-    // /**
-    //  * Returns the recent tasks with their associated users, status, service and branch company.
-    //  * The tasks are filtered to only include completed, in_progress and pending tasks.
-    //  * The results are ordered in descending order by start date and limited to the specified count.
-    //  */
-    // public function scopeRecentWithRelations($query, $limit = 5)
-    // {
-    //     return $query->whereHas('status', function ($q) {
-    //         $q->whereIn('name', ['completed', 'in_progress', 'pending']);
-    //     })
-    //         ->with(['users', 'status', 'service', 'branch.company'])
-    //         ->orderByDesc('start_date')
-    //         ->take($limit);
-    // }
-
-
-
-
     public function users()
     {
         return $this->belongsToMany(User::class, 'task_workers')->withTimestamps();

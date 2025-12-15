@@ -10,7 +10,7 @@ use App\Models\Company;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\Task;
-use App\Models\TaskStatus;
+use App\Models\TaskOccurrenceStatus;
 use App\Models\User;
 use App\Policies\UserConnectionPolicy;
 use Illuminate\Support\Facades\App;
@@ -25,7 +25,15 @@ class UserController extends CrudController
 	protected string $contextField = "user";
 	protected string $contextFieldPlural = "users";
 	protected string $resourceName = "users";
-	protected array $modelRelations = ['role', 'companies', 'branches', 'tasks', 'tasks.service'];
+    protected array $modelRelations = [
+        'role',
+        'companies',
+        'branches',
+        'tasks',
+        'tasks.service',
+        'tasks.latestOccurrence',
+        'tasks.latestOccurrence.status',
+    ];
 	protected array $localScopes = ['withoutAdmins'];
 
 
@@ -143,15 +151,18 @@ class UserController extends CrudController
 	 */
 	protected function prepareUserFormData(): array
 	{
-		$statusIds = TaskStatus::whereIn('name', Task::workerAssignableTaskStatuses())->pluck('id');
-
+		$assignableStatuses = ['pending', 'in_progress', 'on_hold'];
+		$statusIds = TaskOccurrenceStatus::whereIn('name', $assignableStatuses)->pluck('id');
+		
 		return [
 			'roles' => Role::withoutAdmins()->get(),
 			'companies' => Company::select('id', 'name')->get(),
 			'branches' => Branch::select('id', 'name')->get(),
 			'services' => Service::select('id', 'title')->get(),
-			'tasks' => Task::with(['service:id,title', 'branch:id,name'])
-				->whereIn('status_id', $statusIds)
+			'tasks' => Task::with(['service:id,title', 'branch:id,name', 'latestOccurrence.status'])
+				->when($statusIds->isNotEmpty(), function ($query) use ($statusIds) {
+					$query->whereHas('latestOccurrence', fn($q) => $q->whereIn('status_id', $statusIds));
+				})
 				->get()
 				->map(function ($task) {
 					$serviceTitle = optional($task->service)->title->ka

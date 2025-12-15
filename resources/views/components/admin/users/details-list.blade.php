@@ -34,15 +34,6 @@
                 :getItemText="fn($service) => $service->title->ka ?? $service->title->en" 
             />
             @break
-
-        @case('worker')
-            <x-ui.info-dropdown-item 
-                label="სამუშაოები" 
-                icon="bi bi-list-ol" 
-                name="tasks_dropdown" 
-                :items="$tasks"
-                :getItemText="fn($task) => $task->status->display_name . ' / ' . ($task->service?->title ? $task->service->title->ka : $task->service_name_snapshot)"/>
-            @break
     @endSwitch
 
     @if ($user->phone)
