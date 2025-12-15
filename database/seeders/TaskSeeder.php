@@ -14,34 +14,36 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('tasks')->insert([
-            [
-                'id' => 1,
-                'branch_id' => 1,
-                'branch_name_snapshot' => 'GeoTech ფილიალი',
-                'service_id' => 1,
-                'service_name_snapshot' => 'საძირკველის ჩაყრა',
-                'recurrence_interval' => 7,
-                'is_recurring' => true,
-                'archived' => '0',
-                'visibility' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+        $branches = \App\Models\Branch::select('id', 'name')->get();
+        $services = \App\Models\Service::select('id', 'title')->get();
 
-            ],
-            [
-                'id' => 2,
-                'branch_id' => 2,
-                'branch_name_snapshot' => 'AgroWorld ფილიალი',
-                'service_id' => 2,
-                'service_name_snapshot' => 'მომხმარებლების პასუხი',
-                'recurrence_interval' => 30,
+        if ($branches->isEmpty() || $services->isEmpty()) {
+            return;
+        }
+
+        $faker = \Faker\Factory::create();
+        $now = Carbon::now();
+        $tasks = [];
+
+        for ($i = 1; $i <= 5; $i++) {
+            $branch = $branches->random();
+            $service = $services->random();
+            $interval = $faker->numberBetween(5, 30);
+
+            $tasks[] = [
+                'branch_id' => $branch->id,
+                'branch_name_snapshot' => $branch->name,
+                'service_id' => $service->id,
+                'service_name_snapshot' => $service->title->ka ?? $service->title->en ?? 'სერვისი',
+                'recurrence_interval' => $interval,
                 'is_recurring' => true,
                 'archived' => '0',
                 'visibility' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
+                'created_at' => $now->copy()->subDays($faker->numberBetween(0, 10)),
+                'updated_at' => $now,
+            ];
+        }
+
+        DB::table('tasks')->insert($tasks);
     }
 }
