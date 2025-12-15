@@ -42,32 +42,73 @@ class UserController extends CrudController
 	{
 		$role = $user->getRoleName();
 
+		// Helper: eager load tasks with latest occurrence info
+		$taskLoader = fn($q) => $q->with([
+			'service:id,title',
+			'branch:id,name,company_id',
+			'branch.company:id,name',
+			'latestOccurrence.status',
+			'latestOccurrence.workers',
+		])->latest()->take(5);
+
+		// Limit hasMany eager loads per parent by trimming after load (SQL LIMIT is global)
+		$trimTasks = function ($branches) {
+			$branches->each(function ($branch) {
+				if ($branch->relationLoaded('tasks')) {
+					$branch->setRelation(
+						'tasks',
+						$branch->tasks->sortByDesc('created_at')->take(5)->values()
+					);
+				}
+			});
+		};
+
 		$loaders = [
-			'company_leader' => function ($user) {
+			'company_leader' => function ($user) use ($trimTasks) {
 				$user->load([
 					'role',
 					'companies' => fn($q) => $q->latest()->take(5)->with([
 						'economic_activity_type',
 						'branches' => fn($bq) => $bq->latest()->take(5)->with([
-							'tasks' => fn($tq) => $tq->recentWithRelations(),
+							'tasks' => fn($tq) => $tq->with([
+								'service:id,title',
+								'branch:id,name,company_id',
+								'branch.company:id,name',
+								'latestOccurrence.status',
+								'latestOccurrence.workers',
+							]),
 						]),
 					]),
 				]);
+
+				$user->companies->each(function ($company) use ($trimTasks) {
+					if ($company->relationLoaded('branches')) {
+						$trimTasks($company->branches);
+					}
+				});
 			},
 
-			'responsible_person' => function ($user) {
+			'responsible_person' => function ($user) use ($trimTasks) {
 				$user->load([
 					'role',
 					'branches' => fn($q) => $q->latest()->take(5)->with([
 						'company',
-						'tasks' => fn($tq) => $tq->recentWithRelations(),
+						'tasks' => fn($tq) => $tq->with([
+							'service:id,title',
+							'branch:id,name,company_id',
+							'branch.company:id,name',
+							'latestOccurrence.status',
+							'latestOccurrence.workers',
+						]),
 					]),
 				]);
+
+				$trimTasks($user->branches);
 			},
-			'worker' => function ($user) {
+			'worker' => function ($user) use ($taskLoader) {
 				$user->load([
 					'role',
-					'tasks' => fn($q) => $q->recentWithRelations(),
+					'tasks' => $taskLoader,
 				]);
 			},
 		];

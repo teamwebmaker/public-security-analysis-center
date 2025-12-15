@@ -3,8 +3,16 @@ import { CompaniesComponent } from "../../components/company/companiesInfo.js";
 import { BranchComponent, BranchesComponent } from "../../components/branch/branchInfo.js";
 import { TasksTableComponent } from "../../components/task/taskInfo.js";
 
+const extractTasks = (tasks) => {
+  if (!tasks) return [];
+  if (Array.isArray(tasks.data)) return tasks.data;
+  if (Array.isArray(tasks)) return tasks;
+  return [];
+};
+
 export const displayUserDetails = (data) => {
   const role = data?.role?.name;
+  const tasks = extractTasks(data.tasks);
 
   // Role-based renderers
   const renderers = {
@@ -21,7 +29,7 @@ export const displayUserDetails = (data) => {
     worker: () => `
      ${PersonalInfoComponent(data)}
      <div class="px-3"> 
-      ${TasksTableComponent(data.tasks, true)}
+      ${TasksTableComponent(tasks, true)}
      </div>
     `
   };

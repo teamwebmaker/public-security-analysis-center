@@ -1,4 +1,11 @@
 import {TasksTableComponent} from '../task/taskInfo.js';
+
+const extractTasks = (tasks) => {
+  if (!tasks) return [];
+  if (Array.isArray(tasks.data)) return tasks.data;
+  if (Array.isArray(tasks)) return tasks;
+  return [];
+};
 // Component: Branches Section
 export const BranchesComponent = (branches) => {
   if (!branches || branches.length === 0) {
@@ -36,10 +43,9 @@ export const BranchComponent = (branch, parent) => {
       </div>
 
       <div class="mt-3">
-        ${TasksTableComponent(branch.tasks)}
+        ${TasksTableComponent(extractTasks(branch.tasks))}
       </div>
     </div>
 
   `;
 };
-

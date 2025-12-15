@@ -1,6 +1,36 @@
 import { formatDateTime } from '../../helpers.js';
 import { formatUser } from '../user/personalInfo.js';
 
+const normalizeTask = (task = {}) => {
+  const latest = task.latest_occurrence || task.latestOccurrence || {};
+  const status = latest.status || task.status || {};
+  const startDate = latest.start_date || latest.startDate || task.start_date;
+  const endDate = latest.end_date || latest.endDate || task.end_date;
+  const createdAt = task.created_at || task.createdAt;
+
+  const workers =
+    (latest.workers || []).map(w => ({ full_name: w.worker_name_snapshot || w.full_name || w.name })).filter(Boolean)
+    || [];
+
+  const branchName = task.branch?.name || task.branch_name_snapshot || latest.branch_name_snapshot || '-';
+  const companyName = task.branch?.company?.name || '-';
+  const serviceTitleKa = task.service?.title?.ka;
+  const serviceTitleEn = task.service?.title?.en;
+  const serviceSnapshot = task.service_name_snapshot || latest.service_name_snapshot;
+
+  return {
+    status,
+    startDate,
+    endDate,
+    createdAt,
+    workers: workers.length ? workers : (task.users || []),
+    branchName,
+    companyName,
+    serviceLabel: serviceSnapshot || serviceTitleKa || serviceTitleEn || '-',
+    serviceLabelEn: serviceTitleEn,
+  };
+};
+
 export const TasksTableComponent = (tasks, includeCompany = false) => {
   if (!tasks || tasks.length === 0) {
     return '<p class="text-muted small mb-0 mt-2">სამუშაოები მიუწვდომელია</p>';
@@ -33,31 +63,33 @@ export const TasksTableComponent = (tasks, includeCompany = false) => {
 
 // Single Task Row
 const TaskRowComponent = (task, includeCompany) => {
+  const normalized = normalizeTask(task);
+  const statusName = normalized.status.name;
   const statusClass = 
-    task.status.name === 'completed' ? 'bg-success text-white' : 
-    task.status.name === 'in_progress' ? 'bg-info text-white' : 
-    task.status.name === 'pending' ? 'bg-warning text-dark' : 
+    statusName === 'completed' ? 'bg-success text-white' : 
+    statusName === 'in_progress' ? 'bg-info text-white' : 
+    statusName === 'pending' ? 'bg-warning text-dark' : 
     'bg-secondary text-white';
   
   return `
     <tr>
       <td>
-        <strong>${task.service_name_snapshot}</strong>
-        ${task.service?.title?.en ? `<br><small class="text-muted">${task.service.title.en}</small>` : ''}
+        <strong>${normalized.serviceLabel}</strong>
+        ${normalized.serviceLabelEn ? `<br><small class="text-muted">${normalized.serviceLabelEn}</small>` : ''}
       </td>
-      <td>${formatUser(task.users)}</td>
+      <td>${formatUser(normalized.workers)}</td>
       <td>
         <span class="badge ${statusClass} px-2 py-1">
-          ${task.status.display_name}
+          ${normalized.status.display_name || normalized.status.displayName || 'უცნობი'}
         </span>
       </td>
       ${includeCompany ? `
-        <td>${task.branch?.company?.name || '-'}</td>
-        <td>${task.branch?.name || task.branch_name_snapshot || '-'}</td>
+        <td>${normalized.companyName}</td>
+        <td>${normalized.branchName}</td>
       ` : ''}
-      <td>${formatDateTime(task.created_at)}</td>
-      <td>${formatDateTime(task.start_date)}</td>
-      <td>${formatDateTime(task.end_date)}</td>
+      <td>${formatDateTime(normalized.createdAt)}</td>
+      <td>${formatDateTime(normalized.startDate)}</td>
+      <td>${formatDateTime(normalized.endDate)}</td>
     </tr>
   `;
 };

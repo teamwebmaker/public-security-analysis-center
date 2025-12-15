@@ -17,8 +17,7 @@ export const CompaniesComponent = (companies) => {
 const CompanyAccordionItem = (company, index) => {
   const collapseId = `company-${index}-collapse`;
   const headingId = `company-${index}-heading`;
-
-  return `
+  return `  
     <div class="accordion-item shadow-sm">
       <h2 class="accordion-header" id="${headingId}">
         <button class="accordion-button ${index !== 0 ? 'collapsed' : ''}" 
