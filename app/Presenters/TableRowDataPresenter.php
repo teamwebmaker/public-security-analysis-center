@@ -68,16 +68,16 @@ class TableRowDataPresenter
             $model->service,
             'services.index',
             $model->service?->title->ka
-               ?? $model->service?->title->en
-               ?? $model->service_name_snapshot
-               ?? 'უცნობი',
+            ?? $model->service?->title->en
+            ?? $model->service_name_snapshot
+            ?? 'უცნობი',
             $model->service_name_snapshot ?? 'უცნობი'
          ),
          'occ_status' => $model->latestOccurrence?->status
             ? self::badge($model->latestOccurrence->status->display_name, self::statusColorForOccurrence($model->latestOccurrence))
             : self::badge('უცნობი', 'secondary'),
          'occ_document' => $model->latestOccurrence?->document_path
-            ? self::documentLink($model->latestOccurrence->document_path)
+            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
             : '---',
          'recurrence_interval' => $model->recurrence_interval ? $model->recurrence_interval . " დღე" : '---',
          // 'is_recurring' => $model->is_recurring ? self::badge('დიახ', 'info') : self::badge('არა', 'secondary'),
@@ -130,7 +130,7 @@ class TableRowDataPresenter
             'start_date' => optional($occurrence->start_date)->format('Y-m-d H:i') ?? '---',
             'end_date' => optional($occurrence->end_date)->format('Y-m-d H:i') ?? '---',
             'document' => $occurrence->document_path
-               ? self::documentLink($occurrence->document_path)
+               ? self::documentLink('/tasks/' . $occurrence->document_path)
                : '---',
             'actions' => $actions ?? '',
          ];
@@ -154,15 +154,22 @@ class TableRowDataPresenter
 
       return [
          'id' => $model->id,
-         'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
+         'status' => self::badge(
+            $model->latestOccurrence?->status?->display_name ?? 'უცნობი',
+            self::statusColorForOccurrence($model->latestOccurrence)
+         ),
          'worker' => self::formatWorker($model),
-         'branch' => $model->branch_name_snapshot ?? 'უცნობი',
-         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? $model->service_name_snapshot ?? 'უცნობი',
-         'document' => $model->document
-            ? self::documentLink('/tasks/' . $model->document)
+         'branch' => $model->branch_name_snapshot ?? $model->latestOccurrence?->branch_name_snapshot ?? 'უცნობი',
+         'service' => $model->service?->title->ka
+            ?? $model->service?->title->en
+            ?? $model->service_name_snapshot
+            ?? $model->latestOccurrence?->service_name_snapshot
+            ?? 'უცნობი',
+         'document' => $model->latestOccurrence?->document_path
+            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
             : '---',
-         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
+         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
 
       ];
    }
@@ -183,20 +190,28 @@ class TableRowDataPresenter
 
       return [
          'id' => $model->id,
-         'status' => self::badge($model->status?->display_name ?? 'უცნობი', self::statusColor($model)),
-         'branch' => $model->branch_name_snapshot ?? 'უცნობი',
-         'service' => $model->service?->title->ka ?? $model->service?->title->en ?? $model->service_name_snapshot ?? 'უცნობი',
+         'status' => self::badge(
+            $model->latestOccurrence?->status?->display_name ?? 'უცნობი',
+            self::statusColorForOccurrence($model->latestOccurrence)
+         ),
+         'branch' => $model->branch_name_snapshot ?? $model->latestOccurrence?->branch_name_snapshot ?? 'უცნობი',
+         'service' => $model->service?->title->ka
+            ?? $model->service?->title->en
+            ?? $model->service_name_snapshot
+            ?? $model->latestOccurrence?->service_name_snapshot
+            ?? 'უცნობი',
          'Coworker' => self::formatWorker(
             $model->setRelation(
                'users',
                $model->users->where('id', '!=', auth()->id())
             )
          ),
-         'document' => $model->document
-            ? self::documentLink('/tasks/' . $model->document)
+         'document' => $model->latestOccurrence?->document_path
+            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
             : '---',
-         'start_date' => optional($model->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->end_date)->format('Y-m-d H:i') ?? '---',
+         'due_date' => optional($model->latestOccurrence?->due_date)->format('Y-m-d') ?? '---',
+         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
       ];
    }
 
@@ -315,7 +330,7 @@ class TableRowDataPresenter
          fn($worker) => $worker->worker_name_snapshot ?? 'უცნობი',
       );
    }
-   
+
    /**
     * Helper: Shared worker formatter for tasks and occurrences.
     */

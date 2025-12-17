@@ -7,14 +7,22 @@ use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\Traits\HandlesFileUpload;
 
 class TaskOccurrenceController extends Controller
 {
+
+   use HandlesFileUpload;
+
+   protected array $taskDocument = [
+      'field' => 'document',
+      'path' => 'documents/tasks/'
+   ];
    /**
     * Update an existing task occurrence.
     * Guards: no due_date/start_date/end_date changes (request prohibits).
     * Warns/blocks if latest occurrence is deleted (handled in destroy).
-   */
+    */
    public function update(UpdateTaskOccurrenceRequest $request, TaskOccurrence $taskOccurrence)
    {
       DB::transaction(function () use ($request, $taskOccurrence) {
@@ -30,8 +38,13 @@ class TaskOccurrenceController extends Controller
 
          // Handle document upload or deletion
          if ($request->hasFile('document')) {
-            $this->replaceDocument($taskOccurrence, $request->file('document'));
-            $data['document_path'] = $taskOccurrence->document_path;
+            $fileName = $this->handleFileUpload(
+               $request,
+               $this->taskDocument['field'],
+               $this->taskDocument['path'],
+               $taskOccurrence->document_path ?? ''
+            );
+            $data['document_path'] = $fileName;
          } elseif ($request->boolean('delete_document')) {
             $this->deleteDocument($taskOccurrence);
             $data['document_path'] = null;
@@ -78,27 +91,6 @@ class TaskOccurrenceController extends Controller
    }
 
    /**
-    * Replace the occurrence document (stored in public/documents/).
-    */
-   protected function replaceDocument(TaskOccurrence $taskOccurrence, $uploadedFile): void
-   {
-      $basePath = public_path('documents/');
-
-      // Delete old file if exists
-      if ($taskOccurrence->document_path) {
-         $old = $basePath . ltrim($taskOccurrence->document_path, '/');
-         if (File::exists($old)) {
-            File::delete($old);
-         }
-      }
-
-      $fileName = uniqid() . '-' . time() . '.' . $uploadedFile->getClientOriginalExtension();
-      $uploadedFile->move($basePath, $fileName);
-      $taskOccurrence->document_path = $fileName;
-      $taskOccurrence->save();
-   }
-
-   /**
     * Delete the occurrence document file if present.
     */
    protected function deleteDocument(TaskOccurrence $taskOccurrence): void
@@ -107,7 +99,7 @@ class TaskOccurrenceController extends Controller
          return;
       }
 
-      $path = public_path('documents/' . ltrim($taskOccurrence->document_path, '/'));
+      $path = public_path($this->taskDocument['path'] . ltrim($taskOccurrence->document_path, '/'));
       if (File::exists($path)) {
          File::delete($path);
       }

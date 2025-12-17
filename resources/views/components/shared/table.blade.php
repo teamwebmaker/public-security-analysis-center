@@ -64,54 +64,57 @@
 						@endif
 					@endforeach
 
-
-
 					<!-- Combined custom actions / modal triggers -->
 					@if ($hasCustomActions || $hasModalTriggers)
-						<td class="text-end d-flex flex-wrap gap-2 justify-content-end">
+						<td class="text-end">
 							@php
 								$actionsList = $hasCustomActions ? (is_callable($customActions) ? $customActions($model) : $customActions) : [];
 								$modals = $hasModalTriggers ? (is_callable($modalTriggers) ? $modalTriggers($model) : $modalTriggers) : [];
 							@endphp
 
-							@foreach ($modals as $modalTrigger)
-								<a href="#" data-bs-toggle="modal" data-bs-target="#{{ $modalTrigger['modal_id'] }}"
-									class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2 {{ $modalTrigger['class'] ?? '' }}">
-									@if (!empty($modalTrigger['icon']))
-										<i class="bi {{ $modalTrigger['icon'] }}"></i>
-									@endif
-									<span>{{ $modalTrigger['label'] }}</span>
-								</a>
-							@endforeach
-
-							@foreach ($actionsList as $action)
-								<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm']))
-								onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
-									@csrf
-									@if (($action['method'] ?? 'POST') !== 'POST')
-										@method($action['method'])
-									@endif
-
-									<button type="submit"
-										class="btn btn-sm {{ $action['class'] ?? 'btn-outline-secondary' }} d-inline-flex align-items-center gap-2">
-										@if (!empty($action['icon']))
-											<i class="bi {{ $action['icon'] }}"></i>
+							<div class="d-flex flex-wrap gap-2 justify-content-end align-items-center">
+								@foreach ($modals as $modalTrigger)
+									<a href="#" data-bs-toggle="modal" data-bs-target="#{{ $modalTrigger['modal_id'] }}"
+										class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2 {{ $modalTrigger['class'] ?? '' }}">
+										@if (!empty($modalTrigger['icon']))
+											<i class="bi {{ $modalTrigger['icon'] }}"></i>
 										@endif
-										<span>{{ $action['label'] }}</span>
-									</button>
-								</form>
-							@endforeach
+										<span>{{ $modalTrigger['label'] }}</span>
+									</a>
+								@endforeach
+
+								@foreach ($actionsList as $action)
+									<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm'])) onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
+										@csrf
+										@if (($action['method'] ?? 'POST') !== 'POST')
+											@method($action['method'])
+										@endif
+
+										<button type="submit"
+											class="btn btn-sm {{ $action['class'] ?? 'btn-outline-secondary' }} d-inline-flex align-items-center gap-2">
+											@if (!empty($action['icon']))
+												<i class="bi {{ $action['icon'] }}"></i>
+											@endif
+											<span>{{ $action['label'] }}</span>
+										</button>
+									</form>
+								@endforeach
+
+								@if (empty($actionsList) && empty($modals))
+									<div class="text-muted">---</div>
+								@endif
+							</div>
 						</td>
 					@endif
 
 					<!-- Table default actions (pencil / delete) -->
-					@if (isset($resourceName) && $actions)
+					@if (isset($resourceName) && $actions === true)
 						<td class="text-end">
 							<div class="dropdown dropstart">
 								<button class="btn btn-sm btn-light border-0" data-bs-toggle="dropdown">
 									<i class="bi bi-three-dots-vertical"></i>
 								</button>
-								<ul class="dropdown-menu">
+								<ul class="dropdown-menu dropdown-menu-end">
 									<!--  edit link -->
 									<li>
 										<a href="{{ route($resourceName . '.edit', $model) }}"
@@ -121,8 +124,8 @@
 									</li>
 									<!--  delete action -->
 									@if ($action_delete == true)
-										<li>
-											<form method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
+										<li class="m-0">
+											<form class="m-0" method="POST" action="{{ route($resourceName . '.destroy', $model) }}"
 												onsubmit="return confirm('{{ $deleteMessage }}')">
 												@csrf @method('DELETE')
 												<button type="submit"

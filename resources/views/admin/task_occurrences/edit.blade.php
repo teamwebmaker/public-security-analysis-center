@@ -49,7 +49,7 @@
 				@endif
 				@if($taskOccurrence->document_path)
 					<p class="small mt-2">
-						ამჟამინდელი: <a href="{{ asset('documents/' . ltrim($taskOccurrence->document_path, '/')) }}"
+						ამჟამინდელი: <a href="{{ asset('documents/tasks/' . ltrim($taskOccurrence->document_path, '/')) }}"
 							target="_blank">ნახვა</a>
 					</p>
 				@endif

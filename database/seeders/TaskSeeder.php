@@ -29,14 +29,14 @@ class TaskSeeder extends Seeder
             $branch = $branches->random();
             $service = $services->random();
             $interval = $faker->numberBetween(5, 30);
-
+            $isRecurring = $faker->boolean();
             $tasks[] = [
                 'branch_id' => $branch->id,
                 'branch_name_snapshot' => $branch->name,
                 'service_id' => $service->id,
                 'service_name_snapshot' => $service->title->ka ?? $service->title->en ?? 'სერვისი',
                 'recurrence_interval' => $interval,
-                'is_recurring' => true,
+                'is_recurring' => $isRecurring,
                 'archived' => '0',
                 'visibility' => '1',
                 'created_at' => $now->copy()->subDays($faker->numberBetween(0, 10)),

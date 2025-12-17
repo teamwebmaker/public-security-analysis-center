@@ -23,40 +23,28 @@
 @section('main')
 	<!-- Stats -->
 	<div class="row g-3 border-bottom pb-4">
-		<x-management.stat-card label="ელოდება სამუშაოს დადასტურებას" :count="$pendingTasks->count()"
+		<x-management.stat-card label="ელოდება სამუშაოს დადასტურებას" :count="$statusCounts['pending'] ?? 0"
 			icon="bi bi-hourglass-split" iconWrapperClasses=" bg-warning bg-opacity-10 text-warning" />
 
-		<x-management.stat-card label="აქტიური სამუშაოები" :count="$inProgressTasks->count()" icon="bi bi-ui-radios"
+		<x-management.stat-card label="აქტიური სამუშაოები" :count="$statusCounts['in_progress'] ?? 0" icon="bi bi-ui-radios"
 			iconWrapperClasses="bg-info bg-opacity-10 text-info" />
 
-		<x-management.stat-card label="დასრულებული სამუშაოები" :count="$completedTasks->count()" icon="bi bi-check-circle"
-			iconWrapperClasses="bg-success bg-opacity-10 text-success" />
+		<x-management.stat-card label="დასრულებული სამუშაოები" :count="$statusCounts['completed'] ?? 0"
+			icon="bi bi-check-circle" iconWrapperClasses="bg-success bg-opacity-10 text-success" />
 
-		<x-management.stat-card label="შეჩერებული სამუშაოები" :count="$onHoldTasks->count()" icon="bi bi-pause-circle"
-			iconWrapperClasses="bg-secondary bg-opacity-10 text-secondary" />
+		<x-management.stat-card label="შეჩერებული სამუშაოები" :count="$statusCounts['on_hold'] ?? 0"
+			icon="bi bi-pause-circle" iconWrapperClasses="bg-secondary bg-opacity-10 text-secondary" />
 	</div>
 
 	<div class="my-4">
 		<!-- search -->
 		<x-shared.search-bar heading="ყველა სამუშაო" headingPosition="left" :action="route('management.dashboard.page')" />
+		<x-shared.filter-bar :filters="$filters" :resetUrl="route('management.dashboard.page')" />
 
 		@if ($tasks->isNotEmpty())
 				<!-- Tasks Table -->
-				<x-shared.table :items="$tasks" :headers="[
-						'#',
-						'სტატუსი',
-						'ფილიალი',
-						'სერვისი',
-						'კოლეგები',
-						'დოკუმენტი',
-						'სამუშაოს დაწყება',
-						'სამუშაოს დასრულება',
-
-					]" :rows="$taskTableRows" :sortableMap="[
-						'სამუშაოს დაწყება' => 'start_date',
-						'სამუშაოს დასრულება' => 'end_date',
-					]" :tooltipColumns="['branch', 'service']" :actions="false"
-					:customActions="$customActionBtns" :modalTriggers="$modalTriggerBtns" />
+				<x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskTableRows" :sortableMap="$sortableMap"
+					:tooltipColumns="['branch', 'service']" :customActions="$customActionBtns" :modalTriggers="$modalTriggerBtns" />
 
 				@foreach ($tasks as $task)
 					<x-management.worker.upload-modal :task="$task" />

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
- use App\Http\Requests\StoreTaskRequest;
- use App\Http\Requests\UpdateTaskRequest;
- use App\Models\Branch;
- use App\Models\Role;
- use App\Models\Service;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Branch;
+use App\Models\Role;
+use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\User;
@@ -17,6 +17,7 @@ use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Tasks\TaskCreator;
 use App\Services\Tasks\TaskUpdater;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
@@ -31,7 +32,10 @@ class TaskController extends CrudController
 
    protected int $perPage = 10;
 
-   protected array $fileFields = [];
+   protected array $taskDocument = [
+      'field' => 'document',
+      'path' => 'documents/tasks/'
+   ];
 
    protected TaskCreator $taskCreator;
    protected TaskUpdater $taskUpdater;
@@ -49,107 +53,8 @@ class TaskController extends CrudController
 
    public function index(Request $request)
    {
-      $tasks = QueryBuilder::for(Task::class)
-         // Eager-loadable relations
-         ->allowedIncludes([
-            'users',
-            'branch',
-            'service',
-            'latestOccurrence',
-            'latestOccurrence.status',
-         ])
-         // Sorting options including custom sorts for latest occurrence dates
-         ->allowedSorts([
-            'created_at',
-            'recurrence_interval',
-            AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
-            AllowedSort::custom('latest_end_date', new LatestOccurrenceEndDateSort()),
-         ])
-         // Default sort (DESC)
-         ->defaultSort('-created_at')
-         ->allowedFilters([
-            AllowedFilter::callback('search', function ($query, $value) {
-               $value = is_array($value) ? $value[0] : $value;
-               $like = '%' . $value . '%';
+      $tasks = $this->buildIndexQuery()->paginate($this->perPage)->appends($request->query());
 
-               $query->where(function ($q) use ($like) {
-                  $q->where('branch_name_snapshot', 'LIKE', $like)
-                     ->orWhere('service_name_snapshot', 'LIKE', $like)
-                     ->orWhereHas('branch', function ($q) use ($like) {
-                        $q->where('name', 'LIKE', $like);
-                     })->orWhereHas('service', function ($q) use ($like) {
-                        $q->where('title->ka', 'LIKE', $like);
-                     })->orWhereHas('users', function ($q) use ($like) {
-                        $q->where('full_name', 'LIKE', $like);
-                     });
-               });
-            }),
-
-            AllowedFilter::exact('branch_id'),
-            AllowedFilter::exact('service_id'),
-            AllowedFilter::exact('visibility'),
-            AllowedFilter::exact('is_recurring'),
-            AllowedFilter::exact('recurrence_interval'),
-
-            AllowedFilter::callback('occurrence_status', function ($query, $value) {
-               $query->whereHas('latestOccurrence.status', function ($q) use ($value) {
-                  $q->where('name', $value)
-                     ->orWhere('display_name', $value);
-               });
-            }),
-         ])
-         ->with([
-            'users',
-            'branch',
-            'service',
-            'latestOccurrence.status',
-            'taskOccurrences.status',
-            'taskOccurrences.workers',
-         ])
-         ->paginate($this->perPage)
-         ->appends($request->query());
-
-      $taskHeaders = TableHeaderDataPresenter::taskHeaders();
-      $occurrenceHeaders = TableHeaderDataPresenter::occurrenceHeaders();
-
-      $taskRows = $tasks->map(
-         fn($task) => TableRowDataPresenter::format($task, 'admin')
-      );
-
-      $occurrenceRows = $tasks->mapWithKeys(function ($task) {
-         $occurrences = $task->taskOccurrences
-            ->sortByDesc('created_at');
-
-         $latestId = $task->latestOccurrence?->id;
-
-         $rows = TableRowDataPresenter::formatOccurrences(
-            $occurrences,
-            $latestId,
-            function ($occurrence) {
-               $editUrl = route('task-occurrences.edit', $occurrence);
-               $deleteUrl = route('task-occurrences.destroy', $occurrence);
-               $isLatest = $occurrence->isLatest();
-
-               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="d-inline">'
-                  . csrf_field()
-                  . method_field('DELETE')
-                  . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
-                  . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
-                  . '>'
-                  . '<i class="bi bi-trash"></i>'
-                  . '</button>'
-                  . '</form>';
-
-               return '<div class="d-flex gap-2 justify-content-end">'
-                  . '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i> ჩასწორება</a>'
-                  . $deleteButton
-                  . '</div>';
-            },
-            $task
-         );
-
-         return [$task->id => $rows];
-      });
 
       // =========================
       // Filtering dropdown data
@@ -216,8 +121,6 @@ class TaskController extends CrudController
          ],
       ];
 
-      // =================
-      // UI helpers
 
       // Button config for opening occurrences modal per task
       $occurrenceModalTriggers = fn($task) => [
@@ -228,8 +131,48 @@ class TaskController extends CrudController
          ],
       ];
 
-      // =========================
-      // Return view
+      $taskHeaders = TableHeaderDataPresenter::taskHeaders();
+      $occurrenceHeaders = TableHeaderDataPresenter::occurrenceHeaders();
+
+      $taskRows = $tasks->map(
+         fn($task) => TableRowDataPresenter::format($task, 'admin')
+      );
+
+      $occurrenceRows = $tasks->mapWithKeys(function ($task) {
+         $occurrences = $task->taskOccurrences
+            ->sortByDesc('created_at');
+
+         $latestId = $task->latestOccurrence?->id;
+
+         $rows = TableRowDataPresenter::formatOccurrences(
+            $occurrences,
+            $latestId,
+            function ($occurrence) {
+               $editUrl = route('task-occurrences.edit', $occurrence);
+               $deleteUrl = route('task-occurrences.destroy', $occurrence);
+               $isLatest = $occurrence->isLatest();
+
+               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="d-inline">'
+                  . csrf_field()
+                  . method_field('DELETE')
+                  . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
+                  . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
+                  . '>'
+                  . '<i class="bi bi-trash"></i>'
+                  . '</button>'
+                  . '</form>';
+
+               return '<div class="d-flex gap-2 justify-content-end">'
+                  . '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary">ჩასწორება</a>'
+                  . $deleteButton
+                  . '</div>';
+            },
+            $task
+         );
+
+         return [$task->id => $rows];
+      });
+
 
       return view("admin.{$this->resourceName}.index", [
 
@@ -251,6 +194,67 @@ class TaskController extends CrudController
          // Modal trigger buttons for occurrences
          'occurrenceModalTriggers' => $occurrenceModalTriggers,
       ]);
+   }
+
+   /**
+    * Build the base query for index listing (filters, sorts, includes).
+    */
+   protected function buildIndexQuery()
+   {
+      return QueryBuilder::for(Task::class)
+         ->allowedIncludes([
+            'users',
+            'branch',
+            'service',
+            'latestOccurrence',
+            'latestOccurrence.status',
+         ])
+         ->allowedSorts([
+            'created_at',
+            'recurrence_interval',
+            AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
+            AllowedSort::custom('latest_end_date', new LatestOccurrenceEndDateSort()),
+         ])
+         ->defaultSort('-created_at')
+         ->allowedFilters([
+            AllowedFilter::callback('search', function ($query, $value) {
+               $value = is_array($value) ? $value[0] : $value;
+               $like = '%' . $value . '%';
+
+               $query->where(function ($q) use ($like) {
+                  $q->where('branch_name_snapshot', 'LIKE', $like)
+                     ->orWhere('service_name_snapshot', 'LIKE', $like)
+                     ->orWhereHas('branch', function ($q) use ($like) {
+                        $q->where('name', 'LIKE', $like);
+                     })->orWhereHas('service', function ($q) use ($like) {
+                        $q->where('title->ka', 'LIKE', $like);
+                     })->orWhereHas('users', function ($q) use ($like) {
+                        $q->where('full_name', 'LIKE', $like);
+                     });
+               });
+            }),
+
+            AllowedFilter::exact('branch_id'),
+            AllowedFilter::exact('service_id'),
+            AllowedFilter::exact('visibility'),
+            AllowedFilter::exact('is_recurring'),
+            AllowedFilter::exact('recurrence_interval'),
+
+            AllowedFilter::callback('occurrence_status', function ($query, $value) {
+               $query->whereHas('latestOccurrence.status', function ($q) use ($value) {
+                  $q->where('name', $value)
+                     ->orWhere('display_name', $value);
+               });
+            }),
+         ])
+         ->with([
+            'users',
+            'branch',
+            'service',
+            'latestOccurrence.status',
+            'taskOccurrences.status',
+            'taskOccurrences.workers',
+         ]);
    }
 
    /**
@@ -333,21 +337,6 @@ class TaskController extends CrudController
     */
    protected function prepareTaskData(Request $request, $data, Task $task = null): array
    {
-
-      // Handle document upload
-      $files = collect($this->fileFields)
-         ->mapWithKeys(function ($path, $field) use ($request, $task) {
-            $existing = $task?->$field;
-            $file = $this->handleFileUpload(
-               $request,
-               $field,
-               $path,
-               $existing
-            );
-            return $file ? [$field => $file] : [];
-         })
-         ->toArray();
-
       // Handle branch name snapshot saving
       if (
          !empty($data["branch_id"]) &&
@@ -372,7 +361,6 @@ class TaskController extends CrudController
 
       return [
          ...$data,
-         ...$files,
       ];
    }
 
@@ -380,8 +368,49 @@ class TaskController extends CrudController
    /**
     * @route PUT management/tasks/{task}
     * Route is under management prefix.
-    * Used from worker dashboard to set task as in progress.
+    * Used from worker dashboard to set latest occurrence as in progress.
     */
+   public function editStatus(Task $task)
+   {
+      try {
+         $pendingStatusId = TaskOccurrenceStatus::where("name", "pending")->value("id");
+         $inProgressStatusId = TaskOccurrenceStatus::where("name", "in_progress")->value("id");
+
+         $occurrence = $task->latestOccurrence;
+
+         if (!$occurrence || !$pendingStatusId || !$inProgressStatusId) {
+            return redirect()
+               ->back()
+               ->with('error', 'მოხდა გაუთვალისწინებელი შეცდომა, გთხოვთ დაუკავშირდით დახმარებას.');
+         }
+
+         // Move only from Pending → In Progress on the latest occurrence
+         if ((int) $occurrence->status_id === (int) $pendingStatusId) {
+            $occurrence->update([
+               'status_id' => $inProgressStatusId,
+               'start_date' => now(),
+            ]);
+
+            return redirect()
+               ->back()
+               ->with('success', 'ციკლი დაწყებულად მოინიშნა წარმატებით.');
+         }
+
+         return redirect()
+            ->back()
+            ->with('error', 'სამუშაოს სტატუსის შეცვლა ამ ეტაპზე შეუძლებელია.');
+
+      } catch (\Exception $e) {
+         Log::error('Task occurrence status update failed from worker dashboard', [
+            'task_id' => $task->id,
+            'error' => $e->getMessage(),
+         ]);
+
+         return redirect()
+            ->back()
+            ->with('error', 'სამუშაოს სტატუსის განახლება ვერ მოხერხდა. გთხოვთ, სცადეთ თავიდან.');
+      }
+   }
 
 
    /**
@@ -389,6 +418,74 @@ class TaskController extends CrudController
     * Route is under management prefix.
     * Used by workers to upload a task document and set status as completed.
     */
+   public function uploadDocument(Request $request, Task $task)
+   {
+      try {
+         $occurrence = $task->latestOccurrence;
 
+         if (!$occurrence) {
+            return back()->with('error', 'სამუშაოს ციკლი ვერ მოიძებნა.');
+         }
 
+         $inProgressStatusId = TaskOccurrenceStatus::where('name', 'in_progress')->value('id');
+         $completedStatusId = TaskOccurrenceStatus::where('name', 'completed')->value('id');
+
+         if (!$inProgressStatusId) {
+            return back()->with('error', 'Progress სტატუსი ვერ მოიძებნა.');
+         }
+         if (!$completedStatusId) {
+            return back()->with('error', 'Completed სტატუსი ვერ მოიძებნა.');
+         }
+
+         // Enforce: only in_progress occurrences can be completed
+         if ($occurrence->status_id !== $inProgressStatusId) {
+            return back()->with('error', 'დასრულება შესაძლებელია მხოლოდ "მიმდინარე" სტატუსის მქონე სამუშაოზე.');
+         }
+
+         $updateData = [
+            'status_id' => $completedStatusId,
+            'end_date' => now(),
+         ];
+
+         //  If a document is required, enforce upload
+         $requiresDoc = ($occurrence->requires_document === true);
+         if ($requiresDoc) {
+            $request->validate([
+               'document' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
+            ], [
+               'document.required' => 'გთხოვთ ატვირთოთ სამუშაოს დოკუმენტი.',
+               'document.mimes' => 'დოკუმენტის ფორმატი არასწორია. ნებადართულია: PDF, Word, Excel.',
+               'document.max' => 'ფაილის ზომა არ უნდა აღემატებოდეს 5MB-ს.',
+            ]);
+
+            $fileName = $this->handleFileUpload(
+               $request,
+               $this->taskDocument['field'],
+               $this->taskDocument['path']
+               ,
+               $occurrence->document_path ?? ''
+            );
+
+            $updateData['document_path'] = $fileName;
+         }
+
+         $occurrence->update($updateData);
+
+         return back()->with(
+            'success',
+            $requiresDoc
+            ? 'დოკუმენტი წარმატებით აიტვირთა და სამუშაო დასრულებულად მოინიშნა.'
+            : 'სამუშაო დასრულებულად მოინიშნა.'
+         );
+
+      } catch (\Exception $e) {
+         Log::error('Task occurrence document upload failed', [
+            'task_id' => $task->id,
+            'occurrence_id' => $occurrence->id ?? null,
+            'error' => $e->getMessage(),
+         ]);
+
+         return back()->with('error', 'დოკუმენტის ატვირთვისას მოხდა შეცდომა, გთხოვთ სცადოთ თავიდან.');
+      }
+   }
 }
