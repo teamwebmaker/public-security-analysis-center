@@ -6,12 +6,14 @@
 
 	<!-- search-->
 	<x-shared.search-bar heading="ყველა სამუშაო" headingPosition="left" :action="route('management.dashboard.tasks')" />
+	<x-shared.filter-bar :filters="$filters" :resetUrl="route('management.dashboard.tasks')" />
 
 	@if ($tasks->isNotEmpty())
 
 		<!-- Tasks -->
 		<div class="my-3 shadow-sm rounded-3 overflow-hidden ">
-			<x-shared.table :items="$tasks" :headers="['#', 'სტატუსი', 'შემსრულებელი', 'ფილიალი', 'სერვისი', 'დოკუმენტი', 'სამუშაოს დაწყება', 'სამუშაოს დასრულება',]" :rows="$userTableRows" :sortableMap="['სამუშაოს დაწყება' => 'start_date', 'სამუშაოს დასრულება' => 'end_date',]" :tooltipColumns="['branch', 'service']" :actions="false" />
+			<x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskRows" :sortableMap="$sortableMap"
+				:tooltipColumns="['branch', 'service']" :actions="false" />
 		</div>
 
 	@else

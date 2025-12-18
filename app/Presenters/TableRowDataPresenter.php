@@ -168,6 +168,7 @@ class TableRowDataPresenter
          'document' => $model->latestOccurrence?->document_path
             ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
             : '---',
+         'due_date' => optional($model->latestOccurrence?->due_date)->format('Y-m-d') ?? '---',
          'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
          'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
 

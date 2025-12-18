@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\TaskOccurrence;
+use App\Models\TaskOccurrenceStatus;
 use App\Presenters\TableRowDataPresenter;
-use GuzzleHttp\Psr7\Request;
+use App\Presenters\TableHeaderDataPresenter;
+use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
+use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CompanyLeaderController extends Controller
@@ -18,16 +23,16 @@ class CompanyLeaderController extends Controller
 
         // Companies related to the user, eager loading branches, tasks (with status), and users
         $userCompanies = $user->companies()->with([
-            'branches.tasks.status',
+            'branches.tasks.latestOccurrence.status',
             'branches.users',
         ])->get();
 
         // Update each branch inside companies with task counts
         $userCompanies->each(function ($company) {
             $company->branches->transform(function ($branch) {
-                $pending = $branch->tasks->filter(fn($t) => $t->status && $t->status->name === 'pending')->count();
-                $active = $branch->tasks->filter(fn($t) => $t->status && $t->status->name === 'in_progress')->count();
-                $completed = $branch->tasks->filter(fn($t) => $t->status && $t->status->name === 'completed')->count();
+                $pending = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'pending')->count();
+                $active = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'in_progress')->count();
+                $completed = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'completed')->count();
 
                 $branch->pending_tasks_count = $pending;
                 $branch->active_tasks_count = $active;
@@ -42,23 +47,32 @@ class CompanyLeaderController extends Controller
 
         $branchIds = $user->companies->flatMap->branches->pluck('id');
 
+        $latestOccurrenceUpdatedAt = $this->latestOccurrenceTimestampSubquery();
+
         $tasks = QueryBuilder::for(Task::class)
             ->whereIn('branch_id', $branchIds)
-            ->allowedIncludes(['status', 'users', 'branch', 'service'])
-            ->allowedSorts(['start_date', 'end_date',])
-            ->latest('created_at') // newest first
-            ->take(10)             // only 10 results
+            ->allowedIncludes(['users', 'branch', 'service', 'latestOccurrence.status'])
+            ->allowedSorts([
+                'created_at',
+                'updated_at',
+                AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
+                AllowedSort::custom('latest_end_date', new LatestOccurrenceEndDateSort()),
+            ])
+            ->with(['branch', 'service', 'latestOccurrence.status'])
+            ->orderByDesc($latestOccurrenceUpdatedAt)
+            ->orderByDesc('updated_at') // fallback
+            ->limit(5)
             ->get();
-
 
         // In-progress tasks
         $inProgressTasks = $allBranches
             ->pluck('tasks')
             ->flatten()
-            ->filter(fn($task) => $task->status && $task->status->name === 'in_progress');
+            ->filter(fn($task) => $task->latestOccurrence?->status?->name === 'in_progress');
 
         $userBranchMap = [];
 
+        // Loop through all branches and map each user to their corresponding branches (to get responsible person names)
         foreach ($allBranches as $branch) {
             foreach ($branch->users as $user) {
                 $userId = $user->id;
@@ -74,23 +88,32 @@ class CompanyLeaderController extends Controller
             }
         }
 
+        // Count responsible persons
+        $uniqueUserCount = count($userBranchMap);
+
         // Sidebar menu items
         $sidebarItems = config('sidebar.company-leader');
 
-        // Optional: count
-        $uniqueUserCount = count($userBranchMap);
+        $sortableMap = $this->taskSortableMap();
 
-        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+        $taskHeaders = TableHeaderDataPresenter::companyLeaderTaskHeaders();
+        $taskRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+
 
         return view("management.{$this->resourceName}.dashboard", [
-
+            'tasks' => $tasks,
             'inProgressTasks' => $inProgressTasks,
+
             'userCompanies' => $userCompanies,
             'userBranchMap' => $userBranchMap,
             'branchUsersCount' => $uniqueUserCount,
-            'tasks' => $tasks,
-            'userTableRows' => $userTableRows,
+
+            'taskHeaders' => $taskHeaders,
+            'taskRows' => $taskRows,
+
             'sidebarItems' => $sidebarItems,
+            'sortableMap' => $sortableMap,
+
         ]);
 
     }
@@ -100,16 +123,19 @@ class CompanyLeaderController extends Controller
         $user = auth()->user();
 
         $branchIds = $user->companies->flatMap->branches->pluck('id');
+
+        $latestOccurrenceUpdatedAt = $this->latestOccurrenceTimestampSubquery();
+
         $tasks = QueryBuilder::for(Task::class)
             ->whereIn('branch_id', $branchIds)
-
-            ->allowedIncludes(["status", "users", "branch", "service"])
+            ->allowedIncludes(["users", "branch", "service", "latestOccurrence.status"])
             // Allowed sorting fields
             ->allowedSorts([
                 "branch_name_snapshot",
                 "service_name_snapshot",
-                "start_date",
-                "end_date",
+                AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
+                AllowedSort::custom('latest_end_date', new LatestOccurrenceEndDateSort()),
+                "created_at",
             ])
             // Allowed Search fields
             ->allowedFilters([
@@ -126,14 +152,14 @@ class CompanyLeaderController extends Controller
                                     "LIKE",
                                     "%$value%"
                                 )
-                            ) // or `title`, based on your schema
+                            )
                             ->orWhereHas(
-                                "status",
+                                "latestOccurrence.status",
                                 fn($q) => $q->where(
                                     "display_name",
                                     "LIKE",
                                     "%$value%"
-                                )
+                                )->orWhere('name', 'LIKE', "%$value%")
                             )
                             ->orWhereHas(
                                 "users",
@@ -145,19 +171,65 @@ class CompanyLeaderController extends Controller
                             );
                     });
                 }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    $query->whereHas('latestOccurrence.status', function ($q) use ($value) {
+                        $q->where('name', $value)->orWhere('display_name', $value);
+                    });
+                }),
+                AllowedFilter::exact('is_recurring'),
             ])
-            ->with(["status", "users", "branch", "service"])
+            ->with(["users", "branch", "service", "latestOccurrence.status"])
+            ->orderByDesc($latestOccurrenceUpdatedAt)
             ->paginate(10)
             ->appends(request()->query());
 
-        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+        $taskHeaders = TableHeaderDataPresenter::companyLeaderTaskHeaders();
+        $taskRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+
         // Sidebar menu items
         $sidebarItems = config('sidebar.company-leader');
+
+        // Sorting & filtering
+        $sortableMap = $this->taskSortableMap();
+        $statusOptions = TaskOccurrenceStatus::pluck('display_name', 'name')->toArray();
+
+        $filters = [
+            'status' => [
+                'label' => 'სტატუსი',
+                'options' => $statusOptions,
+            ],
+            'is_recurring' => [
+                'label' => 'განმეორებადი',
+                'options' => ['1' => 'დიახ', '0' => 'არა'],
+            ],
+        ];
         return view("management.{$this->resourceName}.tasks", [
             'resourceName' => $this->resourceName,
             'tasks' => $tasks,
-            'userTableRows' => $userTableRows,
+            'taskRows' => $taskRows,
+            'taskHeaders' => $taskHeaders,
             'sidebarItems' => $sidebarItems,
+            'sortableMap' => $sortableMap,
+            'filters' => $filters
         ]);
+    }
+
+    protected function taskSortableMap(): array
+    {
+        return [
+            'დაწყება' => 'latest_start_date',
+            'დასრულება' => 'latest_end_date',
+        ];
+    }
+
+    /**
+     * Latest occurrence timestamp subquery for ordering tasks.
+     */
+    protected function latestOccurrenceTimestampSubquery(string $column = 'updated_at')
+    {
+        return TaskOccurrence::select($column)
+            ->whereColumn('task_occurrences.task_id', 'tasks.id')
+            ->latest()
+            ->limit(1);
     }
 }

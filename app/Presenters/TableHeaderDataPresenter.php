@@ -24,7 +24,25 @@ class TableHeaderDataPresenter
          'სერვისი',
          'კოლეგები',
          'დოკუმენტი',
-         'გეგმიური თარიღი',
+         'განმეორების თარიღი',
+         'დაწყება',
+         'დასრულება',
+      ];
+   }
+
+   /**
+    * Headers for company leader task tables (latest occurrence centric).
+    */
+   public static function companyLeaderTaskHeaders(): array
+   {
+      return [
+         '#',
+         'სტატუსი',
+         'შემსრულებელი',
+         'ფილიალი',
+         'სერვისი',
+         'დოკუმენტი',
+         'განმეორების თარიღი',
          'დაწყება',
          'დასრულება',
       ];
