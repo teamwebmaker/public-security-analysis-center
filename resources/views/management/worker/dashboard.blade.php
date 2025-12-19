@@ -23,7 +23,7 @@
 @section('main')
 	<!-- Stats -->
 	<div class="row g-3 border-bottom pb-4">
-		<x-management.stat-card label="ელოდება სამუშაოს დადასტურებას" :count="$statusCounts['pending'] ?? 0"
+		<x-management.stat-card label="ელოდება სამუშაოს დაწყებას" :count="$statusCounts['pending'] ?? 0"
 			icon="bi bi-hourglass-split" iconWrapperClasses=" bg-warning bg-opacity-10 text-warning" />
 
 		<x-management.stat-card label="აქტიური სამუშაოები" :count="$statusCounts['in_progress'] ?? 0" icon="bi bi-ui-radios"

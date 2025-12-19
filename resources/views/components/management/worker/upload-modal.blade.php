@@ -1,7 +1,7 @@
 <x-modal id="uploadDocumentModal_{{ $task->id }}" title="სამუშაოს დასრულების პროცესი" size="md" height="30dvh">
     <div class="p-4" style="height: 100%; overflow-y: auto;">
         <p class="text-muted mb-4">
-            იმისათვის რომ სამუშაო მოინიშნოს დასრულებულად, გთხოვთ ატვირთოთ დოკუმენტი.
+            იმისათვის რომ სამუშაო მოინიშნოს დასრულებულად, გთხოვთ ატვირთოთ დოკუმენტი და დაჭიროთ დასრულებას.
         </p>
 
         <form action="{{ route('management.tasks.upload-document', $task) }}" method="POST"

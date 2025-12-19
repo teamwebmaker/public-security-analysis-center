@@ -393,7 +393,7 @@ class TaskController extends CrudController
 
             return redirect()
                ->back()
-               ->with('success', 'ციკლი დაწყებულად მოინიშნა წარმატებით.');
+               ->with('success', 'სამუშაო დაწყებულად მოინიშნა წარმატებით.');
          }
 
          return redirect()
@@ -439,7 +439,7 @@ class TaskController extends CrudController
 
          // Enforce: only in_progress occurrences can be completed
          if ($occurrence->status_id !== $inProgressStatusId) {
-            return back()->with('error', 'დასრულება შესაძლებელია მხოლოდ "მიმდინარე" სტატუსის მქონე სამუშაოზე.');
+            return back()->with('error', 'დასრულება შესაძლებელია მხოლოდ "პროცესშია" სტატუსის მქონე სამუშაოზე.');
          }
 
          $updateData = [
