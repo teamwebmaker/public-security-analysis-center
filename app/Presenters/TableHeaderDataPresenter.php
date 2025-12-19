@@ -42,10 +42,35 @@ class TableHeaderDataPresenter
          'ფილიალი',
          'სერვისი',
          'დოკუმენტი',
-         'განმეორების თარიღი',
          'დაწყება',
          'დასრულება',
       ];
+   }
+
+   /**
+    * Headers for responsible person task tables.
+    */
+   public static function responsiblePersonTaskHeaders(): array
+   {
+      return [
+         '#',
+         'სტატუსი',
+         'შემსრულებელი',
+         'ფილიალი',
+         'სერვისი',
+         'დოკუმენტი',
+         'განმეორების თარიღი',
+         'სამუშაო დაიწყო',
+         'სამუშაო დასრულდა',
+      ];
+   }
+
+   /**
+    * Headers for responsible person dashboard branches table.
+    */
+   public static function responsiblePersonBranchHeaders(): array
+   {
+      return ['#', 'სახელი', 'მისამართი', 'მშობელი კომპანია'];
    }
 
    public static function occurrenceHeaders()
