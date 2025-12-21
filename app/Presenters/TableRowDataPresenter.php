@@ -4,96 +4,152 @@ namespace App\Presenters;
 
 use App\Models\Branch;
 use App\Models\Task;
+use App\Models\TaskOccurrence;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
-
 
 class TableRowDataPresenter
 {
    /**
-    * Format the given model data based on context.
-    *
-    * @param Model $model
-    * @param string $context
-    * @return array
+    * Build an admin task row for task index tables.
     */
-   public static function format(Model $model, string $context = 'default'): array
+   public static function adminTaskRow(Task $task): array
    {
-      if ($context === 'admin') {
-         return self::formatAdmin($model);
-      }
-
-      if ($context === 'management') {
-         return self::formatManagement($model);
-      }
-
-      if ($context === 'management_worker') {
-         return self::formatManagementWorker($model);
-      }
-
-      if ($context === 'branches') {
-         return self::formatBranches($model);
-      }
-
-      return []; // default
-   }
-   /**
-    * Format task data for admin context.
-    *
-    * @param Model $model
-    * @return array
-    *
-    * @throws InvalidArgumentException
-    */
-   private static function formatAdmin(Model $model): array
-   {
-      if (!$model instanceof Task) {
-         throw new InvalidArgumentException('Expected instance of Task');
-      }
-
       return [
-         'id' => $model->id,
+         'id' => $task->id,
          'visibility' => self::badge(
-            $model->visibility ? 'ხილული' : 'დამალული',
-            $model->visibility ? 'success' : 'danger'
+            $task->visibility ? 'ხილული' : 'დამალული',
+            $task->visibility ? 'success' : 'danger'
          ),
-         'worker' => self::formatWorker($model),
+         'worker' => self::formatTaskWorkers($task),
          'branch' => self::link(
-            $model->branch,
+            $task->branch,
             'branches.index',
-            $model->branch?->name ?? $model->branch_name_snapshot ?? '---',
-            $model->branch_name_snapshot ?? '---'
+            $task->branch?->name ?? $task->branch_name_snapshot ?? '---',
+            $task->branch_name_snapshot ?? '---'
          ),
          'service' => self::link(
-            $model->service,
+            $task->service,
             'services.index',
-            $model->service?->title->ka
-            ?? $model->service?->title->en
-            ?? $model->service_name_snapshot
+            $task->service?->title->ka
+            ?? $task->service?->title->en
+            ?? $task->service_name_snapshot
             ?? 'უცნობი',
-            $model->service_name_snapshot ?? 'უცნობი'
+            $task->service_name_snapshot ?? 'უცნობი'
          ),
-         'occ_status' => $model->latestOccurrence?->status
-            ? self::badge($model->latestOccurrence->status->display_name, self::statusColorForOccurrence($model->latestOccurrence))
+         'occ_status' => $task->latestOccurrence?->status
+            ? self::badge($task->latestOccurrence->status->display_name, self::statusColorForOccurrence($task->latestOccurrence))
             : self::badge('უცნობი', 'secondary'),
-         'occ_document' => $model->latestOccurrence?->document_path
-            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
+         'occ_document' => $task->latestOccurrence?->document_path
+            ? self::documentLink('/tasks/' . $task->latestOccurrence->document_path)
             : '---',
-         'recurrence_interval' => $model->recurrence_interval ? $model->recurrence_interval . " დღე" : '---',
-         // 'is_recurring' => $model->is_recurring ? self::badge('დიახ', 'info') : self::badge('არა', 'secondary'),
-         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
-         'created_at' => optional($model->created_at)->format('Y-m-d H:i') ?? '---',
+         'recurrence_interval' => $task->recurrence_interval ? $task->recurrence_interval . " დღე" : '---',
+         'start_date' => optional($task->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($task->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
+         'created_at' => optional($task->created_at)->format('Y-m-d H:i') ?? '---',
       ];
    }
 
    /**
-    * Format task occurrence rows for table component.
+    * Build a task row for company leader task tables.
+    */
+   public static function companyLeaderTaskRow(Task $task): array
+   {
+      $columns = self::buildTaskColumns($task);
+
+      return self::pickColumns($columns, [
+         'id',
+         'status',
+         'worker',
+         'branch',
+         'service',
+         'document',
+         'due_date',
+         'start_date',
+         'end_date',
+      ]);
+   }
+
+   /**
+    * Build a task row for responsible person task tables.
+    */
+   public static function responsiblePersonTaskRow(Task $task): array
+   {
+      $columns = self::buildTaskColumns($task);
+
+      return self::pickColumns($columns, [
+         'id',
+         'status',
+         'payment_status',
+         'worker',
+         'branch',
+         'service',
+         'document',
+         'due_date',
+         'start_date',
+         'end_date',
+      ]);
+   }
+
+   /**
+    * Build a payment row for responsible person dashboards.
+    */
+   public static function responsiblePersonPaymentRow(TaskOccurrence $occurrence): array
+   {
+      return [
+         'id' => $occurrence->id,
+         'branch' => $occurrence->branch_name_snapshot ?? '---',
+         'service' => $occurrence->service_name_snapshot ?? '---',
+         'due_date' => optional($occurrence->due_date)->format('Y-m-d') ?? '---',
+         'payment_status' => self::paymentStatusBadge($occurrence->payment_status),
+      ];
+   }
+
+   /**
+    * Build a task row for worker dashboards.
+    */
+   public static function workerTaskRow(Task $task): array
+   {
+      $columns = self::buildTaskColumns(
+         $task,
+         after: function (array $columns, Task $task): array {
+            $columns['coworker'] = self::formatCoworkers($task);
+            return $columns;
+         }
+      );
+
+      return self::pickColumns($columns, [
+         'id',
+         'status',
+         'branch',
+         'service',
+         'coworker',
+         'document',
+         'due_date',
+         'start_date',
+         'end_date',
+      ]);
+   }
+
+   /**
+    * Build a branch row for branch tables.
+    */
+   public static function branchRow(Branch $branch): array
+   {
+      return [
+         'id' => $branch->id,
+         'name' => $branch->name ?? 'უცნობი',
+         'address' => $branch->address ?? 'უცნობი',
+         'company' => $branch->company->name ?? 'არ ჰყავს',
+      ];
+   }
+
+   /**
+    * Build task occurrence rows for the admin occurrences modal.
     *
     * @param \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Collection $occurrences
     * @param int|null $latestId
-    * @param callable|null $actionResolver optional resolver to generate actions per occurrence
-    * @param Task|null $task parent task to read branch/service/workers without extra queries
+    * @param callable|null $actionResolver
+    * @param Task|null $task
     * @return \Illuminate\Support\Collection
     */
    public static function formatOccurrences($occurrences, ?int $latestId = null, ?callable $actionResolver = null, ?Task $task = null)
@@ -108,6 +164,10 @@ class TableRowDataPresenter
 
          return [
             'id' => ($isLatest ? " <span class='badge bg-success ms-2'>$occurrence->id</span>" : $occurrence->id),
+            'visibility' => self::badge(
+               $occurrence->visibility ? 'ხილული' : 'დამალული',
+               $occurrence->visibility ? 'success' : 'danger'
+            ),
             'branch' => self::snapshotLink(
                $branchModel,
                'branches.index',
@@ -121,11 +181,8 @@ class TableRowDataPresenter
                $serviceModel?->title->ka ?? $serviceModel?->title->en
             ),
             'workers' => self::formatOccurrenceWorkers($occurrence),
-            'visibility' => self::badge(
-               $occurrence->visibility ? 'ხილული' : 'დამალული',
-               $occurrence->visibility ? 'success' : 'danger'
-            ),
             'status' => '<span class="badge bg-' . e($statusColor) . '">' . e($occurrence->status?->display_name ?? 'უცნობი') . '</span>',
+            'payment_status' => self::paymentStatusBadge($occurrence->payment_status),
             'due_date' => optional($occurrence->due_date)->format('Y-m-d') ?? '---',
             'start_date' => optional($occurrence->start_date)->format('Y-m-d H:i') ?? '---',
             'end_date' => optional($occurrence->end_date)->format('Y-m-d H:i') ?? '---',
@@ -137,92 +194,58 @@ class TableRowDataPresenter
       });
    }
 
-
    /**
-    * Format task data for management users context.
-    *
-    * @param Model $model
-    * @return array
-    *
-    * @throws InvalidArgumentException
+    * Build a shared task column map with optional hooks.
     */
-   private static function formatManagement(Model $model): array
-   {
-      if (!$model instanceof Task) {
-         throw new InvalidArgumentException('Expected instance of Task');
+   private static function buildTaskColumns(
+      Task $task,
+      ?callable $before = null,
+      ?callable $after = null
+   ): array {
+      $baseColumns = [
+         'id' => $task->id,
+         'status' => self::badge(
+            $task->latestOccurrence?->status?->display_name ?? 'უცნობი',
+            self::statusColorForOccurrence($task->latestOccurrence)
+         ),
+         'worker' => self::formatTaskWorkers($task),
+         'branch' => $task->branch_name_snapshot ?? $task->latestOccurrence?->branch_name_snapshot ?? 'უცნობი',
+         'service' => $task->service?->title->ka
+            ?? $task->service?->title->en
+            ?? $task->service_name_snapshot
+            ?? $task->latestOccurrence?->service_name_snapshot
+            ?? 'უცნობი',
+         'document' => $task->latestOccurrence?->document_path
+            ? self::documentLink('/tasks/' . $task->latestOccurrence->document_path)
+            : '---',
+         'payment_status' => $task->latestOccurrence?->payment_status
+            ? self::paymentStatusBadge($task->latestOccurrence->payment_status)
+            : 'უცნობი',
+         'due_date' => optional($task->latestOccurrence?->due_date)->format('Y-m-d') ?? 'არ მეორდება',
+         'start_date' => optional($task->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($task->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
+      ];
+
+      $columns = [];
+
+      if ($before) {
+         $columns = $before($columns, $task) ?? $columns;
       }
 
-      return [
-         'id' => $model->id,
-         'status' => self::badge(
-            $model->latestOccurrence?->status?->display_name ?? 'უცნობი',
-            self::statusColorForOccurrence($model->latestOccurrence)
-         ),
-         'worker' => self::formatWorker($model),
-         'branch' => $model->branch_name_snapshot ?? $model->latestOccurrence?->branch_name_snapshot ?? 'უცნობი',
-         'service' => $model->service?->title->ka
-            ?? $model->service?->title->en
-            ?? $model->service_name_snapshot
-            ?? $model->latestOccurrence?->service_name_snapshot
-            ?? 'უცნობი',
-         'document' => $model->latestOccurrence?->document_path
-            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
-            : '---',
-         'due_date' => optional($model->latestOccurrence?->due_date)->format('Y-m-d') ?? 'არ მეორდება',
-         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
+      $columns = array_merge($columns, $baseColumns);
 
-      ];
-   }
-
-   /**
-    * Format task data for worker tasks context.
-    *
-    * @param Model $model
-    * @return array
-    *
-    * @throws InvalidArgumentException
-    */
-   private static function formatManagementWorker(Model $model): array
-   {
-      if (!$model instanceof Task) {
-         throw new InvalidArgumentException('Expected instance of Task');
+      if ($after) {
+         $columns = $after($columns, $task) ?? $columns;
       }
 
-      return [
-         'id' => $model->id,
-         'status' => self::badge(
-            $model->latestOccurrence?->status?->display_name ?? 'უცნობი',
-            self::statusColorForOccurrence($model->latestOccurrence)
-         ),
-         'branch' => $model->branch_name_snapshot ?? $model->latestOccurrence?->branch_name_snapshot ?? 'უცნობი',
-         'service' => $model->service?->title->ka
-            ?? $model->service?->title->en
-            ?? $model->service_name_snapshot
-            ?? $model->latestOccurrence?->service_name_snapshot
-            ?? 'უცნობი',
-         'Coworker' => self::formatWorker(
-            $model->setRelation(
-               'users',
-               $model->users->where('id', '!=', auth()->id())
-            )
-         ),
-         'document' => $model->latestOccurrence?->document_path
-            ? self::documentLink('/tasks/' . $model->latestOccurrence->document_path)
-            : '---',
-         'due_date' => optional($model->latestOccurrence?->due_date)->format('Y-m-d') ?? 'არ მეორდება',
-         'start_date' => optional($model->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($model->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
-      ];
+      return $columns;
    }
 
+
    /**
-    * Helper: Format worker display depending on the number of assigned users.
-    *
-    * @param Task $task
-    * @return string
+    * Format assigned task workers into badges or a dropdown.
     */
-   private static function formatWorker(Task $task): string
+   private static function formatTaskWorkers(Task $task): string
    {
       return self::formatWorkersCollection(
          $task->users,
@@ -231,97 +254,20 @@ class TableRowDataPresenter
    }
 
    /**
-    * Format branch data.
-
-    * @param Model $model
-    * @return array
-    *
-    * @throws InvalidArgumentException
+    * Format coworkers by excluding the authenticated user.
     */
-   private static function formatBranches(Model $model): array
+   private static function formatCoworkers(Task $task): string
    {
-      if (!$model instanceof Branch) {
-         throw new InvalidArgumentException('Expected instance of Branch');
-      }
-
-      return [
-         'id' => $model->id,
-         'name' => $model->name ?? 'უცნობი',
-         'address' => $model->address ?? 'უცნობი',
-         'company' => $model->company->name ?? 'არ ჰყავს',
-      ];
+      return self::formatTaskWorkers(
+         $task->setRelation(
+            'users',
+            $task->users->where('id', '!=', auth()->id())
+         )
+      );
    }
 
    /**
-    * Helper: Render a Bootstrap badge HTML element.
-    *
-    * @param string $text
-    * @param string $color
-    * @return string
-    */
-   private static function badge(string $text, string $color): string
-   {
-      return '<span class="badge bg-' . e($color) . '">' . e($text) . '</span>';
-   }
-
-   /**
-    * Helper: Render a hyperlink if model exists, otherwise fallback with strikethrough.
-    *
-    * @param Model|null $model
-    * @param string $route
-    * @param string $label
-    * @param string $fallback
-    * @return string
-    */
-   private static function link(?Model $model, string $route, string $label, string $fallback): string
-   {
-      return $model
-         ? '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($label) . '</a>'
-         : '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
-   }
-
-   /**
-    * Helper: Determine Bootstrap color class based on task status.
-    *
-    * @param Task $task
-    * @return string
-    */
-   private static function statusColor(Task $task): string
-   {
-      return [
-         'pending' => 'warning',
-         'in_progress' => 'info',
-         'completed' => 'success',
-         'on_hold' => 'secondary',
-         'cancelled' => 'danger',
-      ][$task->status?->name] ?? 'secondary';
-   }
-
-   /**
-    * Helper: Render snapshot label with link when model still exists. Warn if snapshot outdated.
-    */
-   private static function snapshotLink(?Model $model, string $route, ?string $snapshotName, ?string $currentName): string
-   {
-      // Always display the snapshot name when available; fallback to current name.
-      $name = $snapshotName ?? $currentName ?? '---';
-
-      // Only warn if both values exist and differ. Prefer current name in tooltip for clarity.
-      $isOutdated = $snapshotName && $currentName && $snapshotName !== $currentName;
-      $outdatedBadge = $isOutdated
-         ? "<span class='badge bg-warning text-dark me-1' title='ახლა: " . e($currentName) . "'><i class='bi bi-info-circle-fill'></i></span>"
-         : '';
-
-      if ($model) {
-         return $outdatedBadge . '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($name) . '</a>';
-      }
-
-      // If we have a snapshot name but no model, use snapshot; otherwise show placeholder.
-      $fallback = $snapshotName ?? '---';
-      return $outdatedBadge . '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
-   }
-
-   /**
-    * Helper: Format occurrence workers from snapshot records.
+    * Format occurrence workers using snapshot data.
     */
    private static function formatOccurrenceWorkers($occurrence): string
    {
@@ -332,7 +278,7 @@ class TableRowDataPresenter
    }
 
    /**
-    * Helper: Shared worker formatter for tasks and occurrences.
+    * Format a worker list into a single badge or a dropdown.
     */
    private static function formatWorkersCollection($workers, callable $nameResolver): string
    {
@@ -359,8 +305,64 @@ class TableRowDataPresenter
          '</select>';
    }
 
+   // =====================
+   // Helpers
+   // =====================
+
    /**
-    * Helper: Determine Bootstrap color class based on occurrence status.
+    * Select a subset of columns while preserving key order.
+    */
+   private static function pickColumns(array $columns, array $keys): array
+   {
+      $picked = [];
+      foreach ($keys as $key) {
+         if (array_key_exists($key, $columns)) {
+            $picked[$key] = $columns[$key];
+         }
+      }
+
+      return $picked;
+   }
+
+   /**
+    * Render a branch/service snapshot link with an outdated badge.
+    */
+   private static function snapshotLink(?Model $model, string $route, ?string $snapshotName, ?string $currentName): string
+   {
+      $name = $snapshotName ?? $currentName ?? '---';
+      $isOutdated = $snapshotName && $currentName && $snapshotName !== $currentName;
+      $outdatedBadge = $isOutdated
+         ? "<span class='badge bg-warning text-dark me-1' title='ახლა: " . e($currentName) . "'><i class='bi bi-info-circle-fill'></i></span>"
+         : '';
+
+      if ($model) {
+         return $outdatedBadge . '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($name) . '</a>';
+      }
+
+      $fallback = $snapshotName ?? '---';
+      return $outdatedBadge . '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
+   }
+
+   /**
+    * Render a Bootstrap badge for status or helper labels.
+    */
+   private static function badge(string $text, string $color): string
+   {
+      return '<span class="badge bg-' . e($color) . '">' . e($text) . '</span>';
+   }
+
+   /**
+    * Render a route link if a model exists, otherwise show a strikethrough label.
+    */
+   private static function link(?Model $model, string $route, string $label, string $fallback): string
+   {
+      return $model
+         ? '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($label) . '</a>'
+         : '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
+   }
+
+   /**
+    * Map occurrence status to a Bootstrap color class.
     */
    private static function statusColorForOccurrence($occurrence): string
    {
@@ -370,15 +372,27 @@ class TableRowDataPresenter
          'completed' => 'success',
          'on_hold' => 'secondary',
          'cancelled' => 'danger',
-      ][$occurrence->status?->name] ?? 'secondary';
+      ][$occurrence?->status?->name] ?? 'secondary';
    }
 
+   /**
+    * Render a badge for payment status.
+    */
+   private static function paymentStatusBadge(string $status): string
+   {
+      $map = [
+         'paid' => ['label' => 'გადახდილი', 'class' => 'success'],
+         'unpaid' => ['label' => 'გადასახდელი', 'class' => 'danger'],
+         'pending' => ['label' => 'მოლოდინში', 'class' => 'warning'],
+         'overdue' => ['label' => 'ვადაგადაცილებული', 'class' => 'danger'],
+      ];
+
+      $entry = $map[$status] ?? ['label' => $status, 'class' => 'secondary'];
+      return '<span class="badge bg-' . e($entry['class']) . '">' . e($entry['label']) . '</span>';
+   }
 
    /**
-    * Helper: Render a document link using Fancybox for PDFs, download for others.
-    *
-    * @param string $path
-    * @return string
+    * Render a document link for PDFs or downloadable files.
     */
    private static function documentLink(string $path): string
    {
@@ -386,7 +400,6 @@ class TableRowDataPresenter
       $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
       $label = strtoupper($extension) . ' ფაილი';
 
-      // PDFs open in Fancybox
       if ($extension === 'pdf') {
          return '<a data-fancybox data-type="pdf" data-src="' . e($url) . '" href="javascript:;" 
                     class="text-primary text-decoration-underline">'
@@ -395,7 +408,6 @@ class TableRowDataPresenter
             . '</a>';
       }
 
-      // Other document types trigger download
       return '<a href="' . e($url) . '" download 
                 class="text-primary text-decoration-underline">'
          . '<i class="bi bi-file-earmark-arrow-down me-1 text-success"></i>'

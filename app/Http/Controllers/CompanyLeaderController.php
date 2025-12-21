@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
-use App\Presenters\TableRowDataPresenter;
+
 use App\Presenters\TableHeaderDataPresenter;
+use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceDueDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
@@ -82,7 +83,7 @@ class CompanyLeaderController extends Controller
 
     protected function taskRows($tasks)
     {
-        return $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+        return $tasks->map(fn($task) => TableRowDataPresenter::companyLeaderTaskRow($task));
     }
 
     protected function branchIds($user)

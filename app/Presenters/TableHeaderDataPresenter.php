@@ -56,6 +56,7 @@ class TableHeaderDataPresenter
       return [
          '#',
          'სტატუსი',
+         'გადახდის სტატისი',
          'შემსრულებელი',
          'ფილიალი',
          'სერვისი',
@@ -74,15 +75,30 @@ class TableHeaderDataPresenter
       return ['#', 'სახელი', 'მისამართი', 'მშობელი კომპანია'];
    }
 
-   public static function occurrenceHeaders()
+   /**
+    * Headers for responsible person payment tracking table.
+    */
+   public static function responsiblePersonPaymentHeaders(): array
    {
       return [
          '#',
          'ფილიალი',
          'სერვისი',
-         'შემსრულებლები',
+         'გადახდის ბოლო ვადა',
+         'გადახდის სტატუსი',
+      ];
+   }
+
+   public static function occurrenceHeaders()
+   {
+      return [
+         '#',
          'ხილვადობა',
+         'ფილიალი',
+         'სერვისი',
+         'შემსრულებლები',
          'სტატუსი',
+         'გადახდის სტატუსი',
          'განმეორების თარიღი',
          'დაწყება',
          'დასრულება',

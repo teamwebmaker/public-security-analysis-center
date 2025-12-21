@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use App\Presenters\TableHeaderDataPresenter;
 use App\Presenters\TableRowDataPresenter;
@@ -28,37 +29,33 @@ class ResponsiblePersonController extends Controller
             ->paginate(5, ['*'], 'branches_page')
             ->appends(request()->query());
 
-        $inProgressTasks = $this->buildInProgressTasksQuery($branchIds, $allowedServiceIds)
-            ->paginate(5, ['*'], 'tasks_page')
-            ->appends(request()->query());
-
-        $taskHeaders = array_values(array_filter(
-            TableHeaderDataPresenter::responsiblePersonTaskHeaders(),
-            fn($header) => $header !== 'სამუშაო დასრულდა'
-        ));
-
-        $taskRows = $inProgressTasks->getCollection()
-            ->map(fn($task) => TableRowDataPresenter::format($task, 'management'))
-            ->map(function ($row) {
-                unset($row['end_date']);
-                return $row;
-            });
+        $inProgressCount = $this->countInProgressTasks($branchIds, $allowedServiceIds);
 
         $branchTableHeaders = TableHeaderDataPresenter::responsiblePersonBranchHeaders();
         $branchTableRows = $userBranches->getCollection()
-            ->map(fn($task) => TableRowDataPresenter::format($task, 'branches'));
+            ->map(fn($branch) => TableRowDataPresenter::branchRow($branch));
 
+        $paymentOccurrences = TaskOccurrence::query()
+            ->whereIn('branch_id_snapshot', $branchIds)
+            ->whereIn('service_id_snapshot', $allowedServiceIds)
+            ->whereIn('payment_status', ['unpaid', 'pending', 'overdue'])
+            ->orderBy('due_date')
+            ->paginate(8, ['*'], 'payments_page')
+            ->appends(request()->query());
+
+        $paymentHeaders = TableHeaderDataPresenter::responsiblePersonPaymentHeaders();
+        $paymentRows = $paymentOccurrences->map(fn($occurrence) => TableRowDataPresenter::responsiblePersonPaymentRow($occurrence));
         $sidebarItems = config('sidebar.responsible-person');
 
         return view("management.{$this->resourceName}.dashboard", [
             'sidebarItems' => $sidebarItems,
             'userBranches' => $userBranches,
-            'taskHeaders' => $taskHeaders,
-            'taskRows' => $taskRows,
             'branchTableRows' => $branchTableRows,
             'branchTableHeaders' => $branchTableHeaders,
-            'inProgressTasks' => $inProgressTasks,
-            'sortableMap' => $this->dashboardSortableMap(),
+            'inProgressCount' => $inProgressCount,
+            'paymentOccurrences' => $paymentOccurrences,
+            'paymentHeaders' => $paymentHeaders,
+            'paymentRows' => $paymentRows,
         ]);
     }
 
@@ -72,7 +69,7 @@ class ResponsiblePersonController extends Controller
             ->paginate(10)
             ->appends(request()->query());
 
-        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management'));
+        $userTableRows = $tasks->map(fn($task) => TableRowDataPresenter::responsiblePersonTaskRow($task));
         $taskHeaders = TableHeaderDataPresenter::responsiblePersonTaskHeaders();
 
         $sidebarItems = config('sidebar.responsible-person');
@@ -98,17 +95,13 @@ class ResponsiblePersonController extends Controller
         return $user->services->pluck('id')->toArray();
     }
 
-    protected function buildInProgressTasksQuery($branchIds, array $allowedServiceIds)
+    protected function countInProgressTasks($branchIds, array $allowedServiceIds): int
     {
-        return QueryBuilder::for(Task::class)
+        return Task::query()
             ->whereIn('branch_id', $branchIds)
             ->whereIn('service_id', $allowedServiceIds)
             ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'in_progress'))
-            ->with(['users', 'branch', 'service', 'latestOccurrence.status'])
-            ->allowedSorts([
-                AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
-                AllowedSort::custom('latest_due_date', new LatestOccurrenceDueDateSort()),
-            ]);
+            ->count();
     }
 
     protected function buildTasksQuery($branchIds, array $allowedServiceIds)
@@ -129,11 +122,21 @@ class ResponsiblePersonController extends Controller
     protected function taskFilters(): array
     {
         $statusOptions = TaskOccurrenceStatus::pluck('display_name', 'name')->toArray();
+        $paymentStatusOptions = [
+            'paid' => 'გადახდილი',
+            'unpaid' => 'გადასახდელი',
+            'pending' => 'მოლოდინში',
+            'overdue' => 'ვადაგადაცილებული',
+        ];
 
         return [
             'status' => [
                 'label' => 'სტატუსი',
                 'options' => $statusOptions,
+            ],
+            'payment_status' => [
+                'label' => 'გადახდოს სტატისი',
+                'options' => $paymentStatusOptions,
             ],
             'is_recurring' => [
                 'label' => 'განმეორებადი',
@@ -158,15 +161,12 @@ class ResponsiblePersonController extends Controller
                     $q->where('name', $value)->orWhere('display_name', $value);
                 });
             }),
+            AllowedFilter::callback('payment_status', function ($query, $value) {
+                $query->whereHas('latestOccurrence', function ($q) use ($value) {
+                    $q->where('payment_status', $value);
+                });
+            }),
             AllowedFilter::exact('is_recurring'),
-        ];
-    }
-
-    protected function dashboardSortableMap(): array
-    {
-        return [
-            'განმეორების თარიღი' => 'latest_due_date',
-            'სამუშაო დაიწყო' => 'latest_start_date',
         ];
     }
 
@@ -178,4 +178,6 @@ class ResponsiblePersonController extends Controller
             'სამუშაო დასრულდა' => 'latest_end_date',
         ];
     }
+
+
 }

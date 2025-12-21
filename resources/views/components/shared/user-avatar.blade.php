@@ -13,7 +13,7 @@
         <!-- Log out-->
         <li>
             <!-- Decide which logout route to use -->
-            <form method="POST" @if (Auth::user()->isAdmin()) action="{{ route('admin.logout') }}" @else
+            <form class="mb-0" method="POST" @if (Auth::user()->isAdmin()) action="{{ route('admin.logout') }}" @else
             action="{{ route('logout') }}" @endif">
                 @csrf
                 <button type="submit" class="dropdown-item rounded-2">{{__('static.user_avatar.logout')}}</button>

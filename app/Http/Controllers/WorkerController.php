@@ -63,7 +63,7 @@ class WorkerController extends Controller
         ];
 
         // Task table row data
-        $taskTableRows = $tasks->map(fn($task) => TableRowDataPresenter::format($task, 'management_worker'));
+        $taskTableRows = $tasks->map(fn($task) => TableRowDataPresenter::workerTaskRow($task));
 
         // Precompute actions & modal triggers per task (table expects arrays)
         $customActionMap = [];

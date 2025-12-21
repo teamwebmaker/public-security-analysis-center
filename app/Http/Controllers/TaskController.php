@@ -135,7 +135,7 @@ class TaskController extends CrudController
       $occurrenceHeaders = TableHeaderDataPresenter::occurrenceHeaders();
 
       $taskRows = $tasks->map(
-         fn($task) => TableRowDataPresenter::format($task, 'admin')
+         fn($task) => TableRowDataPresenter::adminTaskRow($task)
       );
 
       $occurrenceRows = $tasks->mapWithKeys(function ($task) {
