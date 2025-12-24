@@ -150,9 +150,19 @@ class TaskController extends CrudController
             function ($occurrence) {
                $editUrl = route('task-occurrences.edit', $occurrence);
                $deleteUrl = route('task-occurrences.destroy', $occurrence);
+               $markPaidUrl = route('task-occurrences.mark-paid', $occurrence);
                $isLatest = $occurrence->isLatest();
+               $isPaid = $occurrence->payment_status === 'paid';
 
-               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="d-inline">'
+               $markPaidButton = $isPaid ? '' : '<form method="POST" action="' . e($markPaidUrl) . '" onsubmit="return confirm(\'ნამდვილად გსურსთ ამ ციკლის გადახდის სტატუსი განაახლოთ როგორც გადახდილი?\')" class="m-0">'
+                  . csrf_field()
+                  . method_field('PUT')
+                  . '<button type="submit" class="btn btn-sm btn-outline-success" title="გადახდილია">'
+                  . '<i class="bi bi-cash-coin"></i>'
+                  . '</button>'
+                  . '</form>';
+
+               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="m-0">'
                   . csrf_field()
                   . method_field('DELETE')
                   . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
@@ -162,8 +172,11 @@ class TaskController extends CrudController
                   . '</button>'
                   . '</form>';
 
-               return '<div class="d-flex gap-2 justify-content-end">'
-                  . '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary">ჩასწორება</a>'
+               $editButton = '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></a>';
+
+               return '<div class="d-flex gap-2 align-items-center justify-content-center">'
+                  . $markPaidButton
+                  . $editButton
                   . $deleteButton
                   . '</div>';
             },

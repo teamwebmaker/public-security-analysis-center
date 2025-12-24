@@ -19,6 +19,22 @@ class TaskOccurrenceController extends Controller
       'path' => 'documents/tasks/'
    ];
    /**
+    * Mark a task occurrence as paid.
+    */
+   public function markPaid(TaskOccurrence $taskOccurrence)
+   {
+      if ($taskOccurrence->payment_status === 'paid') {
+         return back()->with('info', 'გადახდის სტატუსი უკვე შეყვანილია როგორც გადახდილი.');
+      }
+
+      $taskOccurrence->update([
+         'payment_status' => 'paid',
+      ]);
+
+      return back()->with('success', 'გადახდის სტატუსი განახლდა.');
+   }
+
+   /**
     * Update an existing task occurrence.
     * Guards: no due_date/start_date/end_date changes (request prohibits).
     * Warns/blocks if latest occurrence is deleted (handled in destroy).

@@ -136,6 +136,8 @@ Route::prefix('admin')->group(function () {
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
         Route::resource('task-occurrences', TaskOccurrenceController::class)->only(['edit', 'update', 'destroy', 'show'])->parameters(['task-occurrences' => 'taskOccurrence']);
+        Route::put('task-occurrences/{taskOccurrence}/mark-paid', [TaskOccurrenceController::class, 'markPaid'])
+            ->name('task-occurrences.mark-paid');
 
 
         // CRUD: Projects, Partners, Publications
