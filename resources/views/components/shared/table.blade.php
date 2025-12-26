@@ -84,7 +84,7 @@
 								@endforeach
 
 								@foreach ($actionsList as $action)
-									<form method="POST" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm'])) onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
+									<form method="POST" class="m-0" action="{{ route($action['route_name'], $model) }}" @if (isset($action['confirm'])) onsubmit="return confirm('{{ $action['confirm'] }}')" @endif>
 										@csrf
 										@if (($action['method'] ?? 'POST') !== 'POST')
 											@method($action['method'])

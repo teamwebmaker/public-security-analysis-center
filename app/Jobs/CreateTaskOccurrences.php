@@ -42,7 +42,7 @@ class CreateTaskOccurrences implements ShouldQueue
          ->where('archived', '0')
          ->whereHas('latestOccurrence', function ($query) {
             $query->whereNotNull('due_date')
-               ->whereDate('due_date', '<=', now()->toDateString());
+               ->whereDate('due_date', '<=', now('Asia/Tbilisi')->toDateString());
          })
          ->with(['latestOccurrence.status', 'users'])
          ->chunkById(100, function ($tasks) use ($pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount) {

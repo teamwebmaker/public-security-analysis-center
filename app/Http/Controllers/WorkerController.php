@@ -157,6 +157,7 @@ class WorkerController extends Controller
                 'icon' => 'bi-check2',
                 'route_name' => "{$taskRoute}.upload-document",
                 'method' => 'PUT',
+                'confirm' => 'ნამდვილად გსურთ სამუშაოს დასრულება?',
                 'class' => 'text-primary',
             ];
         }
