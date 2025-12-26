@@ -13,9 +13,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        // run command php artisan schedule:work
         $schedule->job(new CreateTaskOccurrences())
-            ->everyMinute()
-            // Change to ->daily() when moving from hourly tests to daily schedule.
+            // ->everyTenSeconds()
+            ->daily()
             ->withoutOverlapping();
     }
 

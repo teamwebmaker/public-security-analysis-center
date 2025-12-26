@@ -24,14 +24,17 @@ class CreateTaskOccurrences implements ShouldQueue
     */
    public function handle(): void
    {
-      // run command php artisan schedule:work
-      // Log::info('CreateTaskOccurrences job started.');
+      Log::info('CreateTaskOccurrences job started.');
 
       $pendingStatusId = TaskOccurrenceStatus::where('name', 'pending')->value('id');
       if (!$pendingStatusId) {
          Log::warning('CreateTaskOccurrences job aborted: pending status not found.');
          return;
       }
+
+      $createdCount = 0;
+      $skippedFutureCount = 0;
+      $skippedDuplicateCount = 0;
 
       Task::query()
          ->where('is_recurring', true)
@@ -41,11 +44,23 @@ class CreateTaskOccurrences implements ShouldQueue
             $query->whereNotNull('due_date')
                ->whereDate('due_date', '<=', now()->toDateString());
          })
-         ->with(['latestOccurrence', 'users'])
-         ->chunkById(100, function ($tasks) use ($pendingStatusId) {
+         ->with(['latestOccurrence.status', 'users'])
+         ->chunkById(100, function ($tasks) use ($pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount) {
             foreach ($tasks as $task) {
                $latest = $task->latestOccurrence;
                if (!$latest || !$latest->due_date || $latest->due_date->isFuture()) {
+                  $skippedFutureCount++;
+                  continue;
+               }
+
+               $latestStatus = $latest->status?->name;
+               if (in_array($latestStatus, ['on_hold', 'cancelled'], true)) {
+                  $skippedFutureCount++;
+                  continue;
+               }
+
+               if ($latest->payment_status !== 'paid') {
+                  $skippedFutureCount++;
                   continue;
                }
 
@@ -55,6 +70,7 @@ class CreateTaskOccurrences implements ShouldQueue
                   ->whereDate('due_date', $nextDueDate->toDateString())
                   ->exists();
                if ($alreadyScheduled) {
+                  $skippedDuplicateCount++;
                   return;
                }
 
@@ -81,9 +97,14 @@ class CreateTaskOccurrences implements ShouldQueue
                      );
                   }
                });
+               $createdCount++;
             }
          });
 
-      // Log::info('CreateTaskOccurrences job finished.');
+      Log::info('CreateTaskOccurrences job finished.', [
+         'created' => $createdCount,
+         'skipped_future' => $skippedFutureCount,
+         'skipped_duplicate' => $skippedDuplicateCount,
+      ]);
    }
 }
