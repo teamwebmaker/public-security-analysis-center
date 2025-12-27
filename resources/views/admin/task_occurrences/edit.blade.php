@@ -6,11 +6,6 @@
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" :title="'ციკლის რედაქტირება #' . $taskOccurrence->id . ' (სამუშაო #' . $taskOccurrence->task_id . ')'" :action="route('task-occurrences.update', $taskOccurrence)"
 		:backRoute="'tasks.index'" :hasFileUpload="true">
 
-		<div class="alert alert-warning small mb-3">
-			<strong>გაფრთხილება:</strong> განმეორების თარიღი, სამუშაოს დაწყება და სამუშაოს დასრულება არ იცვლება.
-			ხოლო სანამ ფილიალი/სერვის snapshot-ს შეცვლით გადაამოწმეთ რადგან ეს ველები ისტორიაა.
-		</div>
-
 		<div class="row">
 			<div class="col-md-6 mb-3">
 				<x-form.select name="status_id" :options="$statuses" selected="{{ $taskOccurrence->status_id }}"
@@ -19,17 +14,6 @@
 			<div class="col-md-6 mb-3">
 				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
 					selected="{{ $taskOccurrence->visibility }}" label="ხილვადობა" />
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-6 mb-3">
-				<x-form.input type="text" name="branch_name_snapshot" label="ფილიალის snapshot"
-					value="{{ old('branch_name_snapshot', $taskOccurrence->branch_name_snapshot) }}" />
-			</div>
-			<div class="col-md-6 mb-3">
-				<x-form.input type="text" name="service_name_snapshot" label="სერვისის snapshot"
-					value="{{ old('service_name_snapshot', $taskOccurrence->service_name_snapshot) }}" />
 			</div>
 		</div>
 

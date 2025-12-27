@@ -15,10 +15,6 @@ class UpdateTaskOccurrenceRequest extends FormRequest
     {
         return [
             'status_id' => ['required', 'exists:task_occurrence_statuses,id'],
-            'branch_id_snapshot' => ['nullable', 'integer'],
-            'branch_name_snapshot' => ['nullable', 'string', 'max:255'],
-            'service_id_snapshot' => ['nullable', 'integer'],
-            'service_name_snapshot' => ['nullable', 'string', 'max:255'],
             'requires_document' => ['nullable', 'boolean'],
             'visibility' => ['nullable', 'boolean'],
             'document' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx', 'max:5120'],
