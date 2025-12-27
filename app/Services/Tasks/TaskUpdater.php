@@ -16,7 +16,7 @@ class TaskUpdater
    public function updateTask(Task $task, array $data, ?bool $requiresDocumentInput = null): Task
    {
       return DB::transaction(function () use ($task, $data, $requiresDocumentInput) {
-         $latestOccurrence = $task->latestOccurrence()->first();
+         $latestOccurrence = $task->latestOccurrenceWithoutVisibility()->first();
 
          // Explicit value wins; otherwise inherit from latest occurrence (if any)
          $requiresDocument = $requiresDocumentInput;

@@ -6,6 +6,8 @@ use App\Presenters\TableRowDataPresenter;
 use App\Presenters\TableHeaderDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
+use App\Models\Task;
+use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -23,8 +25,10 @@ class WorkerController extends Controller
         // Currently authenticated user
         $user = auth()->user();
 
-        // Tasks assigned to this worker (pivot on task_workers)
-        $taskQuery = $user->tasks();
+        // Tasks whose latest visible occurrence includes this worker (snapshot-based)
+        $taskQuery = Task::whereHas('latestOccurrence.workers', function ($q) use ($user) {
+            $q->where('worker_id_snapshot', $user->id);
+        });
 
         // Step 1: Get user's tasks and their statuses/services and make filtering and searching available
         $tasks = $this->buildTaskQuery($taskQuery)->paginate($this->perPage)
@@ -98,6 +102,8 @@ class WorkerController extends Controller
      */
     protected function buildTaskQuery($query)
     {
+        $latestOccurrenceCreatedAt = $this->latestOccurrenceTimestampSubquery('created_at');
+
         return QueryBuilder::for($query)
             ->allowedIncludes(['branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers'])
             ->allowedSorts([
@@ -106,6 +112,7 @@ class WorkerController extends Controller
                 AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),
                 AllowedSort::custom('latest_end_date', new LatestOccurrenceEndDateSort()),
             ])->defaultSort('-created_at')
+            ->orderByDesc($latestOccurrenceCreatedAt)
             ->allowedFilters([
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($q) use ($value) {
@@ -124,6 +131,17 @@ class WorkerController extends Controller
                 AllowedFilter::exact('is_recurring'),
             ])
             ->with(['branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers']);
+    }
+
+    /**
+     * Latest occurrence timestamp subquery for ordering tasks based on their latest occurrence timestamp.
+     */
+    protected function latestOccurrenceTimestampSubquery(string $column = 'created_at')
+    {
+        return TaskOccurrence::select($column)
+            ->whereColumn('task_occurrences.task_id', 'tasks.id')
+            ->latest()
+            ->limit(1);
     }
 
     /**

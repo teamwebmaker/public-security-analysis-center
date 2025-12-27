@@ -40,11 +40,22 @@ class Task extends Model
     }
 
     /**
-     * Latest occurrence for quick access (by created_at).
+     * Latest visible occurrence for quick access (by created_at).
      */
     public function latestOccurrence()
     {
-        return $this->hasOne(TaskOccurrence::class)->latestOfMany('created_at');
+        return $this->hasOne(TaskOccurrence::class)
+            ->where('visibility', '1')
+            ->latestOfMany('created_at');
+    }
+
+    /**
+     * Latest occurrence regardless of visibility (admin use).
+     */
+    public function latestOccurrenceWithoutVisibility()
+    {
+        return $this->hasOne(TaskOccurrence::class)
+            ->latestOfMany('created_at');
     }
 
     public function branch()

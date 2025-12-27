@@ -98,8 +98,10 @@ class ResponsiblePersonController extends Controller
     protected function countInProgressTasks($branchIds, array $allowedServiceIds): int
     {
         return Task::query()
-            ->whereIn('branch_id', $branchIds)
-            ->whereIn('service_id', $allowedServiceIds)
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds, $allowedServiceIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds)
+                    ->whereIn('service_id_snapshot', $allowedServiceIds);
+            })
             ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'in_progress'))
             ->count();
     }
@@ -107,9 +109,11 @@ class ResponsiblePersonController extends Controller
     protected function buildTasksQuery($branchIds, array $allowedServiceIds)
     {
         return QueryBuilder::for(Task::class)
-            ->whereIn('branch_id', $branchIds)
-            ->whereIn('service_id', $allowedServiceIds)
             ->allowedIncludes(['users', 'branch', 'service', 'latestOccurrence.status'])
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds, $allowedServiceIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds)
+                    ->whereIn('service_id_snapshot', $allowedServiceIds);
+            })
             ->allowedSorts([
                 AllowedSort::custom('latest_due_date', new LatestOccurrenceDueDateSort()),
                 AllowedSort::custom('latest_start_date', new LatestOccurrenceStartDateSort()),

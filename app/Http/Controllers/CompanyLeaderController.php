@@ -138,9 +138,21 @@ class CompanyLeaderController extends Controller
     {
         $userCompanies->each(function ($company) {
             $company->branches->transform(function ($branch) {
-                $pending = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'pending')->count();
-                $active = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'in_progress')->count();
-                $completed = $branch->tasks->filter(fn($t) => $t->latestOccurrence?->status?->name === 'completed')->count();
+                $baseQuery = Task::query()
+                    ->whereHas('latestOccurrence', function ($query) use ($branch) {
+                        $query->where('branch_id_snapshot', $branch->id)
+                            ->where('visibility', '1');
+                    });
+
+                $pending = (clone $baseQuery)
+                    ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'pending'))
+                    ->count();
+                $active = (clone $baseQuery)
+                    ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'in_progress'))
+                    ->count();
+                $completed = (clone $baseQuery)
+                    ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'completed'))
+                    ->count();
 
                 $branch->pending_tasks_count = $pending;
                 $branch->active_tasks_count = $active;
@@ -156,7 +168,9 @@ class CompanyLeaderController extends Controller
         $latestOccurrenceUpdatedAt = $this->latestOccurrenceTimestampSubquery();
 
         return QueryBuilder::for(Task::class)
-            ->whereIn('branch_id', $branchIds)
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds);
+            })
             ->allowedIncludes(['users', 'branch', 'service', 'latestOccurrence.status'])
             ->allowedSorts([
                 'created_at',
@@ -175,7 +189,9 @@ class CompanyLeaderController extends Controller
         $latestOccurrenceUpdatedAt = $this->latestOccurrenceTimestampSubquery();
 
         return QueryBuilder::for(Task::class)
-            ->whereIn('branch_id', $branchIds)
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds);
+            })
             ->allowedIncludes(["users", "branch", "service", "latestOccurrence.status"])
             ->allowedSorts([
                 AllowedSort::custom('latest_due_date', new LatestOccurrenceDueDateSort()),

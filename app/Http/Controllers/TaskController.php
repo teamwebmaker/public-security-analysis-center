@@ -142,7 +142,7 @@ class TaskController extends CrudController
          $occurrences = $task->taskOccurrences
             ->sortByDesc('created_at');
 
-         $latestId = $task->latestOccurrence?->id;
+         $latestId = $task->latestOccurrenceWithoutVisibility?->id;
 
          $rows = TableRowDataPresenter::formatOccurrences(
             $occurrences,

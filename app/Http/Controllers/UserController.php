@@ -175,6 +175,12 @@ class UserController extends CrudController
 	{
 		$data = $request->validated();
 
+		// Ensure policy checks reflect the incoming role during updates
+		if (!empty($data['role_id']) && (int) $data['role_id'] !== (int) $user->role_id) {
+			$user->role_id = $data['role_id'];
+			$user->setRelation('role', Role::find($data['role_id']));
+		}
+
 		// Attempt to sync only allowed relations according to user role
 		$authorizedRelations = $this->getAuthorizedRelations($user, $data);
 		$this->syncRelations($user, $data, $authorizedRelations);

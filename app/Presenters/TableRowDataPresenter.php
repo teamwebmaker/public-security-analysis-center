@@ -14,6 +14,8 @@ class TableRowDataPresenter
     */
    public static function adminTaskRow(Task $task): array
    {
+      $occurrence = $task->latestOccurrenceWithoutVisibility;
+
       return [
          'id' => $task->id,
          'visibility' => self::badge(
@@ -36,15 +38,15 @@ class TableRowDataPresenter
             ?? 'უცნობი',
             $task->service_name_snapshot ?? 'უცნობი'
          ),
-         'occ_status' => $task->latestOccurrence?->status
-            ? self::badge($task->latestOccurrence->status->display_name, self::statusColorForOccurrence($task->latestOccurrence))
+         'occ_status' => $occurrence?->status
+            ? self::badge($occurrence->status->display_name, self::statusColorForOccurrence($occurrence))
             : self::badge('უცნობი', 'secondary'),
-         'occ_document' => $task->latestOccurrence?->document_path
-            ? self::documentLink('/tasks/' . $task->latestOccurrence->document_path)
+         'occ_document' => $occurrence?->document_path
+            ? self::documentLink('/tasks/' . $occurrence->document_path)
             : '---',
          'recurrence_interval' => $task->recurrence_interval ? $task->recurrence_interval . " დღე" : '---',
-         'start_date' => optional($task->latestOccurrence?->start_date)->format('Y-m-d H:i') ?? '---',
-         'end_date' => optional($task->latestOccurrence?->end_date)->format('Y-m-d H:i') ?? '---',
+         'start_date' => optional($occurrence?->start_date)->format('Y-m-d H:i') ?? '---',
+         'end_date' => optional($occurrence?->end_date)->format('Y-m-d H:i') ?? '---',
          'created_at' => optional($task->created_at)->format('Y-m-d H:i') ?? '---',
       ];
    }
@@ -258,11 +260,13 @@ class TableRowDataPresenter
     */
    private static function formatCoworkers(Task $task): string
    {
-      return self::formatTaskWorkers(
-         $task->setRelation(
-            'users',
-            $task->users->where('id', '!=', auth()->id())
-         )
+      $occurrenceWorkers = $task->latestOccurrence?->workers ?? collect();
+
+      $filteredWorkers = $occurrenceWorkers->where('worker_id_snapshot', '!=', auth()->id());
+
+      return self::formatWorkersCollection(
+         $filteredWorkers,
+         fn($worker) => $worker->worker_name_snapshot ?? 'უცნობი'
       );
    }
 
