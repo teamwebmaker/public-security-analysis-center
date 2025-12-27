@@ -24,18 +24,22 @@
 <!-- Display Task Occurrences -->
 @if(!$tasks->isEmpty())
 	@foreach($tasks as $task)
-		<x-modal :id="'task-occurrences-' . $task->id" :title="'ციკლები — სამუშაო #' . $task->id" size="xl">
+		<x-modal :id="'task-occurrences-' . $task->id" :title="'ციკლები — სამუშაო #' . $task->id" size="xl"
+			:data-occurrences-url="route('tasks.occurrences', $task)">
 			<div class="d-flex justify-content-end px-3 pt-3">
 				<a href="{{ route('tasks.edit', $task) }}" class="btn btn-outline-primary">სამუშაოს რედაქტირება</a>
 			</div>
-			<div class="p-3">
-				@if(($task->taskOccurrences ?? collect())->isEmpty())
-					<p class="text-muted mb-0">ციკლები ჯერ არ არის.</p>
-				@else
-					<x-shared.table :items="$task->taskOccurrences" :headers="$occurrenceHeaders" :rows="$occurrenceRows[$task->id]"
-						:tooltipColumns="['branch', 'service']" />
-				@endif
+			<div class="p-3 js-occurrences-body">
+				<div class="js-occurrences-loader d-flex justify-content-center align-items-center h-75 py-4">
+					<div class="spinner-border text-primary" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+				<div class="js-occurrences-content"></div>
 			</div>
 		</x-modal>
 	@endforeach
 @endif
+@section('scripts')
+	{!! load_script('scripts/task/taskIndex.js') !!}
+@endsection

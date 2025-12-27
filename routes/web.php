@@ -133,6 +133,8 @@ Route::prefix('admin')->group(function () {
             ->except('show');
         Route::resource('branches', BranchController::class)->except('show');
         Route::resource('tasks', TaskController::class)->except('show');
+        Route::get('tasks/{task}/occurrences', [TaskController::class, 'occurrences'])
+            ->name('tasks.occurrences');
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
         Route::resource('task-occurrences', TaskOccurrenceController::class)->only(['edit', 'update', 'destroy', 'show'])->parameters(['task-occurrences' => 'taskOccurrence']);

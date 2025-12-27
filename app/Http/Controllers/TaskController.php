@@ -31,6 +31,7 @@ class TaskController extends CrudController
    protected array $modelRelations = ["users", "branch", "service"];
 
    protected int $perPage = 10;
+   protected int $occurrencesPerPage = 10;
 
    protected array $taskDocument = [
       'field' => 'document',
@@ -132,59 +133,9 @@ class TaskController extends CrudController
       ];
 
       $taskHeaders = TableHeaderDataPresenter::taskHeaders();
-      $occurrenceHeaders = TableHeaderDataPresenter::occurrenceHeaders();
-
       $taskRows = $tasks->map(
          fn($task) => TableRowDataPresenter::adminTaskRow($task)
       );
-
-      $occurrenceRows = $tasks->mapWithKeys(function ($task) {
-         $occurrences = $task->taskOccurrences
-            ->sortByDesc('created_at');
-
-         $latestId = $task->latestOccurrenceWithoutVisibility?->id;
-
-         $rows = TableRowDataPresenter::formatOccurrences(
-            $occurrences,
-            $latestId,
-            function ($occurrence) {
-               $editUrl = route('task-occurrences.edit', $occurrence);
-               $deleteUrl = route('task-occurrences.destroy', $occurrence);
-               $markPaidUrl = route('task-occurrences.mark-paid', $occurrence);
-               $isLatest = $occurrence->isLatest();
-               $isPaid = $occurrence->payment_status === 'paid';
-
-               $markPaidButton = $isPaid ? '' : '<form method="POST" action="' . e($markPaidUrl) . '" onsubmit="return confirm(\'ნამდვილად გსურსთ ამ ციკლის გადახდის სტატუსი განაახლოთ როგორც გადახდილი?\')" class="m-0">'
-                  . csrf_field()
-                  . method_field('PUT')
-                  . '<button type="submit" class="btn btn-sm btn-outline-success" title="გადახდილია">'
-                  . '<i class="bi bi-cash-coin"></i>'
-                  . '</button>'
-                  . '</form>';
-
-               $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="m-0">'
-                  . csrf_field()
-                  . method_field('DELETE')
-                  . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
-                  . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
-                  . '>'
-                  . '<i class="bi bi-trash"></i>'
-                  . '</button>'
-                  . '</form>';
-
-               $editButton = '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></a>';
-
-               return '<div class="d-flex gap-2 align-items-center justify-content-center">'
-                  . $markPaidButton
-                  . $editButton
-                  . $deleteButton
-                  . '</div>';
-            },
-            $task
-         );
-
-         return [$task->id => $rows];
-      });
 
 
       return view("admin.{$this->resourceName}.index", [
@@ -196,16 +147,73 @@ class TaskController extends CrudController
          'taskRows' => $taskRows,
          'taskHeaders' => $taskHeaders,
 
-         // Header + rows for occurrences modal table
-         'occurrenceHeaders' => $occurrenceHeaders,
-         'occurrenceRows' => $occurrenceRows,
-
          // Sortable columns & filters metadata for the UI
          'sortableMap' => $sortableMap,
          'filters' => $filters,
 
          // Modal trigger buttons for occurrences
          'occurrenceModalTriggers' => $occurrenceModalTriggers,
+      ]);
+   }
+
+   /**
+    * Render paginated occurrences for a task (AJAX).
+    */
+   public function occurrences(Task $task)
+   {
+      $occurrences = $task->taskOccurrences()
+         ->with(['status', 'workers'])
+         ->orderByDesc('created_at')
+         ->paginate($this->occurrencesPerPage, ['*'], 'occurrences_task_page')
+         ->appends(request()->query());
+
+      $latestId = $task->latestOccurrenceWithoutVisibility?->id;
+      $occurrenceHeaders = TableHeaderDataPresenter::occurrenceHeaders();
+
+      $occurrenceRows = TableRowDataPresenter::formatOccurrences(
+         $occurrences->getCollection(),
+         $latestId,
+         function ($occurrence) {
+            $editUrl = route('task-occurrences.edit', $occurrence);
+            $deleteUrl = route('task-occurrences.destroy', $occurrence);
+            $markPaidUrl = route('task-occurrences.mark-paid', $occurrence);
+            $isLatest = $occurrence->isLatest();
+            $isPaid = $occurrence->payment_status === 'paid';
+
+            $markPaidButton = $isPaid ? '' : '<form method="POST" action="' . e($markPaidUrl) . '" onsubmit="return confirm(\'ნამდვილად გსურსთ ამ ციკლის გადახდის სტატუსი განაახლოთ როგორც გადახდილი?\')" class="m-0">'
+               . csrf_field()
+               . method_field('PUT')
+               . '<button type="submit" class="btn btn-sm btn-outline-success" title="გადახდილია">'
+               . '<i class="bi bi-cash-coin"></i>'
+               . '</button>'
+               . '</form>';
+
+            $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="m-0">'
+               . csrf_field()
+               . method_field('DELETE')
+               . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
+               . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
+               . '>'
+               . '<i class="bi bi-trash"></i>'
+               . '</button>'
+               . '</form>';
+
+            $editButton = '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></a>';
+
+            return '<div class="d-flex gap-2 align-items-center justify-content-center">'
+               . $markPaidButton
+               . $editButton
+               . $deleteButton
+               . '</div>';
+         },
+         $task
+      );
+
+      return view('admin.tasks._occurrences', [
+         'task' => $task,
+         'occurrences' => $occurrences,
+         'occurrenceHeaders' => $occurrenceHeaders,
+         'occurrenceRows' => $occurrenceRows,
       ]);
    }
 
@@ -265,8 +273,6 @@ class TaskController extends CrudController
             'branch',
             'service',
             'latestOccurrence.status',
-            'taskOccurrences.status',
-            'taskOccurrences.workers',
          ]);
    }
 

@@ -1,4 +1,4 @@
-<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label">
+<div {{ $attributes->merge(['class' => 'modal fade']) }} id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label">
     <div class="modal-dialog modal-{{ $size ?? 'md' }} modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
