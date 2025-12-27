@@ -12,17 +12,17 @@ return [
    'worker' => [$dashboardItem, ['label' => 'ინსტრუქტაჟები', 'route' => 'management.worker.instructions.page', 'icon' => 'bi bi-person-video3'], ['label' => 'შაბლონები', 'route' => 'management.worker.document-templates.page', 'icon' => 'bi bi-file-earmark-richtext']],
    'admin' => [
       [
-         'id' => 'contacts_wrapper',
+         'id' => 'messages_wrapper',
          'icon' => 'bi-mailbox-flag',
          'label' => 'შეტყობინებები',
          'parent' => 'dashboard',
          'children' => [
             [
-               'id' => 'contacts',
+               'id' => 'messages',
                'icon' => 'bi-chat-dots-fill',
                'label' => 'მესიჯები',
                'routes' => [
-                  ['name' => 'contacts.index', 'label' => 'პროექტების ნახვა', 'icon' => 'bi-list-ul'],
+                  ['name' => 'messages.index', 'label' => 'მესიჯების ნახვა', 'icon' => 'bi-list-ul'],
                ],
             ]
          ],

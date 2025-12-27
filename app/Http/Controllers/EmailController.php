@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Mail\EmailNotification;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreContactRequest;
-use App\Models\Contact;
+use App\Http\Requests\StoreMessageRequest;
+use App\Models\Message;
 use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
 {
 
-    public function sendNotification(StoreContactRequest $request)
+    public function sendNotification(StoreMessageRequest $request)
     {
         $resource = $request->validated();
         $data = [
@@ -19,7 +19,7 @@ class EmailController extends Controller
             'email' => $request->email,
             'description' => $request->message
         ];
-        Contact::create($data);
+        Message::create($data);
         $title = $data['subject'];
         $body = $data['description'];
 

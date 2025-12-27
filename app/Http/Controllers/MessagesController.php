@@ -2,50 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use App\Jobs\SendContactNotificationJob;
-use App\Http\Requests\StoreContactRequest;
+use App\Models\Message;
+use App\Jobs\SendMessageNotificationJob;
+use App\Http\Requests\StoreMessageRequest;
 use App\Models\Service;
 
-class ContactsController extends Controller
+class MessagesController extends Controller
 {
-    protected string $resourceName = 'contacts';
+    protected string $resourceName = 'messages';
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         // if admin is coming from browser notification take id from url
-        $selectedContactId = request()->query()
+        $selectedMessageId = request()->query()
             ? (int) array_keys(request()->query())[0]
             : null;
 
 
-        return view('admin.contacts.index', [
-            'contacts' => Contact::orderBy('created_at', 'DESC')->paginate(6),
-            'selectedContactId' => $selectedContactId,
+        return view('admin.messages.index', [
+            'messages' => Message::orderBy('created_at', 'DESC')->paginate(6),
+            'selectedMessageId' => $selectedMessageId,
             'resourceName' => $this->resourceName
         ]);
     }
 
 
-    // public function store(StoreContactRequest $request)
+    // public function store(StoreMessageRequest $request)
     // {
     //     $validated = $request->validated();
 
-    //     $contact = Contact::create([
+    //     $message = Message::create([
     //         'subject' => $request->filled('subject') ? $request->subject : 'without subject',
     //         ...$validated,
     //     ]);
 
     //     // Dispatch the job ( send the notification )
-    //     dispatch(new SendContactNotificationJob($contact));
+    //     dispatch(new SendMessageNotificationJob($message));
 
     //     return redirect()->back()->with('success', 'Your message has been sent.');
     // }
 
 
-    public function store(StoreContactRequest $request)
+    public function store(StoreMessageRequest $request)
     {
         $validated = $request->validated();
         $locale = app()->getLocale(); // 'ka' or 'en'
@@ -84,15 +84,15 @@ class ContactsController extends Controller
         // Join each part with a newline
         $finalMessage = implode("\n", $formattedParts);
 
-        // Save contact
-        $contact = Contact::create([
+        // Save message
+        $message = Message::create([
             ...$validated,
             'subject' => $subject,
             'message' => $finalMessage,
         ]);
 
         // Dispatch notification
-        dispatch(new SendContactNotificationJob($contact));
+        dispatch(new SendMessageNotificationJob($message));
 
         $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება გაიგზავნა წარმატებით.';
         return redirect()->back()->with('success', $req_message);
@@ -102,9 +102,18 @@ class ContactsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact)
+    public function destroy(Message $message)
     {
-        $contact->delete();
-        return redirect()->route('contacts.index')->with('success', 'შეტყობინება წარმატებით წაიშალა.');
+        $message->delete();
+        return redirect()->route('messages.index')->with('success', 'შეტყობინება წარმატებით წაიშალა.');
+    }
+
+    public function markRead(Message $message)
+    {
+        if (!$message->read_at) {
+            $message->forceFill(['read_at' => now()])->save();
+        }
+
+        return redirect()->route('messages.index')->with('success', 'შეტყობინება მონიშნულია წაკითხულად.');
     }
 }

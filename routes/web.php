@@ -8,7 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\DashboardRouterController;
 use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\EconomicActivityTypeController;
@@ -73,7 +73,7 @@ Route::resource('services', ServiceController::class)
     ->only('show')
     ->parameters(['services' => 'id']);
 
-Route::resource('contacts', ContactsController::class)->only('store');
+Route::resource('messages', MessagesController::class)->only('store');
 
 
 // ================
@@ -158,8 +158,10 @@ Route::prefix('admin')->group(function () {
         Route::resource('service_categories', ServiceCategoryController::class)->except('show');
         Route::resource('services', ServiceController::class)->except('show');
 
-        // Contacts
-        Route::resource('contacts', ContactsController::class)->only(['index', 'destroy']);
+        // Messages
+        Route::resource('messages', MessagesController::class)->only(['index', 'destroy']);
+        Route::patch('messages/{message}/mark-read', [MessagesController::class, 'markRead'])
+            ->name('messages.mark-read');
 
         // Push notifications
         Route::post('/subscribe', [PushController::class, 'saveSubscription']);

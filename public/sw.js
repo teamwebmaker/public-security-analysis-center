@@ -1,5 +1,5 @@
 self.addEventListener('push', function(event) {
-  console.log('Push received');
+  // console.log('Push received');
   const notification = event.data.json();
 
   event.waitUntil(

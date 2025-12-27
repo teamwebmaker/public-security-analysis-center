@@ -1,5 +1,5 @@
 <form method="POST" id="register_to_program_form" class="needs-validation dirty-check-form p-3 text-start" novalidate
-    action="{{ route('contacts.store') }}">
+    action="{{ route('messages.store') }}">
 
     @csrf
     {{-- Subject --}}

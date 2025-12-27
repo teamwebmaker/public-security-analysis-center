@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
    const isRecurringSelect = group.querySelector('input[name="is_recurring"], [data-recurrence-select], select[name="is_recurring"]');
    const intervalRow = group.querySelector('[data-recurrence-interval]');
-   console.log( isRecurringSelect,
-intervalRow)
+   // console.log( isRecurringSelect, intervalRow)
    if (!isRecurringSelect || !intervalRow) return;
 
    const toggleInterval = () => {

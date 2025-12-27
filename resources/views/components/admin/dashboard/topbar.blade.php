@@ -10,9 +10,19 @@
                 <span class="d-none d-sm-block">მთავარი</span>
             </a>
         </div>
+        @php
+            use App\Models\Message;
+            $hasUnreadMessages = Message::whereNull('read_at')->exists();
+        @endphp
+
         <div class="d-flex align-items-center gap-2">
-            <!-- Contacts  -->
-            <x-ui.link-icon route="contacts.index" icon="mailbox2-flag " />
+            <!-- Messages -->
+            <div class="position-relative">
+                <x-ui.link-icon route="messages.index" icon="mailbox2-flag " />
+                @if ($hasUnreadMessages)
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                @endif
+            </div>
 
             <!-- subscriptions  -->
             <x-ui.link-icon route="push.index" icon="bell-fill" />

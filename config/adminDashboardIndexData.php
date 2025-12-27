@@ -2,7 +2,7 @@
 
 use App\Models\Branch;
 use App\Models\Company;
-use App\Models\Contact;
+use App\Models\Message;
 use App\Models\DocumentTemplate;
 use App\Models\Info;
 use App\Models\Instruction;
@@ -41,7 +41,7 @@ return [
       ],
       [
          'resources' => [
-            'contacts' => ['title' => 'შეტყობინებები', 'icon' => 'bi-mailbox-flag', 'hasCreate' => false, 'model' => Contact::class],
+            'messages' => ['title' => 'შეტყობინებები', 'icon' => 'bi-mailbox-flag', 'hasCreate' => false, 'model' => Message::class],
             'projects' => ['title' => 'პროექტები', 'icon' => 'bi-folder-plus', 'model' => Project::class],
             'publications' => ['title' => 'პუბლიკაციები', 'icon' => 'bi-book', 'model' => Publication::class],
             'partners' => ['title' => 'პარტნიორები', 'icon' => 'bi-people', 'model' => Partner::class],
@@ -68,4 +68,3 @@ return [
       ]
    ],
 ];
-

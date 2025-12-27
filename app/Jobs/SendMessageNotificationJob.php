@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Contact;
+use App\Models\Message;
 use App\Models\PushSubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Log;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
-class SendContactNotificationJob implements ShouldQueue
+class SendMessageNotificationJob implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
-    protected Contact $contact;
+    protected Message $message;
 
-    public function __construct(Contact $contact)
+    public function __construct(Message $message)
     {
-        $this->contact = $contact;
+        $this->message = $message;
     }
 
     /**
@@ -45,8 +45,8 @@ class SendContactNotificationJob implements ShouldQueue
         // Prepare notification payload
         $data = json_encode([
             'title' => 'ახალი შეტყობინება',
-            'body' => 'ახალი შეტყობინება ' . ($this->contact->full_name ?? 'უცნობი') . '-სგან, თემა: ' . ($this->contact->subject ?? 'არ არის მითითებული'),
-            'url' => route('contacts.index', $this->contact),
+            'body' => 'ახალი შეტყობინება ' . ($this->message->full_name ?? 'უცნობი') . '-სგან, თემა: ' . ($this->message->subject ?? 'არ არის მითითებული'),
+            'url' => route('messages.index', $this->message),
         ]);
 
         // Queue notifications

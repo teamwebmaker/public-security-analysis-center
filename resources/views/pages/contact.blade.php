@@ -39,7 +39,7 @@
 					</div>
 					<div class="col-lg-6 mb-4">
 						<form method="POST" class="needs-validation dirty-check-form" novalidate
-							action="{{ route('contacts.store') }}">
+							action="{{ route('messages.store') }}">
 							@csrf
 							<div class="row">
 								<div class="col-md-6 mb-2">
