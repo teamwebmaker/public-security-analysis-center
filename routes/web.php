@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminNumberController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CompanyController;
@@ -140,6 +141,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('task-occurrences', TaskOccurrenceController::class)->only(['edit', 'update', 'destroy', 'show'])->parameters(['task-occurrences' => 'taskOccurrence']);
         Route::put('task-occurrences/{taskOccurrence}/mark-paid', [TaskOccurrenceController::class, 'markPaid'])
             ->name('task-occurrences.mark-paid');
+        Route::resource('admin_numbers', AdminNumberController::class)->except('show');
 
 
         // CRUD: Projects, Partners, Publications
