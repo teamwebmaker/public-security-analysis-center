@@ -28,15 +28,36 @@
                 ->values()
                 ->toArray();
 
+            $parentRoutes = collect($item['routes'] ?? []);
+            $parentRouteNames = $parentRoutes->pluck('name');
+            $parentEditRoutes = $parentRouteNames
+                ->filter(fn($name) => str_ends_with($name, '.create'))
+                ->map(fn($name) => str_replace('.create', '.edit', $name));
 
+            $allParentRoutes = $parentRouteNames
+                ->merge($parentEditRoutes)
+                ->unique()
+                ->values()
+                ->toArray();
 
             // Check if any of those match the current route
-            $isParentActive = in_array(Route::currentRouteName(), $allChildRoutes);
+            $isParentActive = in_array(Route::currentRouteName(), array_merge($allChildRoutes, $allParentRoutes));
           @endphp
 
         <x-accordion-item :id="$item['id']" :label="$item['label']" :icon="$item['icon']" :parent="$item['parent']"
             :open="$isParentActive">
-            @forelse ($item['children'] as $child)
+            @if (!empty($item['routes']))
+                <div class="list-group list-group-flush mb-2">
+                    @foreach ($item['routes'] as $route)
+                        <a href="{{ route($route['name']) }}"
+                            class="list-group-item list-group-item-action nav-link @if(Route::currentRouteName() === $route['name']) active @endif">
+                            <i class="bi {{ $route['icon'] }}"></i>
+                            {{ $route['label'] }}
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+            @forelse ($item['children'] ?? [] as $child)
                 @php
                     $routes = collect($child['routes'] ?? []);
                     $routeNames = $routes->pluck('name');

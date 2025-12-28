@@ -16,15 +16,8 @@ return [
          'icon' => 'bi-mailbox-flag',
          'label' => 'შეტყობინებები',
          'parent' => 'dashboard',
-         'children' => [
-            [
-               'id' => 'messages',
-               'icon' => 'bi-chat-dots-fill',
-               'label' => 'მესიჯები',
-               'routes' => [
-                  ['name' => 'messages.index', 'label' => 'მესიჯების ნახვა', 'icon' => 'bi-list-ul'],
-               ],
-            ]
+         'routes' => [
+            ['name' => 'messages.index', 'label' => 'მესიჯების ნახვა', 'icon' => 'bi-list-ul'],
          ],
       ],
       [
@@ -186,6 +179,16 @@ return [
                ]
 
             ],
+         ],
+      ],
+      [
+         'id' => 'admin_numbers',
+         'icon' => 'bi-telephone',
+         'label' => 'ჩემი ნომრები',
+         'parent' => 'dashboard',
+         'routes' => [
+            ['name' => 'admin_numbers.index', 'label' => 'ნომრების სია', 'icon' => 'bi-list-ul'],
+            ['name' => 'admin_numbers.create', 'label' => 'ნომრის შექმნა', 'icon' => 'bi-plus-circle'],
          ],
       ],
    ],
