@@ -16,6 +16,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Syllabus;
 use App\Models\Task;
+use App\Models\SmsLog;
 
 return [
    'web_content' => [
@@ -42,6 +43,7 @@ return [
       [
          'resources' => [
             'messages' => ['title' => 'შეტყობინებები', 'icon' => 'bi-mailbox-flag', 'hasCreate' => false, 'model' => Message::class],
+            'sms_logs' => ['title' => 'SMS ლოგები', 'icon' => 'bi-chat-square-text', 'model' => SmsLog::class],
             'projects' => ['title' => 'პროექტები', 'icon' => 'bi-folder-plus', 'model' => Project::class],
             'publications' => ['title' => 'პუბლიკაციები', 'icon' => 'bi-book', 'model' => Publication::class],
             'partners' => ['title' => 'პარტნიორები', 'icon' => 'bi-people', 'model' => Partner::class],

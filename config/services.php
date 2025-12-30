@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'senderge' => [
+        'base_url' => env('SENDERGE_BASE_URL', 'https://sender.ge/api'),
+        'apikey' => env('SENDERGE_APIKEY'),
+        'timeout' => (int) env('SENDERGE_TIMEOUT', 15),
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

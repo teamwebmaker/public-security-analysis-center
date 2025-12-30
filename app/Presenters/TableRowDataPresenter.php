@@ -5,6 +5,7 @@ namespace App\Presenters;
 use App\Models\Branch;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
+use App\Models\SmsLog;
 use Illuminate\Database\Eloquent\Model;
 
 class TableRowDataPresenter
@@ -142,6 +143,26 @@ class TableRowDataPresenter
          'name' => $branch->name ?? 'უცნობი',
          'address' => $branch->address ?? 'უცნობი',
          'company' => $branch->company->name ?? 'არ ჰყავს',
+      ];
+   }
+
+   /**
+    * Build an SMS log row for admin table.
+    */
+   public static function smsLogRow(SmsLog $smsLog, $actionResolver = null, ): array
+   {
+      $actions = $actionResolver ? $actionResolver($smsLog) : null;
+      return [
+         'id' => $smsLog->id,
+         'provider' => e($smsLog->provider ?? '---'),
+         'status' => self::smsStatusBadge($smsLog->status),
+         'destination' => e($smsLog->destination ?? '---'),
+         'smsno' => self::smsnoLabel($smsLog->smsno),
+         'content' => e($smsLog->content ?? '---'),
+         'provider_message_id' => e($smsLog->provider_message_id ?? '---'),
+         'sent_at' => optional($smsLog->sent_at)->format('Y-m-d H:i') ?? '---',
+         'created_at' => optional($smsLog->created_at)->format('Y-m-d H:i') ?? '---',
+         'actions' => $actions ?? '',
       ];
    }
 
@@ -377,6 +398,32 @@ class TableRowDataPresenter
          'on_hold' => 'secondary',
          'cancelled' => 'danger',
       ][$occurrence?->status?->name] ?? 'secondary';
+   }
+
+   /**
+    * Render a badge for SMS status.
+    */
+   private static function smsStatusBadge(?int $status): string
+   {
+      $map = [
+         0 => ['label' => 'მოლოდინში', 'class' => 'warning'],
+         1 => ['label' => 'გაგზავნილი', 'class' => 'success'],
+         2 => ['label' => 'ვერ გაიგზავნა', 'class' => 'danger'],
+      ];
+
+      $entry = $map[$status ?? -1] ?? ['label' => $status !== null ? (string) $status : 'უცნობი', 'class' => 'secondary'];
+      return '<span class="badge bg-' . e($entry['class']) . '">' . e($entry['label']) . '</span>';
+   }
+
+   /**
+    * Translate smsno to a readable label.
+    */
+   private static function smsnoLabel(?int $smsno): string
+   {
+      return [
+         1 => 'რეკლამა',
+         2 => 'ინფორმაცია',
+      ][$smsno ?? -1] ?? ($smsno !== null ? (string) $smsno : '---');
    }
 
    /**

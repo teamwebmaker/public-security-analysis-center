@@ -21,6 +21,15 @@ return [
          ],
       ],
       [
+         'id' => 'sms_wrapper',
+         'icon' => 'bi-chat-left-text',
+         'label' => 'SMS ისტორია',
+         'parent' => 'dashboard',
+         'routes' => [
+            ['name' => 'sms_logs.index', 'label' => 'SMS ისტორიის ნახვა', 'icon' => 'bi-list-ul'],
+         ],
+      ],
+      [
 
          'id' => 'management',
          'icon' => 'bi-building-gear',

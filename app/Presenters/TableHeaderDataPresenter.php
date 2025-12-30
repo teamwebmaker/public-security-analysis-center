@@ -108,4 +108,23 @@ class TableHeaderDataPresenter
 
    }
 
+   /**
+    * Headers for SMS logs table.
+    */
+   public static function smsLogHeaders(): array
+   {
+      return [
+         '#',
+         'პროვაიდერი',
+         'სტატუსი',
+         'ადრესატი',
+         'ტიპი',
+         'მესიჯი',
+         'მესიჯის ID',
+         'გაგზავნის დრო',
+         'ჩანაწერის დრო',
+         'ქმედებები',
+      ];
+   }
+
 }

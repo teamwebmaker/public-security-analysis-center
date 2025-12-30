@@ -38,7 +38,10 @@ class DatabaseSeeder extends Seeder
             PartnerSeeder::class,
             PublicationSeeder::class,
             ProgramSeeder::class,
-            ProjectSeeder::class
+            ProjectSeeder::class,
+
+                // Sms
+            SmsLogSeeder::class
 
         ]);
     }

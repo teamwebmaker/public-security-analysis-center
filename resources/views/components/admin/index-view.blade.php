@@ -6,9 +6,15 @@
     @endif
 
     <!-- Global Error Display -->
+    @if (session('error'))
+        <x-ui.toast :messages="[session('error')]" type="error" />
+    @endif
+
+    <!-- Error Display for Validation -->
     @if ($errors->any())
         <x-ui.toast :messages="$errors->all()" type="error" />
     @endif
+
 
     <div class="{{ $containerClass }}">
         {{ $slot }}

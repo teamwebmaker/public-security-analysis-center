@@ -23,6 +23,8 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\PushController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SmsController;
+use App\Http\Controllers\SmsLogController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskOccurrenceController;
@@ -125,6 +127,10 @@ Route::prefix('admin')->group(function () {
         // Dashboard 
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard.page');
 
+        // Sms related routes
+        Route::post('/sms/send', [SmsController::class, 'send'])->name('sms.send');
+        Route::get('/sms/balance', [SmsController::class, 'balance']);
+        Route::get('/sms/report', [SmsController::class, 'report']);
 
         // Management related routes register users
         Route::resource('users', UserController::class);
@@ -166,6 +172,7 @@ Route::prefix('admin')->group(function () {
         Route::resource('messages', MessagesController::class)->only(['index', 'destroy']);
         Route::patch('messages/{message}/mark-read', [MessagesController::class, 'markRead'])
             ->name('messages.mark-read');
+        Route::resource('sms_logs', SmsLogController::class)->except('show');
 
         // Push notifications
         Route::post('/subscribe', [PushController::class, 'saveSubscription']);
