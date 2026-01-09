@@ -1,6 +1,6 @@
 @extends('layouts.admin.admin-dashboard')
 
-@section('title', 'SMS ლოგები')
+@section('title', 'SMS ისტორია')
 
 <x-admin.index-view :items="$sms_logs" :resourceName="$resourceName" containerClass="position-relative">
 	<div class="d-flex flex-column flex-lg-row align-items-center mb-3 border-bottom">

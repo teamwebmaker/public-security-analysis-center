@@ -76,6 +76,11 @@ class SenderGeClient
       return $this->parseResponse($response->status(), $response->body(), 'getDeliveryReport');
    }
 
+
+   // =====================
+   // Helpers  
+   // =====================
+
    private function http()
    {
       return Http::timeout($this->timeout)
@@ -132,7 +137,6 @@ class SenderGeClient
    }
 
    /**
-    * The docs don’t clearly state response format (JSON vs plain text).
     * This parser tries JSON first, then falls back to key=value parsing.
     */
    private function parseResponse(int $status, string $body, string $op): array

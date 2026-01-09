@@ -3,12 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\TaskOccurrence;
+use App\Services\Sms\SmsLogService;
+use App\Services\Sms\ResponsiblePersonSmsSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class SendUpcomingPaymentReminders implements ShouldQueue
@@ -21,61 +22,71 @@ class SendUpcomingPaymentReminders implements ShouldQueue
    /**
     * Log reminders two days before due date for unpaid occurrences.
     */
-   public function handle(): void
+   public function handle(SmsLogService $smsLogService, ResponsiblePersonSmsSender $smsSender): void
    {
       $reminderDate = now('Asia/Tbilisi')->addDays(2)->toDateString();
+      Log::info('SendUpcomingPaymentReminders started', [
+         'reminder_date' => $reminderDate,
+      ]);
 
+      // Select unpaid occurrences due in 2 days and process in chunks.
       TaskOccurrence::query()
          ->whereDate('due_date', '=', $reminderDate)
          ->where('payment_status', 'unpaid')
-         ->with(['task.branch.users'])
-         ->chunkById(100, function ($occurrences) {
+         ->whereHas('status', fn($q) => $q->where('name', '!=', 'cancelled'))
+         ->with(['task.branch.users.services'])
+         ->chunkById(100, function ($occurrences) use ($smsLogService, $smsSender, $reminderDate) {
+            $eventType = 'debt_due_2_days';
+            $byUser = [];
+
             foreach ($occurrences as $occurrence) {
-               $this->logForResponsiblePersons(
-                  $occurrence,
-                  'Upcoming payment reminder',
-                  'Payment is due in 2 days. Service will be stopped if payment is not completed.'
-               );
+               // Responsible persons come from the occurrence's branch users.
+               $users = $occurrence->task?->branch?->users ?? collect();
+               if ($users->isEmpty()) {
+                  Log::warning('Payment SMS skipped: no responsible persons found.', [
+                     'event_type' => $eventType,
+                     'occurrence_id' => $occurrence->id,
+                     'due_date' => $occurrence->due_date?->toDateString(),
+                  ]);
+                  continue;
+               }
+
+               foreach ($users as $user) {
+                  // Group occurrences per user to send a single aggregated SMS.
+                  $byUser[$user->id]['user'] = $user;
+                  $byUser[$user->id]['occurrence_ids'][] = $occurrence->id;
+                  $byUser[$user->id]['occurrence_service_ids'][$occurrence->id] = $occurrence->service_id_snapshot;
+               }
             }
+
+            Log::info('Upcoming reminders processed', [
+               'occurrences_in_chunk' => $occurrences->count(),
+               'unique_recipients' => count($byUser),
+            ]);
+
+            $smsSender->sendAggregatedSmsToResponsiblePersons(
+               $byUser,
+               $smsLogService,
+               $eventType,
+               fn(array $occurrenceIds) => $this->buildUpcomingReminderMessage($occurrenceIds, $reminderDate),
+               'Sending upcoming payment SMS',
+               [],
+               [
+                  'due_date' => $reminderDate,
+               ]
+            );
          });
+
+      Log::info('SendUpcomingPaymentReminders finished');
    }
 
-   /**
-    * Log notifications for responsible persons on a branch with idempotent guard.
-    */
-   protected function logForResponsiblePersons(TaskOccurrence $occurrence, string $type, string $message): void
+   private function buildUpcomingReminderMessage(array $occurrenceIds, string $reminderDate): string
    {
-      $users = $occurrence->task?->branch?->users ?? collect();
+      $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
+      $dueDate = $reminderDate ? date('d.m.Y', strtotime($reminderDate)) : '—';
 
-      if ($users->isEmpty()) {
-         Log::warning('Payment notification skipped: no responsible persons found.', [
-            'type' => $type,
-            'occurrence_id' => $occurrence->id,
-            'due_date' => $occurrence->due_date?->toDateString(),
-         ]);
-         return;
-      }
-
-      foreach ($users as $user) {
-         $key = sprintf(
-            'payment_notice:%s:%s:%s',
-            $type,
-            $occurrence->id,
-            $user->id
-         );
-         if (!Cache::add($key, true, now()->addDays(3))) {
-            continue;
-         }
-
-         Log::info('Payment notification', [
-            'type' => $type,
-            'responsible_person' => $user->full_name,
-            'phone' => $user->phone,
-            'occurrence_id' => $occurrence->id,
-            'task_id' => $occurrence->task_id,
-            'due_date' => $occurrence->due_date?->toDateString(),
-            'message' => $message,
-         ]);
-      }
+      return "⚠️ გადახდის შეხსენება\n"
+         . "ბოლო თარიღი: {$dueDate}\n"
+         . "სამუშაოები: {$list}";
    }
 }

@@ -14,6 +14,9 @@ class SmsLog extends Model
         'provider_message_id',
         'destination',
         'content',
+        'event_type',
+        'entity_id',
+        'recipient_type',
         'smsno',
         'status',
         'provider_response',
@@ -56,5 +59,23 @@ class SmsLog extends Model
     public static function statusName(int $number): string
     {
         return self::STATUSES[$number] ?? 'unknown';
+    }
+
+    /**
+     * number → smsno type name
+     */
+    public static function smsnoTypeName(int $number): string
+    {
+        return self::SMSNO_TYPES[$number] ?? 'unknown';
+    }
+
+    /**
+     * name → smsno number
+     */
+    public static function smsnoTypeNumber(string $name): ?int
+    {
+        $flipped = array_change_key_case(array_flip(self::SMSNO_TYPES), CASE_LOWER);
+
+        return $flipped[strtolower($name)] ?? null;
     }
 }

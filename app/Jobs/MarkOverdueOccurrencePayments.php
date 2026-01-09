@@ -3,6 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\TaskOccurrence;
+use App\Models\TaskOccurrenceStatus;
+use App\Services\Sms\SmsLogService;
+use App\Services\Sms\ResponsiblePersonSmsSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,61 +23,91 @@ class MarkOverdueOccurrencePayments implements ShouldQueue
    /**
     * Mark unpaid occurrences as overdue and log notifications.
     */
-   public function handle(): void
+   public function handle(SmsLogService $smsLogService, ResponsiblePersonSmsSender $smsSender): void
    {
       $today = now('Asia/Tbilisi')->toDateString();
+      $onHoldStatusId = TaskOccurrenceStatus::where('name', 'on_hold')->value('id');
 
+      Log::info('MarkOverdueOccurrencePayments started', [
+         'today' => $today,
+         'on_hold_status_id' => $onHoldStatusId,
+      ]);
+
+      // Select overdue, unpaid occurrences (excluding cancelled) and process in chunks.
       TaskOccurrence::query()
          ->whereNotNull('due_date')
+         // Due date must be before than today.
          ->whereDate('due_date', '<', $today)
          ->where('payment_status', 'unpaid')
-         ->with(['task.branch.users'])
-         ->chunkById(100, function ($occurrences) {
+         ->whereHas('status', fn($q) => $q->where('name', '!=', 'cancelled'))
+         ->with(['task.branch.users.services'])
+         ->chunkById(100, function ($occurrences) use ($smsLogService, $smsSender, $onHoldStatusId) {
+            $byUser = [];
+            $updatedCount = 0;
+            $eventType = 'debt_overdue_service_suspended';
+
             foreach ($occurrences as $occurrence) {
+               // Only change still-unpaid records to overdue (and on-hold if configured).
+               $updateData = ['payment_status' => 'overdue'];
+               if ($onHoldStatusId !== null) {
+                  $updateData['status_id'] = $onHoldStatusId;
+               }
+
                $updated = TaskOccurrence::query()
                   ->whereKey($occurrence->id)
                   ->where('payment_status', 'unpaid')
-                  ->update(['payment_status' => 'overdue']);
+                  ->update($updateData);
 
                if ($updated === 0) {
                   continue;
                }
+               $updatedCount++;
 
-               $this->logForResponsiblePersons(
-                  $occurrence,
-                  'Payment status changed to overdue',
-                  'Payment status changed to overdue'
-               );
+               // Collect responsible persons (branch users) for this occurrence.
+               $users = $occurrence->task?->branch?->users ?? collect();
+
+               if ($users->isEmpty()) {
+                  Log::warning('Payment SMS skipped: no responsible persons found.', [
+                     'event_type' => 'debt_overdue_service_suspended',
+                     'occurrence_id' => $occurrence->id,
+                     'due_date' => $occurrence->due_date?->toDateString(),
+                  ]);
+                  continue;
+               }
+
+               foreach ($users as $user) {
+                  // Group occurrences per responsible person to send a single aggregated SMS.
+                  $byUser[$user->id]['user'] = $user;
+                  $byUser[$user->id]['occurrence_ids'][] = $occurrence->id;
+                  $byUser[$user->id]['occurrence_service_ids'][$occurrence->id] = $occurrence->service_id_snapshot;
+               }
             }
+
+            Log::info('Overdue occurrences processed', [
+               'updated_count' => $updatedCount,
+               'unique_recipients' => count($byUser),
+               'occurrences_in_chunk' => $occurrences->count(),
+               'byUser' => $byUser,
+            ]);
+
+            $smsSender->sendAggregatedSmsToResponsiblePersons(
+               $byUser,
+               $smsLogService,
+               $eventType,
+               fn(array $occurrenceIds) => $this->buildOverdueMessage(occurrenceIds: $occurrenceIds),
+               'Sending overdue SMS'
+            );
          });
+
+      Log::info('MarkOverdueOccurrencePayments finished');
    }
 
-   /**
-    * Log notifications for responsible persons on a branch.
-    */
-   protected function logForResponsiblePersons(TaskOccurrence $occurrence, string $type, string $message): void
+   private function buildOverdueMessage(array $occurrenceIds): string
    {
-      $users = $occurrence->task?->branch?->users ?? collect();
+      $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
 
-      if ($users->isEmpty()) {
-         Log::warning('Payment notification skipped: no responsible persons found.', [
-            'type' => $type,
-            'occurrence_id' => $occurrence->id,
-            'due_date' => $occurrence->due_date?->toDateString(),
-         ]);
-         return;
-      }
-
-      foreach ($users as $user) {
-         Log::info('Payment notification', [
-            'type' => $type,
-            'responsible_person' => $user->full_name,
-            'phone' => $user->phone,
-            'occurrence_id' => $occurrence->id,
-            'task_id' => $occurrence->task_id,
-            'due_date' => $occurrence->due_date?->toDateString(),
-            'message' => $message,
-         ]);
-      }
+      return "⛔ სამუშაოები შეჩერებულია გადაუხდელობის გამო.\n"
+         . "სამუშაოები: {$list}\n"
+         . "დაფარვის შემდეგ ადგება.";
    }
 }

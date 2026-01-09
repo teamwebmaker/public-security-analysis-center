@@ -156,6 +156,7 @@ class TableRowDataPresenter
          'id' => $smsLog->id,
          'provider' => e($smsLog->provider ?? '---'),
          'status' => self::smsStatusBadge($smsLog->status),
+         'entity_id' => e($smsLog->entity_id ?? '---'),
          'destination' => e($smsLog->destination ?? '---'),
          'smsno' => self::smsnoLabel($smsLog->smsno),
          'content' => e($smsLog->content ?? '---'),

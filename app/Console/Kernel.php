@@ -7,6 +7,7 @@ use App\Jobs\MarkOverdueOccurrencePayments;
 use App\Jobs\SendUpcomingPaymentReminders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Bus;
 
 class Kernel extends ConsoleKernel
 {
@@ -17,17 +18,16 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 
-        $schedule->job(new MarkOverdueOccurrencePayments())
-            ->everySixHours()
-            ->withoutOverlapping();
-
-        $schedule->job(new SendUpcomingPaymentReminders())
-            ->daily()
-            ->withoutOverlapping();
-
-        $schedule->job(new CreateTaskOccurrences())
-            // ->everyTenSeconds()
-            ->daily()
+        $schedule->call(function (): void {
+            Bus::chain([
+                new MarkOverdueOccurrencePayments(),
+                new SendUpcomingPaymentReminders(),
+                new CreateTaskOccurrences(),
+            ])->dispatch();
+        })
+            ->name('daily-ordered-jobs-for-occurrences')
+            ->dailyAt('17:00')
+            ->timezone('Asia/Tbilisi')
             ->withoutOverlapping();
     }
 

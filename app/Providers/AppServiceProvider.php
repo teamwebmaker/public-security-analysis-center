@@ -9,7 +9,6 @@ use App\Models\MainMenu;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,18 +24,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
+        View::composer("*", function ($view) {
             $view->with([
-                'MainMenu' => cache()->rememberForever(
-                    'main_menu',
-                    fn() =>
-                    MainMenu::orderBy('sorted')->with('subMenu')->get()
+                "MainMenu" => cache()->remember(
+                    "main_menu",
+                    now()->addHours(1),
+                    fn() => MainMenu::orderBy("sorted")
+                        ->get()
                 ),
-                'contactEmail' => Info::value('email'),
-                'contactPhone' => Info::value('phone'),
-                'language' => App::getLocale(),
+                "contactEmail" => Info::value("email"),
+                "contactPhone" => Info::value("phone"),
+                "language" => App::getLocale(),
             ]);
         });
-
     }
 }
