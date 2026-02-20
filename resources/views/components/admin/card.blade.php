@@ -3,7 +3,7 @@ $visibility = $document->visibility == 0;
 $descriptionText = is_object($document->description)
     ? $document->description->ka ?? ($document->description->en ?? "")
     : $document->description;
-$shouldTruncate = strlen(strip_tags($descriptionText)) > 180;
+$shouldTruncate = mb_strlen(strip_tags($descriptionText), 'UTF-8') > 180;
 $confirmMessage = $message ?? "ნამდვილად გსურთ დოკუმენტი {$title} წაიშალოს?";
 ?>
 

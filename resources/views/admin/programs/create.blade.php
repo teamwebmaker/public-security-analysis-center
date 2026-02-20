@@ -68,7 +68,7 @@
 				<div class="row">
 					<div class="col-md-4 mb-3">
 						<x-form.input type="url" name="video" label="ვიდეო ბმული" icon="youtube"
-							placeholder="https://youtube.com/..." value="{{ old('video') }}" />
+							placeholder="https://youtube.com/..." value="{{ old(key: 'video') }}" />
 					</div>
 					<div class="col-md-4 mb-3">
 						<x-form.input type="number" name="price" label="ფასი (₾)" placeholder="0.00" value="{{ old('price') }}"

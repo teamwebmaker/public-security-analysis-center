@@ -26,12 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer("*", function ($view) {
             $view->with([
-                "MainMenu" => cache()->remember(
-                    "main_menu",
-                    now()->addHours(1),
-                    fn() => MainMenu::orderBy("sorted")
-                        ->get()
-                ),
+                "MainMenu" => MainMenu::orderBy("sorted")->get(),
                 "contactEmail" => Info::value("email"),
                 "contactPhone" => Info::value("phone"),
                 "language" => App::getLocale(),

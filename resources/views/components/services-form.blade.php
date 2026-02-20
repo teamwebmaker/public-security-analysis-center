@@ -4,7 +4,7 @@
 
     @csrf
 
-    <input type="hidden" name="subject" value="{{ old('subject', 'Register to Service') }}">
+    <input type="hidden" name="subject" value="{{ old('subject', 'Request to Service') }}">
 
 
     {{-- Name --}}
@@ -19,17 +19,18 @@
             placeholder="{{ __('static.form.placeholders.company_name') }}" />
     </div>
 
-    {{-- Phone --}}
+    {{-- Email --}}
     <div class="mb-3">
-        <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
-            placeholder="{{ __('static.form.placeholders.phone') }}" />
+        <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
+            placeholder="{{ __('static.form.placeholders.email') }}" />
     </div>
 
-    {{-- Services & email --}}
+    {{-- Services & Phone --}}
     <div class="row">
         <div class="mb-3 col-md-6">
-            <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
-                placeholder="{{ __('static.form.placeholders.email') }}" :required="false" />
+            <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
+                placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
+
         </div>
         <div class="col-md-6 mb-3">
             <x-form.checkbox-dropdown label="{{ __('static.form.services') }}" :items="$services" name="service_ids"

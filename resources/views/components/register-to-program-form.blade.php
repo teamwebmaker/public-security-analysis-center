@@ -11,10 +11,10 @@
             placeholder="{{ __('static.form.placeholders.full_name') }}" />
     </div>
 
-    {{-- Phone --}}
+    {{-- email --}}
     <div class="mb-3">
-        <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
-            placeholder="{{ __('static.form.placeholders.phone') }}" />
+        <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
+            placeholder="{{ __('static.form.placeholders.email') }}" />
     </div>
 
     {{-- Company Name --}}
@@ -23,10 +23,10 @@
             placeholder="{{ __('static.form.placeholders.company_name') }}" :required="false" />
     </div>
 
-    {{-- email --}}
+    {{-- Phone --}}
     <div class="mb-3">
-        <x-form.input name="email" label="{{ __('static.form.email') }}" value="{{ old('email') }}"
-            placeholder="{{ __('static.form.placeholders.email') }}" :required="false" />
+        <x-form.input name="phone" label="{{ __('static.form.phone') }}" value="{{ old('phone') }}"
+            placeholder="{{ __('static.form.placeholders.phone') }}" :required="false" />
     </div>
 
     {{-- Message --}}

@@ -11,7 +11,7 @@
 
         <x-admin.card :document="$message" :title="$message->full_name" :resourceName='$resourceName' :hasEdit="false"
             :hasDelete="false" :hasVisibility="false"
-            cardClass="card h-100 border-0 overflow-hidden position-relative {{ $selectedMessageId == $message->id ? ' shadow-sm bg-dark-subtle' : '' }}">
+            cardClass="card border-0 overflow-hidden position-relative {{ $selectedMessageId == $message->id ? ' shadow-sm bg-dark-subtle' : '' }}">
             <x-slot name="cardDetails">
                 <x-admin.messages.details-list :message="$message" />
             </x-slot>

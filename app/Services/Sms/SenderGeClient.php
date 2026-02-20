@@ -35,11 +35,11 @@ class SenderGeClient
          ->withHeaders(['apikey' => $this->apiKey])
          ->asForm()
          ->post($this->url('/send.php'), [
-            'apikey' => $this->apiKey,
-            'smsno' => $smsno,
-            'destination' => $destination,
-            'content' => $content,
-         ]);
+               'apikey' => $this->apiKey,
+               'smsno' => $smsno,
+               'destination' => $destination,
+               'content' => $content,
+            ]);
 
       return $this->parseResponse($response->status(), $response->body(), 'sendSms');
    }
@@ -51,8 +51,8 @@ class SenderGeClient
       $response = $this->http()
          ->asForm()
          ->post($this->url('/getBalance.php'), [
-            'apikey' => $this->apiKey,
-         ]);
+               'apikey' => $this->apiKey,
+            ]);
 
       return $this->parseResponse($response->status(), $response->body(), 'getBalance');
    }
@@ -69,9 +69,9 @@ class SenderGeClient
          ->withHeaders(['apikey' => $this->apiKey])
          ->asForm()
          ->post($this->url('/callback.php'), [
-            'apikey' => $this->apiKey,
-            'messageId' => $messageId,
-         ]);
+               'apikey' => $this->apiKey,
+               'messageId' => $messageId,
+            ]);
 
       return $this->parseResponse($response->status(), $response->body(), 'getDeliveryReport');
    }
