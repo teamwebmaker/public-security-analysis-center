@@ -3,9 +3,15 @@
 namespace App\Services\Sms;
 
 use App\Models\SmsLog;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class SmsLogService
 {
+    private static ?bool $hasMetadataColumns = null;
+    private static bool $missingMetadataColumnsLogged = false;
+
     public function __construct(private SenderGeClient $sender)
     {
     }
@@ -33,14 +39,21 @@ class SmsLogService
         $pending = SmsLog::statusNumber('pending') ?? 0;
         $delivered = SmsLog::statusNumber('delivered') ?? 1;
 
-        return SmsLog::query()
+        $query = SmsLog::query()
             ->where('destination', $destination)
-            ->where('event_type', $eventType)
-            ->where('entity_id', $entityId)
-            ->where('recipient_type', $recipientType)
             // Treat pending/delivered as "already sent" for idempotency.
-            ->whereIn('status', [$pending, $delivered])
-            ->exists();
+            ->whereIn('status', [$pending, $delivered]);
+
+        if ($this->hasSmsLogMetadataColumns()) {
+            return $query
+                ->where('event_type', $eventType)
+                ->where('entity_id', $entityId)
+                ->where('recipient_type', $recipientType)
+                ->exists();
+        }
+
+        $this->logMissingMetadataColumnsOnce();
+        return false;
     }
 
     public function sendEventNotification(
@@ -78,6 +91,10 @@ class SmsLogService
         int $smsno = 2
     ): array {
         $destination = $this->normalizeDestination($destination);
+        $hasMetadataColumns = $this->hasSmsLogMetadataColumns();
+        if (!$hasMetadataColumns) {
+            $this->logMissingMetadataColumnsOnce();
+        }
 
         // Normalize entity IDs: ints only, drop empties, de-dupe, and reindex.
         $entityIds = array_values(array_unique(array_filter(array_map('intval', $entityIds))));
@@ -121,21 +138,45 @@ class SmsLogService
         $finalStatus = $statusId ?? ($failed ? $undelivered : $pending);
 
         $smsLogs = [];
-        foreach ($entityIds as $entityId) {
+        // Legacy schema cannot store per-entity metadata, so create only one log row.
+        $entityIdsForLog = $hasMetadataColumns
+            ? $entityIds
+            : [reset($entityIds)];
+
+        foreach ($entityIdsForLog as $entityId) {
             // Create a per-entity log entry so each occurrence is tracked independently.
-            $smsLogs[] = SmsLog::create([
+            $payload = [
                 'provider' => 'sender_ge',
                 'provider_message_id' => $messageId,
                 'destination' => $destination,
-                'content' => $content,
-                'event_type' => $eventType,
-                'entity_id' => $entityId,
-                'recipient_type' => $recipientType,
+                // sms_logs.content is varchar(255) in this project.
+                'content' => mb_substr($content, 0, 255),
                 'smsno' => $smsno,
                 'status' => $finalStatus,
                 'provider_response' => $failed ? $result : null,
                 'sent_at' => $ok ? now() : null,
-            ]);
+            ];
+
+            if ($hasMetadataColumns) {
+                $payload['event_type'] = $eventType;
+                $payload['entity_id'] = $entityId;
+                $payload['recipient_type'] = $recipientType;
+            }
+
+            try {
+                $smsLogs[] = SmsLog::create($payload);
+            } catch (Throwable $e) {
+                $failed = true;
+                $finalStatus = $undelivered;
+
+                Log::error('Failed to persist sms_logs row', [
+                    'event_type' => $eventType,
+                    'destination' => $destination,
+                    'entity_id' => $entityId,
+                    'has_metadata_columns' => $hasMetadataColumns,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         return [
@@ -152,5 +193,38 @@ class SmsLogService
         $cleaned = preg_replace('/^(\+?995)/', '', $destination);
 
         return trim($cleaned ?? $destination);
+    }
+
+    private function hasSmsLogMetadataColumns(): bool
+    {
+        if (self::$hasMetadataColumns !== null) {
+            return self::$hasMetadataColumns;
+        }
+
+        try {
+            self::$hasMetadataColumns = Schema::hasColumn('sms_logs', 'event_type')
+                && Schema::hasColumn('sms_logs', 'entity_id')
+                && Schema::hasColumn('sms_logs', 'recipient_type');
+        } catch (Throwable $e) {
+            self::$hasMetadataColumns = false;
+            Log::warning('Unable to inspect sms_logs schema', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return self::$hasMetadataColumns;
+    }
+
+    private function logMissingMetadataColumnsOnce(): void
+    {
+        if (self::$missingMetadataColumnsLogged) {
+            return;
+        }
+
+        self::$missingMetadataColumnsLogged = true;
+
+        Log::warning(
+            'sms_logs metadata columns are missing. Event-level idempotency and per-entity audit are disabled until migrations are applied.'
+        );
     }
 }

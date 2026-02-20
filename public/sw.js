@@ -15,7 +15,19 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-  event.waitUntil(
-    clients.openWindow(event.notification.data.url)
-  );
+
+  let targetUrl = '/';
+  try {
+    const rawUrl = event.notification?.data?.url || '/';
+    const parsed = new URL(rawUrl, self.location.origin);
+
+    // If payload URL has a different origin, keep only path/query/hash and open on current origin.
+    targetUrl = parsed.origin === self.location.origin
+      ? parsed.href
+      : `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch (e) {
+    targetUrl = '/';
+  }
+
+  event.waitUntil(clients.openWindow(targetUrl));
 });

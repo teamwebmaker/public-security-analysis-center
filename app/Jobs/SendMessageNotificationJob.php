@@ -46,7 +46,8 @@ class SendMessageNotificationJob implements ShouldQueue
         $data = json_encode([
             'title' => 'ახალი შეტყობინება',
             'body' => 'ახალი შეტყობინება ' . ($this->message->full_name ?? 'უცნობი') . '-სგან, თემა: ' . ($this->message->subject ?? 'არ არის მითითებული'),
-            'url' => route('messages.index', $this->message),
+            // Keep URL origin-agnostic so click opens under the current app origin/scope.
+            'url' => ltrim(route('messages.index', ['message' => $this->message->id], false), '/'),
         ]);
 
         // Queue notifications

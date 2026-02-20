@@ -20,14 +20,16 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function (): void {
             Bus::chain([
-                new MarkOverdueOccurrencePayments(),
                 new SendUpcomingPaymentReminders(),
+                new MarkOverdueOccurrencePayments(),
                 new CreateTaskOccurrences(),
             ])->dispatch();
         })
             ->name('daily-ordered-jobs-for-occurrences')
-            ->dailyAt('17:00')
-            ->timezone('Asia/Tbilisi')
+            // TODO: Temp 
+            // ->dailyAt('17:00')
+            // ->timezone('Asia/Tbilisi')
+            // ->everyFiveSeconds()
             ->withoutOverlapping();
     }
 
