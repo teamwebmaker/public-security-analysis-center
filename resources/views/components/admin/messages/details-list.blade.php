@@ -2,7 +2,7 @@
 @php
     $badgeClasses = [
         'Register to program' => 'badge bg-primary',
-        'Register to Service' => 'badge bg-info',
+        'Request to Service' => 'badge bg-info',
     ];
 
     $class = $badgeClasses[$message->subject] ?? '';
@@ -22,18 +22,20 @@
 
     @endif
     </li>
-    @if ($message->phone)
-        <li class=" list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
-            <span>ტელეფონი:</span>
+    @if ($message->source === 'user')
+        @if ($message->phone)
+            <li class=" list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
+                <span>ტელეფონი:</span>
+                <span class="badge bg-secondary rounded-pill">
+                    {{ $message->phone }}
+                </span>
+            </li>
+        @endif
+        <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
+            <span>ელ.ფოსტა:</span>
             <span class="badge bg-secondary rounded-pill">
-                {{ $message->phone }}
+                {{ $message->email }}
             </span>
         </li>
     @endif
-    <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
-        <span>ელ.ფოსტა:</span>
-        <span class="badge bg-secondary rounded-pill">
-            {{ $message->email }}
-        </span>
-    </li>
 </ul>

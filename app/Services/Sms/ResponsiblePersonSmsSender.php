@@ -20,7 +20,7 @@ class ResponsiblePersonSmsSender
         array $recipientLogContext = [],
         string $recipientType = 'responsible_person',
         ?int $smsno = null
-    ): void {
+    ): array {
 
         $smsno = $smsno ?? SmsLog::smsnoTypeNumber('information') ?? 2;
         $occurrenceIds = [];
@@ -36,6 +36,12 @@ class ResponsiblePersonSmsSender
             'occurrences' => count(array_unique($occurrenceIds)),
         ], $logContext));
 
+        $sentSummary = [];
+        $skippedSummary = [
+            'missing_phone' => [],
+            'not_authorized' => [],
+        ];
+
         foreach ($byUser as $entry) {
             $user = $entry['user'];
             $occurrenceIds = $entry['occurrence_ids'] ?? [];
@@ -48,6 +54,12 @@ class ResponsiblePersonSmsSender
                     'event_type' => $eventType,
                     'responsible_person_id' => $user->id,
                 ]);
+                $skippedSummary['missing_phone'][$user->id]['full_name'] = $user->full_name ?? 'უცნობი';
+                $skippedSummary['missing_phone'][$user->id]['phone'] = $destination;
+                $skippedSummary['missing_phone'][$user->id]['occurrence_ids'] = array_values(array_unique(array_merge(
+                    $skippedSummary['missing_phone'][$user->id]['occurrence_ids'] ?? [],
+                    $occurrenceIds
+                )));
                 continue;
             }
 
@@ -66,6 +78,11 @@ class ResponsiblePersonSmsSender
                         'occurrence_id' => $occurrenceId,
                         'service_id_snapshot' => $serviceId,
                     ]);
+                    $skippedSummary['not_authorized'][$user->id]['full_name'] = $user->full_name ?? 'უცნობი';
+                    $skippedSummary['not_authorized'][$user->id]['occurrence_ids'] = array_values(array_unique(array_merge(
+                        $skippedSummary['not_authorized'][$user->id]['occurrence_ids'] ?? [],
+                        [$occurrenceId]
+                    )));
                     continue;
                 }
                 $filteredOccurrenceIds[] = $occurrenceId;
@@ -100,6 +117,15 @@ class ResponsiblePersonSmsSender
                 $smsno
             );
 
+            if (!$sendResult['failed']) {
+                $sentSummary[$user->id]['full_name'] = $user->full_name ?? 'უცნობი';
+                $sentSummary[$user->id]['phone'] = $destination;
+                $sentSummary[$user->id]['occurrence_ids'] = array_values(array_unique(array_merge(
+                    $sentSummary[$user->id]['occurrence_ids'] ?? [],
+                    $occurrenceIds
+                )));
+            }
+
             $logLevel = $sendResult['failed'] ? 'warning' : 'info';
             Log::{$logLevel}('Payment SMS send result', array_merge([
                 'event_type' => $eventType,
@@ -110,5 +136,10 @@ class ResponsiblePersonSmsSender
                 'ok' => $sendResult['ok'],
             ], $recipientLogContext));
         }
+
+        return [
+            'sent' => $sentSummary,
+            'skipped' => $skippedSummary,
+        ];
     }
 }

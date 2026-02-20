@@ -71,6 +71,7 @@ return [
     */
 
     'timezone' => 'UTC',
+    'business_timezone' => env('BUSINESS_TIMEZONE', 'Asia/Tbilisi'),
 
     /*
     |--------------------------------------------------------------------------

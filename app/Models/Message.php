@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $fillable = ['full_name', 'phone', 'email', 'subject', 'message'];
+    protected $fillable = ['source', 'full_name', 'phone', 'email', 'subject', 'message'];
     use HasFactory;
 
     protected $casts = [

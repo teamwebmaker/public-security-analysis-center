@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Message;
-use App\Jobs\SendMessageNotificationJob;
 use App\Http\Requests\StoreMessageRequest;
-use App\Models\Service;
+use App\Models\Message;
+use App\Services\Messages\MessageStoreService;
 
 class MessagesController extends Controller
 {
@@ -15,10 +14,20 @@ class MessagesController extends Controller
      */
     public function index()
     {
-        // if admin is coming from browser notification take id from url
-        $selectedMessageId = request()->query()
-            ? (int) array_keys(request()->query())[0]
-            : null;
+        // Supports both legacy '?42' and standard '?message=42' notification links.
+        $query = request()->query();
+        $selectedMessageId = null;
+
+        if (!empty($query)) {
+            if (isset($query['message']) && is_numeric($query['message'])) {
+                $selectedMessageId = (int) $query['message'];
+            } else {
+                $firstKey = (string) array_key_first($query);
+                if (is_numeric($firstKey)) {
+                    $selectedMessageId = (int) $firstKey;
+                }
+            }
+        }
 
 
         return view('admin.messages.index', [
@@ -28,76 +37,26 @@ class MessagesController extends Controller
         ]);
     }
 
-
-    // public function store(StoreMessageRequest $request)
-    // {
-    //     $validated = $request->validated();
-
-    //     $message = Message::create([
-    //         'subject' => $request->filled('subject') ? $request->subject : 'without subject',
-    //         ...$validated,
-    //     ]);
-
-    //     // Dispatch the job ( send the notification )
-    //     dispatch(new SendMessageNotificationJob($message));
-
-    //     return redirect()->back()->with('success', 'Your message has been sent.');
-    // }
-
-
-    public function store(StoreMessageRequest $request)
+    public function store(StoreMessageRequest $request, MessageStoreService $messageStoreService)
     {
         $validated = $request->validated();
-        $locale = app()->getLocale(); // 'ka' or 'en'
+        $locale = app()->getLocale();
+        $validated['service_ids'] = $validated['service_ids'] ?? [];
 
-        // Services lookup
-        $services = [];
-        if (!empty($validated['service_ids'])) {
-            $rawServices = Service::whereIn('id', $validated['service_ids'])->get();
-
-            $services = $rawServices->map(function ($service) use ($locale) {
-                // Prefer localized title, fallback to English
-                return $service->title->ka ?? $service->title->en ?? '';
-            })->filter()->toArray();
+        // Error on service request with no service chosen 
+        if ($validated['subject'] === 'Request to Service' && empty($validated['service_ids'])) {
+            return redirect()
+                ->back()
+                ->withErrors(['service_ids' => $locale == 'en' ? 'Please select at least one service.' : 'გთხოვთ აირჩიოთ მინიმუმ ერთი სერვისი'])
+                ->withInput();
         }
 
-        // Subject fallback
-        $subject = $request->filled('subject') ? $request->subject : 'თემის გარეშე';
 
-        // Final message formatting
-        $finalMessage = $validated['message'] ?? '';
-
-        $formattedParts = [];
-
-        if ($finalMessage) {
-            $formattedParts[] = "📩 მესიჯი: {$finalMessage}";
-        }
-
-        if (!empty($validated['company_name'])) {
-            $formattedParts[] = "🏢 კომპანია: {$validated['company_name']}";
-        }
-
-        if (!empty($services)) {
-            $formattedParts[] = "🛠 სერვისები: " . implode(', ', $services);
-        }
-
-        // Join each part with a newline
-        $finalMessage = implode("\n", $formattedParts);
-
-        // Save message
-        $message = Message::create([
-            ...$validated,
-            'subject' => $subject,
-            'message' => $finalMessage,
-        ]);
-
-        // Dispatch notification
-        dispatch(new SendMessageNotificationJob($message));
+        $messageStoreService->createAndDispatch($validated);
 
         $req_message = $locale == 'en' ? 'Your message has been sent.' : 'შეტყობინება გაიგზავნა წარმატებით.';
         return redirect()->back()->with('success', $req_message);
     }
-
 
     /**
      * Remove the specified resource from storage.
