@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMessageRequest;
 use App\Models\Message;
 use App\Services\Messages\MessageStoreService;
+use Illuminate\Support\Facades\Schema;
 
 class MessagesController extends Controller
 {
@@ -29,11 +30,30 @@ class MessagesController extends Controller
             }
         }
 
+        $hasSourceColumn = Schema::hasColumn('messages', 'source');
+        $sourceFilter = request('filter.source');
+        $allowedSources = ['system', 'user'];
+        $sourceFilter = in_array($sourceFilter, $allowedSources, true) ? $sourceFilter : null;
+
+        $messagesQuery = Message::query()->orderBy('created_at', 'DESC');
+
+        if ($hasSourceColumn && $sourceFilter) {
+            $messagesQuery->where('source', $sourceFilter);
+        }
 
         return view('admin.messages.index', [
-            'messages' => Message::orderBy('created_at', 'DESC')->paginate(6),
+            'messages' => $messagesQuery->paginate(6),
             'selectedMessageId' => $selectedMessageId,
-            'resourceName' => $this->resourceName
+            'resourceName' => $this->resourceName,
+            'filters' => $hasSourceColumn ? [
+                'source' => [
+                    'label' => 'წყარო',
+                    'options' => [
+                        'system' => 'სისტემური (system)',
+                        'user' => 'მომხმარებელი (user)',
+                    ],
+                ],
+            ] : [],
         ]);
     }
 

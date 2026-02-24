@@ -19,7 +19,7 @@
 
         @if ($company->economic_activity_type)
             <span class="badge bg-primary rounded-pill">
-                {{ $company->economic_activity_type->name }}
+                {{ $company->economic_activity_type->display_name }}
             </span>
         @else
             <span class="badge bg-secondary rounded-pill">

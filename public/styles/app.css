@@ -34,6 +34,19 @@ button {
     position: relative;
     padding-block: 80px;
     overflow: hidden;
+    --hero-banner-top-line-inset: 8mm;
+    --hero-banner-top-line-thickness: 1px;
+}
+
+.hero-logo-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--hero-banner-top-line-inset);
+    right: var(--hero-banner-top-line-inset);
+    height: var(--hero-banner-top-line-thickness);
+    background-color: hsla(var(--gold-hue), var(--gold-saturation), var(--gold-lightness), var(--gold-alfa));
+    z-index: 1;
 }
 
 .hero-logo-banner::before {

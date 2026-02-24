@@ -27,7 +27,7 @@ class UpdateCompanyRequest extends FormRequest
             'user_ids' => 'nullable|array',
             'user_ids.*' => 'exists:users,id',
 
-            'economic_activity_code' => 'required|integer',
+            'economic_activity_code' => ['required', 'string', 'max:50', 'regex:/^\d+(?:\.\d+)*$/'],
             'high_risk_activities' => 'required|boolean',
             'risk_level' => 'required|string|in:extremely high,very high,high,medium,low',
             'evacuation_plan' => 'required|boolean',
