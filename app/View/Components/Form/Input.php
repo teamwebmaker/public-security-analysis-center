@@ -44,7 +44,9 @@ class Input extends Component
         ?string $icon = null,
         ?string $infoMessage = null,
         ?string $iconPosition = 'left',
-        string $accept = 'image/jpeg,image/png,image/webp'
+        string $accept = 'image/jpeg,image/png,image/webp',
+        ?int $minlength = null,
+        ?int $maxlength = null
     ) {
         $this->name = $name;
         $this->type = $type;
@@ -60,11 +62,13 @@ class Input extends Component
         $this->infoMessage = $infoMessage;
         $this->iconPosition = $iconPosition;
         $this->accept = $accept;
+        $this->minlength = $minlength;
+        $this->maxlength = $maxlength;
 
         // Set minlength for text input
         if ($type === 'text') {
-            $this->minlength = 3;   // default for text
-            $this->maxlength = 200; // default for text ( 0 and null means no limit )
+            $this->minlength ??= 3;   // default for text
+            $this->maxlength ??= 200; // default for text ( 0 and null means no limit )
         }
     }
 

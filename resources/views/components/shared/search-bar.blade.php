@@ -7,6 +7,7 @@
 	'showLabel' => false,
 	'heading' => '',
 	'headingPosition' => 'left', // left | right
+	'minLength' => 3,
 
 	// Styling props
 	'formClass' => 'mb-2',
@@ -23,9 +24,9 @@
 	$isLeft = $headingPosition === 'left';
 @endphp
 <form method="GET"
-	id="searchForm-{{ md5($action . $name) }}"
-	action="{{ $action }}"
-	class="{{ $formClass }}"
+id="searchForm-{{ md5($action . $name) }}"
+action="{{ $action }}"
+class="{{ $formClass }}"
 	data-search-bar
 	data-search-name="{{ $name }}">
 	<div class="{{ $wrapperClass }} flex-sm-{{ $isLeft ? 'row' : 'row-reverse' }}">
@@ -40,7 +41,7 @@
 		<div class="{{ $inputWrapperClass }}">
 			<div class="position-relative">
 				<x-form.input type="text" name="{{ $name }}" value="{{ $value }}" placeholder="{{ $placeholder }}"
-					class="{{ $inputClass }}" autocomplete="off" :required="false" />
+				class="{{ $inputClass }}" autocomplete="off" :required="false" :minlength="$minLength" />
 
 				@if($showLabel && $value)
 					<p class="{{ $labelClass }}">

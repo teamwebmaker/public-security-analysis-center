@@ -10,7 +10,8 @@
 			<x-shared.filter-bar :filters="$filters" :showBadges="false" :resetUrl="route($resourceName . '.index')" />
 		</div>
 		<div class="flex-fill flex-lg-grow-0">
-			<x-shared.search-bar headingPosition="left" :action="route($resourceName . '.index')" formClass="mb-0" />
+			<x-shared.search-bar headingPosition="left" :action="route($resourceName . '.index')" formClass="mb-0"
+				:minLength="1" />
 		</div>
 	</div>
 

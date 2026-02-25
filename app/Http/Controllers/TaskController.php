@@ -174,37 +174,10 @@ class TaskController extends CrudController
          $occurrences->getCollection(),
          $latestId,
          function ($occurrence) {
-            $editUrl = route('task-occurrences.edit', $occurrence);
-            $deleteUrl = route('task-occurrences.destroy', $occurrence);
-            $markPaidUrl = route('task-occurrences.mark-paid', $occurrence);
-            $isLatest = $occurrence->isLatest();
-            $isPaid = $occurrence->payment_status === 'paid';
-
-            $markPaidButton = $isPaid ? '' : '<form method="POST" action="' . e($markPaidUrl) . '" onsubmit="return confirm(\'ნამდვილად გსურსთ ამ ციკლის გადახდის სტატუსი განაახლოთ როგორც გადახდილი?\')" class="m-0">'
-               . csrf_field()
-               . method_field('PUT')
-               . '<button type="submit" class="btn btn-sm btn-outline-success" title="გადახდილია">'
-               . '<i class="bi bi-cash-coin"></i>'
-               . '</button>'
-               . '</form>';
-
-            $deleteButton = '<form method="POST" action="' . e($deleteUrl) . '" onsubmit="return confirm(\'წავშალოთ ეს ციკლი?\')" class="m-0">'
-               . csrf_field()
-               . method_field('DELETE')
-               . '<button type="submit" class="btn btn-sm btn-outline-danger' . ($isLatest ? ' disabled' : '') . '"'
-               . ($isLatest ? ' title="ბოლო ციკლი ვერ წაიშლება"' : '')
-               . '>'
-               . '<i class="bi bi-trash"></i>'
-               . '</button>'
-               . '</form>';
-
-            $editButton = '<a href="' . e($editUrl) . '" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i></a>';
-
-            return '<div class="d-flex gap-2 align-items-center justify-content-center">'
-               . $markPaidButton
-               . $editButton
-               . $deleteButton
-               . '</div>';
+            return view('admin.tasks.partials.occurrence-actions', [
+               'occurrence' => $occurrence,
+               'isLatest' => $occurrence->isLatest(),
+            ])->render();
          },
          $task
       );
@@ -240,9 +213,11 @@ class TaskController extends CrudController
          ->allowedFilters([
             AllowedFilter::callback('search', function ($query, $value) {
                $value = is_array($value) ? $value[0] : $value;
+               $value = trim((string) $value);
                $like = '%' . $value . '%';
+               $occurrenceId = ctype_digit($value) ? (int) $value : null;
 
-               $query->where(function ($q) use ($like) {
+               $query->where(function ($q) use ($like, $occurrenceId) {
                   $q->where('branch_name_snapshot', 'LIKE', $like)
                      ->orWhere('service_name_snapshot', 'LIKE', $like)
                      ->orWhereHas('branch', function ($q) use ($like) {
@@ -252,6 +227,12 @@ class TaskController extends CrudController
                      })->orWhereHas('users', function ($q) use ($like) {
                         $q->where('full_name', 'LIKE', $like);
                      });
+
+                  if ($occurrenceId !== null) {
+                     $q->orWhereHas('taskOccurrences', function ($q) use ($occurrenceId) {
+                        $q->where('id', $occurrenceId);
+                     });
+                  }
                });
             }),
 
