@@ -2,11 +2,19 @@ import { formatDateTime } from '../../helpers.js';
 import { formatUser } from '../user/personalInfo.js';
 
 const normalizeTask = (task = {}) => {
-  const latest = task.latest_occurrence || task.latestOccurrence || {};
+  const latest =
+    task.latest_occurrence_without_visibility
+    || task.latestOccurrenceWithoutVisibility
+    || task.latest_occurrence
+    || task.latestOccurrence
+    || {};
   const status = latest.status || task.status || {};
   const startDate = latest.start_date || latest.startDate || task.start_date;
   const endDate = latest.end_date || latest.endDate || task.end_date;
   const createdAt = task.created_at || task.createdAt;
+  const visibilityRaw = latest.visibility ?? task.visibility ?? null;
+  const hasVisibility = visibilityRaw !== null && visibilityRaw !== undefined && visibilityRaw !== '';
+  const isVisible = visibilityRaw === true || visibilityRaw === 1 || visibilityRaw === '1';
 
   const workers =
     (latest.workers || []).map(w => ({ full_name: w.worker_name_snapshot || w.full_name || w.name })).filter(Boolean)
@@ -28,6 +36,10 @@ const normalizeTask = (task = {}) => {
     companyName,
     serviceLabel: serviceSnapshot || serviceTitleKa || serviceTitleEn || '-',
     serviceLabelEn: serviceTitleEn,
+    visibilityLabel: hasVisibility ? (isVisible ? 'ხილული' : 'დამალული') : 'უცნობი',
+    visibilityClass: hasVisibility
+      ? (isVisible ? 'bg-success text-white' : 'bg-danger text-white')
+      : 'bg-secondary text-white',
   };
 };
 
@@ -46,6 +58,7 @@ export const TasksTableComponent = (tasks, includeCompany = false) => {
               <th>სერვისი</th>
               <th>შემსრულებელი</th>
               <th>სტატუსი</th>
+              <th>ციკლის ხილვადობა</th>
               ${includeCompany ? '<th>კომპანია</th> <th>ფილიალი</th>' : ''}
               <th>სამუშაოს განსაზღვრა</th>
               <th>სამუშაოს დაწყება</th>
@@ -81,6 +94,11 @@ const TaskRowComponent = (task, includeCompany) => {
       <td>
         <span class="badge ${statusClass} px-2 py-1">
           ${normalized.status.display_name || normalized.status.displayName || 'უცნობი'}
+        </span>
+      </td>
+      <td>
+        <span class="badge ${normalized.visibilityClass} px-2 py-1">
+          ${normalized.visibilityLabel}
         </span>
       </td>
       ${includeCompany ? `

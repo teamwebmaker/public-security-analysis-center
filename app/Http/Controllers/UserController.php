@@ -49,6 +49,8 @@ class UserController extends CrudController
 			'branch.company:id,name',
 			'latestOccurrence.status',
 			'latestOccurrence.workers',
+			'latestOccurrenceWithoutVisibility.status',
+			'latestOccurrenceWithoutVisibility.workers',
 		])->latest()->take(5);
 
 		// Limit hasMany eager loads per parent by trimming after load (SQL LIMIT is global)
@@ -76,6 +78,8 @@ class UserController extends CrudController
 								'branch.company:id,name',
 								'latestOccurrence.status',
 								'latestOccurrence.workers',
+								'latestOccurrenceWithoutVisibility.status',
+								'latestOccurrenceWithoutVisibility.workers',
 							]),
 						]),
 					]),
@@ -99,6 +103,8 @@ class UserController extends CrudController
 							'branch.company:id,name',
 							'latestOccurrence.status',
 							'latestOccurrence.workers',
+							'latestOccurrenceWithoutVisibility.status',
+							'latestOccurrenceWithoutVisibility.workers',
 						]),
 					]),
 				]);
