@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
+use App\Services\Tasks\TaskOccurrenceCreator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\QueryException;
@@ -35,7 +36,7 @@ class CreateTaskOccurrences implements ShouldQueue
    /**
     * Create new task occurrences when the latest due_date is reached.
     */
-   public function handle(): void
+   public function handle(TaskOccurrenceCreator $occurrenceCreator): void
    {
       Log::info('CreateTaskOccurrences job started.');
       $businessTimezone = config('app.business_timezone', 'Asia/Tbilisi');
@@ -61,7 +62,7 @@ class CreateTaskOccurrences implements ShouldQueue
                   ->whereDate('due_date', '<=', $today);
             })
             ->with(['latestOccurrence.status', 'users'])
-            ->chunkById(100, function ($tasks) use ($today, $pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount) {
+            ->chunkById(100, function ($tasks) use ($today, $pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount, $occurrenceCreator) {
                foreach ($tasks as $task) {
                   try {
                      $latest = $task->latestOccurrence;
@@ -99,28 +100,13 @@ class CreateTaskOccurrences implements ShouldQueue
                      }
 
                      try {
-                        DB::transaction(function () use ($task, $latest, $pendingStatusId, $nextDueDate) {
-                           $occurrence = $task->taskOccurrences()->create([
-                              'branch_id_snapshot' => $task->branch_id,
-                              'branch_name_snapshot' => $task->branch_name_snapshot,
-                              'service_id_snapshot' => $task->service_id,
-                              'service_name_snapshot' => $task->service_name_snapshot,
+                        DB::transaction(function () use ($task, $latest, $pendingStatusId, $nextDueDate, $occurrenceCreator) {
+                           $occurrenceCreator->createFromTask($task, [
                               'due_date' => $nextDueDate,
                               'status_id' => $pendingStatusId,
                               'requires_document' => $latest->requires_document ?? true,
                               'visibility' => $task->visibility ?? '1',
                            ]);
-
-                           if ($task->users->isNotEmpty()) {
-                              $occurrence->workers()->createMany(
-                                 $task->users
-                                    ->map(fn($user) => [
-                                       'worker_id_snapshot' => $user->id,
-                                       'worker_name_snapshot' => $user->full_name,
-                                    ])
-                                    ->all()
-                              );
-                           }
                         });
                         $createdCount++;
                      } catch (QueryException $e) {

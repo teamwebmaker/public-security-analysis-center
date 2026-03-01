@@ -20,8 +20,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function (): void {
             Bus::chain([
-                new SendUpcomingPaymentReminders(),
-                new MarkOverdueOccurrencePayments(),
+                // new SendUpcomingPaymentReminders(),
+                // new MarkOverdueOccurrencePayments(),
                 new CreateTaskOccurrences(),
             ])->dispatch();
         })

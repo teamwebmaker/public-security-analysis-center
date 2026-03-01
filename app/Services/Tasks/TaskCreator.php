@@ -4,13 +4,17 @@ namespace App\Services\Tasks;
 
 use App\Http\Controllers\Traits\SyncsRelations;
 use App\Models\Task;
-use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use Illuminate\Support\Facades\DB;
 
 class TaskCreator
 {
    use SyncsRelations;
+
+   public function __construct(
+      private TaskOccurrenceCreator $occurrenceCreator
+   ) {
+   }
 
    /**
     * Create task and its first pending occurrence inside a transaction.
@@ -43,28 +47,11 @@ class TaskCreator
          ? now()->addDays($interval)
          : null;
 
-      // task_id is set by the relation; snapshots capture current task metadata
-      $occurrence = $task->taskOccurrences()->create([
-         'branch_id_snapshot' => $task->branch_id,
-         'branch_name_snapshot' => $task->branch_name_snapshot,
-         'service_id_snapshot' => $task->service_id,
-         'service_name_snapshot' => $task->service_name_snapshot,
+      $this->occurrenceCreator->createFromTask($task, [
          'due_date' => $dueDate,
          'status_id' => $pendingStatusId,
          'requires_document' => (bool) ($data['requires_document'] ?? false),
          'visibility' => $task->visibility ?? '1',
       ]);
-
-      // Snapshot current task workers into the occurrence
-      if ($task->users()->exists()) {
-         $occurrence->workers()->createMany(
-            $task->users
-               ->map(fn($user) => [
-                  'worker_id_snapshot' => $user->id,
-                  'worker_name_snapshot' => $user->full_name,
-               ])
-               ->all()
-         );
-      }
    }
 }
