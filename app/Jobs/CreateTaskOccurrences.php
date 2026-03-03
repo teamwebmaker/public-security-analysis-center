@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
+use App\Services\Sms\WorkerTaskAssignmentSmsSender;
 use App\Services\Tasks\TaskOccurrenceCreator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,7 +37,10 @@ class CreateTaskOccurrences implements ShouldQueue
    /**
     * Create new task occurrences when the latest due_date is reached.
     */
-   public function handle(TaskOccurrenceCreator $occurrenceCreator): void
+   public function handle(
+      TaskOccurrenceCreator $occurrenceCreator,
+      WorkerTaskAssignmentSmsSender $workerSmsSender
+   ): void
    {
       Log::info('CreateTaskOccurrences job started.');
       $businessTimezone = config('app.business_timezone', 'Asia/Tbilisi');
@@ -45,6 +49,7 @@ class CreateTaskOccurrences implements ShouldQueue
       $createdCount = 0;
       $skippedFutureCount = 0;
       $skippedDuplicateCount = 0;
+      $createdOccurrenceIds = [];
 
       try {
          $pendingStatusId = TaskOccurrenceStatus::where('name', 'pending')->value('id');
@@ -62,7 +67,7 @@ class CreateTaskOccurrences implements ShouldQueue
                   ->whereDate('due_date', '<=', $today);
             })
             ->with(['latestOccurrence.status', 'users'])
-            ->chunkById(100, function ($tasks) use ($today, $pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount, $occurrenceCreator) {
+            ->chunkById(100, function ($tasks) use ($today, $pendingStatusId, &$createdCount, &$skippedFutureCount, &$skippedDuplicateCount, &$createdOccurrenceIds, $occurrenceCreator) {
                foreach ($tasks as $task) {
                   try {
                      $latest = $task->latestOccurrence;
@@ -100,14 +105,16 @@ class CreateTaskOccurrences implements ShouldQueue
                      }
 
                      try {
-                        DB::transaction(function () use ($task, $latest, $pendingStatusId, $nextDueDate, $occurrenceCreator) {
-                           $occurrenceCreator->createFromTask($task, [
+                        $occurrence = DB::transaction(function () use ($task, $latest, $pendingStatusId, $nextDueDate, $occurrenceCreator) {
+                           return $occurrenceCreator->createFromTask($task, [
                               'due_date' => $nextDueDate,
                               'status_id' => $pendingStatusId,
                               'requires_document' => $latest->requires_document ?? true,
                               'visibility' => $task->visibility ?? '1',
                            ]);
                         });
+
+                        $createdOccurrenceIds[] = (int) $occurrence->id;
                         $createdCount++;
                      } catch (QueryException $e) {
                         if ($this->isDueDateDuplicateException($e)) {
@@ -130,6 +137,17 @@ class CreateTaskOccurrences implements ShouldQueue
                   }
                }
             });
+
+         if (!empty($createdOccurrenceIds)) {
+            try {
+               $workerSmsSender->sendAggregatedForOccurrenceIds($createdOccurrenceIds);
+            } catch (\Throwable $e) {
+               Log::error('Worker aggregated assignment SMS dispatch failed after recurring occurrence job', [
+                  'occurrence_ids' => $createdOccurrenceIds,
+                  'error' => $e->getMessage(),
+               ]);
+            }
+         }
       } catch (\Throwable $e) {
          Log::error('CreateTaskOccurrences job failed unexpectedly', [
             'error' => $e->getMessage(),

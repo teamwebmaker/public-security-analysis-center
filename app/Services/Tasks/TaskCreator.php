@@ -6,13 +6,14 @@ use App\Http\Controllers\Traits\SyncsRelations;
 use App\Models\Task;
 use App\Models\TaskOccurrenceStatus;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class TaskCreator
 {
    use SyncsRelations;
 
    public function __construct(
-      private TaskOccurrenceCreator $occurrenceCreator
+      private TaskOccurrenceCreationWorkflowService $occurrenceWorkflow
    ) {
    }
 
@@ -39,15 +40,19 @@ class TaskCreator
       }
 
       $pendingStatusId = TaskOccurrenceStatus::where('name', 'pending')->value('id');
+      if (!$pendingStatusId) {
+         throw new RuntimeException('Task occurrence "pending" status is not configured.');
+      }
 
       $isRecurring = (bool) ($data['is_recurring'] ?? false);
       $interval = (int) ($data['recurrence_interval'] ?? 0);
+      $businessTimezone = config('app.business_timezone', config('app.timezone', 'UTC'));
 
       $dueDate = $isRecurring && $interval > 0
-         ? now()->addDays($interval)
+         ? now($businessTimezone)->addDays($interval)
          : null;
 
-      $this->occurrenceCreator->createFromTask($task, [
+      $this->occurrenceWorkflow->createAndNotify($task, [
          'due_date' => $dueDate,
          'status_id' => $pendingStatusId,
          'requires_document' => (bool) ($data['requires_document'] ?? false),
