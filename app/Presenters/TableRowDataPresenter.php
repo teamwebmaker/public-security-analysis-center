@@ -227,7 +227,7 @@ class TableRowDataPresenter
       ?callable $after = null
    ): array {
       $baseColumns = [
-         'id' => $task->id,
+         'id' => $task->latestOccurrence?->id,
          'status' => self::badge(
             $task->latestOccurrence?->status?->display_name ?? 'უცნობი',
             self::statusColorForOccurrence($task->latestOccurrence)
