@@ -38,7 +38,7 @@
 
 	<div class="my-4">
 		<!-- search -->
-		<x-shared.search-bar heading="ყველა სამუშაო" headingPosition="left" :action="route('management.dashboard.page')" />
+		<x-shared.search-bar heading="ყველა სამუშაო" headingPosition="left" :action="route('management.dashboard.page')" :minLength="1" />
 		<x-shared.filter-bar :filters="$filters" :resetUrl="route('management.dashboard.page')" />
 
 		@if ($tasks->isNotEmpty())

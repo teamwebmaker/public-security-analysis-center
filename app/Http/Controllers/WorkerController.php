@@ -115,11 +115,21 @@ class WorkerController extends Controller
             ->orderByDesc($latestOccurrenceCreatedAt)
             ->allowedFilters([
                 AllowedFilter::callback('search', function ($query, $value) {
-                    $query->where(function ($q) use ($value) {
+                    $value = is_array($value) ? $value[0] : $value;
+                    $value = trim((string) $value);
+                    $occurrenceId = ctype_digit($value) ? (int) $value : null;
+
+                    $query->where(function ($q) use ($value, $occurrenceId) {
                         $like = "%{$value}%";
                         $q->orWhereHas('branch', fn($b) => $b->where('name', 'LIKE', $like))
                             ->orWhereHas('service', fn($s) => $s->where('title->ka', 'LIKE', $like))
                             ->orWhereHas('latestOccurrence.status', fn($st) => $st->where('display_name', 'LIKE', $like));
+
+                        if ($occurrenceId !== null) {
+                            $q->orWhereHas('taskOccurrences', function ($q) use ($occurrenceId) {
+                                $q->where('id', $occurrenceId);
+                            });
+                        }
                     });
                 }),
                 AllowedFilter::callback('status', function ($query, $value) {

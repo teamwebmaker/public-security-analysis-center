@@ -153,11 +153,21 @@ class ResponsiblePersonController extends Controller
     {
         return [
             AllowedFilter::callback('search', function ($query, $value) {
-                $query->where(function ($q) use ($value) {
+                $value = is_array($value) ? $value[0] : $value;
+                $value = trim((string) $value);
+                $occurrenceId = ctype_digit($value) ? (int) $value : null;
+
+                $query->where(function ($q) use ($value, $occurrenceId) {
                     $q->orWhereHas('branch', fn($q) => $q->where('name', 'LIKE', "%$value%"))
                         ->orWhereHas('service', fn($q) => $q->where('title->ka', 'LIKE', "%$value%"))
                         ->orWhereHas('latestOccurrence.status', fn($q) => $q->where('display_name', 'LIKE', "%$value%"))
                         ->orWhereHas('users', fn($q) => $q->where('full_name', 'LIKE', "%$value%"));
+
+                    if ($occurrenceId !== null) {
+                        $q->orWhereHas('taskOccurrences', function ($q) use ($occurrenceId) {
+                            $q->where('id', $occurrenceId);
+                        });
+                    }
                 });
             }),
             AllowedFilter::callback('status', function ($query, $value) {
