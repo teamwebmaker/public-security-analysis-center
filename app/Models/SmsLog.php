@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\Messages\MessageStoreService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SmsLog extends Model
 {
@@ -41,6 +44,42 @@ class SmsLog extends Model
         1 => 'advertising',
         2 => 'information',
     ];
+
+    protected static function booted(): void
+    {
+        static::created(function (SmsLog $smsLog): void {
+            $pending = self::statusNumber('pending') ?? 0;
+            $undelivered = self::statusNumber('undelivered') ?? 2;
+            $status = (int) $smsLog->status;
+
+            if (!in_array($status, [$pending, $undelivered], true)) {
+                return;
+            }
+
+            $lines = [
+                "SMS ლოგი შეიქმნა სტატუსით: " . self::statusName($status),
+                "ლოგის ID: #{$smsLog->id}",
+                "ნომერი: {$smsLog->destination}",
+                "ტიპი: " . self::smsnoTypeName((int) $smsLog->smsno),
+                "პროვაიდერი: {$smsLog->provider}",
+                "შეტყობინება: {$smsLog->content}",
+            ];
+
+            try {
+                app(MessageStoreService::class)->createAndDispatch([
+                    'source' => 'system',
+                    'subject' => "SMS სტატუსი: " . self::statusName($status),
+                    'message' => implode("\n", $lines),
+                ]);
+            } catch (Throwable $e) {
+                Log::error('Failed to create system message for sms_logs created event', [
+                    'sms_log_id' => $smsLog->id,
+                    'status' => $status,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        });
+    }
 
 
     /**
