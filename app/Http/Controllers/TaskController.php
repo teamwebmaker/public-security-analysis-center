@@ -14,6 +14,7 @@ use App\Presenters\TableHeaderDataPresenter;
 use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
+use App\Services\Sms\AdminSmsNotifier;
 use App\Services\Tasks\TaskCreator;
 use App\Services\Tasks\TaskUpdater;
 use Illuminate\Http\Request;
@@ -40,11 +41,17 @@ class TaskController extends CrudController
 
    protected TaskCreator $taskCreator;
    protected TaskUpdater $taskUpdater;
+   protected AdminSmsNotifier $adminSmsNotifier;
 
-   public function __construct(TaskCreator $taskCreator, TaskUpdater $taskUpdater)
+   public function __construct(
+      TaskCreator $taskCreator,
+      TaskUpdater $taskUpdater,
+      AdminSmsNotifier $adminSmsNotifier
+   )
    {
       $this->taskCreator = $taskCreator;
       $this->taskUpdater = $taskUpdater;
+      $this->adminSmsNotifier = $adminSmsNotifier;
    }
 
    /**
@@ -391,6 +398,20 @@ class TaskController extends CrudController
                'start_date' => now(),
             ]);
 
+            $worker = auth()->user();
+            if ($worker instanceof User) {
+               try {
+                  $this->adminSmsNotifier->notifyTaskStarted($occurrence, $worker);
+               } catch (\Throwable $e) {
+                  Log::warning('Admin task-start SMS side-effect failed', [
+                     'task_id' => $task->id,
+                     'occurrence_id' => $occurrence->id,
+                     'worker_id' => $worker->id,
+                     'error' => $e->getMessage(),
+                  ]);
+               }
+            }
+
             return redirect()
                ->back()
                ->with('success', 'სამუშაო დაწყებულად მოინიშნა წარმატებით.');
@@ -470,6 +491,20 @@ class TaskController extends CrudController
          }
 
          $occurrence->update($updateData);
+
+         $worker = auth()->user();
+         if ($worker instanceof User) {
+            try {
+               $this->adminSmsNotifier->notifyTaskFinished($occurrence, $worker);
+            } catch (\Throwable $e) {
+               Log::warning('Admin task-finish SMS side-effect failed', [
+                  'task_id' => $task->id,
+                  'occurrence_id' => $occurrence->id,
+                  'worker_id' => $worker->id,
+                  'error' => $e->getMessage(),
+               ]);
+            }
+         }
 
          return back()->with(
             'success',

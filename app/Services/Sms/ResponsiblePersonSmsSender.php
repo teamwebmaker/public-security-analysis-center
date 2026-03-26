@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Log;
 
 class ResponsiblePersonSmsSender
 {
+    public function __construct(
+        private AdminSmsNotifier $adminSmsNotifier
+    ) {
+    }
+
     /**
      * Send aggregated SMS per responsible person with idempotent guard.
      */
@@ -124,6 +129,19 @@ class ResponsiblePersonSmsSender
                     $sentSummary[$user->id]['occurrence_ids'] ?? [],
                     $occurrenceIds
                 )));
+
+                if ($eventType === 'debt_overdue_service_suspended') {
+                    try {
+                        $this->adminSmsNotifier->notifyResponsiblePersonOverdue($user, $occurrenceIds);
+                    } catch (\Throwable $e) {
+                        Log::warning('Admin overdue SMS side-effect failed', [
+                            'event_type' => $eventType,
+                            'responsible_person_id' => $user->id,
+                            'occurrence_ids' => $occurrenceIds,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             $logLevel = $sendResult['failed'] ? 'warning' : 'info';
