@@ -7,7 +7,11 @@ use App\Http\Requests\UpdateSmsLogRequest;
 use App\Models\SmsLog;
 use App\Presenters\TableHeaderDataPresenter;
 use App\Presenters\TableRowDataPresenter;
+use App\Services\Sms\SenderGeClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Throwable;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -75,6 +79,155 @@ class SmsLogController extends CrudController
             'smsLogRows' => $smsLogRows,
             'filters' => self::FILTERS,
             'sortableMap' => self::SORTABLE_MAP,
+            'totalSmsLogs' => SmsLog::query()->count(),
+        ]);
+    }
+
+    /**
+     * Refresh statuses for latest SMS logs by querying provider delivery reports.
+     */
+    public function syncStatuses(Request $request, SenderGeClient $sender)
+    {
+        $validated = $request->validate([
+            'limit' => ['required', 'integer', Rule::in([10, 20, 50])],
+        ]);
+
+        $limit = (int) $validated['limit'];
+        $logs = SmsLog::query()
+            ->where('provider', 'sender_ge')
+            ->whereNotNull('provider_message_id')
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
+
+        $checked = 0;
+        $updated = 0;
+        $unchanged = 0;
+        $skipped = 0;
+        $errors = [];
+        $statusCache = [];
+
+        foreach ($logs as $smsLog) {
+            $checked++;
+            $messageId = trim((string) $smsLog->provider_message_id);
+
+            if ($messageId === '') {
+                $skipped++;
+                continue;
+            }
+
+            if (!array_key_exists($messageId, $statusCache)) {
+                try {
+                    $report = $sender->getDeliveryReport($messageId);
+                } catch (Throwable $e) {
+                    $statusCache[$messageId] = null;
+                    $errors[] = [
+                        'sms_log_id' => $smsLog->id,
+                        'message' => 'Delivery report request failed.',
+                    ];
+
+                    Log::warning('SMS delivery report request threw exception', [
+                        'sms_log_id' => $smsLog->id,
+                        'provider_message_id' => $messageId,
+                        'error' => $e->getMessage(),
+                    ]);
+                    continue;
+                }
+
+                $httpStatus = (int) data_get($report, 'http_status', 0);
+                if ($httpStatus === 401) {
+                    $statusCache[$messageId] = null;
+                    $errors[] = [
+                        'sms_log_id' => $smsLog->id,
+                        'message_id' => $messageId,
+                        'http_status' => 401,
+                        'message' => 'SMS პროვაიდერის ავტორიზაცია ვერ მოხერხდა (401).',
+                    ];
+                    Log::warning('SMS delivery report unauthorized (401)', [
+                        'sms_log_id' => $smsLog->id,
+                        'provider_message_id' => $messageId,
+                    ]);
+                    continue;
+                }
+
+                if ($httpStatus === 403) {
+                    $statusCache[$messageId] = null;
+                    $errors[] = [
+                        'sms_log_id' => $smsLog->id,
+                        'message_id' => $messageId,
+                        'http_status' => 403,
+                        'message' => 'SMS პროვაიდერმა წვდომა შეზღუდა (403).',
+                    ];
+                    Log::warning('SMS delivery report forbidden (403)', [
+                        'sms_log_id' => $smsLog->id,
+                        'provider_message_id' => $messageId,
+                    ]);
+                    continue;
+                }
+
+                if ($httpStatus === 503) {
+                    $statusCache[$messageId] = null;
+                    $errors[] = [
+                        'sms_log_id' => $smsLog->id,
+                        'message_id' => $messageId,
+                        'http_status' => 503,
+                        'message' => 'Provider temporarily unavailable (503).',
+                    ];
+                    Log::warning('SMS delivery report unavailable (503)', [
+                        'sms_log_id' => $smsLog->id,
+                        'provider_message_id' => $messageId,
+                    ]);
+                    continue;
+                }
+
+                if (!(bool) data_get($report, 'ok', false)) {
+                    $statusCache[$messageId] = null;
+                    $errors[] = [
+                        'sms_log_id' => $smsLog->id,
+                        'message_id' => $messageId,
+                        'http_status' => $httpStatus,
+                        'message' => 'Provider response is not OK.',
+                    ];
+                    Log::warning('SMS delivery report not OK', [
+                        'sms_log_id' => $smsLog->id,
+                        'provider_message_id' => $messageId,
+                        'http_status' => $httpStatus,
+                        'raw' => data_get($report, 'raw'),
+                    ]);
+                    continue;
+                }
+
+                $statusCache[$messageId] = $this->extractStatusId($report);
+            }
+
+            $newStatus = $statusCache[$messageId];
+            if ($newStatus === null) {
+                $skipped++;
+                continue;
+            }
+
+            if ((int) $smsLog->status === $newStatus) {
+                $unchanged++;
+                continue;
+            }
+
+            $smsLog->update([
+                'status' => $newStatus,
+            ]);
+            $updated++;
+        }
+
+        return response()->json([
+            'message' => 'სტატუსების გადამოწმება დასრულდა.',
+            'summary' => [
+                'requested' => $limit,
+                'checked' => $checked,
+                'updated' => $updated,
+                'unchanged' => $unchanged,
+                'skipped' => $skipped,
+                'errors' => count($errors),
+            ],
+            'errors' => $errors,
         ]);
     }
 
@@ -155,5 +308,24 @@ class SmsLogController extends CrudController
         }
 
         return $data;
+    }
+
+    private function extractStatusId(array $report): ?int
+    {
+        $statusId = data_get($report, 'data.data.0.statusId');
+        if ($statusId === null) {
+            $statusId = data_get($report, 'data.0.statusId');
+        }
+        if ($statusId === null) {
+            $statusId = data_get($report, 'data.statusId');
+        }
+
+        if (!is_numeric($statusId)) {
+            return null;
+        }
+
+        $statusId = (int) $statusId;
+
+        return in_array($statusId, [0, 1, 2], true) ? $statusId : null;
     }
 }
