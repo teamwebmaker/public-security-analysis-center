@@ -65,7 +65,7 @@
 				</div>
 			</div>
 		@else
-			<x.x-ui.empty-state-message resourceName="null" :overlay="false" />
+			<x-ui.empty-state-message :overlay="false" />
 		@endif
 	</main>
 @endsection

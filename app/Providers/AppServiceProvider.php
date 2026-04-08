@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Info;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use App\Models\MainMenu;
 use Illuminate\Support\Facades\App;

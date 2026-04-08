@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
   <meta charset="utf-8" />
@@ -16,7 +16,7 @@
   <title>{{ __('static.pages.login.title') }}</title>
 </head>
 
-<body data-languge="ka">
+<body data-language="{{ app()->getLocale() }}">
   <!-- Display global errors -->
   @if ($errors->any())
     <x-ui.toast :messages="$errors->all()" type="error" />

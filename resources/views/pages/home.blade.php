@@ -7,7 +7,7 @@
 @section('main')
 	<main>
 		<div class="container-fluid hero-logo-banner black-bg text-center">
-			<h1 class="fw-bold fs-5 fs-md-3 text-white font-paata hero-logo-banner__heading">
+			<h1 class="fw-bold fs-5 fs-md-3 gold-text font-paata hero-logo-banner__heading">
 				{{ __('static.pages.home.heading') }}
 			</h1>
 		</div>

@@ -15,11 +15,11 @@ body {
 }
 
 
-body[data-languge="ka"] {
+body[data-language="ka"] {
     font-family: 'algeti', serif;
 }
 
-body[data-languge="en"] {
+body[data-language="en"] {
     font-family: 'Roboto', sans-serif;
 }
 

@@ -29,7 +29,6 @@ class MainMenuController extends CrudController
     {
         $data = $request->validated();
         $mainMenu = $this->prepareMainMenuTitle($data);
-        // dd($mainMenu);
         $this->modelClass::create(array_merge($mainMenu, $data));
 
         return redirect()

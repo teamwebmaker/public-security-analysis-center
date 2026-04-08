@@ -21,7 +21,7 @@
 					<!-- Email collapses on mobile -->
 					<div class="collapse d-md-none mt-2" id="mobileEmail">
 						<a class="d-flex gap-2 align-items-center black-text text-decoration-none"
-							href="mailto:psacge@gmail.com">
+							href="mailto:{{ $contactEmail }}">
 							<i class="bi bi-envelope fs-5"></i>
 							<span class="contact-option-label fs-6">{{ $contactEmail }}</span>
 						</a>
@@ -30,12 +30,12 @@
 					<!-- Desktop view: email & phone always visible -->
 					<div class="d-none d-md-flex gap-4">
 						<a class="contact-options d-flex gap-2 align-items-center black-text text-decoration-none"
-							href="mailto:psacge@gmail.com">
+							href="mailto:{{ $contactEmail }}">
 							<i class="bi bi-envelope fs-5"></i>
 							<span class="contact-option-label fs-6">{{ $contactEmail }}</span>
 						</a>
 						<a class="contact-options d-flex gap-2 align-items-center black-text text-decoration-none"
-							href="tel:+995577416620">
+							href="tel:{{ $contactPhone }}">
 							<i class="bi bi-telephone fs-5"></i>
 							<span class="contact-option-label fs-6">{{ $contactPhone }}</span>
 						</a>

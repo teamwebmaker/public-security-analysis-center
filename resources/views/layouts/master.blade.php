@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
   @include('partials.head')
   @yield('head-custom')
 </head>
 
-<body data-languge="ka">
+<body data-language="{{ app()->getLocale() }}">
   <div class="wrapper">
     @include('partials.header')
     @yield('main')
