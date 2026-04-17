@@ -13,6 +13,7 @@ use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\DashboardRouterController;
 use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\EconomicActivityTypeController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\InstructionController;
@@ -148,6 +149,7 @@ Route::prefix('admin')->group(function () {
         Route::put('task-occurrences/{taskOccurrence}/mark-paid', [TaskOccurrenceController::class, 'markPaid'])
             ->name('task-occurrences.mark-paid');
         Route::resource('admin_numbers', AdminNumberController::class)->except('show');
+        Route::resource('guides', GuideController::class)->except('show');
 
 
         // CRUD: Projects, Partners, Publications

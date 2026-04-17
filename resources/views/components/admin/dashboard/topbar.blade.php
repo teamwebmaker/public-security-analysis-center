@@ -4,10 +4,14 @@
     </button>
 
     <div class="d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
-        <div>
+        <div class="d-flex align-items-center gap-4">
             <a href="{{ route('admin.dashboard.page') }}" class=" user-profile-btn text-decoration-none">
                 <i class="bi bi-columns-gap fs-5" style="rotate: 90deg;"></i>
                 <span class="d-none d-sm-block">მთავარი</span>
+            </a>
+            <a href="{{ route('guides.index') }}" class=" user-profile-btn text-decoration-none">
+                <i class="bi bi-signpost-split fs-5"></i>
+                <span class="d-none d-sm-block">გზამკვლევი</span>
             </a>
         </div>
         @php
@@ -20,7 +24,8 @@
             <div class="position-relative">
                 <x-ui.link-icon route="messages.index" icon="mailbox2-flag " />
                 @if ($hasUnreadMessages)
-                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
                 @endif
             </div>
 
