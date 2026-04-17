@@ -4,6 +4,7 @@ namespace App\Services\Tasks;
 
 use App\Models\Task;
 use App\Models\TaskOccurrence;
+use App\Services\Sms\ResponsiblePersonTaskSmsNotifier;
 use App\Services\Sms\WorkerTaskAssignmentSmsSender;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,8 @@ class TaskOccurrenceCreationWorkflowService
 {
    public function __construct(
       private TaskOccurrenceCreator $occurrenceCreator,
-      private WorkerTaskAssignmentSmsSender $workerSmsSender
+      private WorkerTaskAssignmentSmsSender $workerSmsSender,
+      private ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier
    ) {
    }
 
@@ -34,9 +36,18 @@ class TaskOccurrenceCreationWorkflowService
                'error' => $e->getMessage(),
             ]);
          }
+
+         try {
+            $this->responsiblePersonTaskSmsNotifier->notifyTaskAssigned($occurrence);
+         } catch (Throwable $e) {
+            Log::error('Responsible-person assignment SMS dispatch failed after occurrence creation', [
+               'task_id' => $task->id,
+               'occurrence_id' => $occurrence->id ?? null,
+               'error' => $e->getMessage(),
+            ]);
+         }
       });
 
       return $occurrence;
    }
 }
-

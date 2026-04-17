@@ -15,6 +15,7 @@ use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Sms\AdminSmsNotifier;
+use App\Services\Sms\ResponsiblePersonTaskSmsNotifier;
 use App\Services\Tasks\TaskCreator;
 use App\Services\Tasks\TaskUpdater;
 use Illuminate\Http\Request;
@@ -42,16 +43,19 @@ class TaskController extends CrudController
    protected TaskCreator $taskCreator;
    protected TaskUpdater $taskUpdater;
    protected AdminSmsNotifier $adminSmsNotifier;
+   protected ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier;
 
    public function __construct(
       TaskCreator $taskCreator,
       TaskUpdater $taskUpdater,
-      AdminSmsNotifier $adminSmsNotifier
+      AdminSmsNotifier $adminSmsNotifier,
+      ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier
    )
    {
       $this->taskCreator = $taskCreator;
       $this->taskUpdater = $taskUpdater;
       $this->adminSmsNotifier = $adminSmsNotifier;
+      $this->responsiblePersonTaskSmsNotifier = $responsiblePersonTaskSmsNotifier;
    }
 
    /**
@@ -504,6 +508,16 @@ class TaskController extends CrudController
                   'error' => $e->getMessage(),
                ]);
             }
+         }
+
+         try {
+            $this->responsiblePersonTaskSmsNotifier->notifyTaskFinished($occurrence);
+         } catch (\Throwable $e) {
+            Log::warning('Responsible-person task-finish SMS side-effect failed', [
+               'task_id' => $task->id,
+               'occurrence_id' => $occurrence->id,
+               'error' => $e->getMessage(),
+            ]);
          }
 
          return back()->with(

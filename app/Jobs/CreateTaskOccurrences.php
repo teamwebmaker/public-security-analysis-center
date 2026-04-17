@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
+use App\Services\Sms\ResponsiblePersonTaskSmsNotifier;
 use App\Services\Sms\WorkerTaskAssignmentSmsSender;
 use App\Services\Tasks\TaskOccurrenceCreator;
 use Illuminate\Bus\Queueable;
@@ -39,9 +40,9 @@ class CreateTaskOccurrences implements ShouldQueue
     */
    public function handle(
       TaskOccurrenceCreator $occurrenceCreator,
-      WorkerTaskAssignmentSmsSender $workerSmsSender
-   ): void
-   {
+      WorkerTaskAssignmentSmsSender $workerSmsSender,
+      ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier
+   ): void {
       Log::info('CreateTaskOccurrences job started.');
       $businessTimezone = config('app.business_timezone', 'Asia/Tbilisi');
       $today = now($businessTimezone)->toDateString();
@@ -143,6 +144,15 @@ class CreateTaskOccurrences implements ShouldQueue
                $workerSmsSender->sendAggregatedForOccurrenceIds($createdOccurrenceIds);
             } catch (\Throwable $e) {
                Log::error('Worker aggregated assignment SMS dispatch failed after recurring occurrence job', [
+                  'occurrence_ids' => $createdOccurrenceIds,
+                  'error' => $e->getMessage(),
+               ]);
+            }
+
+            try {
+               $responsiblePersonTaskSmsNotifier->notifyTaskAssignedForOccurrenceIds($createdOccurrenceIds);
+            } catch (\Throwable $e) {
+               Log::error('Responsible-person assignment SMS dispatch failed after recurring occurrence job', [
                   'occurrence_ids' => $createdOccurrenceIds,
                   'error' => $e->getMessage(),
                ]);
