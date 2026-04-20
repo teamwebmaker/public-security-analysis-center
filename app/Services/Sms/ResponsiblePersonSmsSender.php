@@ -72,16 +72,20 @@ class ResponsiblePersonSmsSender
             $occurrenceIds = array_values(array_unique($occurrenceIds));
 
             // Remove occurrences for services the user is not responsible for.
-            $allowedServiceIds = $user->services->pluck('id')->toArray();
+            $allowedServiceIds = $user->services
+                ->pluck('id')
+                ->map(fn($id) => (int) $id)
+                ->all();
             $filteredOccurrenceIds = [];
             foreach ($occurrenceIds as $occurrenceId) {
-                $serviceId = $occurrenceServiceIds[$occurrenceId] ?? null;
+                $rawServiceId = $occurrenceServiceIds[$occurrenceId] ?? null;
+                $serviceId = is_numeric($rawServiceId) ? (int) $rawServiceId : null;
                 if ($serviceId === null || !in_array($serviceId, $allowedServiceIds, true)) {
                     Log::warning('Payment SMS not sent: The responsible person is not authorized to receive SMS notifications for this occurrence.', [
                         'event_type' => $eventType,
                         'responsible_person_id' => $user->id,
                         'occurrence_id' => $occurrenceId,
-                        'service_id_snapshot' => $serviceId,
+                        'service_id_snapshot' => $rawServiceId,
                     ]);
                     $skippedSummary['not_authorized'][$user->id]['full_name'] = $user->full_name ?? 'უცნობი';
                     $skippedSummary['not_authorized'][$user->id]['occurrence_ids'] = array_values(array_unique(array_merge(
