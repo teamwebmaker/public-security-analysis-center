@@ -8,6 +8,7 @@ use App\Models\Partner;
 use App\Models\Publication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
 class PublicationController extends CrudController
@@ -51,6 +52,12 @@ class PublicationController extends CrudController
     {
         $data = $request->validated();
         $publicationData = $this->preparePublicationData($request, $data, $publication);
+
+        if (!$request->hasFile('file') && $request->boolean('delete_document')) {
+            $this->deleteFile('documents/publications/', $publication->file);
+            $publicationData['file'] = null;
+        }
+
         $publication->update($publicationData);
 
         return redirect()
@@ -97,5 +104,17 @@ class PublicationController extends CrudController
             "title" => $title,
             "description" => $description,
         ];
+    }
+
+    private function deleteFile(string $path, ?string $fileName): void
+    {
+        if (!$fileName) {
+            return;
+        }
+
+        $filePath = public_path($path . ltrim($fileName, '/'));
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
     }
 }

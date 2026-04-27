@@ -28,6 +28,7 @@ class UpdatePublicationRequest extends FormRequest
             "description_en" => "required|string|min:10",
             "image" => "sometimes|image|mimes:jpg,jpeg,webp,png|max:2048",
             "file" => "sometimes|mimes:pdf|max:2048",
+            "delete_document" => "nullable|boolean",
             "visibility" => "required|in:1,0",
         ];
     }

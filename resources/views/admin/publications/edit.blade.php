@@ -54,6 +54,16 @@
 			<div class="col-md-6">
 				<x-form.input type="file" name="file" label="pdf დოკუმენტი" :isImage="false" accept="application/pdf"
 					:required="false" />
+				@if($publication->file)
+					<div class="form-check mt-2">
+						<input class="form-check-input" type="checkbox" value="1" id="delete_document" name="delete_document">
+						<label class="form-check-label" for="delete_document">მიმაგრებული დოკუმენტის წაშლა</label>
+					</div>
+					<p class="small mt-2">
+						ამჟამინდელი: <a href="{{ asset('documents/publications/' . ltrim($publication->file, '/')) }}"
+							target="_blank">ნახვა</a>
+					</p>
+				@endif
 			</div>
 		</div>
 		<!-- Visibility & Submit -->

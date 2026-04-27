@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 
 class ServiceController extends CrudController
 {
@@ -80,6 +81,12 @@ class ServiceController extends CrudController
     {
         $data = $request->validated();
         $projectData = $this->prepareServiceData($request, $data, $service);
+
+        if (!$request->hasFile('document') && $request->boolean('delete_document')) {
+            $this->deleteFile('documents/services/', $service->document);
+            $projectData['document'] = null;
+        }
+
         $service->update($projectData);
 
         return redirect()
@@ -151,5 +158,17 @@ class ServiceController extends CrudController
             "title" => $title,
             "description" => $description,
         ];
+    }
+
+    private function deleteFile(string $path, ?string $fileName): void
+    {
+        if (!$fileName) {
+            return;
+        }
+
+        $filePath = public_path($path . ltrim($fileName, '/'));
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
     }
 }
