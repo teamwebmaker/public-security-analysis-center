@@ -146,15 +146,18 @@
 				<h2 class="fw-bold mb-5 gold-text text-center ">{{__('static.pages.programs.mentors')}}</h2>
 				<div class="row justify-content-center g-4">
 					@foreach($item->mentors as $mentor)
+						@php
+							$mentorName = $mentor->full_name->$language ?? '';
+						@endphp
 						<div class="col-12 col-md-6 col-lg-4 d-flex">
 							<div class="card w-100 h-100 border-0 shadow-sm text-center p-4 hover-shadow transition">
 								<div class="mx-auto mb-3 position-relative" style="width: 120px; height: 120px;">
 									<img src="{{ asset('images/' . $resourceName_mentors . '/' . $mentor->image) }}"
-										alt="{{ $mentor->full_name }}" class="rounded-circle  img-fluid"
+										alt="{{ $mentorName }}" class="rounded-circle  img-fluid"
 										style="object-fit: cover; width: 100%; height: 100%;">
 								</div>
 								<div class="card-body px-0">
-									<h5 class="card-title fw-semibold mb-1">{{ $mentor->full_name }}</h5>
+									<h5 class="card-title fw-semibold mb-1">{{ $mentorName }}</h5>
 									@if (is_object($mentor->description) && !empty($mentor->description->$language))
 										<p class="card-text text-muted small mb-0">{{ $mentor->description->$language }}</p>
 									@endif

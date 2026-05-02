@@ -18,7 +18,7 @@
         :items="collect($program->days->ka ?? [])" :getItemText="fn($day) => $day" />
 
     <x-ui.info-dropdown-item label="მენტორები" icon="bi bi-person-lines-fill" name="mentors_dropdown"
-        :items="$program->mentors" :getItemText="fn($mentor) => $mentor->full_name" />
+        :items="$program->mentors" :getItemText="fn($mentor) => $mentor->full_name->ka" />
 
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>ხანგრძლივობა:</span>

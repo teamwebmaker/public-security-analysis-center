@@ -22,7 +22,8 @@ class UpdateMentorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name' => 'required|string|min:3|max:200',
+            'full_name_ka' => 'required|string|min:3|max:200',
+            'full_name_en' => 'required|string|min:3|max:200',
             'description_ka' => 'nullable|string|min:10|max:250',
             'description_en' => 'nullable|string|min:10|max:250',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',

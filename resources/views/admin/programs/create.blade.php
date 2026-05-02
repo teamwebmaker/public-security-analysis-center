@@ -145,7 +145,7 @@
 			</div>
 			<!-- Mentors -->
 			<div class="col-md-5 mb-3">
-				<x-form.checkbox-dropdown label="მენტორები" :items="$mentors" name="mentor_ids" labelField="full_name" />
+				<x-form.checkbox-dropdown label="მენტორები" :items="$mentors" name="mentor_ids" labelField="full_name.ka" />
 			</div>
 		</div>
 

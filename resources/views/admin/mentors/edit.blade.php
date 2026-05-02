@@ -1,5 +1,5 @@
 @extends('layouts.admin.admin-dashboard')
-@section('title', 'რედაქტირება: ' . $mentor->full_name)
+@section('title', 'რედაქტირება: ' . ($mentor->full_name->ka ?? ''))
 
 @section('main')
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" action="{{ route($resourceName . '.update', $mentor) }}"
@@ -12,13 +12,7 @@
 		</x-slot>
 
 
-		<!-- mentor name -->
-		<div class="mb-3">
-			<x-form.input name="full_name" label="სახელი" value="{{ old('full_name', $mentor->full_name) }}"
-				placeholder="შეიყვანეთ სახელი" />
-		</div>
-
-		<!-- Multilingual description -->
+		<!-- Multilingual mentor data -->
 		<div class="mb-3">
 			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -26,6 +20,11 @@
 		]">
 				<!-- Georgian content -->
 				<div class="tab-pane fade show active " id="ka-tab-content" role="tabpanel" aria-labelledby="ka-tab">
+					<div class="mb-3">
+						<x-form.input name="full_name_ka" label="სახელი"
+							value="{{ old('full_name_ka', $mentor->full_name->ka ?? '') }}"
+							placeholder="შეიყვანეთ სახელი ქართულად" />
+					</div>
 					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა"
 							value="{{ old('description_ka', $mentor->description->ka ?? '') ?? '' }}"
@@ -34,10 +33,15 @@
 				</div>
 				<!-- English content -->
 				<div class="tab-pane fade" id="en-tab-content" role="tabpanel" aria-labelledby="en-tab">
+					<div class="mb-3">
+						<x-form.input name="full_name_en" label="Name"
+							value="{{ old('full_name_en', $mentor->full_name->en ?? '') }}"
+							placeholder="Enter name in English" />
+					</div>
 					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description"
-							value="{{ old('description_en', $mentor->description->ka ?? '') ?? '' }}"
-							placeholder="შეიყვანეთ აღწერა ინგლისურად" maxlength="250" :required="false" />
+							value="{{ old('description_en', $mentor->description->en ?? '') ?? '' }}"
+							placeholder="Enter description in English" maxlength="250" :required="false" />
 					</div>
 				</div>
 			</x-ui.tabs>

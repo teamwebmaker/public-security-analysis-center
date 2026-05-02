@@ -160,7 +160,7 @@
 			<!-- Mentors -->
 			<div class="col-md-5 mb-3">
 				<label for="mentor_ids" class="form-label">მენტორები</label>
-				<x-form.checkbox-dropdown label="აირჩიე მენტორები" :items="$mentors" name="mentor_ids" labelField="full_name"
+				<x-form.checkbox-dropdown label="აირჩიე მენტორები" :items="$mentors" name="mentor_ids" labelField="full_name.ka"
 					:selected="isset($program) ? $program->mentors->pluck('id') : old('mentor_ids', [])" />
 			</div>
 		</div>

@@ -107,13 +107,19 @@ class MentorController extends CrudController
             ->toArray();
 
         $description = [
-            "ka" => $data["description_ka"],
-            "en" => $data["description_en"],
+            "ka" => $data["description_ka"] ?? null,
+            "en" => $data["description_en"] ?? null,
+        ];
+
+        $fullName = [
+            "ka" => $data["full_name_ka"],
+            "en" => $data["full_name_en"],
         ];
 
         return [
             ...$data,
             ...$files,
+            "full_name" => $fullName,
             "description" => $description,
         ];
     }

@@ -5,12 +5,7 @@
 	<x-admin.crud.form-container title="მენტორის შექმნა" action="{{ route($resourceName . '.store') }}" method="POST"
 		:hasFileUpload="true" :backRoute="$resourceName . '.index'">
 
-		<!-- mentor name -->
-		<div class="mb-3">
-			<x-form.input name="full_name" label="სახელი" placeholder="შეიყვანეთ სახელი" />
-		</div>
-
-		<!-- Multilingual description -->
+		<!-- Multilingual mentor data -->
 		<div class="mb-3">
 			<x-ui.tabs :tabs="[
 			['id' => 'ka', 'label' => 'KA'],
@@ -18,6 +13,10 @@
 		]">
 				<!-- Georgian content -->
 				<div class="tab-pane fade show active " id="ka-tab-content" role="tabpanel" aria-labelledby="ka-tab">
+					<div class="mb-3">
+						<x-form.input name="full_name_ka" label="სახელი" value="{{ old('full_name_ka') }}"
+							placeholder="შეიყვანეთ სახელი ქართულად" />
+					</div>
 					<div class="mb-1">
 						<x-form.textarea name="description_ka" label="აღწერა" value="{{ old('description_ka') }}"
 							placeholder="შეიყვანეთ აღწერა ქართულად" maxlength="250" :required="false" />
@@ -25,9 +24,13 @@
 				</div>
 				<!-- English content -->
 				<div class="tab-pane fade" id="en-tab-content" role="tabpanel" aria-labelledby="en-tab">
+					<div class="mb-3">
+						<x-form.input name="full_name_en" label="Name" value="{{ old('full_name_en') }}"
+							placeholder="Enter name in English" />
+					</div>
 					<div class="mb-1">
 						<x-form.textarea name="description_en" label="Description" value="{{ old('description_en') }}"
-							placeholder="შეიყვანეთ აღწერა ინგლისურად" maxlength="250" :required="false" />
+							placeholder="Enter description in English" maxlength="250" :required="false" />
 					</div>
 				</div>
 			</x-ui.tabs>

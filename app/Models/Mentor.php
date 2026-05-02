@@ -20,6 +20,7 @@ class Mentor extends Model
     ];
 
     protected $casts = [
+        'full_name' => JsonConvertCast::class,
         'description' => JsonConvertCast::class
     ];
 
