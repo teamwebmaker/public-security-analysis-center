@@ -43,7 +43,7 @@ class TableRowDataPresenter
             ? self::badge($occurrence->status->display_name, self::statusColorForOccurrence($occurrence))
             : self::badge('უცნობი', 'secondary'),
          'occ_document' => $occurrence?->document_path
-            ? self::documentLink('/tasks/' . $occurrence->document_path)
+            ? self::documentLink($occurrence->document_path)
             : '---',
          'recurrence_interval' => $task->recurrence_interval ? $task->recurrence_interval . " დღე" : '---',
          'start_date' => optional($occurrence?->start_date)->format('Y-m-d H:i') ?? '---',
@@ -211,7 +211,7 @@ class TableRowDataPresenter
             'start_date' => optional($occurrence->start_date)->format('Y-m-d H:i') ?? '---',
             'end_date' => optional($occurrence->end_date)->format('Y-m-d H:i') ?? '---',
             'document' => $occurrence->document_path
-               ? self::documentLink('/tasks/' . $occurrence->document_path)
+               ? self::documentLink($occurrence->document_path)
                : '---',
             'actions' => $actions ?? '',
          ];
@@ -240,7 +240,7 @@ class TableRowDataPresenter
             ?? $task->latestOccurrence?->service_name_snapshot
             ?? 'უცნობი',
          'document' => $task->latestOccurrence?->document_path
-            ? self::documentLink('/tasks/' . $task->latestOccurrence->document_path)
+            ? self::documentLink($task->latestOccurrence->document_path)
             : '---',
          'payment_status' => $task->latestOccurrence?->payment_status
             ? self::paymentStatusBadge($task->latestOccurrence->payment_status)
@@ -448,7 +448,7 @@ class TableRowDataPresenter
     */
    private static function documentLink(string $path): string
    {
-      $url = asset('documents/' . ltrim($path, '/'));
+      $url = uploaded_file_url($path, 'documents/tasks');
       $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
       $label = strtoupper($extension) . ' ფაილი';
 

@@ -19,7 +19,6 @@ class ProgramController extends CrudController
 
     protected array $modelRelations = ["mentors"];
     protected string $resourceName = "programs";
-    protected string $uploadPath = "images/programs/";
 
     // Image fields and their upload directories
     protected array $fileFields = [

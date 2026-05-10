@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Traits\AppliesLocalScopes;
 use App\Http\Controllers\Traits\HandlesFileUpload;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 abstract class CrudController extends Controller
 {
@@ -138,10 +137,7 @@ abstract class CrudController extends Controller
             foreach ($this->fileFields as $field => $path) {
                 $fileName = $document->{$field};
                 if ($fileName) {
-                    $filePath = public_path($path . $fileName);
-                    if (File::exists($filePath)) {
-                        File::delete($filePath);
-                    }
+                    $this->deleteUploadedFile($fileName, $path);
                 }
             }
         }

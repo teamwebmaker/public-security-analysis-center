@@ -6,7 +6,6 @@ use App\Http\Requests\UpdateTaskOccurrenceRequest;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Traits\HandlesFileUpload;
 
 class TaskOccurrenceController extends Controller
@@ -115,10 +114,7 @@ class TaskOccurrenceController extends Controller
          return;
       }
 
-      $path = public_path($this->taskDocument['path'] . ltrim($taskOccurrence->document_path, '/'));
-      if (File::exists($path)) {
-         File::delete($path);
-      }
+      $this->deleteUploadedFile($taskOccurrence->document_path, $this->taskDocument['path']);
 
       $taskOccurrence->document_path = null;
       $taskOccurrence->save();

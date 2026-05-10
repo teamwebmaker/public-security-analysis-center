@@ -11,6 +11,7 @@ class CardComponent extends Component
     public ?string $title;
     public ?string $description;
     public ?string $image;
+    public ?string $imageLegacyDirectory;
     public ?string $link;
     public ?string $date;
 
@@ -18,12 +19,14 @@ class CardComponent extends Component
         ?string $title = null,
         ?string $description = null,
         ?string $image = null,
+        ?string $imageLegacyDirectory = null,
         ?string $link = null,
         ?string $date = null
     ) {
         $this->title = $title;
         $this->description = $description;
         $this->image = $image;
+        $this->imageLegacyDirectory = $imageLegacyDirectory;
         $this->link = $link;
         $this->date = $date;
     }

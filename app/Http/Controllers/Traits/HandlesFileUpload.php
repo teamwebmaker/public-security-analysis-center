@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Traits;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 
 trait HandlesFileUpload
 {
@@ -10,11 +11,9 @@ trait HandlesFileUpload
       Request $request,
       string $fieldName,
       string $destinationPath,
-      string $oldFile = null
+      ?string $oldFile = null
    ) {
-      $fileName = null;
-
-      if ($request->file($fieldName)) {
+      if ($request->hasFile($fieldName)) {
          $file = $request->file($fieldName);
          $fileName =
             uniqid() .
@@ -22,20 +21,31 @@ trait HandlesFileUpload
             time() .
             "." .
             $file->getClientOriginalExtension();
-         $file->move(public_path($destinationPath), $fileName);
+         $directory = trim($destinationPath, '/');
+         $storedPath = $file->storeAs($directory, $fileName, 'public');
+
+         if (!$storedPath) {
+            throw new RuntimeException("Failed to store uploaded file for field [{$fieldName}].");
+         }
 
          if ($oldFile) {
-            $oldFilePath = public_path($destinationPath . $oldFile);
-            if (File::exists($oldFilePath)) {
-               File::delete($oldFilePath);
-            }
+            $this->deleteUploadedFile($oldFile, $directory);
          }
+
+         return $storedPath;
       }
 
-      return $fileName;
+      return null;
+   }
+
+   protected function deleteUploadedFile(?string $filePath, ?string $legacyDirectory = null): void
+   {
+      $normalizedPath = normalize_public_upload_path($filePath, $legacyDirectory);
+
+      if (!$normalizedPath || filter_var($normalizedPath, FILTER_VALIDATE_URL)) {
+         return;
+      }
+
+      Storage::disk('public')->delete($normalizedPath);
    }
 }
-
-
-
-?>

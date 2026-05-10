@@ -8,8 +8,6 @@ use App\Models\Partner;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\File;
 
 class ServiceController extends CrudController
 {
@@ -151,7 +149,6 @@ class ServiceController extends CrudController
             "ka" => $data["description_ka"],
             "en" => $data["description_en"],
         ];
-        // dd($files);
         return [
             ...$data,
             ...$files,
@@ -166,9 +163,6 @@ class ServiceController extends CrudController
             return;
         }
 
-        $filePath = public_path($path . ltrim($fileName, '/'));
-        if (File::exists($filePath)) {
-            File::delete($filePath);
-        }
+        $this->deleteUploadedFile($fileName, $path);
     }
 }

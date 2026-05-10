@@ -7,9 +7,6 @@ use App\Http\Requests\UpdatePublicationRequest;
 use App\Models\Partner;
 use App\Models\Publication;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
 
 class PublicationController extends CrudController
 {
@@ -112,9 +109,6 @@ class PublicationController extends CrudController
             return;
         }
 
-        $filePath = public_path($path . ltrim($fileName, '/'));
-        if (File::exists($filePath)) {
-            File::delete($filePath);
-        }
+        $this->deleteUploadedFile($fileName, $path);
     }
 }
