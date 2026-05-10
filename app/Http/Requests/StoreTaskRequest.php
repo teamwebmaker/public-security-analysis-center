@@ -28,7 +28,7 @@ class StoreTaskRequest extends FormRequest
             // 'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
 
             'is_recurring' => ['required', 'boolean'],
-            'recurrence_interval' => ['nullable', 'integer', 'min:1', 'max:31', 'required_if:is_recurring,true'],
+            'recurrence_interval' => ['nullable', 'integer', 'min:1', 'required_if:is_recurring,true'],
 
             // Task occurrences
             'requires_document' => ['nullable', 'boolean'],

@@ -87,8 +87,13 @@ class TaskController extends CrudController
          ->pluck('display_name', 'name')
          ->toArray();
 
-      // For "recurrence_interval" filter (1–31 days)
-      $intervalOptions = collect(range(1, 31))
+      // For "recurrence_interval" filter, use existing saved values instead of a fixed upper limit.
+      $intervalOptions = Task::query()
+         ->whereNotNull('recurrence_interval')
+         ->where('recurrence_interval', '>', 0)
+         ->distinct()
+         ->orderBy('recurrence_interval')
+         ->pluck('recurrence_interval')
          ->mapWithKeys(fn($day) => [$day => $day . ' დღე'])
          ->toArray();
 

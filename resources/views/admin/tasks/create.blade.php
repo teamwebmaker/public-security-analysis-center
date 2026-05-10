@@ -34,8 +34,8 @@
 					selected="{{ old('is_recurring', '0') }}" label="განმეორებადი სამუშაო" />
 			</div>
 			<div class="col-md-6 mb-3" data-recurrence-interval>
-				<x-form.input type="number" name="recurrence_interval" label="განმეორების ინტერვალი (დღე)" placeholder="1-31"
-					min="1" max="31" step="1" :required="false" value="{{ old('recurrence_interval') }}" />
+				<x-form.input type="number" name="recurrence_interval" label="განმეორების ინტერვალი (დღე)" placeholder="მაგ: 45"
+					min="1" step="1" :required="false" value="{{ old('recurrence_interval') }}" />
 			</div>
 		</div>
 

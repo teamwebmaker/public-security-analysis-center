@@ -32,8 +32,8 @@
 				<x-form.select name="is_recurring" :options="['1' => 'დიახ', '0' => 'არა']" :selected="old('is_recurring', $task->is_recurring ? '1' : '0')" label="განმეორებადი სამუშაო" />
 			</div>
 			<div class="col-md-6 mb-3" data-recurrence-interval>
-				<x-form.input type="number" name="recurrence_interval" label="განმეორების ინტერვალი (დღე)" placeholder="1-31"
-					min="1" max="31" step="1" :required="false"
+				<x-form.input type="number" name="recurrence_interval" label="განმეორების ინტერვალი (დღე)" placeholder="მაგ: 45"
+					min="1" step="1" :required="false"
 					value="{{ old('recurrence_interval', $task->recurrence_interval) }}" />
 			</div>
 		</div>
