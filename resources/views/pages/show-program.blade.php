@@ -98,8 +98,8 @@
 		<h2 class="gold-text fw-bold mb-4">{{__('static.pages.programs.details.about')}}</h2>
 		<div class="row g-4 align-items-start">
 			<div class="col-md-9">
-				<p class="fs-5 fw-light lh-md justified-text">
-					{{ $item->description->$language }}
+				<p class="editor-content fs-5 fw-light lh-md justified-text">
+					{!! render_editor_content($item->description->$language) !!}
 				</p>
 			</div>
 			@if ($item->certificate_image)
@@ -159,7 +159,7 @@
 								<div class="card-body px-0">
 									<h5 class="card-title fw-semibold mb-1">{{ $mentorName }}</h5>
 									@if (is_object($mentor->description) && !empty($mentor->description->$language))
-										<p class="card-text text-muted small mb-0">{{ $mentor->description->$language }}</p>
+										<p class="editor-content card-text text-muted small mb-0">{!! render_editor_content($mentor->description->$language) !!}</p>
 									@endif
 								</div>
 							</div>

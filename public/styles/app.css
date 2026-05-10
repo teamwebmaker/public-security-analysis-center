@@ -2,6 +2,16 @@
 @import "bpg-algeti.css";
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
+.editor-content strong,
+.editor-content-bold {
+    font-weight: 800 !important;
+}
+
+.editor-content em,
+.editor-content-italic {
+    font-style: italic !important;
+}
+
 /* 'Roboto', sans-serif; */
 .wrapper {
     display: flex;

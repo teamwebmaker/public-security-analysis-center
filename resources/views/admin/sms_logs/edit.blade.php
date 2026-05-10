@@ -17,7 +17,7 @@
 
 		<div class="row">
 			<div class="col-12 mb-3">
-				<x-form.textarea name="content" label="მესიჯი" value="{{ old('content', $sms_log->content)}}" minlength="5"
+				<x-form.textarea :editor="false" name="content" label="მესიჯი" value="{{ old('content', $sms_log->content)}}" minlength="5"
 					maxlength="255" rows="5" />
 			</div>
 		</div>

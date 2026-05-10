@@ -22,8 +22,8 @@ data-alpha="0.5" @endif>
 			@endif
 		</div>
 		<div>
-			<p class=" fs-5 fw-light justified-text" style="line-height: 1.7; color: #333;">
-				{{ $item->description->$language }}
+			<p class="editor-content fs-5 fw-light justified-text" style="line-height: 1.7; color: #333;">
+				{!! render_editor_content($item->description->$language) !!}
 			</p>
 		</div>
 	</div>

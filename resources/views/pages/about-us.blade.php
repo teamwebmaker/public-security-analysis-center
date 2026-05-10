@@ -15,8 +15,8 @@
 				<div class="row align-items-start gx-lg-4 gy-4">
 					<!-- Left Column: Text -->
 					<div class="col-12 col-lg-6">
-						<p class="fs-5 fw-light mb-0 justified-text" style="line-height: 1.7; color: #333;">
-							{{ $item->description->$language }}
+						<p class="editor-content fs-5 fw-light mb-0 justified-text" style="line-height: 1.7; color: #333;">
+							{!! render_editor_content($item->description->$language) !!}
 						</p>
 					</div>
 

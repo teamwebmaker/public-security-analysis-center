@@ -73,9 +73,9 @@ $confirmMessage = $message ?? "ნამდვილად გსურთ დ�
             <!-- description -->
             @if ($descriptionText)
                 <div @if($shouldTruncate) x-data="{ expanded: false }" @endif class="mb-4">
-                    <p class="card-text text-muted mb-0" :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
+                    <p class="editor-content card-text text-muted mb-0" :class="@if($shouldTruncate)!expanded ? 'line-clamp' : ''@endif"
                         style="@if($shouldTruncate)--bs-line-clamp: 3;@endif">
-                        {!! nl2br(e($descriptionText)) !!}
+                        {!! render_editor_content($descriptionText) !!}
                     </p>
 
                     @if ($shouldTruncate)

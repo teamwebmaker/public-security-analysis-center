@@ -15,9 +15,9 @@
 
         <!-- Optional description -->
         @if(isset($description) && $description)
-            <div class="card-text mb-3 flex-grow-1"
+            <div class="editor-content card-text mb-3 flex-grow-1"
                 style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                {{ $description }}
+                {!! render_editor_content($description) !!}
             </div>
         @endif
 

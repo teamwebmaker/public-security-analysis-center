@@ -40,7 +40,7 @@
 
     {{-- Message --}}
     <div class="mb-3">
-        <x-form.textarea name="message" label="{{ __('static.form.message') }}" class="form-control"
+        <x-form.textarea :editor="false" name="message" label="{{ __('static.form.message') }}" class="form-control"
             :placeholder="__('static.form.placeholders.message')" value="{{ old('message') }}" minlength="-1"
             maxlength="500" :required="false" />
     </div>

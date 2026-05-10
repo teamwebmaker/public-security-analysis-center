@@ -71,7 +71,7 @@
 								</div>
 							</div>
 							<div class="mb-3">
-								<x-form.textarea name="message" class="form-control" :placeholder="__('static.form.message')"
+								<x-form.textarea :editor="false" name="message" class="form-control" :placeholder="__('static.form.message')"
 									value="{{ old('message') }}" minlength="5" maxlength="500" />
 							</div>
 							<button type="submit" class="btn black-bg gold-text">{{__('static.form.send')}}</button>
