@@ -31,7 +31,7 @@
 								</iframe>
 							@endif
 						@elseif (!empty($item->image))
-							<img src="{{ asset(implode('/', ['images', $resourceName, $item->image])) }}"
+							<img src="{{ uploaded_file_url($item->image, 'images/' . $resourceName) }}"
 								class="w-100 h-100 object-fit-cover" alt="{{ $item->title->$language }}">
 						@endif
 					</div>
@@ -104,7 +104,7 @@
 			</div>
 			@if ($item->certificate_image)
 				<div class="col-7 col-sm-5 col-md-3 ">
-					<img src="{{ asset(implode('/', ['images/certificates', $resourceName, $item->certificate_image])) }}"
+					<img src="{{ uploaded_file_url($item->certificate_image, 'images/certificates/' . $resourceName) }}"
 						class="img-fluid rounded shadow" alt="certificate-{{ $item->title->$language }} ">
 				</div>
 			@endif
@@ -129,7 +129,7 @@
 
 						<!-- Modal for PDF Viewer -->
 						<x-modal :id="'pdfModal' . $index" :title="$syllabus->title->$language" size="xl">
-							<iframe src="{{ asset('documents/' . $program_syllabuses . '/' . $syllabus->pdf) }}"
+							<iframe src="{{ uploaded_file_url($syllabus->pdf, 'documents/' . $program_syllabuses) }}"
 								class="w-100 h-100 border-0" allowfullscreen></iframe>
 						</x-modal>
 
@@ -152,7 +152,7 @@
 						<div class="col-12 col-md-6 col-lg-4 d-flex">
 							<div class="card w-100 h-100 border-0 shadow-sm text-center p-4 hover-shadow transition">
 								<div class="mx-auto mb-3 position-relative" style="width: 120px; height: 120px;">
-									<img src="{{ asset('images/' . $resourceName_mentors . '/' . $mentor->image) }}"
+									<img src="{{ uploaded_file_url($mentor->image, 'images/' . $resourceName_mentors) }}"
 										alt="{{ $mentorName }}" class="rounded-circle  img-fluid"
 										style="object-fit: cover; width: 100%; height: 100%;">
 								</div>

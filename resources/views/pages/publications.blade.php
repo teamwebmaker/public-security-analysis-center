@@ -17,7 +17,8 @@
 				@forelse ($publications as $publication)
 					<div class="col-lg-4 col-md-6 mb-4">
 						<x-card-component :title="$publication->title->$language"
-							:description="$publication->description->$language" :image="'images/publications/' . $publication->image"
+							:description="$publication->description->$language" :image="$publication->image"
+							imageLegacyDirectory="images/publications"
 							:date="$publication->created_at->format('d.m.Y')" :link="route('publications.show', ['id' => $publication->id])" />
 					</div>
 				@empty

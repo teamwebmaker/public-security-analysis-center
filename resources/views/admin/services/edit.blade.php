@@ -62,7 +62,7 @@
 						<label class="form-check-label" for="delete_document">მიმაგრებული დოკუმენტის წაშლა</label>
 					</div>
 					<p class="small mt-2">
-						ამჟამინდელი: <a href="{{ asset('documents/services/' . ltrim($service->document, '/')) }}"
+						ამჟამინდელი: <a href="{{ uploaded_file_url($service->document, 'documents/services') }}"
 							target="_blank">ნახვა</a>
 					</p>
 				@endif

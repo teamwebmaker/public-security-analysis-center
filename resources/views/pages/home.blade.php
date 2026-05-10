@@ -32,7 +32,9 @@
 				@foreach($articles as $article)
 					<div class="col">
 						<x-card-component :title="json_decode($article->title)->$language"
-							:description="json_decode($article->description)->$language" :image="implode('/', ['images', $article->collection, $article->image])" :link="route(implode('.', [$article->collection, 'show']), ['id' => $article->id])" />
+							:description="json_decode($article->description)->$language" :image="$article->image"
+							:imageLegacyDirectory="'images/' . $article->collection"
+							:link="route(implode('.', [$article->collection, 'show']), ['id' => $article->id])" />
 					</div>
 				@endforeach
 			</div>

@@ -56,7 +56,7 @@
 
     @if ($program->certificate_image)
         <li class="list-group-item">
-            <a href="{{ asset('images/certificates/programs/' . $program->certificate_image) }}" data-fancybox
+            <a href="{{ uploaded_file_url($program->certificate_image, 'images/certificates/programs') }}" data-fancybox
                 class="btn btn-sm btn-outline-success w-100">
                 <i class="bi bi-award me-2"></i>სერტიფიკატის ნახვა
             </a>

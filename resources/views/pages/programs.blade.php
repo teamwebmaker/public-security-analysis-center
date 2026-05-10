@@ -17,7 +17,8 @@
 					@forelse ($programs as $program)
 						<div class="col-lg-4 col-md-6  mb-4">
 							<x-card-component :title="$program->title->$language" :description="$program->description->$language"
-								:image="'images/programs/' . $program->image" :link="route('programs.show', ['id' => $program->id])" />
+								:image="$program->image" imageLegacyDirectory="images/programs"
+								:link="route('programs.show', ['id' => $program->id])" />
 						</div>
 					@empty
 						<x-ui.empty-state-message />

@@ -12,12 +12,12 @@
 data-alpha="0.5" @endif>
 			@if ($isPdfMarkerDisplayed)
 				<a href="#" data-bs-toggle="modal" data-bs-target="#publications-pdfModal" style="display: inline-block;">
-					<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"
+					<img src="{{ uploaded_file_url($item->image, 'images/' . $category) }}"
 						alt="{{ $item->title->$language }}" class="img-fluid rounded-2"
 						style="max-width: 450px; width: 100%; height: auto;">
 				</a>
 			@else
-				<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}" alt="{{ $item->title->$language }}"
+				<img src="{{ uploaded_file_url($item->image, 'images/' . $category) }}" alt="{{ $item->title->$language }}"
 					class="img-fluid rounded-2" style="max-width: 450px; width: 100%; height: auto;">
 			@endif
 		</div>
@@ -32,7 +32,7 @@ data-alpha="0.5" @endif>
 
 		@php
 			$file = $item->file ?? $item->document;
-			$path = asset('documents/' . $category . '/' . $file);
+			$path = uploaded_file_url($file, 'documents/' . $category);
 			$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 		@endphp
 

@@ -7,7 +7,7 @@
 
 		<x-slot name="imageHeader">
 			@if($syllabus->pdf)
-				<iframe src="{{ asset('documents/' . $resourceName . '/' . $syllabus->pdf) }}" style="height: 350px"></iframe>
+				<iframe src="{{ uploaded_file_url($syllabus->pdf, 'documents/' . $resourceName) }}" style="height: 350px"></iframe>
 			@endif
 		</x-slot>
 

@@ -33,7 +33,7 @@
 				@endif
 				@if($taskOccurrence->document_path)
 					<p class="small mt-2">
-						ამჟამინდელი: <a href="{{ asset('documents/tasks/' . ltrim($taskOccurrence->document_path, '/')) }}"
+						ამჟამინდელი: <a href="{{ uploaded_file_url($taskOccurrence->document_path, 'documents/tasks') }}"
 							target="_blank">ნახვა</a>
 					</p>
 				@endif

@@ -9,7 +9,7 @@
                 :resourceName="$resourceName">
                 <x-slot name="cardDetails">
                     @if ($publication->file)
-                        <a href="{{ asset('documents/' . $resourceName . '/' . $publication->file) }}" data-fancybox data-type="pdf"
+                        <a href="{{ uploaded_file_url($publication->file, 'documents/' . $resourceName) }}" data-fancybox data-type="pdf"
                             class="btn btn-sm btn-outline-success w-100">
                             <i class="bi bi-file-earmark-pdf me-2"></i>Pdf დოკუმენტი
                         </a>

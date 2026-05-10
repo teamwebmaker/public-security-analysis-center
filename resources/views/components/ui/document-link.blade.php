@@ -6,7 +6,7 @@
 
 @if ($file)
     @php
-        $documentPath = asset(trim($path, '/') . '/' . $file);
+        $documentPath = uploaded_file_url($file, $path);
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
         $icons = [

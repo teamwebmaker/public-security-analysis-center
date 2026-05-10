@@ -74,7 +74,8 @@
 								@foreach($category->services as $service)
 									<div class="col-lg-4 col-md-6">
 										<x-card-component :title="$service->title->$language" :description="$service->description->$language"
-											:image="'images/services/' . $service->image" :link="route('services.show', ['id' => $service->id])" />
+											:image="$service->image" imageLegacyDirectory="images/services"
+											:link="route('services.show', ['id' => $service->id])" />
 									</div>
 								@endforeach
 							</div>

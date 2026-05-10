@@ -17,7 +17,8 @@
                     @forelse ($projects as $project)
                         <div class="col-lg-4 col-md-6 mb-4">
                             <x-card-component :title="$project->title->$language"
-                                :description="$project->description->$language" :image="'images/projects/' . $project->image"
+                                :description="$project->description->$language" :image="$project->image"
+                                imageLegacyDirectory="images/projects"
                                 :link="route('projects.show', ['id' => $project->id])" />
                         </div>
                     @empty

@@ -25,7 +25,7 @@
 
     @if ($syllabus->pdf)
         <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center pt-3">
-            <a href="{{ url('documents/' . $resourceName . '/' . $syllabus->pdf) }}" data-fancybox data-type="pdf"
+            <a href="{{ uploaded_file_url($syllabus->pdf, 'documents/' . $resourceName) }}" data-fancybox data-type="pdf"
                 class="btn btn-sm btn-outline-success w-100">
                 <i class="bi bi-file-earmark-pdf me-2"></i>Pdf დოკუმენტი
             </a>

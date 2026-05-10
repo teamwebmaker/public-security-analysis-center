@@ -1,5 +1,5 @@
 @php
-    $imageUrl = asset("images/{$folder}/{$src}");
+    $imageUrl = uploaded_file_url($src, "images/{$folder}");
 @endphp
 
 <div class="card-header bg-transparent border-0 text-center position-relative p-0" style="min-height: {{ $height }};">

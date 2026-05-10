@@ -2,7 +2,7 @@
     <!-- Optional image -->
     @if(isset($image) && $image)
         <div class="card-header p-0">
-            <img src="{{ asset($image) }}" class="card-img-top response-img " alt="card image">
+            <img src="{{ uploaded_file_url($image, $imageLegacyDirectory ?? null) }}" class="card-img-top response-img " alt="card image">
         </div>
     @endif
 

@@ -57,7 +57,7 @@
 							<!-- Image (Bottom on mobile, Top on large) -->
 							<div class="mt-2 d-flex justify-content-center align-items-center rounded overflow-hidden"
 								style="max-height: 450px; max-width: 100%;">
-								<img src="{{ asset(implode('/', ['images', $category, $item->image])) }}"
+								<img src="{{ uploaded_file_url($item->image, 'images/' . $category) }}"
 									alt="{{ $item->title->$language }}" class="img-fluid rounded object-fit-contain w-100">
 							</div>
 						</div>
