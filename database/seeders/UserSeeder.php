@@ -57,7 +57,7 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'full_name' => 'მუშა-1',
+                'full_name' => 'სპეციალისტი-1',
                 'email' => null,
                 'phone' => '333333333',
                 'password' => bcrypt('333333333'),
@@ -67,7 +67,7 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'full_name' => 'მუშა-2',
+                'full_name' => 'სპეციალისტი-2',
                 'email' => null,
                 'phone' => '3333333332',
                 'password' => bcrypt('3333333332'),

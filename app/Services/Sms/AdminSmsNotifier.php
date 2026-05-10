@@ -179,8 +179,8 @@ class AdminSmsNotifier
         $branch = trim((string) ($occurrence->branch_name_snapshot ?? '—'));
         $service = trim((string) ($occurrence->service_name_snapshot ?? '—'));
 
-        return "👷 მუშამ დაიწყო სამუშაო\n"
-            . "მუშა: {$workerName}\n"
+        return "👷 სპეციალისტმა დაიწყო სამუშაო\n"
+            . "სპეციალისტი: {$workerName}\n"
             . "სამუშაო: #{$occurrence->id}\n"
             . "ფილიალი: {$branch}\n"
             . "სერვისი: {$service}\n"
@@ -194,8 +194,8 @@ class AdminSmsNotifier
         $branch = trim((string) ($occurrence->branch_name_snapshot ?? '—'));
         $service = trim((string) ($occurrence->service_name_snapshot ?? '—'));
 
-        return "✅ მუშამ დაასრულა სამუშაო\n"
-            . "მუშა: {$workerName}\n"
+        return "✅ სპეციალისტმა დაასრულა სამუშაო\n"
+            . "სპეციალისტი: {$workerName}\n"
             . "სამუშაო: #{$occurrence->id}\n"
             . "ფილიალი: {$branch}\n"
             . "სერვისი: {$service}\n"
@@ -218,4 +218,3 @@ class AdminSmsNotifier
 
     }
 }
-

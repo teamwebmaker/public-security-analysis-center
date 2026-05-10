@@ -292,10 +292,10 @@ class WorkerTaskAssignmentSmsSender
    {
       $dueDate = $occurrence->due_date?->format('d.m.Y') ?? '—';
       $lines = [
-         "მუშას SMS ვერ გაეგზავნა (ტელეფონი არ არის მითითებული).",
+         "სპეციალისტს SMS ვერ გაეგზავნა (ტელეფონი არ არის მითითებული).",
          "ციკლი: #{$occurrence->id}",
          "ვადა: {$dueDate}",
-         'მუშები:',
+         'სპეციალისტები:',
       ];
 
       foreach ($workers as $worker) {
@@ -307,7 +307,7 @@ class WorkerTaskAssignmentSmsSender
       try {
          $this->messageStoreService->createAndDispatch([
             'source' => 'system',
-            'subject' => 'მუშის ნომერი არ არის მითითებული',
+            'subject' => 'სპეციალისტის ნომერი არ არის მითითებული',
             'message' => implode("\n", $lines),
          ]);
       } catch (Throwable $e) {
@@ -349,7 +349,7 @@ class WorkerTaskAssignmentSmsSender
    private function createMissingPhoneSystemMessageForAggregated(array $workers): void
    {
       $lines = [
-         "მუშებს SMS ვერ გაეგზავნა (ტელეფონი არ არის მითითებული).",
+         "სპეციალისტებს SMS ვერ გაეგზავნა (ტელეფონი არ არის მითითებული).",
       ];
 
       foreach ($workers as $worker) {
@@ -366,7 +366,7 @@ class WorkerTaskAssignmentSmsSender
       try {
          $this->messageStoreService->createAndDispatch([
             'source' => 'system',
-            'subject' => 'მუშის ნომერი არ არის მითითებული',
+            'subject' => 'სპეციალისტის ნომერი არ არის მითითებული',
             'message' => implode("\n", $lines),
          ]);
       } catch (Throwable $e) {
