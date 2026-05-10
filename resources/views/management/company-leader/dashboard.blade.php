@@ -35,7 +35,7 @@
 				$isOpen = $index === 0;
 			@endphp
 
-			<x-accordion-item :id="$accordionId" :parent="'companyAccordion'" :open="$isOpen" :label="$company->name . ' · ' . $company->economic_activity_type->name . ' · ' . $company->identification_code" icon="bi-building">
+			<x-accordion-item :id="$accordionId" :parent="'companyAccordion'" :open="$isOpen" :label="$company->name . ' · ' . $company->economic_activity_type->display_name . ' · ' . $company->identification_code" icon="bi-building">
 
 				<!-- Branch cards -->
 				<div class="row g-4 m-0 mb-4">

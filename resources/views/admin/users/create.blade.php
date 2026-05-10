@@ -22,7 +22,7 @@
 		<div class="row">
 			<div class="col-md-6 mb-3">
 				<x-form.input type="tel" name="phone" label="მობილური" value="{{ old('phone') }}"
-					placeholder="შეიყვანეთ მობილურის ნომეირ " autocomplete="tel" />
+					placeholder="შეიყვანეთ მობილურის ნომერი " autocomplete="tel" />
 			</div>
 
 			<div class="col-md-6 mb-3">
@@ -53,8 +53,8 @@
 					:selected="old('branch_ids')" />
 			</div>
 			<div class="col-md-6 mb-3 role-dependent" data-role="responsible_person" style="display: none;">
-				<x-form.checkbox-dropdown label="სერვისებიზე წვდომა" :items="$services" name="service_ids"
-					labelField="title.ka" :selected="old('service_ids')" />
+				<x-form.checkbox-dropdown label="სერვისებზე წვდომა" :items="$services" name="service_ids" labelField="title.ka"
+					:selected="old('service_ids')" />
 			</div>
 		</div>
 

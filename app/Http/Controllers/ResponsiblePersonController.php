@@ -139,7 +139,7 @@ class ResponsiblePersonController extends Controller
                 'options' => $statusOptions,
             ],
             'payment_status' => [
-                'label' => 'გადახდის სტატისი',
+                'label' => 'გადახდის სტატუსი',
                 'options' => $paymentStatusOptions,
             ],
             'is_recurring' => [

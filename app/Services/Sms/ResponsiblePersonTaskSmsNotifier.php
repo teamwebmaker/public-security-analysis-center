@@ -96,8 +96,8 @@ class ResponsiblePersonTaskSmsNotifier
             $eventType,
             fn(array $occurrenceIds) => $this->buildMessage($eventType, $occurrenceIds, $metaByOccurrenceId),
             $eventType === 'task_assigned'
-                ? 'Sending responsible-person task assignment SMS'
-                : 'Sending responsible-person task completion SMS'
+            ? 'Sending responsible-person task assignment SMS'
+            : 'Sending responsible-person task completion SMS'
         );
     }
 
@@ -110,7 +110,7 @@ class ResponsiblePersonTaskSmsNotifier
         $list = $this->buildOccurrenceList($occurrenceIds, $metaByOccurrenceId, $eventType === 'task_assigned');
 
         if ($eventType === 'task_finished') {
-            return "✅ სამუშაო დასრულდა თქვენს ფილიალში\n"
+            return "✅ სამუშაო დასრულებულია\n"
                 . "სამუშაოები: {$list}";
         }
 
