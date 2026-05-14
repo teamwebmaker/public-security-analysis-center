@@ -47,9 +47,11 @@ class TaskOccurrenceController extends Controller
          if ($taskOccurrence->task && $taskOccurrence->task->visibility === '0') {
             $data['visibility'] = '0';
          }
-         if (array_key_exists('visibility', $data)) {
-            $data['visibility'] = $data['visibility'] ? '1' : '0';
-         }
+
+         // disabled
+         // if (array_key_exists('visibility', $data)) {
+         //    $data['visibility'] = $data['visibility'] ? '1' : '0';
+         // }
 
          // Handle document upload or deletion
          if ($request->hasFile('document')) {

@@ -12,8 +12,11 @@
 					label="სტატუსი" />
 			</div>
 			<div class="col-md-6 mb-3">
-				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
-					selected="{{ $taskOccurrence->visibility }}" label="ხილვადობა" />
+				<label class="form-label">ხილვადობა</label>
+				<select class="form-select" disabled>
+					<option value="1" @selected($taskOccurrence->visibility === '1')>ხილული</option>
+					<option value="0" @selected($taskOccurrence->visibility === '0')>დამალული</option>
+				</select>
 			</div>
 		</div>
 

@@ -30,7 +30,8 @@ class UpdateTaskOccurrenceRequest extends FormRequest
     {
         $this->merge([
             'requires_document' => filter_var($this->input('requires_document'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
-            'visibility' => filter_var($this->input('visibility'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+            // disabled
+            // 'visibility' => filter_var($this->input('visibility'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
             'delete_document' => filter_var($this->input('delete_document'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
         ]);
     }
