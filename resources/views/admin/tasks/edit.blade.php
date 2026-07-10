@@ -4,10 +4,26 @@
 	<x-admin.crud.form-container method="POST" insertMethod="PUT" title="სამუშაოს რედაქტირება"
 		action="{{ route($resourceName . '.update', $task) }}" :backRoute="$resourceName . '.index'" :hasFileUpload="true">
 
-		<!--  services & branches -->
+		<!-- service source -->
 		<div class="row">
 			<div class="col-md-6 mb-3">
-				<x-form.select name="service_id" :options="$services" label="სერვისი" :selected="old('service_id', $task->service_id)" :required="true" />
+				<x-form.select name="service_mode" :options="['existing' => 'არსებული სერვისი', 'temporary' => 'დროებითი სერვისი']"
+					:selected="old('service_mode', $task->service_id ? 'existing' : 'temporary')"
+					label="სერვისის ტიპი" />
+			</div>
+		</div>
+
+		<!-- services & branches -->
+		<div class="row">
+			<div class="col-md-6 mb-3" data-existing-service-field>
+				<x-form.select name="service_id" :options="$services" label="სერვისი" :selected="old('service_id', $task->service_id)" :required="false" />
+			</div>
+			<div class="col-md-6 mb-3" data-temporary-service-field>
+				<x-form.input name="temporary_service_name" label="დროებითი სერვისის სახელი"
+					placeholder="შეიყვანეთ მხოლოდ ამ სამუშაოსთვის" :required="false"
+					value="{{ old('temporary_service_name', $task->service_id ? null : $task->service_name_snapshot) }}"
+					maxlength="255" />
+				<div class="form-text">სახელი შეინახება მხოლოდ ამ სამუშაოსა და მის ციკლებში.</div>
 			</div>
 			<div class="col-md-6 mb-3">
 				<x-form.select name="branch_id" :options="$branches" :selected="old('branch_id', $task->branch_id)"
