@@ -220,6 +220,7 @@ class UserController extends CrudController
 				->map(function ($task) {
 					$serviceTitle = optional($task->service)->title->ka
 						?? optional($task->service)->title->en
+						?? $task->service_name_snapshot
 						?? 'Unnamed Service';
 
 					$branchName = optional($task->branch)->name ?? 'No Branch';

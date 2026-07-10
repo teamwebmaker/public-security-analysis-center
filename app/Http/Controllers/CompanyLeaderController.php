@@ -229,10 +229,11 @@ class CompanyLeaderController extends Controller
                 $occurrenceId = ctype_digit($value) ? (int) $value : null;
 
                 $query->where(function ($q) use ($value, $occurrenceId) {
-                    $q->orWhereHas(
-                        "branch",
-                        fn($q) => $q->where("name", "LIKE", "%$value%")
-                    )
+                    $q->where('service_name_snapshot', 'LIKE', "%$value%")
+                        ->orWhereHas(
+                            "branch",
+                            fn($q) => $q->where("name", "LIKE", "%$value%")
+                        )
                         ->orWhereHas(
                             "service",
                             fn($q) => $q->where(

@@ -3,11 +3,26 @@
 @section('main')
 	<x-admin.crud.form-container method="POST" title="სამუშაოს რეგისტრაცია" action="{{ route($resourceName . '.store') }}"
 		:backRoute="$resourceName . '.index'" :hasFileUpload="true">
-		<!--  services & branches -->
+		<!-- service source -->
 		<div class="row">
 			<div class="col-md-6 mb-3">
+				<x-form.select name="service_mode" :options="['existing' => 'არსებული სერვისი', 'temporary' => 'დროებითი სერვისი']"
+					:selected="old('service_mode', old('temporary_service_name') ? 'temporary' : 'existing')"
+					label="სერვისის ტიპი" />
+			</div>
+		</div>
+
+		<!-- services & branches -->
+		<div class="row">
+			<div class="col-md-6 mb-3" data-existing-service-field>
 				<x-form.select name="service_id" :options="$services" label="სერვისი" selected="{{ old('service_id') }}"
-					:required="true" />
+					:required="false" />
+			</div>
+			<div class="col-md-6 mb-3" data-temporary-service-field>
+				<x-form.input name="temporary_service_name" label="დროებითი სერვისის სახელი"
+					placeholder="შეიყვანეთ მხოლოდ ამ სამუშაოსთვის" :required="false"
+					value="{{ old('temporary_service_name') }}" maxlength="255" />
+				<div class="form-text">სახელი შეინახება მხოლოდ ამ სამუშაოსა და მის ციკლებში.</div>
 			</div>
 			<div class="col-md-6 mb-3">
 				<x-form.select name="branch_id" :options="$branches" selected="{{ old('branch_id') }}"

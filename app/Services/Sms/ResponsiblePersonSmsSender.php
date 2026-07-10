@@ -71,7 +71,9 @@ class ResponsiblePersonSmsSender
             // De-duplicate and remove occurrences already notified for this user.
             $occurrenceIds = array_values(array_unique($occurrenceIds));
 
-            // Remove occurrences for services the user is not responsible for.
+            // Persisted services require an explicit service assignment. Temporary
+            // task-local services have no service row, so branch membership (used
+            // to build $byUser) is their authorization boundary.
             $allowedServiceIds = $user->services
                 ->pluck('id')
                 ->map(fn($id) => (int) $id)
@@ -80,7 +82,7 @@ class ResponsiblePersonSmsSender
             foreach ($occurrenceIds as $occurrenceId) {
                 $rawServiceId = $occurrenceServiceIds[$occurrenceId] ?? null;
                 $serviceId = is_numeric($rawServiceId) ? (int) $rawServiceId : null;
-                if ($serviceId === null || !in_array($serviceId, $allowedServiceIds, true)) {
+                if ($serviceId !== null && !in_array($serviceId, $allowedServiceIds, true)) {
                     Log::warning('Payment SMS not sent: The responsible person is not authorized to receive SMS notifications for this occurrence.', [
                         'event_type' => $eventType,
                         'responsible_person_id' => $user->id,

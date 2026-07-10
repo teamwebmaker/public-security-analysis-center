@@ -363,17 +363,22 @@ class TaskController extends CrudController
             $data["branch_name_snapshot"] = $branch->name;
          }
       }
-      // Handle service name snapshot saving
-      if (
-         !empty($data["service_id"]) &&
-         (!$task || $data["service_id"] !== $task->service_id)
-      ) {
-         $service = Service::find($data["service_id"]);
+      $temporaryServiceName = trim((string) ($data['temporary_service_name'] ?? ''));
+
+      if ($temporaryServiceName !== '') {
+         // A temporary service belongs only to this task and its occurrence snapshots.
+         $data['service_id'] = null;
+         $data['service_name_snapshot'] = $temporaryServiceName;
+      } elseif (!empty($data['service_id'])) {
+         // Persist the current service label as a snapshot for occurrence history.
+         $service = Service::find($data['service_id']);
          if ($service) {
-            $data["service_name_snapshot"] =
+            $data['service_name_snapshot'] =
                $service->title->ka ?? $service->title->en;
          }
       }
+
+      unset($data['service_mode'], $data['temporary_service_name']);
 
       return [
          ...$data,

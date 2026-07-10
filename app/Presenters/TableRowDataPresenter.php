@@ -30,15 +30,7 @@ class TableRowDataPresenter
             $task->branch?->name ?? $task->branch_name_snapshot ?? '---',
             $task->branch_name_snapshot ?? '---'
          ),
-         'service' => self::link(
-            $task->service,
-            'services.index',
-            $task->service?->title->ka
-            ?? $task->service?->title->en
-            ?? $task->service_name_snapshot
-            ?? 'უცნობი',
-            $task->service_name_snapshot ?? 'უცნობი'
-         ),
+         'service' => self::taskServiceLink($task),
          'occ_status' => $occurrence?->status
             ? self::badge($occurrence->status->display_name, self::statusColorForOccurrence($occurrence))
             : self::badge('უცნობი', 'secondary'),
@@ -184,7 +176,10 @@ class TableRowDataPresenter
          $statusColor = self::statusColorForOccurrence($occurrence);
 
          $branchModel = $task?->branch;
-         $serviceModel = $task?->service;
+         $serviceModel = $task?->service
+            && (int) $task->service_id === (int) $occurrence->service_id_snapshot
+            ? $task->service
+            : null;
 
          return [
             'id' => ($isLatest ? " <span class='badge bg-success ms-2'>$occurrence->id</span>" : $occurrence->id),
@@ -202,7 +197,8 @@ class TableRowDataPresenter
                $serviceModel,
                'services.index',
                $occurrence->service_name_snapshot,
-               $serviceModel?->title->ka ?? $serviceModel?->title->en
+               $serviceModel?->title->ka ?? $serviceModel?->title->en,
+               $occurrence->service_id_snapshot === null
             ),
             'workers' => self::formatOccurrenceWorkers($occurrence),
             'status' => '<span class="badge bg-' . e($statusColor) . '">' . e($occurrence->status?->display_name ?? 'უცნობი') . '</span>',
@@ -353,8 +349,13 @@ class TableRowDataPresenter
    /**
     * Render a branch/service snapshot link with an outdated badge.
     */
-   private static function snapshotLink(?Model $model, string $route, ?string $snapshotName, ?string $currentName): string
-   {
+   private static function snapshotLink(
+      ?Model $model,
+      string $route,
+      ?string $snapshotName,
+      ?string $currentName,
+      bool $isTemporary = false
+   ): string {
       $name = $snapshotName ?? $currentName ?? '---';
       $isOutdated = $snapshotName && $currentName && $snapshotName !== $currentName;
       $outdatedBadge = $isOutdated
@@ -365,8 +366,48 @@ class TableRowDataPresenter
          return $outdatedBadge . '<a href="' . route($route, $model->id) . '" class="text-decoration-underline text-dark">' . e($name) . '</a>';
       }
 
+      if ($isTemporary && $snapshotName) {
+         return self::temporaryServiceLabel($snapshotName);
+      }
+
       $fallback = $snapshotName ?? '---';
       return $outdatedBadge . '<span class="text-decoration-line-through">' . e($fallback) . '</span>';
+   }
+
+   /**
+    * Link persisted services and render task-local service names without a global service link.
+    */
+   private static function taskServiceLink(Task $task): string
+   {
+      if ($task->service) {
+         $label = $task->service->title->ka
+            ?? $task->service->title->en
+            ?? $task->service_name_snapshot
+            ?? 'უცნობი';
+
+         return self::link(
+            $task->service,
+            'services.index',
+            $label,
+            $task->service_name_snapshot ?? 'უცნობი'
+         );
+      }
+
+      $latestOccurrence = $task->latestOccurrenceWithoutVisibility;
+      $isTemporary = $task->service_id === null
+         && (!$latestOccurrence || $latestOccurrence->service_id_snapshot === null);
+
+      if ($isTemporary && $task->service_name_snapshot) {
+         return self::temporaryServiceLabel($task->service_name_snapshot);
+      }
+
+      return '<span class="text-decoration-line-through">' . e($task->service_name_snapshot ?? 'უცნობი') . '</span>';
+   }
+
+   private static function temporaryServiceLabel(string $name): string
+   {
+      return '<span>' . e($name) . '</span> '
+         . '<span class="badge bg-secondary">/ დროებითი</span>';
    }
 
    /**
