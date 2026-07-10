@@ -37,7 +37,10 @@ class ResponsiblePersonController extends Controller
 
         $paymentOccurrences = TaskOccurrence::query()
             ->whereIn('branch_id_snapshot', $branchIds)
-            ->whereIn('service_id_snapshot', $allowedServiceIds)
+            ->where(function ($query) use ($allowedServiceIds) {
+                $query->whereNull('service_id_snapshot')
+                    ->orWhereIn('service_id_snapshot', $allowedServiceIds);
+            })
             ->whereIn('payment_status', ['unpaid', 'pending', 'overdue'])
             ->orderBy('due_date')
             ->paginate(8, ['*'], 'payments_page')
@@ -100,7 +103,10 @@ class ResponsiblePersonController extends Controller
         return Task::query()
             ->whereHas('latestOccurrence', function ($query) use ($branchIds, $allowedServiceIds) {
                 $query->whereIn('branch_id_snapshot', $branchIds)
-                    ->whereIn('service_id_snapshot', $allowedServiceIds);
+                    ->where(function ($query) use ($allowedServiceIds) {
+                        $query->whereNull('service_id_snapshot')
+                            ->orWhereIn('service_id_snapshot', $allowedServiceIds);
+                    });
             })
             ->whereHas('latestOccurrence.status', fn($q) => $q->where('name', 'in_progress'))
             ->count();
@@ -112,7 +118,10 @@ class ResponsiblePersonController extends Controller
             ->allowedIncludes(['users', 'branch', 'service', 'latestOccurrence.status'])
             ->whereHas('latestOccurrence', function ($query) use ($branchIds, $allowedServiceIds) {
                 $query->whereIn('branch_id_snapshot', $branchIds)
-                    ->whereIn('service_id_snapshot', $allowedServiceIds);
+                    ->where(function ($query) use ($allowedServiceIds) {
+                        $query->whereNull('service_id_snapshot')
+                            ->orWhereIn('service_id_snapshot', $allowedServiceIds);
+                    });
             })
             ->allowedSorts([
                 AllowedSort::custom('latest_due_date', new LatestOccurrenceDueDateSort()),
@@ -158,7 +167,8 @@ class ResponsiblePersonController extends Controller
                 $occurrenceId = ctype_digit($value) ? (int) $value : null;
 
                 $query->where(function ($q) use ($value, $occurrenceId) {
-                    $q->orWhereHas('branch', fn($q) => $q->where('name', 'LIKE', "%$value%"))
+                    $q->where('service_name_snapshot', 'LIKE', "%$value%")
+                        ->orWhereHas('branch', fn($q) => $q->where('name', 'LIKE', "%$value%"))
                         ->orWhereHas('service', fn($q) => $q->where('title->ka', 'LIKE', "%$value%"))
                         ->orWhereHas('latestOccurrence.status', fn($q) => $q->where('display_name', 'LIKE', "%$value%"))
                         ->orWhereHas('users', fn($q) => $q->where('full_name', 'LIKE', "%$value%"));

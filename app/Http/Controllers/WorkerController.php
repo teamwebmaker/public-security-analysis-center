@@ -121,7 +121,8 @@ class WorkerController extends Controller
 
                     $query->where(function ($q) use ($value, $occurrenceId) {
                         $like = "%{$value}%";
-                        $q->orWhereHas('branch', fn($b) => $b->where('name', 'LIKE', $like))
+                        $q->where('service_name_snapshot', 'LIKE', $like)
+                            ->orWhereHas('branch', fn($b) => $b->where('name', 'LIKE', $like))
                             ->orWhereHas('service', fn($s) => $s->where('title->ka', 'LIKE', $like))
                             ->orWhereHas('latestOccurrence.status', fn($st) => $st->where('display_name', 'LIKE', $like));
 
