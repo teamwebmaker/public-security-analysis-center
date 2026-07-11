@@ -9,7 +9,20 @@ return [
 
    'company-leader' => $commonMenu,
    'responsible-person' => $commonMenu,
-   'worker' => [$dashboardItem, ['label' => 'ინსტრუქტაჟები', 'route' => 'management.worker.instructions.page', 'icon' => 'bi bi-person-video3'], ['label' => 'შაბლონები', 'route' => 'management.worker.document-templates.page', 'icon' => 'bi bi-file-earmark-richtext']],
+   'worker' => [
+      $dashboardItem,
+      $taskItem,
+      [
+         'label' => 'ინსტრუქტაჟები',
+         'route' => 'management.worker.instructions.page',
+         'icon' => 'bi bi-person-video3',
+      ],
+      [
+         'label' => 'შაბლონები',
+         'route' => 'management.worker.document-templates.page',
+         'icon' => 'bi bi-file-earmark-richtext',
+      ],
+   ],
    'admin' => [
       [
          'id' => 'messages_wrapper',
