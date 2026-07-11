@@ -22,78 +22,100 @@ class WorkerController extends Controller
 
     public function displayDashboard()
     {
-        // Currently authenticated user
-        $user = auth()->user();
-
-        // Tasks whose latest visible occurrence includes this worker (snapshot-based)
-        $taskQuery = Task::whereHas('latestOccurrence.workers', function ($q) use ($user) {
-            $q->where('worker_id_snapshot', $user->id);
+        $workerId = (int) auth()->id();
+        $assignedTasks = Task::query()->whereHas('users', function ($query) use ($workerId) {
+            $query->where('users.id', $workerId);
         });
 
-        // Step 1: Get user's tasks and their statuses/services and make filtering and searching available
-        $tasks = $this->buildTaskQuery($taskQuery)->paginate($this->perPage)
-            ->appends(request()->query());
+        $statusCounts = collect(['pending', 'in_progress', 'completed', 'on_hold'])
+            ->mapWithKeys(function (string $status) use ($assignedTasks) {
+                return [
+                    $status => (clone $assignedTasks)
+                        ->whereHas('latestOccurrence.status', fn($query) => $query->where('name', $status))
+                        ->count(),
+                ];
+            })
+            ->toArray();
 
-        // Step 2: Count tasks by latest occurrence status
-        $statusCounts = [
-            'pending' => 0,
-            'in_progress' => 0,
-            'completed' => 0,
-            'on_hold' => 0,
-        ];
-
-        foreach ($tasks as $task) {
-            $statusName = $task->latestOccurrence?->status?->name;
-            if (isset($statusCounts[$statusName])) {
-                $statusCounts[$statusName]++;
-            }
-        }
-
-
-        // Task table headers
-        $taskHeaders = TableHeaderDataPresenter::workerTaskHeaders();
-
-        // Filters for UI
-        $statusOptions = TaskOccurrenceStatus::pluck('display_name', 'name')->toArray();
-        $filters = [
-            'status' => [
-                'label' => 'სტატუსი',
-                'options' => $statusOptions,
-            ],
-            'is_recurring' => [
-                'label' => 'განმეორებადი',
-                'options' => ['1' => 'დიახ', '0' => 'არა'],
-            ],
-        ];
-
-        // Task table row data
-        $taskTableRows = $tasks->map(fn($task) => TableRowDataPresenter::workerTaskRow($task));
-
-        // Precompute actions & modal triggers per task (table expects arrays)
-        $customActionMap = [];
-        $modalTriggerMap = [];
-
-        foreach ($tasks as $task) {
-            $customActionMap[$task->id] = $this->customActionButtons($task);
-            $modalTriggerMap[$task->id] = $this->modalTriggerButtons($task);
-        }
-
-        // Map human-readable column label same as header labels -> backend sort key
-        $sortableMap = [
-            'დაწყება' => 'latest_start_date',
-            'დასრულება' => 'latest_end_date',
-        ];
+        $availableTasksCount = Task::query()
+            ->active()
+            ->whereDoesntHave('users', function ($query) use ($workerId) {
+                $query->where('users.id', $workerId);
+            })
+            ->count();
 
         return view("management.{$this->resourceName}.dashboard", [
-            'tasks' => $tasks,
-            'taskTableRows' => $taskTableRows,
-            'taskHeaders' => $taskHeaders,
             'statusCounts' => $statusCounts,
+            'availableTasksCount' => $availableTasksCount,
             'sidebarItems' => config('sidebar.worker'),
-            'customActionBtns' => fn($task) => $customActionMap[$task->id] ?? [],
-            'modalTriggerBtns' => fn($task) => $modalTriggerMap[$task->id] ?? [],
-            'sortableMap' => $sortableMap,
-            'filters' => $filters,
+        ]);
+    }
+
+    public function displayTasks()
+    {
+        $this->authorize('viewActiveTasks', Task::class);
+
+        $workerId = (int) auth()->id();
+        $activeTab = request()->query('tab', 'mine');
+        $activeTab = in_array($activeTab, ['mine', 'available'], true) ? $activeTab : 'mine';
+
+        $myTasksQuery = Task::query()
+            ->active()
+            ->whereHas('users', function ($query) use ($workerId) {
+                $query->where('users.id', $workerId);
+            });
+        $availableTasksQuery = Task::query()
+            ->active()
+            ->whereDoesntHave('users', function ($query) use ($workerId) {
+                $query->where('users.id', $workerId);
+            });
+
+        $myTasksCount = (clone $myTasksQuery)->count();
+        $availableTasksCount = (clone $availableTasksQuery)->count();
+
+        $tasks = $this->buildTaskQuery(
+            $activeTab === 'mine' ? $myTasksQuery : $availableTasksQuery
+        )
+            ->paginate($this->perPage)
+            ->appends(request()->query());
+
+        $taskRows = $tasks->map(fn(Task $task) => TableRowDataPresenter::workerTaskRow($task));
+
+        return view('management.worker.tasks.index', [
+            'activeTab' => $activeTab,
+            'tasks' => $tasks,
+            'taskRows' => $taskRows,
+            'myTasksCount' => $myTasksCount,
+            'availableTasksCount' => $availableTasksCount,
+            'taskHeaders' => TableHeaderDataPresenter::workerTaskHeaders(),
+            'sidebarItems' => config('sidebar.worker'),
+            'filters' => [
+                'status' => [
+                    'label' => 'სტატუსი',
+                    'options' => TaskOccurrenceStatus::query()
+                        ->whereIn('name', Task::ACTIVE_OCCURRENCE_STATUSES)
+                        ->pluck('display_name', 'name')
+                        ->toArray(),
+                ],
+                'is_recurring' => [
+                    'label' => 'განმეორებადი',
+                    'options' => ['1' => 'დიახ', '0' => 'არა'],
+                ],
+            ],
+            'sortableMap' => [
+                'დაწყება' => 'latest_start_date',
+                'დასრულება' => 'latest_end_date',
+            ],
+            'taskActions' => function (Task $task) use ($activeTab, $workerId) {
+                $assignmentActions = $this->assignmentActionButtons($task, $workerId);
+
+                return $activeTab === 'mine'
+                    ? array_merge($this->customActionButtons($task), $assignmentActions)
+                    : $assignmentActions;
+            },
+            'workModalTriggers' => fn(Task $task) => $activeTab === 'mine'
+                ? $this->modalTriggerButtons($task)
+                : [],
         ]);
     }
 
@@ -105,7 +127,7 @@ class WorkerController extends Controller
         $latestOccurrenceCreatedAt = $this->latestOccurrenceTimestampSubquery('created_at');
 
         return QueryBuilder::for($query)
-            ->allowedIncludes(['branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers'])
+            ->allowedIncludes(['users', 'branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers'])
             ->allowedSorts([
                 'branch_name_snapshot',
                 'service_name_snapshot',
@@ -141,7 +163,7 @@ class WorkerController extends Controller
                 }),
                 AllowedFilter::exact('is_recurring'),
             ])
-            ->with(['branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers']);
+            ->with(['users', 'branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers']);
     }
 
     /**
@@ -220,6 +242,26 @@ class WorkerController extends Controller
             ]
         ];
 
+    }
+
+    protected function assignmentActionButtons(Task $task, int $workerId): array
+    {
+        $isAssigned = $task->users->contains('id', $workerId);
+
+        return [
+            [
+                'label' => $isAssigned ? 'მოშორება' : 'მიმაგრება',
+                'icon' => $isAssigned ? 'bi-person-dash' : 'bi-person-plus',
+                'route_name' => $isAssigned
+                    ? 'management.worker.tasks.remove-self'
+                    : 'management.worker.tasks.assign-self',
+                'method' => $isAssigned ? 'DELETE' : 'POST',
+                'confirm' => $isAssigned
+                    ? 'ნამდვილად გსურთ სამუშაოდან საკუთარი თავის წაშლა?'
+                    : 'ნამდვილად გსურთ ამ სამუშაოზე საკუთარი თავის დამატება?',
+                'class' => $isAssigned ? 'btn-outline-danger' : 'btn-outline-primary',
+            ]
+        ];
     }
 
     public function displayInstructions()
