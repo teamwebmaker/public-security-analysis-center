@@ -8,6 +8,7 @@
 	'heading' => '',
 	'headingPosition' => 'left', // left | right
 	'minLength' => 3,
+	'preserve' => [],
 
 	// Styling props
 	'formClass' => 'mb-2',
@@ -29,6 +30,10 @@ action="{{ $action }}"
 class="{{ $formClass }}"
 	data-search-bar
 	data-search-name="{{ $name }}">
+	@foreach($preserve as $key => $preservedValue)
+		<input type="hidden" name="{{ $key }}" value="{{ $preservedValue }}">
+	@endforeach
+
 	<div class="{{ $wrapperClass }} flex-sm-{{ $isLeft ? 'row' : 'row-reverse' }}">
 		{{-- Heading --}}
 		@if($heading)

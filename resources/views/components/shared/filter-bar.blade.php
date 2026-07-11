@@ -4,6 +4,7 @@
    'filters' => [], // ['key' => ['label' => '', 'options' => []]]
    'resetUrl' => request()->url(),
    'showBadges' => true,
+   'preserve' => [],
 ])
 @php
    $componentId = 'filter-bar-' . uniqid();
@@ -20,6 +21,10 @@
    data-initial-value="{{ $initialFilterValue }}">
    <div class="py-3 ">
       <form method="{{ $method }}" action="{{ $action }}" class="">
+            @foreach($preserve as $key => $preservedValue)
+               <input type="hidden" name="{{ $key }}" value="{{ $preservedValue }}">
+            @endforeach
+
             <div class="d-flex flex-wrap gap-2 align-items-start" role="group" aria-label="ჩანაწერების ფილტრები">
                <div class="d-flex flex-column  gap-1 gap-sm-2">
                   <label for="{{ $componentId }}-filter-key" class="form-label mb-0 small text-muted">
