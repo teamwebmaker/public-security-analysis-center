@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^ public%{REQUEST_URI} [L]
+
+<FilesMatch \.php$>
+        SetHandler proxy:fcgi://psacge-php82
+</FilesMatch>
+
+
+
+AddType application/x-httpd-php82 .php
