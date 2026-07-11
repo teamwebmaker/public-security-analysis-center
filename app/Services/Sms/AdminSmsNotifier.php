@@ -212,7 +212,7 @@ class AdminSmsNotifier
         $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
 
         return "⚠️ ვადაგადაცილებულად მოინიშნა\n"
-            . "სამუშაოები: {$list}"
+            . "სამუშაოები: {$list}\n"
             . "პასუხისმგებელი პირი: {$name}\n"
             . "ნომერი: {$phone}\n";
 

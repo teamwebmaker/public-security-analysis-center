@@ -114,7 +114,7 @@ class ResponsiblePersonTaskSmsNotifier
                 . "სამუშაოები: {$list}";
         }
 
-        return "📌 ახალი სამუშაო დაენიშნა თქვენს ფილიალს\n"
+        return "📌 თქვენს ფილიალს განესაზღვრა ახალი სამუშაო\n"
             . "სამუშაოები: {$list}";
     }
 
