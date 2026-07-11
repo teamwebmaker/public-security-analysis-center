@@ -393,6 +393,8 @@ class TaskController extends CrudController
     */
    public function editStatus(Task $task)
    {
+      $this->authorize('workOn', $task);
+
       try {
          $pendingStatusId = TaskOccurrenceStatus::where("name", "pending")->value("id");
          $inProgressStatusId = TaskOccurrenceStatus::where("name", "in_progress")->value("id");
@@ -455,6 +457,8 @@ class TaskController extends CrudController
     */
    public function uploadDocument(Request $request, Task $task)
    {
+      $this->authorize('workOn', $task);
+
       try {
          $occurrence = $task->latestOccurrence;
 

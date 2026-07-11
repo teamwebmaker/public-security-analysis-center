@@ -31,6 +31,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskOccurrenceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
+use App\Http\Controllers\WorkerTaskController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -103,6 +104,15 @@ Route::prefix('management')
     ->as('management.')
     ->middleware(['worker.guard'])
     ->group(function () {
+
+        Route::get('tasks/create', [WorkerTaskController::class, 'create'])
+            ->name('worker.tasks.create');
+        Route::post('tasks', [WorkerTaskController::class, 'store'])
+            ->name('worker.tasks.store');
+        Route::post('tasks/{task}/assign-self', [WorkerTaskController::class, 'assignSelf'])
+            ->name('worker.tasks.assign-self');
+        Route::delete('tasks/{task}/assign-self', [WorkerTaskController::class, 'removeSelf'])
+            ->name('worker.tasks.remove-self');
 
         // Edit task status
         Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');

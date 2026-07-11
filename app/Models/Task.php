@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasVisibilityScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,12 @@ class Task extends Model
 {
     use HasFactory;
     use HasVisibilityScope;
+
+    public const ACTIVE_OCCURRENCE_STATUSES = [
+        'pending',
+        'in_progress',
+        'on_hold',
+    ];
 
 
     protected $fillable = [
@@ -66,5 +73,30 @@ class Task extends Model
     public function service()
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query
+            ->where('archived', '0')
+            ->where('visibility', '1')
+            ->whereHas('latestOccurrence.status', function (Builder $query) {
+                $query->whereIn('name', self::ACTIVE_OCCURRENCE_STATUSES);
+            });
+    }
+
+    public function isActive(): bool
+    {
+        $occurrence = $this->relationLoaded('latestOccurrence')
+            ? $this->latestOccurrence
+            : $this->latestOccurrence()->with('status')->first();
+
+        if ($occurrence && !$occurrence->relationLoaded('status')) {
+            $occurrence->load('status');
+        }
+
+        return !$this->archived
+            && (string) $this->visibility === '1'
+            && in_array($occurrence?->status?->name, self::ACTIVE_OCCURRENCE_STATUSES, true);
     }
 }
