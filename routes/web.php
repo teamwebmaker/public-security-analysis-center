@@ -29,6 +29,7 @@ use App\Http\Controllers\SmsLogController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskOccurrenceController;
+use App\Http\Controllers\TaskWorkerInvitationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkerTaskController;
@@ -109,6 +110,12 @@ Route::prefix('management')
             ->name('worker.tasks.create');
         Route::post('tasks', [WorkerTaskController::class, 'store'])
             ->name('worker.tasks.store');
+        Route::post('tasks/{task}/invitations', [TaskWorkerInvitationController::class, 'store'])
+            ->name('worker.tasks.invitations.store');
+        Route::post('task-invitations/{invitation}/accept', [TaskWorkerInvitationController::class, 'accept'])
+            ->name('worker.task-invitations.accept');
+        Route::post('task-invitations/{invitation}/decline', [TaskWorkerInvitationController::class, 'decline'])
+            ->name('worker.task-invitations.decline');
 
         // Edit task status
         Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');

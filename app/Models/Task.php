@@ -20,6 +20,7 @@ class Task extends Model
 
 
     protected $fillable = [
+        'created_by_user_id',
         'branch_id',
         'branch_name_snapshot',
         'service_id',
@@ -40,6 +41,14 @@ class Task extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'task_workers')->withTimestamps();
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
+    }
+    public function workerInvitations()
+    {
+        return $this->hasMany(TaskWorkerInvitation::class);
     }
     public function taskOccurrences()
     {
