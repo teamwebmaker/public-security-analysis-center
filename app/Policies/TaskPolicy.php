@@ -17,11 +17,6 @@ class TaskPolicy
         return $user->getRoleName() === 'worker';
     }
 
-    public function manageOwnAssignment(User $user, Task $task): bool
-    {
-        return $user->getRoleName() === 'worker' && $task->isActive();
-    }
-
     public function workOn(User $user, Task $task): bool
     {
         if ($user->getRoleName() !== 'worker' || !$task->isActive()) {

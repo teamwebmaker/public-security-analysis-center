@@ -28,8 +28,7 @@
                         <div>
                             <h2 class="h5 mb-2">ერთიანი სამუშაო სივრცე</h2>
                             <p class="text-muted mb-0">
-                                დაიწყეთ და დაასრულეთ თქვენი სამუშაოები „ჩემი სამუშაოები“ ჩანართში,
-                                ან აირჩიეთ ახალი სამუშაო „ხელმისაწვდომი სამუშაოები“ ჩანართიდან.
+                                შექმენით ახალი სამუშაო ან მართეთ თქვენზე განსაზღვრული აქტიური სამუშაოები.
                             </p>
                         </div>
                     </div>
@@ -37,16 +36,10 @@
 
                 <div class="col-lg-4">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('management.dashboard.tasks', ['tab' => 'mine']) }}"
+                        <a href="{{ route('management.dashboard.tasks') }}"
                             class="btn btn-outline-primary">
                             <i class="bi bi-person-workspace me-1"></i>
                             ჩემი სამუშაოები
-                        </a>
-                        <a href="{{ route('management.dashboard.tasks', ['tab' => 'available']) }}"
-                            class="btn btn-outline-secondary d-flex justify-content-center align-items-center gap-2">
-                            <i class="bi bi-collection"></i>
-                            ხელმისაწვდომი სამუშაოები
-                            <span class="badge text-bg-secondary">{{ $availableTasksCount }}</span>
                         </a>
                         <a href="{{ route('management.worker.tasks.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i>
