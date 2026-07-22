@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
+use App\Models\TaskWorkerInvitation;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\TaskOccurrenceStatusSeeder;
@@ -115,6 +116,7 @@ class WorkerTaskPermissionsTest extends TestCase
         $createdTask = Task::query()->latest('id')->firstOrFail();
         $createdOccurrence = $createdTask->latestOccurrence()->firstOrFail();
 
+        $this->assertSame($worker->id, $createdTask->created_by_user_id);
         $this->assertDatabaseHas('task_workers', [
             'task_id' => $createdTask->id,
             'user_id' => $worker->id,
@@ -125,8 +127,141 @@ class WorkerTaskPermissionsTest extends TestCase
         ]);
     }
 
+    public function test_task_creator_can_invite_worker_and_acceptance_adds_worker_to_task(): void
+    {
+        $context = $this->createTaskContext();
+        $creator = $context['worker'];
+        $task = $context['task'];
+        $occurrence = $context['occurrence'];
+        $invitee = $this->createWorker('Invited Worker');
+
+        $this->makeWorkerTaskCreator($task, $occurrence, $creator);
+
+        $this->actingAs($creator)
+            ->post(route('management.worker.tasks.invitations.store', $task), [
+                'invited_worker_id' => $invitee->id,
+            ])
+            ->assertRedirect();
+
+        $invitation = TaskWorkerInvitation::query()->firstOrFail();
+
+        $this->assertSame(TaskWorkerInvitation::STATUS_PENDING, $invitation->status);
+        $this->assertDatabaseMissing('task_workers', [
+            'task_id' => $task->id,
+            'user_id' => $invitee->id,
+        ]);
+
+        $beforeAcceptance = $this->actingAs($invitee)->get(route('management.dashboard.tasks'));
+        $beforeAcceptance->assertViewHas(
+            'tasks',
+            fn($tasks) => !$tasks->getCollection()->contains('id', $task->id)
+        );
+        $beforeAcceptance->assertSee('სამუშაოზე მოწვევები');
+
+        $this->actingAs($invitee)
+            ->post(route('management.worker.task-invitations.accept', $invitation))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('task_worker_invitations', [
+            'id' => $invitation->id,
+            'status' => TaskWorkerInvitation::STATUS_ACCEPTED,
+        ]);
+        $this->assertDatabaseHas('task_workers', [
+            'task_id' => $task->id,
+            'user_id' => $invitee->id,
+        ]);
+        $this->assertDatabaseHas('task_occurrence_workers', [
+            'task_occurrence_id' => $occurrence->id,
+            'worker_id_snapshot' => $invitee->id,
+            'worker_name_snapshot' => $invitee->full_name,
+        ]);
+
+        $afterAcceptance = $this->actingAs($invitee)->get(route('management.dashboard.tasks'));
+        $afterAcceptance->assertViewHas(
+            'tasks',
+            fn($tasks) => $tasks->getCollection()->contains('id', $task->id)
+        );
+    }
+
+    public function test_worker_who_did_not_create_task_cannot_invite_others(): void
+    {
+        $context = $this->createTaskContext();
+        $invitee = $this->createWorker('Invitee');
+
+        $this->actingAs($context['worker'])
+            ->post(route('management.worker.tasks.invitations.store', $context['task']), [
+                'invited_worker_id' => $invitee->id,
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('task_worker_invitations', 0);
+    }
+
+    public function test_only_invited_worker_can_accept_invitation(): void
+    {
+        $context = $this->createTaskContext();
+        $creator = $context['worker'];
+        $invitee = $this->createWorker('Invited Worker');
+        $unrelatedWorker = $this->createWorker('Unrelated Worker');
+
+        $this->makeWorkerTaskCreator($context['task'], $context['occurrence'], $creator);
+
+        $invitation = TaskWorkerInvitation::create([
+            'task_id' => $context['task']->id,
+            'inviter_id' => $creator->id,
+            'invited_worker_id' => $invitee->id,
+            'status' => TaskWorkerInvitation::STATUS_PENDING,
+        ]);
+
+        $this->actingAs($unrelatedWorker)
+            ->post(route('management.worker.task-invitations.accept', $invitation))
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('task_workers', [
+            'task_id' => $context['task']->id,
+            'user_id' => $unrelatedWorker->id,
+        ]);
+        $this->assertSame(
+            TaskWorkerInvitation::STATUS_PENDING,
+            $invitation->fresh()->status
+        );
+    }
+
+    public function test_declining_invitation_does_not_assign_worker(): void
+    {
+        $context = $this->createTaskContext();
+        $creator = $context['worker'];
+        $invitee = $this->createWorker('Invited Worker');
+
+        $this->makeWorkerTaskCreator($context['task'], $context['occurrence'], $creator);
+
+        $invitation = TaskWorkerInvitation::create([
+            'task_id' => $context['task']->id,
+            'inviter_id' => $creator->id,
+            'invited_worker_id' => $invitee->id,
+            'status' => TaskWorkerInvitation::STATUS_PENDING,
+        ]);
+
+        $this->actingAs($invitee)
+            ->post(route('management.worker.task-invitations.decline', $invitation))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('task_worker_invitations', [
+            'id' => $invitation->id,
+            'status' => TaskWorkerInvitation::STATUS_DECLINED,
+        ]);
+        $this->assertDatabaseMissing('task_workers', [
+            'task_id' => $context['task']->id,
+            'user_id' => $invitee->id,
+        ]);
+        $this->assertDatabaseMissing('task_occurrence_workers', [
+            'task_occurrence_id' => $context['occurrence']->id,
+            'worker_id_snapshot' => $invitee->id,
+        ]);
+    }
+
     /**
-     * @return array{worker: User, branch: Branch, service: Service, task: Task, occurrence: TaskOccurrence}
+     * @return array{worker: User, otherWorker: User, branch: Branch, service: Service, task: Task, occurrence: TaskOccurrence}
      */
     private function createTaskContext(): array
     {
@@ -204,6 +339,28 @@ class WorkerTaskPermissionsTest extends TestCase
             'worker_name_snapshot' => $otherWorker->full_name,
         ]);
 
-        return compact('worker', 'branch', 'service', 'task', 'occurrence');
+        return compact('worker', 'otherWorker', 'branch', 'service', 'task', 'occurrence');
+    }
+
+    private function createWorker(string $fullName): User
+    {
+        return User::create([
+            'full_name' => $fullName,
+            'email' => uniqid('worker-', true) . '@example.test',
+            'phone' => '5' . random_int(10000000, 99999999),
+            'password' => 'secret',
+            'role_id' => Role::query()->where('name', 'worker')->value('id'),
+            'is_active' => true,
+        ]);
+    }
+
+    private function makeWorkerTaskCreator(Task $task, TaskOccurrence $occurrence, User $creator): void
+    {
+        $task->update(['created_by_user_id' => $creator->id]);
+        $task->users()->syncWithoutDetaching([$creator->id]);
+        $occurrence->workers()->firstOrCreate(
+            ['worker_id_snapshot' => $creator->id],
+            ['worker_name_snapshot' => $creator->full_name]
+        );
     }
 }
