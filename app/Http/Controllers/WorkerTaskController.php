@@ -40,6 +40,7 @@ class WorkerTaskController extends Controller
     public function store(StoreWorkerTaskRequest $request): RedirectResponse
     {
         $data = $this->prepareTaskData($request->validated());
+        $data['created_by_user_id'] = $request->user()->id;
         $data['user_ids'] = [$request->user()->id];
         $data['visibility'] = '1';
         $data['archived'] = '0';

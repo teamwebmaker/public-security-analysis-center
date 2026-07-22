@@ -17,6 +17,13 @@ class TaskPolicy
         return $user->getRoleName() === 'worker';
     }
 
+    public function inviteWorkers(User $user, Task $task): bool
+    {
+        return $user->getRoleName() === 'worker'
+            && (int) $task->created_by_user_id === (int) $user->id
+            && $task->isActive();
+    }
+
     public function workOn(User $user, Task $task): bool
     {
         if ($user->getRoleName() !== 'worker' || !$task->isActive()) {
