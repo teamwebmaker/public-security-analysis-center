@@ -37,16 +37,8 @@ class WorkerController extends Controller
             })
             ->toArray();
 
-        $availableTasksCount = Task::query()
-            ->active()
-            ->whereDoesntHave('users', function ($query) use ($workerId) {
-                $query->where('users.id', $workerId);
-            })
-            ->count();
-
         return view("management.{$this->resourceName}.dashboard", [
             'statusCounts' => $statusCounts,
-            'availableTasksCount' => $availableTasksCount,
             'sidebarItems' => config('sidebar.worker'),
         ]);
     }
@@ -56,37 +48,21 @@ class WorkerController extends Controller
         $this->authorize('viewActiveTasks', Task::class);
 
         $workerId = (int) auth()->id();
-        $activeTab = request()->query('tab', 'mine');
-        $activeTab = in_array($activeTab, ['mine', 'available'], true) ? $activeTab : 'mine';
-
         $myTasksQuery = Task::query()
             ->active()
             ->whereHas('users', function ($query) use ($workerId) {
                 $query->where('users.id', $workerId);
             });
-        $availableTasksQuery = Task::query()
-            ->active()
-            ->whereDoesntHave('users', function ($query) use ($workerId) {
-                $query->where('users.id', $workerId);
-            });
 
-        $myTasksCount = (clone $myTasksQuery)->count();
-        $availableTasksCount = (clone $availableTasksQuery)->count();
-
-        $tasks = $this->buildTaskQuery(
-            $activeTab === 'mine' ? $myTasksQuery : $availableTasksQuery
-        )
+        $tasks = $this->buildTaskQuery($myTasksQuery)
             ->paginate($this->perPage)
             ->appends(request()->query());
 
         $taskRows = $tasks->map(fn(Task $task) => TableRowDataPresenter::workerTaskRow($task));
 
         return view('management.worker.tasks.index', [
-            'activeTab' => $activeTab,
             'tasks' => $tasks,
             'taskRows' => $taskRows,
-            'myTasksCount' => $myTasksCount,
-            'availableTasksCount' => $availableTasksCount,
             'taskHeaders' => TableHeaderDataPresenter::workerTaskHeaders(),
             'sidebarItems' => config('sidebar.worker'),
             'filters' => [
@@ -106,16 +82,8 @@ class WorkerController extends Controller
                 'დაწყება' => 'latest_start_date',
                 'დასრულება' => 'latest_end_date',
             ],
-            'taskActions' => function (Task $task) use ($activeTab, $workerId) {
-                $assignmentActions = $this->assignmentActionButtons($task, $workerId);
-
-                return $activeTab === 'mine'
-                    ? array_merge($this->customActionButtons($task), $assignmentActions)
-                    : $assignmentActions;
-            },
-            'workModalTriggers' => fn(Task $task) => $activeTab === 'mine'
-                ? $this->modalTriggerButtons($task)
-                : [],
+            'taskActions' => fn(Task $task) => $this->customActionButtons($task),
+            'workModalTriggers' => fn(Task $task) => $this->modalTriggerButtons($task),
         ]);
     }
 
@@ -242,26 +210,6 @@ class WorkerController extends Controller
             ]
         ];
 
-    }
-
-    protected function assignmentActionButtons(Task $task, int $workerId): array
-    {
-        $isAssigned = $task->users->contains('id', $workerId);
-
-        return [
-            [
-                'label' => $isAssigned ? 'მოშორება' : 'მიმაგრება',
-                'icon' => $isAssigned ? 'bi-person-dash' : 'bi-person-plus',
-                'route_name' => $isAssigned
-                    ? 'management.worker.tasks.remove-self'
-                    : 'management.worker.tasks.assign-self',
-                'method' => $isAssigned ? 'DELETE' : 'POST',
-                'confirm' => $isAssigned
-                    ? 'ნამდვილად გსურთ სამუშაოდან საკუთარი თავის წაშლა?'
-                    : 'ნამდვილად გსურთ ამ სამუშაოზე საკუთარი თავის დამატება?',
-                'class' => $isAssigned ? 'btn-outline-danger' : 'btn-outline-primary',
-            ]
-        ];
     }
 
     public function displayInstructions()

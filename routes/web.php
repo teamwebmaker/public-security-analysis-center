@@ -109,10 +109,6 @@ Route::prefix('management')
             ->name('worker.tasks.create');
         Route::post('tasks', [WorkerTaskController::class, 'store'])
             ->name('worker.tasks.store');
-        Route::post('tasks/{task}/assign-self', [WorkerTaskController::class, 'assignSelf'])
-            ->name('worker.tasks.assign-self');
-        Route::delete('tasks/{task}/assign-self', [WorkerTaskController::class, 'removeSelf'])
-            ->name('worker.tasks.remove-self');
 
         // Edit task status
         Route::put('tasks/{task}', [TaskController::class, 'editStatus'])->name('tasks.edit');

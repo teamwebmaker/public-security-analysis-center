@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ManageOwnTaskAssignmentRequest;
 use App\Http\Requests\StoreWorkerTaskRequest;
 use App\Models\Branch;
 use App\Models\Service;
 use App\Models\Task;
 use App\Services\Tasks\TaskCreator;
-use App\Services\Tasks\TaskSelfAssignmentService;
-use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -18,8 +15,7 @@ use Throwable;
 class WorkerTaskController extends Controller
 {
     public function __construct(
-        private TaskCreator $taskCreator,
-        private TaskSelfAssignmentService $assignmentService
+        private TaskCreator $taskCreator
     ) {
     }
 
@@ -70,58 +66,6 @@ class WorkerTaskController extends Controller
         return redirect()
             ->route('management.dashboard.tasks')
             ->with('success', 'სამუშაო შეიქმნა და თქვენ ავტომატურად მიენიჭეთ.');
-    }
-
-    public function assignSelf(
-        ManageOwnTaskAssignmentRequest $request,
-        Task $task
-    ): RedirectResponse {
-        $this->authorize('manageOwnAssignment', $task);
-
-        try {
-            $assigned = $this->assignmentService->assign($task, $request->user());
-        } catch (DomainException $e) {
-            return back()->withErrors(['assignment' => $e->getMessage()]);
-        } catch (Throwable $e) {
-            Log::error('Worker self-assignment failed', [
-                'task_id' => $task->id,
-                'worker_id' => $request->user()->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            return back()->withErrors(['assignment' => 'სამუშაოზე დამატება ვერ მოხერხდა.']);
-        }
-
-        return back()->with(
-            'success',
-            $assigned ? 'სამუშაო წარმატებით მიინიჭეთ.' : 'თქვენ უკვე მინიჭებული გაქვთ ეს სამუშაო.'
-        );
-    }
-
-    public function removeSelf(
-        ManageOwnTaskAssignmentRequest $request,
-        Task $task
-    ): RedirectResponse {
-        $this->authorize('manageOwnAssignment', $task);
-
-        try {
-            $removed = $this->assignmentService->remove($task, $request->user());
-        } catch (DomainException $e) {
-            return back()->withErrors(['assignment' => $e->getMessage()]);
-        } catch (Throwable $e) {
-            Log::error('Worker self-removal failed', [
-                'task_id' => $task->id,
-                'worker_id' => $request->user()->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            return back()->withErrors(['assignment' => 'სამუშაოდან წაშლა ვერ მოხერხდა.']);
-        }
-
-        return back()->with(
-            'success',
-            $removed ? 'სამუშაოდან წარმატებით წაიშალეთ.' : 'თქვენ არ ხართ მინიჭებული ამ სამუშაოზე.'
-        );
     }
 
     private function prepareTaskData(array $data): array
