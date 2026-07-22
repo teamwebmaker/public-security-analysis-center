@@ -40,6 +40,9 @@
                             class="btn btn-outline-primary">
                             <i class="bi bi-person-workspace me-1"></i>
                             ჩემი სამუშაოები
+                            @if (($pendingInvitationsCount ?? 0) > 0)
+                                <span class="badge text-bg-danger ms-1">{{ $pendingInvitationsCount }}</span>
+                            @endif
                         </a>
                         <a href="{{ route('management.worker.tasks.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i>

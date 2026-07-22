@@ -9,6 +9,8 @@ use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
+use App\Models\TaskWorkerInvitation;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
@@ -37,8 +39,15 @@ class WorkerController extends Controller
             })
             ->toArray();
 
+        $pendingInvitationsCount = TaskWorkerInvitation::query()
+            ->where('invited_worker_id', $workerId)
+            ->where('status', TaskWorkerInvitation::STATUS_PENDING)
+            ->whereHas('task', fn($query) => $query->active())
+            ->count();
+
         return view("management.{$this->resourceName}.dashboard", [
             'statusCounts' => $statusCounts,
+            'pendingInvitationsCount' => $pendingInvitationsCount,
             'sidebarItems' => config('sidebar.worker'),
         ]);
     }
@@ -60,9 +69,31 @@ class WorkerController extends Controller
 
         $taskRows = $tasks->map(fn(Task $task) => TableRowDataPresenter::workerTaskRow($task));
 
+        $pendingInvitations = TaskWorkerInvitation::query()
+            ->where('invited_worker_id', $workerId)
+            ->where('status', TaskWorkerInvitation::STATUS_PENDING)
+            ->whereHas('task', fn($query) => $query->active())
+            ->with([
+                'inviter:id,full_name',
+                'task:id,branch_id,service_id,branch_name_snapshot,service_name_snapshot',
+                'task.branch:id,name',
+                'task.service:id,title',
+            ])
+            ->latest()
+            ->get();
+
+        $inviteableWorkers = User::query()
+            ->where('id', '!=', $workerId)
+            ->where('is_active', true)
+            ->whereHas('role', fn($query) => $query->where('name', 'worker'))
+            ->orderBy('full_name')
+            ->get(['id', 'full_name']);
+
         return view('management.worker.tasks.index', [
             'tasks' => $tasks,
             'taskRows' => $taskRows,
+            'pendingInvitations' => $pendingInvitations,
+            'inviteableWorkers' => $inviteableWorkers,
             'taskHeaders' => TableHeaderDataPresenter::workerTaskHeaders(),
             'sidebarItems' => config('sidebar.worker'),
             'filters' => [
@@ -83,7 +114,10 @@ class WorkerController extends Controller
                 'დასრულება' => 'latest_end_date',
             ],
             'taskActions' => fn(Task $task) => $this->customActionButtons($task),
-            'workModalTriggers' => fn(Task $task) => $this->modalTriggerButtons($task),
+            'taskModalTriggers' => fn(Task $task) => array_merge(
+                $this->modalTriggerButtons($task),
+                $this->invitationModalTriggerButtons($task, $workerId)
+            ),
         ]);
     }
 
@@ -131,7 +165,14 @@ class WorkerController extends Controller
                 }),
                 AllowedFilter::exact('is_recurring'),
             ])
-            ->with(['users', 'branch', 'service', 'latestOccurrence.status', 'latestOccurrence.workers']);
+            ->with([
+                'users',
+                'branch',
+                'service',
+                'latestOccurrence.status',
+                'latestOccurrence.workers',
+                'workerInvitations',
+            ]);
     }
 
     /**
@@ -210,6 +251,22 @@ class WorkerController extends Controller
             ]
         ];
 
+    }
+
+    protected function invitationModalTriggerButtons(Task $task, int $workerId): array
+    {
+        if ((int) $task->created_by_user_id !== $workerId) {
+            return [];
+        }
+
+        return [
+            [
+                'label' => 'კოლეგის მოწვევა',
+                'icon' => 'bi-person-plus',
+                'modal_id' => "taskInvitationModal_{$task->id}",
+                'class' => 'btn-outline-secondary',
+            ],
+        ];
     }
 
     public function displayInstructions()
