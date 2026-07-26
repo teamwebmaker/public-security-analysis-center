@@ -53,4 +53,6 @@
             </div>
         </div>
     </div>
+
+    @include('incidents.partials.dashboard-list')
 @endsection

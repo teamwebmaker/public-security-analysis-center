@@ -42,6 +42,8 @@
 		</div>
 	@endif
 
+	@include('incidents.partials.dashboard-list')
+
 	<!-- Empty state -->
 	@if ($userBranches->count() === 0 && $paymentOccurrences->count() === 0)
 		<x-ui.empty-state-message :resourceName="null" :overlay="false" />

@@ -3,8 +3,9 @@
 // Management sidebar
 $dashboardItem = ['label' => 'პანელი', 'route' => 'management.dashboard.page', 'icon' => 'bi bi-speedometer2'];
 $taskItem = ['label' => 'სამუშაოები', 'route' => 'management.dashboard.tasks', 'icon' => 'bi bi-list-ul'];
+$incidentItem = ['label' => 'ინციდენტები', 'route' => 'management.incidents.index', 'icon' => 'bi bi-exclamation-triangle'];
 
-$commonMenu = [$dashboardItem, $taskItem];
+$commonMenu = [$dashboardItem, $taskItem, $incidentItem];
 return [
 
    'company-leader' => $commonMenu,
@@ -12,6 +13,7 @@ return [
    'worker' => [
       $dashboardItem,
       $taskItem,
+      $incidentItem,
       [
          'label' => 'ინსტრუქტაჟები',
          'route' => 'management.worker.instructions.page',
@@ -200,6 +202,14 @@ return [
                   ['name' => 'document-templates.create', 'label' => 'შაბლონების შექმნა', 'icon' => 'bi-plus-circle'],
                ]
 
+            ],
+            [
+               'id' => 'incidents',
+               'icon' => 'bi-exclamation-triangle',
+               'label' => 'ინციდენტები',
+               'routes' => [
+                  ['name' => 'incidents.index', 'label' => 'ინციდენტების ნახვა', 'icon' => 'bi-list-ul'],
+               ],
             ],
          ],
       ],
