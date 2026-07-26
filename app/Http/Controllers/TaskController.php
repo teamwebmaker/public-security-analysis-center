@@ -17,6 +17,7 @@ use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Sms\AdminSmsNotifier;
 use App\Services\Sms\ResponsiblePersonTaskSmsNotifier;
 use App\Services\Tasks\TaskCreator;
+use App\Services\Tasks\TaskFilterOptionsService;
 use App\Services\Tasks\TaskUpdater;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,18 +45,21 @@ class TaskController extends CrudController
    protected TaskUpdater $taskUpdater;
    protected AdminSmsNotifier $adminSmsNotifier;
    protected ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier;
+   protected TaskFilterOptionsService $taskFilterOptions;
 
    public function __construct(
       TaskCreator $taskCreator,
       TaskUpdater $taskUpdater,
       AdminSmsNotifier $adminSmsNotifier,
-      ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier
+      ResponsiblePersonTaskSmsNotifier $responsiblePersonTaskSmsNotifier,
+      TaskFilterOptionsService $taskFilterOptions
    )
    {
       $this->taskCreator = $taskCreator;
       $this->taskUpdater = $taskUpdater;
       $this->adminSmsNotifier = $adminSmsNotifier;
       $this->responsiblePersonTaskSmsNotifier = $responsiblePersonTaskSmsNotifier;
+      $this->taskFilterOptions = $taskFilterOptions;
    }
 
    /**
@@ -72,15 +76,7 @@ class TaskController extends CrudController
       // Filtering dropdown data
       // =========================
 
-      // For "branch" filter select
-      $branches = Branch::pluck('name', 'id')->toArray();
-
-      // For "service" filter select (show ka first, fallback to en)
-      $services = Service::all()
-         ->mapWithKeys(fn($service) => [
-            $service->id => $service->title->ka ?? $service->title->en,
-         ])
-         ->toArray();
+      $entityFilters = $this->taskFilterOptions->forTaskScope(Task::query());
 
       // For "occurrence_status" filter (name => display_name)
       $occurrenceStatuses = TaskOccurrenceStatus::orderBy('id')
@@ -111,7 +107,7 @@ class TaskController extends CrudController
       // ===========================
       // Filters config for the UI
 
-      $filters = [
+      $filters = array_merge($entityFilters, [
          'visibility' => [
             'label' => 'ხილვადობა',
             'options' => ['1' => 'ხილული', '0' => 'დამალული'],
@@ -119,14 +115,6 @@ class TaskController extends CrudController
          'occurrence_status' => [
             'label' => 'სტატუსი',
             'options' => $occurrenceStatuses,
-         ],
-         'branch_id' => [
-            'label' => 'ფილიალი',
-            'options' => $branches,
-         ],
-         'service_id' => [
-            'label' => 'სერვისი',
-            'options' => $services,
          ],
          'recurrence_interval' => [
             'label' => 'განმეორების ინტერვალი',
@@ -136,7 +124,7 @@ class TaskController extends CrudController
             'label' => 'განმეორებადი',
             'options' => ['1' => 'დიახ', '0' => 'არა'],
          ],
-      ];
+      ]);
 
 
       // Button config for opening occurrences modal per task
@@ -254,6 +242,9 @@ class TaskController extends CrudController
 
             AllowedFilter::exact('branch_id'),
             AllowedFilter::exact('service_id'),
+            AllowedFilter::callback('company_id', function ($query, $value) {
+               $query->whereHas('branch', fn($branch) => $branch->where('company_id', $value));
+            }),
             AllowedFilter::exact('visibility'),
             AllowedFilter::exact('is_recurring'),
             AllowedFilter::exact('recurrence_interval'),

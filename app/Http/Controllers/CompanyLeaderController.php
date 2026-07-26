@@ -11,6 +11,7 @@ use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceDueDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
+use App\Services\Tasks\TaskFilterOptionsService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -18,6 +19,11 @@ use Spatie\QueryBuilder\QueryBuilder;
 class CompanyLeaderController extends Controller
 {
     public $resourceName = 'company-leader';
+
+    public function __construct(
+        private TaskFilterOptionsService $taskFilterOptions
+    ) {
+    }
 
     public function displayDashboard()
     {
@@ -59,8 +65,10 @@ class CompanyLeaderController extends Controller
     public function displayTasks()
     {
         $user = auth()->user();
+        $branchIds = $this->branchIds($user);
+        $authorizedTaskScope = $this->authorizedTaskScope($branchIds);
 
-        $tasks = $this->buildTasksQuery($this->branchIds($user))
+        $tasks = $this->buildTasksQuery($branchIds)
             ->paginate(10)
             ->appends(request()->query());
 
@@ -76,7 +84,7 @@ class CompanyLeaderController extends Controller
             'taskHeaders' => $taskHeaders,
             'sidebarItems' => $sidebarItems,
             'sortableMap' => $this->taskSortableMap(),
-            'filters' => $this->taskFilters(),
+            'filters' => $this->taskFilters($authorizedTaskScope),
         ]);
     }
 
@@ -204,11 +212,19 @@ class CompanyLeaderController extends Controller
             ->orderByDesc($latestOccurrenceUpdatedAt);
     }
 
-    protected function taskFilters(): array
+    protected function authorizedTaskScope($branchIds)
+    {
+        return Task::query()
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds);
+            });
+    }
+
+    protected function taskFilters($authorizedTaskScope): array
     {
         $statusOptions = TaskOccurrenceStatus::pluck('display_name', 'name')->toArray();
 
-        return [
+        return array_merge($this->taskFilterOptions->forTaskScope($authorizedTaskScope), [
             'status' => [
                 'label' => 'სტატუსი',
                 'options' => $statusOptions,
@@ -217,7 +233,7 @@ class CompanyLeaderController extends Controller
                 'label' => 'განმეორებადი',
                 'options' => ['1' => 'დიახ', '0' => 'არა'],
             ],
-        ];
+        ]);
     }
 
     protected function taskFiltersConfig(): array
@@ -271,6 +287,11 @@ class CompanyLeaderController extends Controller
                     $q->where('name', $value)->orWhere('display_name', $value);
                 });
             }),
+            AllowedFilter::callback('company_id', function ($query, $value) {
+                $query->whereHas('branch', fn($branch) => $branch->where('company_id', $value));
+            }),
+            AllowedFilter::exact('branch_id'),
+            AllowedFilter::exact('service_id'),
             AllowedFilter::exact('is_recurring'),
         ];
     }

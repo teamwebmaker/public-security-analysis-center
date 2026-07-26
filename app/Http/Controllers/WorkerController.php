@@ -11,6 +11,7 @@ use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\TaskWorkerInvitation;
 use App\Models\User;
+use App\Services\Tasks\TaskFilterOptionsService;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
@@ -21,6 +22,11 @@ class WorkerController extends Controller
     public $resourceName = 'worker';
     public $resourceNameTasks = 'tasks';
     public int $perPage = 10;
+
+    public function __construct(
+        private TaskFilterOptionsService $taskFilterOptions
+    ) {
+    }
 
     public function displayDashboard()
     {
@@ -62,6 +68,7 @@ class WorkerController extends Controller
             ->whereHas('users', function ($query) use ($workerId) {
                 $query->where('users.id', $workerId);
             });
+        $entityFilters = $this->taskFilterOptions->forTaskScope(clone $myTasksQuery);
 
         $tasks = $this->buildTaskQuery($myTasksQuery)
             ->paginate($this->perPage)
@@ -96,7 +103,7 @@ class WorkerController extends Controller
             'inviteableWorkers' => $inviteableWorkers,
             'taskHeaders' => TableHeaderDataPresenter::workerTaskHeaders(),
             'sidebarItems' => config('sidebar.worker'),
-            'filters' => [
+            'filters' => array_merge($entityFilters, [
                 'status' => [
                     'label' => 'სტატუსი',
                     'options' => TaskOccurrenceStatus::query()
@@ -108,7 +115,7 @@ class WorkerController extends Controller
                     'label' => 'განმეორებადი',
                     'options' => ['1' => 'დიახ', '0' => 'არა'],
                 ],
-            ],
+            ]),
             'sortableMap' => [
                 'დაწყება' => 'latest_start_date',
                 'დასრულება' => 'latest_end_date',
@@ -163,6 +170,11 @@ class WorkerController extends Controller
                             ->orWhere('display_name', $value);
                     });
                 }),
+                AllowedFilter::callback('company_id', function ($query, $value) {
+                    $query->whereHas('branch', fn($branch) => $branch->where('company_id', $value));
+                }),
+                AllowedFilter::exact('branch_id'),
+                AllowedFilter::exact('service_id'),
                 AllowedFilter::exact('is_recurring'),
             ])
             ->with([
