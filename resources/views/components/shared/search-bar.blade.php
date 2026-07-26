@@ -23,6 +23,38 @@
 
 @php
 	$isLeft = $headingPosition === 'left';
+	$preservedQuery = request()->query();
+	unset($preservedQuery['page']);
+
+	if (preg_match('/^([^\[]+)\[([^\]]+)\]$/', $name, $matches)) {
+		unset($preservedQuery[$matches[1]][$matches[2]]);
+		if (empty($preservedQuery[$matches[1]])) {
+			unset($preservedQuery[$matches[1]]);
+		}
+	} else {
+		unset($preservedQuery[$name]);
+	}
+
+	foreach ($preserve as $key => $preservedValue) {
+		$preservedQuery[$key] = $preservedValue;
+	}
+
+	$hiddenInputs = [];
+	$flattenQuery = function (array $values, string $prefix = '') use (&$flattenQuery, &$hiddenInputs): void {
+		foreach ($values as $key => $queryValue) {
+			$inputName = $prefix === '' ? (string) $key : "{$prefix}[{$key}]";
+
+			if (is_array($queryValue)) {
+				$flattenQuery($queryValue, $inputName);
+				continue;
+			}
+
+			if (is_scalar($queryValue) && $queryValue !== '') {
+				$hiddenInputs[] = ['name' => $inputName, 'value' => (string) $queryValue];
+			}
+		}
+	};
+	$flattenQuery($preservedQuery);
 @endphp
 <form method="GET"
 id="searchForm-{{ md5($action . $name) }}"
@@ -30,8 +62,8 @@ action="{{ $action }}"
 class="{{ $formClass }}"
 	data-search-bar
 	data-search-name="{{ $name }}">
-	@foreach($preserve as $key => $preservedValue)
-		<input type="hidden" name="{{ $key }}" value="{{ $preservedValue }}">
+	@foreach($hiddenInputs as $input)
+		<input type="hidden" name="{{ $input['name'] }}" value="{{ $input['value'] }}">
 	@endforeach
 
 	<div class="{{ $wrapperClass }} flex-sm-{{ $isLeft ? 'row' : 'row-reverse' }}">
