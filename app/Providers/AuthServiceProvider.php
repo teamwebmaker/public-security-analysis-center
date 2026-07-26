@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\Task;
 use App\Models\TaskWorkerInvitation;
 use App\Models\User;
+use App\Models\Incident;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -20,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => \App\Policies\UserConnectionPolicy::class,
         Task::class => \App\Policies\TaskPolicy::class,
         TaskWorkerInvitation::class => \App\Policies\TaskWorkerInvitationPolicy::class,
+        Incident::class => \App\Policies\IncidentPolicy::class,
     ];
 
     /**

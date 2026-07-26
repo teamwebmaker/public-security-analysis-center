@@ -17,6 +17,8 @@ return new class extends Migration {
                 'task_finished',
                 'debt_due_2_days',
                 'debt_overdue_service_suspended',
+                'incident_created',
+                'incident_shared',
             ])->nullable()->after('content');
 
             $table->unsignedBigInteger('entity_id')->nullable()->after('event_type');
@@ -26,6 +28,7 @@ return new class extends Migration {
                 'responsible_person',
                 'company_leader',
                 'admin',
+                'external_person',
             ])->nullable()->after('entity_id');
         });
     }
