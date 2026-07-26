@@ -71,6 +71,8 @@
         <x-shared.search-bar headingPosition="left" :action="route('management.dashboard.tasks')" :minLength="1" />
     </div>
 
+    <x-shared.result-count :count="$tasks->total()" />
+
     @if ($tasks->isNotEmpty())
         <x-shared.table :items="$tasks" :headers="$taskHeaders" :rows="$taskRows" :sortableMap="$sortableMap"
             :tooltipColumns="['branch', 'service']" :customActions="$taskActions" :modalTriggers="$taskModalTriggers" />

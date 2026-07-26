@@ -10,6 +10,7 @@ use App\Presenters\TableRowDataPresenter;
 use App\QueryBuilders\Sorts\LatestOccurrenceDueDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
+use App\Services\Tasks\TaskFilterOptionsService;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -17,6 +18,11 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ResponsiblePersonController extends Controller
 {
     public $resourceName = 'responsible-person';
+
+    public function __construct(
+        private TaskFilterOptionsService $taskFilterOptions
+    ) {
+    }
 
     public function displayDashboard()
     {
@@ -67,6 +73,7 @@ class ResponsiblePersonController extends Controller
         $user = auth()->user();
         $branchIds = $this->branchIds($user);
         $allowedServiceIds = $this->allowedServiceIds($user);
+        $authorizedTaskScope = $this->authorizedTaskScope($branchIds, $allowedServiceIds);
 
         $tasks = $this->buildTasksQuery($branchIds, $allowedServiceIds)
             ->paginate(10)
@@ -82,7 +89,7 @@ class ResponsiblePersonController extends Controller
             'tasks' => $tasks,
             'userTableRows' => $userTableRows,
             'sidebarItems' => $sidebarItems,
-            'filters' => $this->taskFilters(),
+            'filters' => $this->taskFilters($authorizedTaskScope),
             'sortableMap' => $this->tasksSortableMap(),
             'taskHeaders' => $taskHeaders,
         ]);
@@ -132,7 +139,19 @@ class ResponsiblePersonController extends Controller
             ->with(['users', 'branch', 'service', 'latestOccurrence.status']);
     }
 
-    protected function taskFilters(): array
+    protected function authorizedTaskScope($branchIds, array $allowedServiceIds)
+    {
+        return Task::query()
+            ->whereHas('latestOccurrence', function ($query) use ($branchIds, $allowedServiceIds) {
+                $query->whereIn('branch_id_snapshot', $branchIds)
+                    ->where(function ($query) use ($allowedServiceIds) {
+                        $query->whereNull('service_id_snapshot')
+                            ->orWhereIn('service_id_snapshot', $allowedServiceIds);
+                    });
+            });
+    }
+
+    protected function taskFilters($authorizedTaskScope): array
     {
         $statusOptions = TaskOccurrenceStatus::pluck('display_name', 'name')->toArray();
         $paymentStatusOptions = [
@@ -142,7 +161,7 @@ class ResponsiblePersonController extends Controller
             'overdue' => 'ვადაგადაცილებული',
         ];
 
-        return [
+        return array_merge($this->taskFilterOptions->forTaskScope($authorizedTaskScope), [
             'status' => [
                 'label' => 'სტატუსი',
                 'options' => $statusOptions,
@@ -155,7 +174,7 @@ class ResponsiblePersonController extends Controller
                 'label' => 'განმეორებადი',
                 'options' => ['1' => 'დიახ', '0' => 'არა'],
             ],
-        ];
+        ]);
     }
 
     protected function taskFiltersConfig(): array
@@ -190,6 +209,11 @@ class ResponsiblePersonController extends Controller
                     $q->where('payment_status', $value);
                 });
             }),
+            AllowedFilter::callback('company_id', function ($query, $value) {
+                $query->whereHas('branch', fn($branch) => $branch->where('company_id', $value));
+            }),
+            AllowedFilter::exact('branch_id'),
+            AllowedFilter::exact('service_id'),
             AllowedFilter::exact('is_recurring'),
         ];
     }
