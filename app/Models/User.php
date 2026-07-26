@@ -130,6 +130,16 @@ class User extends Authenticatable
         return $this->hasMany(TaskWorkerInvitation::class, 'invited_worker_id');
     }
 
+    public function createdIncidents()
+    {
+        return $this->hasMany(Incident::class, 'created_by_user_id');
+    }
+
+    public function incidentParticipations()
+    {
+        return $this->hasMany(IncidentUserParticipant::class);
+    }
+
     public function instructions()
     {
         return $this->belongsToMany(Instruction::class, 'instructions_workers')->withTimestamps();
