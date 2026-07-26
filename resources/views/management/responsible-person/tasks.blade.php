@@ -7,6 +7,8 @@
 	<x-shared.search-bar heading="ყველა სამუშაო" headingPosition="left" :action="route('management.dashboard.tasks')" :minLength="1" />
 	<x-shared.filter-bar :filters="$filters" :resetUrl="route('management.dashboard.tasks')" />
 
+	<x-shared.result-count :count="$tasks->total()" />
+
 	@if ($tasks->count() > 0)
 		<!-- Tasks -->
 		<div class="my-3 shadow-sm rounded-3 overflow-hidden ">

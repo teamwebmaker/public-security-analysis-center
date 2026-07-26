@@ -5,15 +5,18 @@
 <!-- Display Tasks -->
 <x-admin.index-view :items="$tasks" :resourceName="$resourceName" containerClass="position-relative">
 	<!-- Filters & Search -->
-	<div class="d-flex flex-column flex-lg-row align-items-center mb-3 border-bottom">
-		<div class="flex-fill">
+	<div
+		class="d-flex flex-column align-items-start flex-lg-row align-items-lg-center justify-content-between gap-3 mb-3 border-bottom">
+		<div>
 			<x-shared.filter-bar :filters="$filters" :showBadges="false" :resetUrl="route($resourceName . '.index')" />
 		</div>
-		<div class="flex-fill flex-lg-grow-0">
+		<div class="ms-lg-auto">
 			<x-shared.search-bar headingPosition="left" :action="route($resourceName . '.index')" formClass="mb-0"
 				:minLength="1" />
 		</div>
 	</div>
+
+	<x-shared.result-count :count="$tasks->total()" />
 
 	<!-- Tasks -->
 	@if (!$tasks->isEmpty())
