@@ -12,6 +12,7 @@ use App\QueryBuilders\Sorts\LatestOccurrenceDueDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Tasks\TaskFilterOptionsService;
+use App\Models\Incident;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -41,6 +42,12 @@ class CompanyLeaderController extends Controller
 
         $taskHeaders = TableHeaderDataPresenter::companyLeaderTaskHeaders();
         $taskRows = $this->taskRows($tasks);
+        $dashboardIncidents = Incident::query()
+            ->visibleTo($user)
+            ->with(['branch.company', 'userParticipants'])
+            ->latest()
+            ->limit(5)
+            ->get();
 
         $sidebarItems = config('sidebar.company-leader');
 
@@ -54,6 +61,7 @@ class CompanyLeaderController extends Controller
 
             'taskHeaders' => $taskHeaders,
             'taskRows' => $taskRows,
+            'dashboardIncidents' => $dashboardIncidents,
 
             'sidebarItems' => $sidebarItems,
             'sortableMap' => $this->taskSortableMap(),

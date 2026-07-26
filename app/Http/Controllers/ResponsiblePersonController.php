@@ -11,6 +11,7 @@ use App\QueryBuilders\Sorts\LatestOccurrenceDueDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Tasks\TaskFilterOptionsService;
+use App\Models\Incident;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -54,6 +55,12 @@ class ResponsiblePersonController extends Controller
 
         $paymentHeaders = TableHeaderDataPresenter::responsiblePersonPaymentHeaders();
         $paymentRows = $paymentOccurrences->map(fn($occurrence) => TableRowDataPresenter::responsiblePersonPaymentRow($occurrence));
+        $dashboardIncidents = Incident::query()
+            ->visibleTo($user)
+            ->with(['branch.company', 'userParticipants'])
+            ->latest()
+            ->limit(5)
+            ->get();
         $sidebarItems = config('sidebar.responsible-person');
 
         return view("management.{$this->resourceName}.dashboard", [
@@ -65,6 +72,7 @@ class ResponsiblePersonController extends Controller
             'paymentOccurrences' => $paymentOccurrences,
             'paymentHeaders' => $paymentHeaders,
             'paymentRows' => $paymentRows,
+            'dashboardIncidents' => $dashboardIncidents,
         ]);
     }
 

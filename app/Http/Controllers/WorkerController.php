@@ -11,6 +11,7 @@ use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\TaskWorkerInvitation;
 use App\Models\User;
+use App\Models\Incident;
 use App\Services\Tasks\TaskFilterOptionsService;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -51,9 +52,17 @@ class WorkerController extends Controller
             ->whereHas('task', fn($query) => $query->active())
             ->count();
 
+        $dashboardIncidents = Incident::query()
+            ->visibleTo(auth()->user())
+            ->with(['branch.company', 'userParticipants'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
         return view("management.{$this->resourceName}.dashboard", [
             'statusCounts' => $statusCounts,
             'pendingInvitationsCount' => $pendingInvitationsCount,
+            'dashboardIncidents' => $dashboardIncidents,
             'sidebarItems' => config('sidebar.worker'),
         ]);
     }

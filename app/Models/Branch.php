@@ -44,4 +44,9 @@ class Branch extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function incidents()
+    {
+        return $this->hasMany(Incident::class);
+    }
 }

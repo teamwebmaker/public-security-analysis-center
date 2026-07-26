@@ -33,6 +33,8 @@ use App\Http\Controllers\TaskWorkerInvitationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkerTaskController;
+use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\PublicShareController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -81,6 +83,11 @@ Route::resource('services', ServiceController::class)
 
 Route::resource('messages', MessagesController::class)->only('store');
 
+Route::get('/shared/{token}', [PublicShareController::class, 'show'])
+    ->name('public-shares.show');
+Route::get('/shared/{token}/document', [PublicShareController::class, 'document'])
+    ->name('public-shares.document');
+
 
 // ================
 // Protected routes
@@ -98,6 +105,16 @@ Route::prefix('management')
         // Dynamically resolving the appropriate controller based on user role
         Route::get('/dashboard', [DashboardRouterController::class, 'redirectDashboard'])->name('dashboard.page');
         Route::get('/dashboard/tasks', [DashboardRouterController::class, 'redirectTask'])->name('dashboard.tasks');
+        Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
+        Route::get('/incidents/{incident}', [IncidentController::class, 'show'])
+            ->whereNumber('incident')
+            ->name('incidents.show');
+        Route::get('/incidents/{incident}/document', [IncidentController::class, 'document'])
+            ->name('incidents.document');
+        Route::get('/incidents/{incident}/document/download', [IncidentController::class, 'downloadDocument'])
+            ->name('incidents.document.download');
+        Route::post('/incidents/{incident}/sign', [IncidentController::class, 'sign'])
+            ->name('incidents.sign');
     });
 
 // Allow authorized users worker
@@ -125,6 +142,18 @@ Route::prefix('management')
             ->name('tasks.upload-document');
         Route::get('instructions', [WorkerController::class, 'displayInstructions'])->name('worker.instructions.page');
         Route::get('document-templates', [WorkerController::class, 'displayDocumentTemplates'])->name('worker.document-templates.page');
+        Route::get('incidents/create', [IncidentController::class, 'create'])
+            ->name('incidents.create');
+        Route::post('incidents', [IncidentController::class, 'store'])
+            ->name('incidents.store');
+        Route::get('incidents/{incident}/edit', [IncidentController::class, 'edit'])
+            ->name('incidents.edit');
+        Route::put('incidents/{incident}', [IncidentController::class, 'update'])
+            ->name('incidents.update');
+        Route::post(
+            'incidents/{incident}/external-participants/{externalParticipant}/sign',
+            [IncidentController::class, 'markExternalSigned']
+        )->name('incidents.external-participants.sign');
 
     });
 
@@ -158,6 +187,18 @@ Route::prefix('admin')->group(function () {
             ->name('tasks.occurrences');
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
+        Route::get('incidents', [IncidentController::class, 'index'])->name('incidents.index');
+        Route::get('incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
+        Route::get('incidents/{incident}/edit', [IncidentController::class, 'edit'])->name('incidents.edit');
+        Route::put('incidents/{incident}', [IncidentController::class, 'update'])->name('incidents.update');
+        Route::get('incidents/{incident}/document', [IncidentController::class, 'document'])
+            ->name('incidents.document');
+        Route::get('incidents/{incident}/document/download', [IncidentController::class, 'downloadDocument'])
+            ->name('incidents.document.download');
+        Route::post(
+            'incidents/{incident}/external-participants/{externalParticipant}/sign',
+            [IncidentController::class, 'markExternalSigned']
+        )->name('incidents.external-participants.sign');
         Route::resource('task-occurrences', TaskOccurrenceController::class)->only(['edit', 'update', 'destroy', 'show'])->parameters(['task-occurrences' => 'taskOccurrence']);
         Route::put('task-occurrences/{taskOccurrence}/mark-paid', [TaskOccurrenceController::class, 'markPaid'])
             ->name('task-occurrences.mark-paid');

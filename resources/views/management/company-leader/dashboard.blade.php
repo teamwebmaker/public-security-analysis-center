@@ -27,6 +27,8 @@
 
 	@endif
 
+	@include('incidents.partials.dashboard-list')
+
 	<!-- company & branches-->
 	<div class="accordion mt-3" id="companyAccordion">
 		@foreach ($userCompanies as $index => $company)
