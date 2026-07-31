@@ -140,6 +140,16 @@ class User extends Authenticatable
         return $this->hasMany(IncidentUserParticipant::class);
     }
 
+    public function createdOrders()
+    {
+        return $this->hasMany(Order::class, 'created_by_user_id');
+    }
+
+    public function orderParticipations()
+    {
+        return $this->hasMany(OrderUserParticipant::class);
+    }
+
     public function instructions()
     {
         return $this->belongsToMany(Instruction::class, 'instructions_workers')->withTimestamps();
