@@ -43,6 +43,7 @@
 	@endif
 
 	@include('incidents.partials.dashboard-list')
+	@include('orders.partials.dashboard-list')
 
 	<!-- Empty state -->
 	@if ($userBranches->count() === 0 && $paymentOccurrences->count() === 0)

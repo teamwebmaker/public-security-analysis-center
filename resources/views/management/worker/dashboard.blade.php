@@ -55,4 +55,5 @@
     </div>
 
     @include('incidents.partials.dashboard-list')
+    @include('orders.partials.dashboard-list')
 @endsection

@@ -12,6 +12,7 @@ use App\Models\TaskOccurrenceStatus;
 use App\Models\TaskWorkerInvitation;
 use App\Models\User;
 use App\Models\Incident;
+use App\Models\Order;
 use App\Services\Tasks\TaskFilterOptionsService;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -58,11 +59,18 @@ class WorkerController extends Controller
             ->latest()
             ->limit(5)
             ->get();
+        $dashboardOrders = Order::query()
+            ->visibleTo(auth()->user())
+            ->with(['branch.company', 'userParticipants'])
+            ->latest()
+            ->limit(5)
+            ->get();
 
         return view("management.{$this->resourceName}.dashboard", [
             'statusCounts' => $statusCounts,
             'pendingInvitationsCount' => $pendingInvitationsCount,
             'dashboardIncidents' => $dashboardIncidents,
+            'dashboardOrders' => $dashboardOrders,
             'sidebarItems' => config('sidebar.worker'),
         ]);
     }

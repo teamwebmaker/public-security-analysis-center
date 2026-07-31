@@ -4,8 +4,9 @@
 $dashboardItem = ['label' => 'პანელი', 'route' => 'management.dashboard.page', 'icon' => 'bi bi-speedometer2'];
 $taskItem = ['label' => 'სამუშაოები', 'route' => 'management.dashboard.tasks', 'icon' => 'bi bi-list-ul'];
 $incidentItem = ['label' => 'ინციდენტები', 'route' => 'management.incidents.index', 'icon' => 'bi bi-exclamation-triangle'];
+$orderItem = ['label' => 'ბრძანებები', 'route' => 'management.orders.index', 'icon' => 'bi bi-file-earmark-check'];
 
-$commonMenu = [$dashboardItem, $taskItem, $incidentItem];
+$commonMenu = [$dashboardItem, $taskItem, $incidentItem, $orderItem];
 return [
 
    'company-leader' => $commonMenu,
@@ -14,6 +15,7 @@ return [
       $dashboardItem,
       $taskItem,
       $incidentItem,
+      $orderItem,
       [
          'label' => 'ინსტრუქტაჟები',
          'route' => 'management.worker.instructions.page',
@@ -209,6 +211,15 @@ return [
                'label' => 'ინციდენტები',
                'routes' => [
                   ['name' => 'incidents.index', 'label' => 'ინციდენტების ნახვა', 'icon' => 'bi-list-ul'],
+               ],
+            ],
+            [
+               'id' => 'orders',
+               'icon' => 'bi-file-earmark-check',
+               'label' => 'ბრძანებები',
+               'routes' => [
+                  ['name' => 'orders.index', 'label' => 'ბრძანებების ნახვა', 'icon' => 'bi-list-ul'],
+                  ['name' => 'orders.create', 'label' => 'ბრძანების შექმნა', 'icon' => 'bi-plus-circle'],
                ],
             ],
          ],
