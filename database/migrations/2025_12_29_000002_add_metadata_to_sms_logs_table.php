@@ -19,6 +19,7 @@ return new class extends Migration {
                 'debt_overdue_service_suspended',
                 'incident_created',
                 'incident_shared',
+                'order_created',
             ])->nullable()->after('content');
 
             $table->unsignedBigInteger('entity_id')->nullable()->after('event_type');
