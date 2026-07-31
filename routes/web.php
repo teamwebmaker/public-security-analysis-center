@@ -35,6 +35,7 @@ use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkerTaskController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PublicShareController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -115,6 +116,20 @@ Route::prefix('management')
             ->name('incidents.document.download');
         Route::post('/incidents/{incident}/sign', [IncidentController::class, 'sign'])
             ->name('incidents.sign');
+
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->whereNumber('order')
+            ->name('orders.show');
+        Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::get('/orders/{order}/document', [OrderController::class, 'document'])
+            ->name('orders.document');
+        Route::get('/orders/{order}/document/download', [OrderController::class, 'downloadDocument'])
+            ->name('orders.document.download');
+        Route::post('/orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
     });
 
 // Allow authorized users worker
@@ -187,6 +202,19 @@ Route::prefix('admin')->group(function () {
             ->name('tasks.occurrences');
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('orders/{order}', [OrderController::class, 'show'])
+            ->whereNumber('order')
+            ->name('orders.show');
+        Route::get('orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::get('orders/{order}/document', [OrderController::class, 'document'])
+            ->name('orders.document');
+        Route::get('orders/{order}/document/download', [OrderController::class, 'downloadDocument'])
+            ->name('orders.document.download');
+        Route::post('orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
         Route::get('incidents', [IncidentController::class, 'index'])->name('incidents.index');
         Route::get('incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
         Route::get('incidents/{incident}/edit', [IncidentController::class, 'edit'])->name('incidents.edit');

@@ -12,6 +12,7 @@ use App\QueryBuilders\Sorts\LatestOccurrenceEndDateSort;
 use App\QueryBuilders\Sorts\LatestOccurrenceStartDateSort;
 use App\Services\Tasks\TaskFilterOptionsService;
 use App\Models\Incident;
+use App\Models\Order;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -61,6 +62,12 @@ class ResponsiblePersonController extends Controller
             ->latest()
             ->limit(5)
             ->get();
+        $dashboardOrders = Order::query()
+            ->visibleTo($user)
+            ->with(['branch.company', 'userParticipants'])
+            ->latest()
+            ->limit(5)
+            ->get();
         $sidebarItems = config('sidebar.responsible-person');
 
         return view("management.{$this->resourceName}.dashboard", [
@@ -73,6 +80,7 @@ class ResponsiblePersonController extends Controller
             'paymentHeaders' => $paymentHeaders,
             'paymentRows' => $paymentRows,
             'dashboardIncidents' => $dashboardIncidents,
+            'dashboardOrders' => $dashboardOrders,
         ]);
     }
 
