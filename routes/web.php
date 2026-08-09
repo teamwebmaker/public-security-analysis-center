@@ -36,6 +36,7 @@ use App\Http\Controllers\WorkerTaskController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PublicShareController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -130,6 +131,8 @@ Route::prefix('management')
         Route::get('/orders/{order}/document/download', [OrderController::class, 'downloadDocument'])
             ->name('orders.document.download');
         Route::post('/orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
+
+        Route::resource('employees', EmployeeController::class);
     });
 
 // Allow authorized users worker
@@ -232,6 +235,7 @@ Route::prefix('admin')->group(function () {
             ->name('task-occurrences.mark-paid');
         Route::resource('admin_numbers', AdminNumberController::class)->except('show');
         Route::resource('guides', GuideController::class)->except('show');
+        Route::resource('employees', EmployeeController::class);
 
 
         // CRUD: Projects, Partners, Publications
