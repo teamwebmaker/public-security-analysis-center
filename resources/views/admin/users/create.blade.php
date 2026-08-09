@@ -59,9 +59,16 @@
 		</div>
 
 		<!-- Worker Section -->
-		<div class="col-md-5 mb-3 role-dependent" data-role="worker" style="display: none;">
-			<x-form.checkbox-dropdown label="სამუშაოები" :items="$tasks" name="task_ids" labelField="name"
-				:selected="old('task_ids')" />
+		<div class="row">
+			<div class="col-md-6 mb-3 role-dependent" data-role="worker" style="display: none;">
+				<x-form.checkbox-dropdown label="სამუშაოების შექმნის კომპანიები" :items="$companies"
+					name="worker_company_ids" labelField="name" :selected="old('worker_company_ids')" />
+				<div class="form-text">თანამშრომელი სამუშაოს შექმნას მხოლოდ ამ კომპანიების ფილიალებში შეძლებს.</div>
+			</div>
+			<div class="col-md-6 mb-3 role-dependent" data-role="worker" style="display: none;">
+				<x-form.checkbox-dropdown label="სამუშაოები" :items="$tasks" name="task_ids" labelField="name"
+					:selected="old('task_ids')" />
+			</div>
 		</div>
 	</x-admin.crud.form-container>
 @endsection

@@ -19,7 +19,7 @@ class UserConnectionPolicy
         return match ($user->getRoleName()) {
             'company_leader' => in_array($relation, ['companies']),
             'responsible_person' => in_array($relation, ['branches', 'services']),
-            'worker' => in_array($relation, ['tasks']),
+            'worker' => in_array($relation, ['workerCompanies', 'tasks']),
             default => false,
         };
     }

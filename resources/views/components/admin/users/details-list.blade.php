@@ -1,4 +1,4 @@
-@props(['user', 'companies', 'branches', 'services', 'tasks'])
+@props(['user', 'companies', 'branches', 'services', 'tasks', 'workerCompanies'])
 <ul class="list-group list-group-flush mb-3">
     <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         <span>როლი:</span>
@@ -32,6 +32,16 @@
                 name="services_dropdown"
                 :items="$services" 
                 :getItemText="fn($service) => $service->title->ka ?? $service->title->en" 
+            />
+            @break
+
+        @case('worker')
+            <x-ui.info-dropdown-item
+                label="სამუშაოების შექმნის კომპანიები"
+                icon="bi bi-building-check"
+                name="worker_companies_dropdown"
+                :items="$workerCompanies"
+                :getItemText="fn($company) => $company->name"
             />
             @break
     @endSwitch
