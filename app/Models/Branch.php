@@ -54,4 +54,9 @@ class Branch extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_branch')->withTimestamps();
+    }
 }
