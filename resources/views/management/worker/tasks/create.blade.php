@@ -3,6 +3,13 @@
 @section('title', 'სამუშაოს შექმნა')
 
 @section('main')
+    @if (empty($branches))
+        <div class="alert alert-warning">
+            <i class="bi bi-building-exclamation me-1"></i>
+            სამუშაოს შესაქმნელად ადმინისტრატორმა ჯერ უნდა დაგაკავშიროთ შესაბამის კომპანიასთან.
+        </div>
+    @endif
+
     <x-admin.crud.form-container method="POST" title="სამუშაოს შექმნა"
         action="{{ route('management.worker.tasks.store') }}"
         backRoute="management.dashboard.tasks" :hasSpeedDial="false"

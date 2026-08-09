@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\Service;
 use App\Models\Task;
 use App\Services\Tasks\TaskCreator;
+use App\Services\Tasks\WorkerTaskBranchAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -15,7 +16,8 @@ use Throwable;
 class WorkerTaskController extends Controller
 {
     public function __construct(
-        private TaskCreator $taskCreator
+        private TaskCreator $taskCreator,
+        private WorkerTaskBranchAccess $branchAccess
     ) {
     }
 
@@ -32,7 +34,7 @@ class WorkerTaskController extends Controller
 
         return view('management.worker.tasks.create', [
             'services' => $services,
-            'branches' => Branch::query()->pluck('name', 'id')->toArray(),
+            'branches' => $this->branchAccess->optionsFor(auth()->user()),
             'sidebarItems' => config('sidebar.worker'),
         ]);
     }
