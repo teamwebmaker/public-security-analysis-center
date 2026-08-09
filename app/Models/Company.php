@@ -28,6 +28,11 @@ class Company extends Model
         return $this->belongsToMany(User::class, 'company_leaders')->withTimestamps();
     }
 
+    public function workers()
+    {
+        return $this->belongsToMany(User::class, 'worker_companies')->withTimestamps();
+    }
+
     public function economic_activity_type()
     {
         return $this->belongsTo(EconomicActivityType::class);
