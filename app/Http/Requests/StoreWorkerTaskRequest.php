@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Task;
+use App\Services\Tasks\WorkerTaskBranchAccess;
 use Illuminate\Validation\Rule;
 
 class StoreWorkerTaskRequest extends StoreTaskRequest
@@ -14,6 +15,10 @@ class StoreWorkerTaskRequest extends StoreTaskRequest
 
     public function rules(): array
     {
+        $allowedBranchIds = $this->user()
+            ? app(WorkerTaskBranchAccess::class)->branchIdsFor($this->user())->all()
+            : [];
+
         return array_merge(parent::rules(), [
             'service_id' => [
                 'nullable',
@@ -22,7 +27,7 @@ class StoreWorkerTaskRequest extends StoreTaskRequest
             ],
             'branch_id' => [
                 'required',
-                Rule::exists('branches', 'id')->where('visibility', '1'),
+                Rule::in($allowedBranchIds),
             ],
             'branch_name_snapshot' => ['prohibited'],
             'visibility' => ['prohibited'],

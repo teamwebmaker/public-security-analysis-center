@@ -103,6 +103,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Company::class, 'company_leaders')->withTimestamps();
     }
+
+    public function workerCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'worker_companies')->withTimestamps();
+    }
     public function branches()
     {
         return $this->belongsToMany(Branch::class, 'responsible_person_branch')->withTimestamps();

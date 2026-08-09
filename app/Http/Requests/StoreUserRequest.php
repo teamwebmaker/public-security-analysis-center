@@ -31,6 +31,8 @@ class StoreUserRequest extends FormRequest
             'role_id' => 'required|exists:roles,id',
             'company_ids' => 'nullable|array',
             'company_ids.*' => 'exists:companies,id',
+            'worker_company_ids' => 'nullable|array',
+            'worker_company_ids.*' => 'distinct|exists:companies,id',
             'branch_ids' => 'nullable|array',
             'branch_ids.*' => 'exists:branches,id',
             'service_ids' => 'nullable|array',

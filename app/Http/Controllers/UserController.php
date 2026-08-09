@@ -28,6 +28,7 @@ class UserController extends CrudController
     protected array $modelRelations = [
         'role',
         'companies',
+        'workerCompanies',
         'branches',
         'tasks',
         'tasks.service',
@@ -114,6 +115,7 @@ class UserController extends CrudController
 			'worker' => function ($user) use ($taskLoader) {
 				$user->load([
 					'role',
+					'workerCompanies',
 					'tasks' => $taskLoader,
 				]);
 			},
@@ -249,6 +251,7 @@ class UserController extends CrudController
 		// Map of relation => input key
 		$relationMap = [
 			'companies' => 'company_ids',
+			'workerCompanies' => 'worker_company_ids',
 			'branches' => 'branch_ids',
 			'services' => 'service_ids',
 			'tasks' => 'task_ids',

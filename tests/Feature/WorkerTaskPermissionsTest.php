@@ -311,6 +311,8 @@ class WorkerTaskPermissionsTest extends TestCase
             'is_active' => true,
         ]);
 
+        $worker->workerCompanies()->attach($company);
+
         $task = Task::create([
             'branch_id' => $branch->id,
             'branch_name_snapshot' => $branch->name,
