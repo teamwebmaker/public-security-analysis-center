@@ -96,7 +96,9 @@ return [
             'select_option' => 'Select an option',
             'empty' => 'empty',
             'help_text' => 'You can select one or more',
-            'selected_count' => 'You have selected :count'
+            'selected_count' => 'You have selected :count',
+            'select_all' => 'Select all',
+            'clear_all' => 'Clear all',
         ],
     ],
     'login' => [
