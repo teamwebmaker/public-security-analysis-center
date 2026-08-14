@@ -23,6 +23,28 @@
     @endif
 
     <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
-        <x-ui.document-link :file="$instruction->document" :path="'documents/' . $resourceName" label="დოკუმენტი" />
+        @include('instructions.partials.document-actions', [
+            'previewRoute' => 'instructions.document',
+            'downloadRoute' => 'instructions.document.download',
+        ])
     </li>
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+        <span>გაზიარება:</span>
+        <span class="badge {{ $instruction->isPublic() ? 'text-bg-info' : 'text-bg-secondary' }}">
+            {{ $instruction->isPublic() ? 'საჯარო' : 'პირადი' }}
+        </span>
+    </li>
+    @if ($instruction->isPublic() && $instruction->publicShare?->isUsable())
+        <li class="list-group-item">
+            <div class="small text-muted mb-1">საჯარო ბმული</div>
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control"
+                    value="{{ route('public-shares.show', $instruction->publicShare->token) }}" readonly>
+                <button type="button" class="btn btn-outline-primary"
+                    onclick="navigator.clipboard.writeText(@js(route('public-shares.show', $instruction->publicShare->token)))">
+                    კოპირება
+                </button>
+            </div>
+        </li>
+    @endif
 </ul>

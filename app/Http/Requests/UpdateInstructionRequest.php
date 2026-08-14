@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Instruction;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateInstructionRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateInstructionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->isAdmin() ?? false;
     }
 
     /**
@@ -26,8 +28,12 @@ class UpdateInstructionRequest extends FormRequest
             'link' => 'nullable|url|min:10',
             'document' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:5120',
             'worker_ids' => 'nullable|array',
-            'worker_ids.*' => 'exists:users,id',
+            'worker_ids.*' => 'distinct|exists:users,id',
             'visibility' => 'required|in:1,0',
+            'document_visibility' => ['required', Rule::in([
+                Instruction::VISIBILITY_PRIVATE,
+                Instruction::VISIBILITY_PUBLIC,
+            ])],
         ];
     }
 }

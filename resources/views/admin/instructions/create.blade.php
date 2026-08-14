@@ -35,8 +35,16 @@
 		</div>
 
 		<!-- Visibility -->
-		<div class="col-md-5 mb-3">
-			<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']" selected="1" label="ხილვადობა" />
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
+					:selected="old('visibility', '1')" label="ხილვადობა" />
+			</div>
+			<div class="col-md-6 mb-3">
+				<x-form.select name="document_visibility" :options="['private' => 'პირადი', 'public' => 'საჯარო']"
+					:selected="old('document_visibility', 'private')" label="დოკუმენტის გაზიარება" />
+				<div class="form-text">საჯარო არჩევისას შეიქმნება ყველასთვის ხელმისაწვდომი ბმული.</div>
+			</div>
 		</div>
 	</x-admin.crud.form-container>
 @endsection
