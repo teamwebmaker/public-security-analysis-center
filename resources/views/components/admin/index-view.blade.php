@@ -16,9 +16,13 @@
     @endif
 
 
+    {{ $beforeItems ?? '' }}
+
     <div class="{{ $containerClass }}">
         {{ $slot }}
     </div>
+
+    {{ $afterItems ?? '' }}
 
     <!-- Empty State Placeholder -->
     @if ($items->isEmpty())

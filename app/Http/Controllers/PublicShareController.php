@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Incident;
+use App\Models\Instruction;
 use App\Models\Order;
 use App\Models\PublicShare;
+use App\Services\Instructions\InstructionDocumentStorage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PublicShareController extends Controller
 {
+    public function __construct(private InstructionDocumentStorage $instructionDocuments) {}
+
     public function show(string $token): View
     {
         $share = $this->resolveShare($token);
@@ -29,13 +33,33 @@ class PublicShareController extends Controller
             ]);
         }
 
+        if ($share->shareable instanceof Instruction) {
+            return view('public-shares.instruction', [
+                'share' => $share,
+                'instruction' => $share->shareable,
+            ]);
+        }
+
         abort(404);
     }
 
     public function document(string $token): BinaryFileResponse
     {
         $share = $this->resolveShare($token);
-        abort_unless($share->shareable instanceof Incident || $share->shareable instanceof Order, 404);
+        abort_unless(
+            $share->shareable instanceof Incident
+                || $share->shareable instanceof Order
+                || $share->shareable instanceof Instruction,
+            404
+        );
+
+        if ($share->shareable instanceof Instruction) {
+            return response()->download(
+                $this->instructionDocuments->absolutePath($share->shareable),
+                $share->shareable->document_original_name ?: basename($share->shareable->document),
+                ['Content-Type' => $share->shareable->document_mime_type ?: 'application/octet-stream']
+            );
+        }
 
         return response()->download(
             Storage::disk('local')->path($share->shareable->document_path),
@@ -50,17 +74,31 @@ class PublicShareController extends Controller
             ->where('token', $token)
             ->where('is_active', true)
             ->whereNull('revoked_at')
-            ->with('shareable')
             ->firstOrFail();
 
+        if ($share->shareable_type === Instruction::class) {
+            $share->setRelation(
+                'shareable',
+                Instruction::withoutGlobalScopes()->findOrFail($share->shareable_id)
+            );
+        } else {
+            $share->load('shareable');
+        }
+
         abort_unless(
-            !($share->shareable instanceof Incident || $share->shareable instanceof Order)
+            ! ($share->shareable instanceof Incident
+                || $share->shareable instanceof Order
+                || $share->shareable instanceof Instruction)
                 || $share->shareable->isPublic(),
             404
         );
 
         if ($share->shareable instanceof Incident || $share->shareable instanceof Order) {
             abort_unless(Storage::disk('local')->exists($share->shareable->document_path), 404);
+        }
+
+        if ($share->shareable instanceof Instruction) {
+            $this->instructionDocuments->locate($share->shareable);
         }
 
         return $share;

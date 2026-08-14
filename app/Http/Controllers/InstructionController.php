@@ -2,121 +2,137 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Traits\SyncsRelations;
 use App\Http\Requests\StoreInstructionRequest;
 use App\Http\Requests\UpdateInstructionRequest;
 use App\Models\Instruction;
 use App\Models\User;
+use App\Services\Instructions\InstructionDocumentStorage;
+use App\Services\Instructions\InstructionFilterService;
+use App\Services\Instructions\InstructionManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class InstructionController extends CrudController
 {
-    use SyncsRelations;
     protected string $modelClass = Instruction::class;
-    protected string $contextField = "instruction";
-    protected string $contextFieldPlural = "instructions";
-    protected string $resourceName = "instructions";
-    protected array $fileFields = ['document' => "documents/instructions/"];
 
+    protected string $contextField = 'instruction';
 
-    public function additionalIndexData(): array
+    protected string $contextFieldPlural = 'instructions';
+
+    protected string $resourceName = 'instructions';
+
+    public function __construct(
+        private InstructionManager $instructionManager,
+        private InstructionDocumentStorage $documentStorage,
+        private InstructionFilterService $filters
+    ) {}
+
+    public function index(Request $request): View
     {
-        return $this->prepareInstructionAdditionalData();
+        $query = Instruction::query()->with(['users:id,full_name', 'publicShare']);
+        $this->filters->apply($query, $request, true);
 
+        return view('admin.instructions.index', [
+            'instructions' => $query
+                ->orderByDesc('updated_at')
+                ->paginate($this->perPage)
+                ->appends($request->query()),
+            'workers' => $this->workers(),
+            'resourceName' => $this->resourceName,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreInstructionRequest $request)
+    public function store(StoreInstructionRequest $request): RedirectResponse
     {
-        $validatedData = $request->validated();
-
-
-        $data = $this->prepareInstructionData($request, $validatedData);
-
-        $instruction = $this->modelClass::create($data);
-
-        $this->syncRelations($instruction, $data, [
-            "users" => "worker_ids",
-        ]);
+        $this->instructionManager->create($request->validated(), $request->user());
 
         return redirect()
-            ->route("{$this->resourceName}.index")
-            ->with("success", "ინსტრუქტაჟი შეიქმნა წარმატებით");
+            ->route('instructions.index')
+            ->with('success', 'ინსტრუქტაჟი შეიქმნა წარმატებით');
     }
-
 
     protected function additionalCreateData(): array
     {
-        return $this->prepareInstructionAdditionalData();
+        return ['workers' => $this->workers()];
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateInstructionRequest $request, Instruction $instruction)
+    public function edit($id): View
     {
-        $validatedData = $request->validated();
-        $data = $this->prepareInstructionData($request, $validatedData, $instruction);
+        $instruction = Instruction::query()
+            ->with(['users:id,full_name', 'publicShare'])
+            ->findOrFail($id);
 
-        // Sync users (remove unchecked)
-        $this->syncRelations($instruction, $data, [
-            "users" => "worker_ids",
+        return view('admin.instructions.edit', [
+            'instruction' => $instruction,
+            'workers' => $this->workers(),
+            'resourceName' => $this->resourceName,
         ]);
+    }
 
-        $instruction->update($data);
+    public function update(
+        UpdateInstructionRequest $request,
+        Instruction $instruction
+    ): RedirectResponse {
+        $this->instructionManager->update($instruction, $request->validated(), $request->user());
 
         return redirect()
             ->back()
-            ->with("success", "ინსტრუქტაჟი განახლდა წარმატებით");
+            ->with('success', 'ინსტრუქტაჟი განახლდა წარმატებით');
     }
-    protected function additionalEditData(): array
+
+    public function destroy($id): RedirectResponse
     {
-        return $this->prepareInstructionAdditionalData();
+        $instruction = Instruction::query()->findOrFail($id);
+        $this->instructionManager->delete($instruction);
+
+        return redirect()
+            ->route('instructions.index')
+            ->with('success', 'წარმატებით წაიშალა.');
     }
 
-
-    private function prepareInstructionAdditionalData()
+    public function document(Instruction $instruction): BinaryFileResponse
     {
-        return [
-            'workers' => User::select('id', 'full_name')
-                ->whereHas('role', function ($query) {
-                    $query->where('name', 'worker');
-                })
-                ->get(),
-        ];
+        $this->authorize('view', $instruction);
+
+        $response = response()->file(
+            $this->documentStorage->absolutePath($instruction),
+            [
+                'Content-Type' => $instruction->document_mime_type ?: 'application/octet-stream',
+                'Cache-Control' => 'private, no-store',
+            ]
+        );
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            $instruction->document_original_name ?: basename($instruction->document)
+        );
+
+        return $response;
     }
 
+    public function downloadDocument(Instruction $instruction): BinaryFileResponse
+    {
+        $this->authorize('view', $instruction);
 
-    /**
-     * Prepare Instruction data for storing or updating.
-     */
-    private function prepareInstructionData(
-        Request $request,
-        array $data,
-        ?Instruction $instruction = null
-    ): array {
-        // Handle document upload
-        $files = collect($this->fileFields)
-            ->mapWithKeys(function ($path, $field) use ($request, $instruction) {
-                $existing = $instruction?->$field;
-                $file = $this->handleFileUpload(
-                    $request,
-                    $field,
-                    $path,
-                    $existing
-                );
-                return $file ? [$field => $file] : [];
-            })
-            ->toArray();
-
-
-        return [
-            ...$data,
-            ...$files
-        ];
+        return response()->download(
+            $this->documentStorage->absolutePath($instruction),
+            $instruction->document_original_name ?: basename($instruction->document),
+            [
+                'Content-Type' => $instruction->document_mime_type ?: 'application/octet-stream',
+                'Cache-Control' => 'private, no-store',
+            ]
+        );
     }
 
+    private function workers()
+    {
+        return User::query()
+            ->select('id', 'full_name')
+            ->whereHas('role', fn ($query) => $query->where('name', 'worker'))
+            ->orderBy('full_name')
+            ->get();
+    }
 }

@@ -14,6 +14,15 @@
         </li>
     @endif
     <li class="list-group-item d-flex justify-content-between mt-3 bg-transparent flex-wrap align-items-center">
-        <x-ui.document-link :file="$instruction->document" :path="'documents/' . $resourceName" label="დოკუმენტი" />
+        @include('instructions.partials.document-actions', [
+            'previewRoute' => 'management.worker.instructions.document',
+            'downloadRoute' => 'management.worker.instructions.document.download',
+        ])
+    </li>
+    <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
+        <span>გაზიარება:</span>
+        <span class="badge {{ $instruction->isPublic() ? 'text-bg-info' : 'text-bg-secondary' }}">
+            {{ $instruction->isPublic() ? 'საჯარო' : 'პირადი' }}
+        </span>
     </li>
 </ul>

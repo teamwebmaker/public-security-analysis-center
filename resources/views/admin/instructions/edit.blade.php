@@ -39,9 +39,25 @@
 		</div>
 
 		<!-- Visibility -->
-		<div class="col-md-5 mb-3">
-			<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
-				selected="{{ old('visibility', $instruction->visibility) }}" label="ხილვადობა" />
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<x-form.select name="visibility" :options="['1' => 'ხილული', '0' => 'დამალული']"
+					:selected="old('visibility', $instruction->visibility)" label="ხილვადობა" />
+			</div>
+			<div class="col-md-6 mb-3">
+				<x-form.select name="document_visibility" :options="['private' => 'პირადი', 'public' => 'საჯარო']"
+					:selected="old('document_visibility', $instruction->document_visibility)" label="დოკუმენტის გაზიარება" />
+				<div class="form-text">პირადზე გადართვისას არსებული საჯარო ბმული გაუქმდება.</div>
+			</div>
 		</div>
+
+		@if ($instruction->isPublic() && $instruction->publicShare?->isUsable())
+			<div class="alert alert-info">
+				<strong>საჯარო ბმული:</strong>
+				<a href="{{ route('public-shares.show', $instruction->publicShare->token) }}" target="_blank" rel="noopener">
+					{{ route('public-shares.show', $instruction->publicShare->token) }}
+				</a>
+			</div>
+		@endif
 	</x-admin.crud.form-container>
 @endsection

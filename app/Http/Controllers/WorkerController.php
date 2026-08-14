@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Incident;
 use App\Models\Order;
 use App\Services\Tasks\TaskFilterOptionsService;
+use App\Services\Instructions\InstructionFilterService;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
@@ -26,7 +27,8 @@ class WorkerController extends Controller
     public int $perPage = 10;
 
     public function __construct(
-        private TaskFilterOptionsService $taskFilterOptions
+        private TaskFilterOptionsService $taskFilterOptions,
+        private InstructionFilterService $instructionFilters
     ) {
     }
 
@@ -300,7 +302,18 @@ class WorkerController extends Controller
 
     public function displayInstructions()
     {
-        return $this->renderPaginatedView('instructions', 'instructions.index');
+        $user = Auth::user();
+        $query = $user->instructions()->with('publicShare');
+        $this->instructionFilters->apply($query, request());
+
+        return view('management.worker.instructions.index', [
+            'sidebarItems' => config('sidebar.worker'),
+            'resourceName' => 'instructions',
+            'instructions' => $query
+                ->orderByDesc('instructions.updated_at')
+                ->paginate($this->perPage)
+                ->appends(request()->query()),
+        ]);
 
     }
 

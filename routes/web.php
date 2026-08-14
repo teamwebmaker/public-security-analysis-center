@@ -159,6 +159,10 @@ Route::prefix('management')
         Route::put('tasks/{task}/document', [TaskController::class, 'uploadDocument'])
             ->name('tasks.upload-document');
         Route::get('instructions', [WorkerController::class, 'displayInstructions'])->name('worker.instructions.page');
+        Route::get('instructions/{instruction}/document', [InstructionController::class, 'document'])
+            ->name('worker.instructions.document');
+        Route::get('instructions/{instruction}/document/download', [InstructionController::class, 'downloadDocument'])
+            ->name('worker.instructions.document.download');
         Route::get('document-templates', [WorkerController::class, 'displayDocumentTemplates'])->name('worker.document-templates.page');
         Route::get('incidents/create', [IncidentController::class, 'create'])
             ->name('incidents.create');
@@ -203,6 +207,10 @@ Route::prefix('admin')->group(function () {
         Route::resource('tasks', TaskController::class)->except('show');
         Route::get('tasks/{task}/occurrences', [TaskController::class, 'occurrences'])
             ->name('tasks.occurrences');
+        Route::get('instructions/{instruction}/document', [InstructionController::class, 'document'])
+            ->name('instructions.document');
+        Route::get('instructions/{instruction}/document/download', [InstructionController::class, 'downloadDocument'])
+            ->name('instructions.document.download');
         Route::resource('instructions', InstructionController::class)->except('show');
         Route::resource('document-templates', DocumentTemplateController::class)->except('show');
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
