@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use App\Models\Instruction;
+use App\Models\MaterialEquipment;
 use App\Models\Order;
 use App\Models\PublicShare;
 use App\Services\Instructions\InstructionDocumentStorage;
@@ -40,6 +41,13 @@ class PublicShareController extends Controller
             ]);
         }
 
+        if ($share->shareable instanceof MaterialEquipment) {
+            return view('public-shares.material-equipment', [
+                'share' => $share,
+                'materialEquipment' => $share->shareable->load('branch.company'),
+            ]);
+        }
+
         abort(404);
     }
 
@@ -49,7 +57,8 @@ class PublicShareController extends Controller
         abort_unless(
             $share->shareable instanceof Incident
                 || $share->shareable instanceof Order
-                || $share->shareable instanceof Instruction,
+                || $share->shareable instanceof Instruction
+                || $share->shareable instanceof MaterialEquipment,
             404
         );
 
@@ -88,12 +97,15 @@ class PublicShareController extends Controller
         abort_unless(
             ! ($share->shareable instanceof Incident
                 || $share->shareable instanceof Order
-                || $share->shareable instanceof Instruction)
+                || $share->shareable instanceof Instruction
+                || $share->shareable instanceof MaterialEquipment)
                 || $share->shareable->isPublic(),
             404
         );
 
-        if ($share->shareable instanceof Incident || $share->shareable instanceof Order) {
+        if ($share->shareable instanceof Incident
+            || $share->shareable instanceof Order
+            || $share->shareable instanceof MaterialEquipment) {
             abort_unless(Storage::disk('local')->exists($share->shareable->document_path), 404);
         }
 

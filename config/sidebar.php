@@ -6,8 +6,13 @@ $taskItem = ['label' => 'სამუშაოები', 'route' => 'management
 $incidentItem = ['label' => 'ინციდენტები', 'route' => 'management.incidents.index', 'icon' => 'bi bi-exclamation-triangle'];
 $orderItem = ['label' => 'ბრძანებები', 'route' => 'management.orders.index', 'icon' => 'bi bi-file-earmark-check'];
 $employeeItem = ['label' => 'თანამშრომლები', 'route' => 'management.employees.index', 'icon' => 'bi bi-people'];
+$materialEquipmentItem = [
+   'label' => 'მატერიალურ-ტექნიკური აღჭ',
+   'route' => 'management.material-equipments.index',
+   'icon' => 'bi bi-tools',
+];
 
-$commonMenu = [$dashboardItem, $taskItem, $incidentItem, $orderItem, $employeeItem];
+$commonMenu = [$dashboardItem, $taskItem, $incidentItem, $orderItem, $employeeItem, $materialEquipmentItem];
 return [
 
    'company-leader' => $commonMenu,
@@ -18,6 +23,7 @@ return [
       $incidentItem,
       $orderItem,
       $employeeItem,
+      $materialEquipmentItem,
       [
          'label' => 'ინსტრუქტაჟები',
          'route' => 'management.worker.instructions.page',
@@ -231,6 +237,15 @@ return [
                'routes' => [
                   ['name' => 'employees.index', 'label' => 'თანამშრომლების ნახვა', 'icon' => 'bi-list-ul'],
                   ['name' => 'employees.create', 'label' => 'თანამშრომლის შექმნა', 'icon' => 'bi-plus-circle'],
+               ],
+            ],
+            [
+               'id' => 'material_equipments',
+               'icon' => 'bi-tools',
+               'label' => 'მატერიალურ-ტექნიკური აღჭ',
+               'routes' => [
+                  ['name' => 'material-equipments.index', 'label' => 'ჩანაწერების ნახვა', 'icon' => 'bi-list-ul'],
+                  ['name' => 'material-equipments.create', 'label' => 'ჩანაწერის შექმნა', 'icon' => 'bi-plus-circle'],
                ],
             ],
          ],

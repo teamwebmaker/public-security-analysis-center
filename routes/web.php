@@ -37,6 +37,7 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\PublicShareController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\MaterialEquipmentController;
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -133,6 +134,12 @@ Route::prefix('management')
         Route::post('/orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
 
         Route::resource('employees', EmployeeController::class);
+        Route::get('material-equipments/{materialEquipment}/document', [MaterialEquipmentController::class, 'document'])
+            ->name('material-equipments.document');
+        Route::get('material-equipments/{materialEquipment}/document/download', [MaterialEquipmentController::class, 'downloadDocument'])
+            ->name('material-equipments.document.download');
+        Route::resource('material-equipments', MaterialEquipmentController::class)
+            ->parameters(['material-equipments' => 'materialEquipment']);
     });
 
 // Allow authorized users worker
@@ -245,6 +252,12 @@ Route::prefix('admin')->group(function () {
         Route::resource('guides', GuideController::class)->except('show');
         Route::resource('employees', EmployeeController::class);
 
+        Route::get('material-equipments/{materialEquipment}/document', [MaterialEquipmentController::class, 'document'])
+            ->name('material-equipments.document');
+        Route::get('material-equipments/{materialEquipment}/document/download', [MaterialEquipmentController::class, 'downloadDocument'])
+            ->name('material-equipments.document.download');
+        Route::resource('material-equipments', MaterialEquipmentController::class)
+            ->parameters(['material-equipments' => 'materialEquipment']);
 
         // CRUD: Projects, Partners, Publications
         Route::resource('projects', ProjectController::class)->except('show');

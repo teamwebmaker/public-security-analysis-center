@@ -59,4 +59,9 @@ class Branch extends Model
     {
         return $this->belongsToMany(Employee::class, 'employee_branch')->withTimestamps();
     }
+
+    public function materialEquipments()
+    {
+        return $this->hasMany(MaterialEquipment::class);
+    }
 }
