@@ -160,6 +160,16 @@ class User extends Authenticatable
         return $this->hasMany(Employee::class, 'created_by_user_id');
     }
 
+    public function createdMaterialEquipments()
+    {
+        return $this->hasMany(MaterialEquipment::class, 'created_by_user_id');
+    }
+
+    public function materialEquipmentSignatures()
+    {
+        return $this->hasMany(MaterialEquipmentSignature::class);
+    }
+
     public function instructions()
     {
         return $this->belongsToMany(Instruction::class, 'instructions_workers')->withTimestamps();

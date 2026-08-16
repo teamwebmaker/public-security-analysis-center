@@ -11,6 +11,7 @@ use App\Models\Incident;
 use App\Models\Order;
 use App\Models\Employee;
 use App\Models\Instruction;
+use App\Models\MaterialEquipment;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Order::class => \App\Policies\OrderPolicy::class,
         Employee::class => \App\Policies\EmployeePolicy::class,
         Instruction::class => \App\Policies\InstructionPolicy::class,
+        MaterialEquipment::class => \App\Policies\MaterialEquipmentPolicy::class,
     ];
 
     /**
