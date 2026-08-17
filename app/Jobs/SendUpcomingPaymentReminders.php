@@ -149,10 +149,11 @@ class SendUpcomingPaymentReminders implements ShouldQueue
    {
       $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
       $dueDate = $reminderDate ? date('d.m.Y', strtotime($reminderDate)) : '—';
+      $caseLabel = count($occurrenceIds) === 1 ? 'საქმე' : 'საქმეები';
 
       return "⚠️ გადახდის შეხსენება\n"
          . "ბოლო თარიღი: {$dueDate}\n"
-         . "სამუშაოები: {$list}";
+         . "{$caseLabel}: {$list}";
    }
 
    private function buildSkippedSummaryMessage(string $header, array $skippedSummary): string

@@ -107,15 +107,24 @@ class ResponsiblePersonTaskSmsNotifier
      */
     private function buildMessage(string $eventType, array $occurrenceIds, array $metaByOccurrenceId): string
     {
-        $list = $this->buildOccurrenceList($occurrenceIds, $metaByOccurrenceId, $eventType === 'task_assigned');
+        $occurrenceIds = array_values(array_unique(array_filter(array_map('intval', $occurrenceIds))));
+        $isSingle = count($occurrenceIds) === 1;
+        $caseLabel = $isSingle ? 'საქმე' : 'საქმეები';
+        $list = $this->buildOccurrenceList($occurrenceIds, $metaByOccurrenceId, false);
 
         if ($eventType === 'task_finished') {
-            return "✅ სამუშაო დასრულებულია\n"
-                . "სამუშაოები: {$list}";
+            $heading = $isSingle ? '✅ საქმე დასრულებულია' : '✅ საქმეები დასრულებულია';
+
+            return "{$heading}\n"
+                . "{$caseLabel}: {$list}";
         }
 
-        return "📌 თქვენს ფილიალს განესაზღვრა ახალი სამუშაო\n"
-            . "სამუშაოები: {$list}";
+        $heading = $isSingle
+            ? '📌 თქვენს ფილიალში იწყება ახალი საქმის წარმოება.'
+            : '📌 თქვენს ფილიალში იწყება ახალი საქმეების წარმოება.';
+
+        return "{$heading}\n"
+            . "{$caseLabel}: {$list}";
     }
 
     /**
