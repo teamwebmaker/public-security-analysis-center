@@ -175,7 +175,7 @@ class MarkOverdueOccurrencePayments implements ShouldQueue
 
       return "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
          . "{$caseLabel}: {$list}\n"
-         . "გადახდის შემდეგ აღდგება.";
+         . "გადახდის შემდეგ განახლდება.";
    }
 
    private function buildSkippedSummaryMessage(string $header, array $skippedSummary): string

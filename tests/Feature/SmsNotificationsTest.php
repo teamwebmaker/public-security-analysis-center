@@ -107,7 +107,7 @@ class SmsNotificationsTest extends TestCase
         );
         $this->assertSame(
             "📌 თქვენს ფილიალში იწყება ახალი საქმის წარმოება.\n"
-                ."საქმე: #{$occurrence->id} ({$branch->name} / {$service->title->ka})",
+                ."საქმე: #{$occurrence->id}",
             SmsLog::query()
                 ->where('event_type', 'task_assigned')
                 ->where('recipient_type', 'responsible_person')
@@ -273,7 +273,7 @@ class SmsNotificationsTest extends TestCase
         $this->assertSame(
             "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
                 ."საქმე: #{$occurrence->id}\n"
-                .'გადახდის შემდეგ აღდგება.',
+                .'გადახდის შემდეგ განახლდება.',
             SmsLog::query()
                 ->where('event_type', 'debt_overdue_service_suspended')
                 ->where('recipient_type', 'responsible_person')
@@ -331,8 +331,8 @@ class SmsNotificationsTest extends TestCase
                 ->where('recipient_type', 'worker')
                 ->value('content')
         );
-        $this->assertStringStartsWith(
-            "📌 თქვენს ფილიალში იწყება ახალი საქმეების წარმოება.\nსაქმეები:",
+        $this->assertSame(
+            "📌 თქვენს ფილიალში იწყება ახალი საქმეების წარმოება.\nსაქმეები: {$caseList}",
             SmsLog::query()
                 ->where('event_type', 'task_assigned')
                 ->where('recipient_type', 'responsible_person')
@@ -367,7 +367,7 @@ class SmsNotificationsTest extends TestCase
         $this->assertSame(
             "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
                 ."საქმეები: {$caseList}\n"
-                .'გადახდის შემდეგ აღდგება.',
+                .'გადახდის შემდეგ განახლდება.',
             SmsLog::query()
                 ->where('event_type', 'debt_overdue_service_suspended')
                 ->where('recipient_type', 'responsible_person')
