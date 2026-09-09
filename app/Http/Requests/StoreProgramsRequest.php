@@ -2,10 +2,19 @@
 
 namespace App\Http\Requests;
 
+use DateTimeImmutable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProgramsRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'start_date' => $this->normalizeDate($this->input('start_date')),
+            'end_date' => $this->normalizeDate($this->input('end_date')),
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -32,8 +41,8 @@ class StoreProgramsRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'duration' => 'required|string|max:100',
             'address' => 'required|string|max:225',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date_format:Y-m-d|after_or_equal:today',
+            'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
             'hour_start' => 'required|date_format:H:i',
             'hour_end' => 'required|date_format:H:i|after:hour_start',
             'days' => 'required|array|min:1',
@@ -42,5 +51,38 @@ class StoreProgramsRequest extends FormRequest
             'mentor_ids.*' => 'exists:mentors,id',
             'visibility' => 'required|in:1,0',
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'start_date.date_format' => 'საწყისი თარიღი უნდა იყოს ფორმატში dd/mm/yyyy.',
+            'end_date.date_format' => 'დასასრული თარიღი უნდა იყოს ფორმატში dd/mm/yyyy.',
+        ];
+    }
+
+    private function normalizeDate(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        $value = trim($value);
+        if (! preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
+            return $value;
+        }
+
+        $date = DateTimeImmutable::createFromFormat('!d/m/Y', $value);
+        $errors = DateTimeImmutable::getLastErrors();
+
+        if (
+            $date === false
+            || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))
+            || $date->format('d/m/Y') !== $value
+        ) {
+            return $value;
+        }
+
+        return $date->format('Y-m-d');
     }
 }

@@ -7,7 +7,9 @@ use App\Http\Requests\StoreDocumentTemplateRequest;
 use App\Http\Requests\UpdateDocumentTemplateRequest;
 use App\Models\DocumentTemplate;
 use App\Models\User;
+use App\Services\DocumentTemplates\DocumentTemplateFilterService;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DocumentTemplateController extends CrudController
 {
@@ -18,6 +20,26 @@ class DocumentTemplateController extends CrudController
     protected string $resourceName = "document-templates";
     protected array $fileFields = ['document' => "documents/document-templates/"];
 
+    public function __construct(private DocumentTemplateFilterService $filters)
+    {
+    }
+
+    public function index(Request $request): View
+    {
+        $query = DocumentTemplate::query()->with('users:id,full_name');
+        $this->filters->apply($query, $request, true);
+
+        return view('admin.document-templates.index', [
+            'document_templates' => $query
+                ->orderByDesc('updated_at')
+                ->paginate($this->perPage)
+                ->appends($request->query()),
+            'documentTemplateFilterOptions' => [
+                'workers' => $this->filters->workerOptions(),
+            ],
+            'resourceName' => $this->resourceName,
+        ]);
+    }
 
     public function additionalIndexData(): array
     {

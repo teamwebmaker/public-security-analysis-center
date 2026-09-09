@@ -2,6 +2,19 @@
 @section('title', 'პროგრამის დამატება')
 
 @section('main')
+	@php
+		$programDateValue = static function ($value): string {
+			if (!is_string($value) || $value === '') {
+				return '';
+			}
+
+			if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+				return date('d/m/Y', strtotime($value));
+			}
+
+			return $value;
+		};
+	@endphp
 
 	<x-admin.crud.form-container method="POST" title="პროგრამის დამატება" action="{{ route($resourceName . '.store') }}"
 		:hasFileUpload="true" :backRoute="$resourceName . '.index'" cardWrapperClass="col col-lg-12">
@@ -100,12 +113,16 @@
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md-6 mb-3">
-						<x-form.input type="date" name="start_date" label="საწყისი თარიღი" value="{{ old('start_date') }}"
-							min="{{ date('Y-m-d') }}" />
+						<x-form.input type="text" name="start_date" label="საწყისი თარიღი"
+							value="{{ $programDateValue(old('start_date')) }}" placeholder="dd/mm/yyyy"
+							inputmode="numeric" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" :minlength="10" :maxlength="10"
+							infoMessage="ფორმატი: დღე/თვე/წელი" autocomplete="off" />
 					</div>
 					<div class="col-md-6 mb-3">
-						<x-form.input type="date" name="end_date" label="დასასრული თარიღი" value="{{ old('end_date') }}"
-							min="{{ date('Y-m-d') }}" />
+						<x-form.input type="text" name="end_date" label="დასასრული თარიღი"
+							value="{{ $programDateValue(old('end_date')) }}" placeholder="dd/mm/yyyy"
+							inputmode="numeric" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" :minlength="10" :maxlength="10"
+							infoMessage="ფორმატი: დღე/თვე/წელი" autocomplete="off" />
 					</div>
 				</div>
 				<div class="row" x-data="{
