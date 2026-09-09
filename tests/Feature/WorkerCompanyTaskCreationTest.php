@@ -70,7 +70,7 @@ class WorkerCompanyTaskCreationTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('users.edit', $this->worker))
             ->assertOk()
-            ->assertSee('სამუშაოების შექმნის კომპანიები')
+            ->assertSee('სამუშაოს შემქმნელი კომპანია')
             ->assertSee($this->allowedCompany->name);
     }
 
@@ -81,7 +81,7 @@ class WorkerCompanyTaskCreationTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('users.index'))
             ->assertOk()
-            ->assertSee('სამუშაოების შექმნის კომპანიები')
+            ->assertSee('სამუშაოს შემქმნელი კომპანია')
             ->assertSee($this->allowedCompany->name);
     }
 

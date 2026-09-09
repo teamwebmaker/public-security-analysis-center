@@ -37,7 +37,7 @@
 
         @case('worker')
             <x-ui.info-dropdown-item
-                label="სამუშაოების შექმნის კომპანიები"
+                label="სამუშაოს შემქმნელი კომპანია"
                 icon="bi bi-building-check"
                 name="worker_companies_dropdown"
                 :items="$workerCompanies"

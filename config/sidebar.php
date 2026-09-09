@@ -67,7 +67,7 @@ return [
                'label' => 'დარეგისტრირება',
                'routes' => [
 
-                  ['name' => 'users.index', 'label' => 'მომხმარებლებთა სია', 'icon' => 'bi-list-ul'],
+                  ['name' => 'users.index', 'label' => 'მომხმარებელთა სია', 'icon' => 'bi-list-ul'],
                   ['name' => 'users.create', 'label' => 'მომხმარებლის შექმნა', 'icon' => 'bi-plus-circle'],
 
                ],
