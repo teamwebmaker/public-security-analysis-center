@@ -126,7 +126,7 @@ return [
     ],
     'user_avatar_dropdown' => [
         'home' => 'სახლი',
-        'dashboard' => 'ჩემი პანელი',
+        'dashboard' => 'ჩემი გვერდი',
     ],
 
     'view_document' => [
