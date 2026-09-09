@@ -9,6 +9,7 @@ use App\Models\Incident;
 use App\Models\IncidentExternalParticipant;
 use App\Services\Incidents\IncidentManager;
 use App\Services\Incidents\IncidentParticipantOptions;
+use App\Services\Resources\BranchResourceFilterService;
 use App\Services\Sms\IncidentSmsNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,8 @@ class IncidentController extends Controller
     public function __construct(
         private IncidentManager $incidentManager,
         private IncidentParticipantOptions $participantOptions,
-        private IncidentSmsNotifier $smsNotifier
+        private IncidentSmsNotifier $smsNotifier,
+        private BranchResourceFilterService $filters
     ) {
     }
 
@@ -33,8 +35,19 @@ class IncidentController extends Controller
         $this->authorize('viewAny', Incident::class);
         $user = $request->user();
 
-        $incidents = Incident::query()
-            ->visibleTo($user)
+        $query = Incident::query()->visibleTo($user);
+        $filterOptions = $this->filters->options(clone $query);
+        $this->filters->apply(
+            $query,
+            $request,
+            [
+                'userParticipants.user' => 'full_name',
+                'externalParticipants' => 'full_name',
+            ],
+            ['userParticipants', 'externalParticipants']
+        );
+
+        $incidents = $query
             ->with([
                 'branch.company',
                 'creator:id,full_name',
@@ -48,6 +61,7 @@ class IncidentController extends Controller
 
         return view($user->isAdmin() ? 'admin.incidents.index' : 'management.incidents.index', [
             'incidents' => $incidents,
+            'filterOptions' => $filterOptions,
             'sidebarItems' => $user->isAdmin() ? null : $this->managementSidebar($user->getRoleName()),
         ]);
     }

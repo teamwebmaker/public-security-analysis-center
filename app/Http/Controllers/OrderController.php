@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Services\Incidents\IncidentParticipantOptions;
 use App\Services\Orders\OrderBranchAccess;
 use App\Services\Orders\OrderManager;
+use App\Services\Resources\BranchResourceFilterService;
 use App\Services\Sms\OrderSmsNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,8 @@ class OrderController extends Controller
         private OrderManager $orderManager,
         private OrderBranchAccess $branchAccess,
         private IncidentParticipantOptions $participantOptions,
-        private OrderSmsNotifier $smsNotifier
+        private OrderSmsNotifier $smsNotifier,
+        private BranchResourceFilterService $filters
     ) {
     }
 
@@ -33,8 +35,16 @@ class OrderController extends Controller
         $this->authorize('viewAny', Order::class);
         $user = $request->user();
 
-        $orders = Order::query()
-            ->visibleTo($user)
+        $query = Order::query()->visibleTo($user);
+        $filterOptions = $this->filters->options(clone $query);
+        $this->filters->apply(
+            $query,
+            $request,
+            ['userParticipants.user' => 'full_name'],
+            ['userParticipants']
+        );
+
+        $orders = $query
             ->with([
                 'branch.company',
                 'creator:id,full_name',
@@ -47,6 +57,7 @@ class OrderController extends Controller
 
         return view($user->isAdmin() ? 'admin.orders.index' : 'management.orders.index', [
             'orders' => $orders,
+            'filterOptions' => $filterOptions,
             'sidebarItems' => $user->isAdmin() ? null : $this->managementSidebar($user->getRoleName()),
         ]);
     }

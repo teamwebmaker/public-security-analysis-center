@@ -4,6 +4,7 @@
     $previewRoute = $isAdmin ? 'orders.document' : 'management.orders.document';
     $downloadRoute = $isAdmin ? 'orders.document.download' : 'management.orders.document.download';
     $createRoute = $isAdmin ? 'orders.create' : 'management.orders.create';
+    $indexRoute = $isAdmin ? 'orders.index' : 'management.orders.index';
 @endphp
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
@@ -17,6 +18,30 @@
         ბრძანების შექმნა
     </a>
 </div>
+
+<x-shared.resource-list-filters
+    :action="route($indexRoute)"
+    searchPlaceholder="დასახელება, დოკუმენტი, კომპანია, ფილიალი ან მონაწილე"
+    :filters="[
+        'company_id' => [
+            'label' => 'კომპანია',
+            'placeholder' => 'ყველა კომპანია',
+            'options' => $filterOptions['companies'],
+        ],
+        'branch_id' => [
+            'label' => 'ფილიალი',
+            'placeholder' => 'ყველა ფილიალი',
+            'options' => $filterOptions['branches'],
+        ],
+        'document_visibility' => [
+            'label' => 'გაზიარება',
+            'options' => ['public' => 'საჯარო', 'private' => 'პირადი'],
+        ],
+        'signature_status' => [
+            'label' => 'ხელმოწერები',
+            'options' => ['complete' => 'ყველა ხელმოწერილია', 'pending' => 'ხელმოწერა დარჩენილია'],
+        ],
+    ]" />
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">

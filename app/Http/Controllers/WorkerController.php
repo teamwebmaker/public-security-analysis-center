@@ -13,6 +13,7 @@ use App\Models\TaskWorkerInvitation;
 use App\Models\User;
 use App\Models\Incident;
 use App\Models\Order;
+use App\Services\DocumentTemplates\DocumentTemplateFilterService;
 use App\Services\Tasks\TaskFilterOptionsService;
 use App\Services\Instructions\InstructionFilterService;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,8 @@ class WorkerController extends Controller
 
     public function __construct(
         private TaskFilterOptionsService $taskFilterOptions,
-        private InstructionFilterService $instructionFilters
+        private InstructionFilterService $instructionFilters,
+        private DocumentTemplateFilterService $documentTemplateFilters
     ) {
     }
 
@@ -319,7 +321,18 @@ class WorkerController extends Controller
 
     public function displayDocumentTemplates()
     {
-        return $this->renderPaginatedView('document_templates', 'document-templates.index');
+        $user = Auth::user();
+        $query = $user->document_templates()->with('users:id,full_name');
+        $this->documentTemplateFilters->apply($query, request());
+
+        return view('management.worker.document-templates.index', [
+            'sidebarItems' => config('sidebar.worker'),
+            'resourceName' => 'document-templates',
+            'document_templates' => $query
+                ->orderByDesc('document_templates.updated_at')
+                ->paginate($this->perPage)
+                ->appends(request()->query()),
+        ]);
     }
 
     protected function renderPaginatedView(string $relation, string $viewPath)
