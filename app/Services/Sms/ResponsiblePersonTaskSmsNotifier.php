@@ -107,22 +107,41 @@ class ResponsiblePersonTaskSmsNotifier
      */
     private function buildMessage(string $eventType, array $occurrenceIds, array $metaByOccurrenceId): string
     {
-        $list = $this->buildOccurrenceList($occurrenceIds, $metaByOccurrenceId, $eventType === 'task_assigned');
+        $occurrenceIds = array_values(array_unique(array_filter(array_map('intval', $occurrenceIds))));
+        $isSingle = count($occurrenceIds) === 1;
+        $caseLabel = $isSingle ? 'საქმე' : 'საქმეები';
+        $list = $this->buildOccurrenceList(
+            $occurrenceIds,
+            $metaByOccurrenceId,
+            false,
+            $eventType === 'task_finished'
+        );
 
         if ($eventType === 'task_finished') {
-            return "✅ სამუშაო დასრულებულია\n"
-                . "სამუშაოები: {$list}";
+            $heading = $isSingle ? '✅ საქმე დასრულებულია' : '✅ საქმეები დასრულებულია';
+
+            return "{$heading}\n"
+                . "{$caseLabel}: {$list}";
         }
 
-        return "📌 თქვენს ფილიალს განესაზღვრა ახალი სამუშაო\n"
-            . "სამუშაოები: {$list}";
+        $heading = $isSingle
+            ? '📌 თქვენს ფილიალში იწყება ახალი საქმის წარმოება.'
+            : '📌 თქვენს ფილიალში იწყება ახალი საქმეების წარმოება.';
+
+        return "{$heading}\n"
+            . "{$caseLabel}: {$list}";
     }
 
     /**
      * @param array<int, array{branch_name: string, service_name: string, due_date: string}> $metaByOccurrenceId
      * @param array<int, int|string> $occurrenceIds
      */
-    private function buildOccurrenceList(array $occurrenceIds, array $metaByOccurrenceId, bool $includeDueDate): string
+    private function buildOccurrenceList(
+        array $occurrenceIds,
+        array $metaByOccurrenceId,
+        bool $includeDueDate,
+        bool $includeDetails = true
+    ): string
     {
         $occurrenceIds = array_values(array_unique(array_filter(array_map('intval', $occurrenceIds))));
         if (empty($occurrenceIds)) {
@@ -133,7 +152,11 @@ class ResponsiblePersonTaskSmsNotifier
         $visibleIds = array_slice($occurrenceIds, 0, $visibleLimit);
         $hiddenCount = count($occurrenceIds) - count($visibleIds);
 
-        $items = array_map(function (int $occurrenceId) use ($metaByOccurrenceId, $includeDueDate): string {
+        $items = array_map(function (int $occurrenceId) use ($metaByOccurrenceId, $includeDueDate, $includeDetails): string {
+            if (! $includeDetails) {
+                return "#{$occurrenceId}";
+            }
+
             $meta = $metaByOccurrenceId[$occurrenceId] ?? [
                 'branch_name' => '—',
                 'service_name' => '—',

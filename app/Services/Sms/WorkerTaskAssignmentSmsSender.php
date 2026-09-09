@@ -283,8 +283,8 @@ class WorkerTaskAssignmentSmsSender
    {
       $dueDate = $occurrence->due_date?->format('d.m.Y') ?? '—';
 
-      return "ახალი სამუშაო დაგენიშნათ.\n"
-         . "#{$occurrence->id}\n"
+      return "გადმოგეცათ ახალი საქმე.\n"
+         . "საქმე: #{$occurrence->id}\n"
          . "ბოლო ვადა: {$dueDate}\n";
    }
 
@@ -342,8 +342,13 @@ class WorkerTaskAssignmentSmsSender
          $list .= " +{$hiddenCount}";
       }
 
-      return "ახალი სამუშაოები დაგენიშნათ:\n"
-         . "{$list}\n";
+      $caseLabel = $selected->count() === 1 ? 'საქმე' : 'საქმეები';
+      $heading = $selected->count() === 1
+         ? 'გადმოგეცათ ახალი საქმე.'
+         : 'გადმოგეცათ ახალი საქმეები.';
+
+      return "{$heading}\n"
+         . "{$caseLabel}: {$list}\n";
    }
 
    private function createMissingPhoneSystemMessageForAggregated(array $workers): void

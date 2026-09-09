@@ -171,10 +171,11 @@ class MarkOverdueOccurrencePayments implements ShouldQueue
    private function buildOverdueMessage(array $occurrenceIds): string
    {
       $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
+      $caseLabel = count($occurrenceIds) === 1 ? 'საქმე' : 'საქმეები';
 
-      return "⛔ სამუშაოები შეჩერებულია გადაუხდელობის გამო.\n"
-         . "სამუშაოები: {$list}\n"
-         . "დაფარვის შემდეგ აღდგება.";
+      return "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
+         . "{$caseLabel}: {$list}\n"
+         . "გადახდის შემდეგ განახლდება.";
    }
 
    private function buildSkippedSummaryMessage(string $header, array $skippedSummary): string

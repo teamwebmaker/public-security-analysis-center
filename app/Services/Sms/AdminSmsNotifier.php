@@ -179,9 +179,9 @@ class AdminSmsNotifier
         $branch = trim((string) ($occurrence->branch_name_snapshot ?? '—'));
         $service = trim((string) ($occurrence->service_name_snapshot ?? '—'));
 
-        return "👷 სპეციალისტმა დაიწყო სამუშაო\n"
+        return "👷 სპეციალისტმა დაიწყო საქმე.\n"
             . "სპეციალისტი: {$workerName}\n"
-            . "სამუშაო: #{$occurrence->id}\n"
+            . "საქმე: #{$occurrence->id}\n"
             . "ფილიალი: {$branch}\n"
             . "სერვისი: {$service}\n"
             . "დრო: {$startedAt}";
@@ -194,9 +194,9 @@ class AdminSmsNotifier
         $branch = trim((string) ($occurrence->branch_name_snapshot ?? '—'));
         $service = trim((string) ($occurrence->service_name_snapshot ?? '—'));
 
-        return "✅ სპეციალისტმა დაასრულა სამუშაო\n"
+        return "✅ სპეციალისტმა დაასრულა საქმე.\n"
             . "სპეციალისტი: {$workerName}\n"
-            . "სამუშაო: #{$occurrence->id}\n"
+            . "საქმე: #{$occurrence->id}\n"
             . "ფილიალი: {$branch}\n"
             . "სერვისი: {$service}\n"
             . "დრო: {$finishedAt}";
@@ -210,9 +210,10 @@ class AdminSmsNotifier
         $name = trim((string) ($responsiblePerson->full_name ?? 'უცნობი'));
         $phone = trim((string) ($responsiblePerson->phone ?? '—'));
         $list = implode(', ', array_map(fn($id) => "#{$id}", $occurrenceIds));
+        $caseLabel = count($occurrenceIds) === 1 ? 'საქმე' : 'საქმეები';
 
         return "⚠️ ვადაგადაცილებულად მოინიშნა\n"
-            . "სამუშაოები: {$list}\n"
+            . "{$caseLabel}: {$list}\n"
             . "პასუხისმგებელი პირი: {$name}\n"
             . "ნომერი: {$phone}\n";
 

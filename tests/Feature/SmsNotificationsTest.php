@@ -14,6 +14,8 @@ use App\Models\Task;
 use App\Models\TaskOccurrence;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\User;
+use App\Services\Sms\ResponsiblePersonTaskSmsNotifier;
+use App\Services\Sms\WorkerTaskAssignmentSmsSender;
 use App\Services\Tasks\TaskCreator;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\TaskOccurrenceStatusSeeder;
@@ -95,6 +97,22 @@ class SmsNotificationsTest extends TestCase
             'recipient_type' => 'responsible_person',
         ]);
         $this->assertSame(2, SmsLog::query()->where('event_type', 'task_assigned')->count());
+        $this->assertSame(
+            "გადმოგეცათ ახალი საქმე.\nსაქმე: #{$occurrence->id}\nბოლო ვადა: "
+                .$occurrence->due_date->format('d.m.Y')."\n",
+            SmsLog::query()
+                ->where('event_type', 'task_assigned')
+                ->where('recipient_type', 'worker')
+                ->value('content')
+        );
+        $this->assertSame(
+            "📌 თქვენს ფილიალში იწყება ახალი საქმის წარმოება.\n"
+                ."საქმე: #{$occurrence->id}",
+            SmsLog::query()
+                ->where('event_type', 'task_assigned')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
         Http::assertSentCount(2);
     }
 
@@ -120,6 +138,18 @@ class SmsNotificationsTest extends TestCase
                 ->orderBy('destination')
                 ->pluck('destination')
                 ->all()
+        );
+        $this->assertSame(
+            "👷 სპეციალისტმა დაიწყო საქმე.\n"
+                ."სპეციალისტი: {$worker->full_name}\n"
+                ."საქმე: #{$occurrence->id}\n"
+                ."ფილიალი: {$occurrence->branch_name_snapshot}\n"
+                ."სერვისი: {$occurrence->service_name_snapshot}\n"
+                ."დრო: {$occurrence->start_date->format('d.m.Y H:i')}",
+            SmsLog::query()
+                ->where('event_type', 'task_started')
+                ->where('recipient_type', 'admin')
+                ->value('content')
         );
         Http::assertSentCount(2);
     }
@@ -159,6 +189,26 @@ class SmsNotificationsTest extends TestCase
                 ->pluck('destination')
                 ->all()
         );
+        $this->assertSame(
+            "✅ საქმე დასრულებულია\n"
+                ."საქმე: #{$occurrence->id} ({$occurrence->branch_name_snapshot} / {$occurrence->service_name_snapshot})",
+            SmsLog::query()
+                ->where('event_type', 'task_finished')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
+        $this->assertSame(
+            "✅ სპეციალისტმა დაასრულა საქმე.\n"
+                ."სპეციალისტი: {$worker->full_name}\n"
+                ."საქმე: #{$occurrence->id}\n"
+                ."ფილიალი: {$occurrence->branch_name_snapshot}\n"
+                ."სერვისი: {$occurrence->service_name_snapshot}\n"
+                ."დრო: {$occurrence->end_date->format('d.m.Y H:i')}",
+            SmsLog::query()
+                ->where('event_type', 'task_finished')
+                ->where('recipient_type', 'admin')
+                ->value('content')
+        );
         Http::assertSentCount(3);
     }
 
@@ -170,7 +220,7 @@ class SmsNotificationsTest extends TestCase
             'status' => 'pending',
         ]);
 
-        app()->call([new SendUpcomingPaymentReminders(), 'handle']);
+        app()->call([new SendUpcomingPaymentReminders, 'handle']);
 
         $this->assertDatabaseHas('sms_logs', [
             'destination' => $responsiblePerson->phone,
@@ -178,6 +228,15 @@ class SmsNotificationsTest extends TestCase
             'entity_id' => $occurrence->id,
             'recipient_type' => 'responsible_person',
         ]);
+        $this->assertSame(
+            "⚠️ გადახდის შეხსენება\n"
+                ."ბოლო თარიღი: {$occurrence->due_date->format('d.m.Y')}\n"
+                ."საქმე: #{$occurrence->id}",
+            SmsLog::query()
+                ->where('event_type', 'debt_due_2_days')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
         Http::assertSentCount(1);
     }
 
@@ -190,7 +249,7 @@ class SmsNotificationsTest extends TestCase
         ]);
         $adminPhones = $this->createAdminNumbers();
 
-        app()->call([new MarkOverdueOccurrencePayments(), 'handle']);
+        app()->call([new MarkOverdueOccurrencePayments, 'handle']);
 
         $occurrence->refresh();
 
@@ -211,7 +270,116 @@ class SmsNotificationsTest extends TestCase
                 ->pluck('destination')
                 ->all()
         );
+        $this->assertSame(
+            "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
+                ."საქმე: #{$occurrence->id}\n"
+                .'გადახდის შემდეგ განახლდება.',
+            SmsLog::query()
+                ->where('event_type', 'debt_overdue_service_suspended')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
+        $this->assertSame(
+            "⚠️ ვადაგადაცილებულად მოინიშნა\n"
+                ."საქმე: #{$occurrence->id}\n"
+                ."პასუხისმგებელი პირი: {$responsiblePerson->full_name}\n"
+                ."ნომერი: {$responsiblePerson->phone}\n",
+            SmsLog::query()
+                ->where('event_type', 'debt_overdue_service_suspended')
+                ->where('recipient_type', 'admin')
+                ->value('content')
+        );
         Http::assertSentCount(3);
+    }
+
+    public function test_grouped_sms_messages_use_plural_case_wording(): void
+    {
+        [
+            'task' => $task,
+            'worker' => $worker,
+            'responsiblePerson' => $responsiblePerson,
+            'occurrence' => $firstOccurrence,
+        ] = $this->createTaskWithOccurrence([
+            'status' => 'pending',
+        ]);
+        $secondTask = $task->replicate();
+        $secondTask->save();
+        $secondTask->users()->attach($worker);
+
+        $secondOccurrence = $firstOccurrence->replicate();
+        $secondOccurrence->task_id = $secondTask->id;
+        $secondOccurrence->save();
+        $secondOccurrence->workers()->create([
+            'worker_id_snapshot' => $worker->id,
+            'worker_name_snapshot' => $worker->full_name,
+        ]);
+
+        app(WorkerTaskAssignmentSmsSender::class)->sendAggregatedForOccurrences([
+            $firstOccurrence,
+            $secondOccurrence,
+        ]);
+        app(ResponsiblePersonTaskSmsNotifier::class)->notifyTaskAssignedForOccurrenceIds([
+            $firstOccurrence->id,
+            $secondOccurrence->id,
+        ]);
+
+        $caseList = "#{$firstOccurrence->id}, #{$secondOccurrence->id}";
+        $this->assertStringStartsWith(
+            "გადმოგეცათ ახალი საქმეები.\nსაქმეები:",
+            SmsLog::query()
+                ->where('event_type', 'task_assigned')
+                ->where('recipient_type', 'worker')
+                ->value('content')
+        );
+        $this->assertSame(
+            "📌 თქვენს ფილიალში იწყება ახალი საქმეების წარმოება.\nსაქმეები: {$caseList}",
+            SmsLog::query()
+                ->where('event_type', 'task_assigned')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
+
+        $reminderDate = Carbon::now('Asia/Tbilisi')->addDays(2)->toDateString();
+        TaskOccurrence::query()
+            ->whereIn('id', [$firstOccurrence->id, $secondOccurrence->id])
+            ->update(['due_date' => $reminderDate, 'payment_status' => 'unpaid']);
+        app()->call([new SendUpcomingPaymentReminders, 'handle']);
+
+        $this->assertSame(
+            "⚠️ გადახდის შეხსენება\n"
+                .'ბოლო თარიღი: '.Carbon::parse($reminderDate)->format('d.m.Y')."\n"
+                ."საქმეები: {$caseList}",
+            SmsLog::query()
+                ->where('event_type', 'debt_due_2_days')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
+
+        $this->createAdminNumbers();
+        TaskOccurrence::query()
+            ->whereIn('id', [$firstOccurrence->id, $secondOccurrence->id])
+            ->update([
+                'due_date' => Carbon::now('Asia/Tbilisi')->subDay()->toDateString(),
+                'payment_status' => 'unpaid',
+            ]);
+        app()->call([new MarkOverdueOccurrencePayments, 'handle']);
+
+        $this->assertSame(
+            "⛔ მომსახურება შეჩერებულია გადაუხდელობის გამო.\n"
+                ."საქმეები: {$caseList}\n"
+                .'გადახდის შემდეგ განახლდება.',
+            SmsLog::query()
+                ->where('event_type', 'debt_overdue_service_suspended')
+                ->where('recipient_type', 'responsible_person')
+                ->value('content')
+        );
+        $this->assertStringContainsString(
+            "საქმეები: {$caseList}",
+            SmsLog::query()
+                ->where('event_type', 'debt_overdue_service_suspended')
+                ->where('recipient_type', 'admin')
+                ->value('content')
+        );
     }
 
     /**
