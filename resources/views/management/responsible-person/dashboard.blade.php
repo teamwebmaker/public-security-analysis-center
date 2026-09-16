@@ -34,11 +34,18 @@
 			<p class="fw-bold fs-5">გადასახდელი სამუშაოები</p>
 			<div class="my-3 shadow-sm rounded-3 overflow-hidden">
 				<x-shared.table :items="$paymentOccurrences" :headers="$paymentHeaders" :rows="$paymentRows"
-					:tooltipColumns="['branch', 'service']" :actions="false" />
+					:tooltipColumns="['branch', 'service']" :actions="false"
+					:modalTriggers="$paymentProofModalTriggers" />
 			</div>
 			<div class="mt-2">
 				{!! $paymentOccurrences->withQueryString()->links('pagination::bootstrap-5') !!}
 			</div>
+
+			@foreach ($paymentOccurrences as $paymentOccurrence)
+				@include('management.responsible-person.partials.payment-proof-modal', [
+					'occurrence' => $paymentOccurrence,
+				])
+			@endforeach
 		</div>
 	@endif
 

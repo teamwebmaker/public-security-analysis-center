@@ -166,7 +166,7 @@ class TaskController extends CrudController
    public function occurrences(Task $task)
    {
       $occurrences = $task->taskOccurrences()
-         ->with(['status', 'workers'])
+         ->with(['status', 'workers', 'paymentProofUploader:id,full_name'])
          ->orderByDesc('created_at')
          ->paginate($this->occurrencesPerPage, ['*'], 'occurrences_task_page')
          ->appends(request()->query());

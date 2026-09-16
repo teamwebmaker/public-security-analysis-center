@@ -52,6 +52,8 @@ class MessageStoreService
             if (!empty($services)) {
                 $formattedParts[] = "🛠 სერვისები: " . implode(', ', $services);
             }
+        } elseif ($validated['type'] === 'payment') {
+            $formattedParts[] = "💰 გადახდის შეტყობინება: {$finalMessage}";
         } else {
             $formattedParts[] = "🤖 სისტემური შეტყობინება: {$finalMessage}";
         }
@@ -61,9 +63,11 @@ class MessageStoreService
 
         // Keep message non-empty for DB-level NOT NULL constraints.
         if ($finalMessage === '') {
-            $finalMessage = $validated['source'] === 'system'
-                ? '🤖 სისტემური შეტყობინება: —'
-                : '📩 მესიჯი: —';
+            $finalMessage = match (true) {
+                $validated['source'] === 'user' => '📩 მესიჯი: —',
+                $validated['type'] === 'payment' => '💰 გადახდის შეტყობინება: —',
+                default => '🤖 სისტემური შეტყობინება: —',
+            };
         }
 
         // Save only actual DB attributes.
@@ -74,11 +78,15 @@ class MessageStoreService
             'phone' => $validated['phone'],
             'message' => $finalMessage,
             'source' => $validated['source'],
+            'type' => $validated['type'],
         ];
 
         // Compatibility with environments where messages.source migration is missing.
         if (!$this->messagesTableHasColumn('source')) {
             unset($payload['source']);
+        }
+        if (!$this->messagesTableHasColumn('type')) {
+            unset($payload['type']);
         }
 
         if ($validated['source'] === 'system') {
@@ -114,6 +122,13 @@ class MessageStoreService
         $validated['source'] = in_array($validated['source'], ['user', 'system'], true)
             ? $validated['source']
             : 'user';
+        $validated['type'] = in_array($validated['type'] ?? null, ['general', 'payment'], true)
+            ? $validated['type']
+            : 'general';
+
+        if ($validated['source'] !== 'system') {
+            $validated['type'] = 'general';
+        }
 
         if ($validated['source'] === 'system') {
             $validated['full_name'] = trim((string) ($validated['full_name'] ?? 'system'));

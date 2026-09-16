@@ -203,6 +203,7 @@ class TableRowDataPresenter
             'workers' => self::formatOccurrenceWorkers($occurrence),
             'status' => '<span class="badge bg-' . e($statusColor) . '">' . e($occurrence->status?->display_name ?? 'უცნობი') . '</span>',
             'payment_status' => self::paymentStatusBadge($occurrence->payment_status),
+            'payment_proof' => self::adminPaymentProofLinks($occurrence),
             'due_date' => optional($occurrence->due_date)->format('Y-m-d') ?? '---',
             'start_date' => optional($occurrence->start_date)->format('Y-m-d H:i') ?? '---',
             'end_date' => optional($occurrence->end_date)->format('Y-m-d H:i') ?? '---',
@@ -482,6 +483,28 @@ class TableRowDataPresenter
 
       $entry = $map[$status] ?? ['label' => $status, 'class' => 'secondary'];
       return '<span class="badge bg-' . e($entry['class']) . '">' . e($entry['label']) . '</span>';
+   }
+
+   private static function adminPaymentProofLinks(TaskOccurrence $occurrence): string
+   {
+      if (!$occurrence->payment_proof_path) {
+         return '---';
+      }
+
+      $uploader = $occurrence->paymentProofUploader?->full_name ?? 'უცნობი';
+      $uploadedAt = $occurrence->payment_proof_uploaded_at
+         ? $occurrence->payment_proof_uploaded_at->copy()->setTimezone('Asia/Tbilisi')->format('d.m.Y H:i')
+         : '—';
+
+      return '<div class="d-flex flex-column gap-1">'
+         .'<div class="d-flex gap-2">'
+         .'<a href="'.e(route('task-occurrences.payment-proof.show', $occurrence)).'" target="_blank" '
+         .'class="text-primary text-decoration-underline"><i class="bi bi-eye me-1"></i>ნახვა</a>'
+         .'<a href="'.e(route('task-occurrences.payment-proof.download', $occurrence)).'" '
+         .'class="text-secondary text-decoration-underline"><i class="bi bi-download me-1"></i>ჩამოტვირთვა</a>'
+         .'</div>'
+         .'<small class="text-muted">'.e($uploader).' — '.e($uploadedAt).'</small>'
+         .'</div>';
    }
 
    /**

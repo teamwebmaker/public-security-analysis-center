@@ -22,6 +22,8 @@ class TaskOccurrenceController extends Controller
     */
    public function markPaid(TaskOccurrence $taskOccurrence)
    {
+      $this->authorize('markPaid', $taskOccurrence);
+
       if ($taskOccurrence->payment_status === 'paid') {
          return back()->with('info', 'გადახდის სტატუსი უკვე შეყვანილია როგორც გადახდილი.');
       }

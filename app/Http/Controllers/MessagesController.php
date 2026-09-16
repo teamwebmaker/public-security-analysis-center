@@ -32,13 +32,19 @@ class MessagesController extends Controller
 
         $hasSourceColumn = Schema::hasColumn('messages', 'source');
         $sourceFilter = request('filter.source');
-        $allowedSources = ['system', 'user'];
+        $allowedSources = ['system', 'payment', 'user'];
         $sourceFilter = in_array($sourceFilter, $allowedSources, true) ? $sourceFilter : null;
 
         $messagesQuery = Message::query()->orderBy('created_at', 'DESC');
 
         if ($hasSourceColumn && $sourceFilter) {
-            $messagesQuery->where('source', $sourceFilter);
+            if ($sourceFilter === 'payment' && Schema::hasColumn('messages', 'type')) {
+                $messagesQuery->where('source', 'system')->where('type', 'payment');
+            } elseif ($sourceFilter === 'system' && Schema::hasColumn('messages', 'type')) {
+                $messagesQuery->where('source', 'system')->where('type', '!=', 'payment');
+            } else {
+                $messagesQuery->where('source', $sourceFilter);
+            }
         }
 
         return view('admin.messages.index', [
@@ -50,6 +56,7 @@ class MessagesController extends Controller
                     'label' => 'წყარო',
                     'options' => [
                         'system' => 'სისტემური (system)',
+                        'payment' => 'გადახდა (payment)',
                         'user' => 'მომხმარებელი (user)',
                     ],
                 ],

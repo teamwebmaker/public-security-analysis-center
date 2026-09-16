@@ -5,6 +5,7 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Task;
+use App\Models\TaskOccurrence;
 use App\Models\TaskWorkerInvitation;
 use App\Models\User;
 use App\Models\Incident;
@@ -24,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => \App\Policies\UserConnectionPolicy::class,
         Task::class => \App\Policies\TaskPolicy::class,
+        TaskOccurrence::class => \App\Policies\TaskOccurrencePolicy::class,
         TaskWorkerInvitation::class => \App\Policies\TaskWorkerInvitationPolicy::class,
         Incident::class => \App\Policies\IncidentPolicy::class,
         Order::class => \App\Policies\OrderPolicy::class,

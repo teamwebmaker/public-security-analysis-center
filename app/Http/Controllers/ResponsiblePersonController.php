@@ -44,6 +44,7 @@ class ResponsiblePersonController extends Controller
             ->map(fn($branch) => TableRowDataPresenter::branchRow($branch));
 
         $paymentOccurrences = TaskOccurrence::query()
+            ->with('paymentProofUploader:id,full_name')
             ->whereIn('branch_id_snapshot', $branchIds)
             ->where(function ($query) use ($allowedServiceIds) {
                 $query->whereNull('service_id_snapshot')
@@ -56,6 +57,12 @@ class ResponsiblePersonController extends Controller
 
         $paymentHeaders = TableHeaderDataPresenter::responsiblePersonPaymentHeaders();
         $paymentRows = $paymentOccurrences->map(fn($occurrence) => TableRowDataPresenter::responsiblePersonPaymentRow($occurrence));
+        $paymentProofModalTriggers = fn($occurrence) => [[
+            'modal_id' => 'payment-proof-' . $occurrence->id,
+            'label' => $occurrence->payment_proof_path ? 'დასტურის შეცვლა' : 'დასტურის ატვირთვა',
+            'icon' => $occurrence->payment_proof_path ? 'bi-receipt-cutoff' : 'bi-cloud-upload',
+            'class' => $occurrence->payment_proof_path ? 'btn-outline-warning' : 'btn-outline-primary',
+        ]];
         $dashboardIncidents = Incident::query()
             ->visibleTo($user)
             ->with(['branch.company', 'userParticipants'])
@@ -79,6 +86,7 @@ class ResponsiblePersonController extends Controller
             'paymentOccurrences' => $paymentOccurrences,
             'paymentHeaders' => $paymentHeaders,
             'paymentRows' => $paymentRows,
+            'paymentProofModalTriggers' => $paymentProofModalTriggers,
             'dashboardIncidents' => $dashboardIncidents,
             'dashboardOrders' => $dashboardOrders,
         ]);

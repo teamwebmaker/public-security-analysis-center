@@ -26,12 +26,18 @@ class TaskOccurrence extends Model
         "requires_document",
         "document_path",
         "payment_status",
+        "payment_proof_path",
+        "payment_proof_original_name",
+        "payment_proof_mime_type",
+        "payment_proof_uploaded_by_user_id",
+        "payment_proof_uploaded_at",
         "visibility",
     ];
     protected $casts = [
         "due_date" => "date",
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'payment_proof_uploaded_at' => 'datetime',
         'requires_document' => 'bool',
         'visibility' => 'string',
     ];
@@ -49,6 +55,11 @@ class TaskOccurrence extends Model
     public function workers()
     {
         return $this->hasMany(TaskOccurrenceWorker::class);
+    }
+
+    public function paymentProofUploader()
+    {
+        return $this->belongsTo(User::class, 'payment_proof_uploaded_by_user_id');
     }
 
     /**
