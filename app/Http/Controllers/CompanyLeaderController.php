@@ -314,7 +314,7 @@ class CompanyLeaderController extends Controller
     protected function taskSortableMap(): array
     {
         return [
-            'განმეორების თარიღი' => 'latest_due_date',
+            'გადახდის ბოლო ვადა' => 'latest_due_date',
             'დაწყება' => 'latest_start_date',
             'დასრულება' => 'latest_end_date',
         ];

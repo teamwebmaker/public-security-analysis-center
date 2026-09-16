@@ -245,7 +245,7 @@ class ResponsiblePersonController extends Controller
     protected function tasksSortableMap(): array
     {
         return [
-            'განმეორების თარიღი' => 'latest_due_date',
+            'გადახდის ბოლო ვადა' => 'latest_due_date',
             'სამუშაო დაიწყო' => 'latest_start_date',
             'სამუშაო დასრულდა' => 'latest_end_date',
         ];
