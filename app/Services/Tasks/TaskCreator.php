@@ -23,7 +23,9 @@ class TaskCreator
    public function createWithInitialOccurrence(array $data): Task
    {
       return DB::transaction(function () use ($data) {
-         $task = Task::create($data);
+         $taskData = $data;
+         unset($taskData['due_date']);
+         $task = Task::create($taskData);
 
          $this->syncRelations($task, $data, ['users' => 'user_ids',]);
          $this->createInitialOccurrence($task, $data);
@@ -50,7 +52,7 @@ class TaskCreator
 
       $dueDate = $isRecurring && $interval > 0
          ? now($businessTimezone)->addDays($interval)
-         : null;
+         : ($data['due_date'] ?? null);
 
       $this->occurrenceWorkflow->createAndNotify($task, [
          'due_date' => $dueDate,

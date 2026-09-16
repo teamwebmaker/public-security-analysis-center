@@ -17,6 +17,9 @@ class TaskUpdater
    {
       return DB::transaction(function () use ($task, $data, $requiresDocumentInput) {
          $latestOccurrence = $task->latestOccurrenceWithoutVisibility()->first();
+         $hasManualDueDate = array_key_exists('due_date', $data);
+         $manualDueDate = $data['due_date'] ?? null;
+         unset($data['due_date']);
 
          // Explicit value wins; otherwise inherit from latest occurrence (if any)
          $requiresDocument = $requiresDocumentInput;
@@ -55,10 +58,12 @@ class TaskUpdater
                'service_name_snapshot' => $task->service_name_snapshot,
             ];
 
-            if ($recalculateDueDate) {
+            if (!$task->is_recurring && $hasManualDueDate) {
+               $latestUpdates['due_date'] = $manualDueDate;
+            } elseif ($task->is_recurring && $recalculateDueDate) {
                $interval = (int) ($task->recurrence_interval ?? 0);
-               $latestUpdates['due_date'] = $task->is_recurring && $interval > 0
-                  ? now()->addDays($interval)
+               $latestUpdates['due_date'] = $interval > 0
+                  ? now(config('app.business_timezone', config('app.timezone', 'UTC')))->addDays($interval)
                   : null;
             }
 

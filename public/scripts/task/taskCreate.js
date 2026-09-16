@@ -38,12 +38,25 @@ function initRecurrence() {
 
    const isRecurringSelect = getOne('input[name="is_recurring"], [data-recurrence-select], select[name="is_recurring"]', group);
    const intervalRow = getOne('[data-recurrence-interval]', group);
-   // console.log( isRecurringSelect, intervalRow)
-   if (!isRecurringSelect || !intervalRow) return;
+   const manualDueDateRow = getOne('[data-non-recurring-due-date]', group);
+   if (!isRecurringSelect || !intervalRow || !manualDueDateRow) return;
+
+   const intervalInput = getOne('input[name="recurrence_interval"]', intervalRow);
+   const manualDueDateInput = getOne('input[name="due_date"]', manualDueDateRow);
 
    const toggleInterval = () => {
-      const show = isRecurringSelect.value === '1';
-      intervalRow.style.display = show ? '' : 'none';
+      const isRecurring = isRecurringSelect.value === '1';
+      intervalRow.style.display = isRecurring ? '' : 'none';
+      manualDueDateRow.style.display = isRecurring ? 'none' : '';
+
+      if (intervalInput) {
+         intervalInput.disabled = !isRecurring;
+         intervalInput.required = isRecurring;
+      }
+      if (manualDueDateInput) {
+         manualDueDateInput.disabled = isRecurring;
+         manualDueDateInput.required = !isRecurring;
+      }
    };
 
    toggleInterval();

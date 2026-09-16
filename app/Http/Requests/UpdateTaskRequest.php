@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class UpdateTaskRequest extends FormRequest
@@ -31,6 +32,12 @@ class UpdateTaskRequest extends FormRequest
 
             'is_recurring' => ['required', 'boolean'],
             'recurrence_interval' => ['nullable', 'integer', 'min:1', 'required_if:is_recurring,true'],
+            'due_date' => [
+                'nullable',
+                'date',
+                Rule::requiredIf(fn() => ! $this->boolean('is_recurring')),
+                Rule::prohibitedIf(fn() => $this->boolean('is_recurring')),
+            ],
             'requires_document' => ['nullable', 'boolean'],
 
             'visibility' => ['required', 'boolean'],
@@ -38,6 +45,15 @@ class UpdateTaskRequest extends FormRequest
 
             'user_ids' => ['nullable', 'array'],
             'user_ids.*' => ['nullable', 'integer', 'exists:users,id'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'due_date.required' => 'ერთჯერადი საქმისთვის მიუთითეთ გადახდის ბოლო ვადა.',
+            'due_date.date' => 'გადახდის ბოლო ვადა მიუთითეთ თარიღის სწორი ფორმატით.',
+            'due_date.prohibited' => 'განმეორებადი საქმის გადახდის ბოლო ვადა ავტომატურად გამოითვლება.',
         ];
     }
 
