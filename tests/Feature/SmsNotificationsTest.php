@@ -240,6 +240,37 @@ class SmsNotificationsTest extends TestCase
         Http::assertSentCount(1);
     }
 
+    public function test_one_time_task_uses_manual_due_date_and_receives_payment_reminder(): void
+    {
+        ['branch' => $branch, 'service' => $service, 'responsiblePerson' => $responsiblePerson] = $this->createTaskContext();
+        $manualDueDate = Carbon::now('Asia/Tbilisi')->addDays(2)->toDateString();
+
+        $task = app(TaskCreator::class)->createWithInitialOccurrence([
+            'branch_id' => $branch->id,
+            'branch_name_snapshot' => $branch->name,
+            'service_id' => $service->id,
+            'service_name_snapshot' => $service->title->ka,
+            'is_recurring' => false,
+            'recurrence_interval' => null,
+            'due_date' => $manualDueDate,
+            'requires_document' => false,
+            'visibility' => '1',
+        ]);
+
+        $occurrence = $task->fresh('latestOccurrence')->latestOccurrence;
+        $this->assertSame($manualDueDate, $occurrence->due_date->toDateString());
+        $this->assertSame('unpaid', $occurrence->payment_status);
+
+        app()->call([new SendUpcomingPaymentReminders, 'handle']);
+
+        $this->assertDatabaseHas('sms_logs', [
+            'destination' => $responsiblePerson->phone,
+            'event_type' => 'debt_due_2_days',
+            'entity_id' => $occurrence->id,
+            'recipient_type' => 'responsible_person',
+        ]);
+    }
+
     public function test_responsible_person_and_admin_numbers_receive_overdue_sms_and_occurrence_is_marked_overdue(): void
     {
         ['responsiblePerson' => $responsiblePerson, 'occurrence' => $occurrence] = $this->createTaskWithOccurrence([

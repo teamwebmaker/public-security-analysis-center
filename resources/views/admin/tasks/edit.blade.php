@@ -52,6 +52,10 @@
 					min="1" step="1" :required="false"
 					value="{{ old('recurrence_interval', $task->recurrence_interval) }}" />
 			</div>
+			<div class="col-md-6 mb-3" data-non-recurring-due-date>
+				<x-form.input type="date" name="due_date" label="გადახდის ბოლო ვადა" :required="false"
+					value="{{ old('due_date', $task->latestOccurrenceWithoutVisibility()->value('due_date')) }}" />
+			</div>
 		</div>
 
 		<!-- Occurrence details -->

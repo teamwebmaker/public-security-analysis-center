@@ -102,12 +102,14 @@ class WorkerTaskPermissionsTest extends TestCase
     public function test_worker_is_automatically_assigned_to_a_task_they_create(): void
     {
         ['worker' => $worker, 'branch' => $branch, 'service' => $service] = $this->createTaskContext();
+        $dueDate = now()->addDays(10)->toDateString();
 
         $response = $this->actingAs($worker)->post(route('management.worker.tasks.store'), [
             'service_mode' => 'existing',
             'service_id' => $service->id,
             'branch_id' => $branch->id,
             'is_recurring' => '0',
+            'due_date' => $dueDate,
             'requires_document' => '0',
         ]);
 
@@ -117,6 +119,8 @@ class WorkerTaskPermissionsTest extends TestCase
         $createdOccurrence = $createdTask->latestOccurrence()->firstOrFail();
 
         $this->assertSame($worker->id, $createdTask->created_by_user_id);
+        $this->assertSame($dueDate, $createdOccurrence->due_date->toDateString());
+        $this->assertSame('unpaid', $createdOccurrence->payment_status);
         $this->assertDatabaseHas('task_workers', [
             'task_id' => $createdTask->id,
             'user_id' => $worker->id,
@@ -125,6 +129,22 @@ class WorkerTaskPermissionsTest extends TestCase
             'task_occurrence_id' => $createdOccurrence->id,
             'worker_id_snapshot' => $worker->id,
         ]);
+    }
+
+    public function test_worker_must_provide_payment_due_date_for_one_time_task(): void
+    {
+        ['worker' => $worker, 'branch' => $branch, 'service' => $service] = $this->createTaskContext();
+        $taskCount = Task::query()->count();
+
+        $this->actingAs($worker)->post(route('management.worker.tasks.store'), [
+            'service_mode' => 'existing',
+            'service_id' => $service->id,
+            'branch_id' => $branch->id,
+            'is_recurring' => '0',
+            'requires_document' => '0',
+        ])->assertSessionHasErrors('due_date');
+
+        $this->assertSame($taskCount, Task::query()->count());
     }
 
     public function test_task_creator_can_invite_worker_and_acceptance_adds_worker_to_task(): void
