@@ -29,6 +29,7 @@ use App\Http\Controllers\SmsLogController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskOccurrenceController;
+use App\Http\Controllers\TaskOccurrencePaymentProofController;
 use App\Http\Controllers\TaskWorkerInvitationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
@@ -133,6 +134,19 @@ Route::prefix('management')
             ->name('orders.document.download');
         Route::post('/orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
 
+        Route::post(
+            '/task-occurrences/{taskOccurrence}/payment-proof',
+            [TaskOccurrencePaymentProofController::class, 'store']
+        )->name('task-occurrences.payment-proof.store');
+        Route::get(
+            '/task-occurrences/{taskOccurrence}/payment-proof',
+            [TaskOccurrencePaymentProofController::class, 'show']
+        )->name('task-occurrences.payment-proof.show');
+        Route::get(
+            '/task-occurrences/{taskOccurrence}/payment-proof/download',
+            [TaskOccurrencePaymentProofController::class, 'download']
+        )->name('task-occurrences.payment-proof.download');
+
         Route::resource('employees', EmployeeController::class);
         Route::get('material-equipments/{materialEquipment}/document', [MaterialEquipmentController::class, 'document'])
             ->name('material-equipments.document');
@@ -233,6 +247,14 @@ Route::prefix('admin')->group(function () {
         Route::get('orders/{order}/document/download', [OrderController::class, 'downloadDocument'])
             ->name('orders.document.download');
         Route::post('orders/{order}/sign', [OrderController::class, 'sign'])->name('orders.sign');
+        Route::get(
+            'task-occurrences/{taskOccurrence}/payment-proof',
+            [TaskOccurrencePaymentProofController::class, 'show']
+        )->name('task-occurrences.payment-proof.show');
+        Route::get(
+            'task-occurrences/{taskOccurrence}/payment-proof/download',
+            [TaskOccurrencePaymentProofController::class, 'download']
+        )->name('task-occurrences.payment-proof.download');
         Route::get('incidents', [IncidentController::class, 'index'])->name('incidents.index');
         Route::get('incidents/{incident}', [IncidentController::class, 'show'])->name('incidents.show');
         Route::get('incidents/{incident}/edit', [IncidentController::class, 'edit'])->name('incidents.edit');
