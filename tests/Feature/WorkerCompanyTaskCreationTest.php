@@ -85,6 +85,42 @@ class WorkerCompanyTaskCreationTest extends TestCase
             ->assertSee($this->allowedCompany->name);
     }
 
+    public function test_admin_can_search_and_filter_registered_users(): void
+    {
+        $this->worker->workerCompanies()->attach($this->allowedCompany);
+        $otherWorker = $this->createUser('worker', 'Other Worker', '500000024');
+        $otherWorker->workerCompanies()->attach($this->otherCompany);
+        $otherWorker->update(['is_active' => false]);
+        $responsiblePerson = $this->createUser('responsible_person', 'Responsible Person', '500000025');
+        $responsiblePerson->branches()->attach($this->allowedBranch);
+
+        $this->actingAs($this->admin)
+            ->get(route('users.index', [
+                'search' => 'Restricted',
+                'role_id' => $this->worker->role_id,
+                'company_id' => $this->allowedCompany->id,
+            ]))
+            ->assertOk()
+            ->assertSee($this->worker->full_name)
+            ->assertDontSee($otherWorker->full_name)
+            ->assertDontSee($responsiblePerson->full_name)
+            ->assertSee('name="search"', false)
+            ->assertSee('name="role_id"', false)
+            ->assertSee('name="company_id"', false)
+            ->assertDontSee('name="is_active"', false)
+            ->assertSee('value="Restricted"', false);
+
+        $this->actingAs($this->admin)
+            ->get(route('users.index', [
+                'role_id' => $responsiblePerson->role_id,
+                'company_id' => $this->allowedCompany->id,
+            ]))
+            ->assertOk()
+            ->assertSee($responsiblePerson->full_name)
+            ->assertDontSee($this->worker->full_name)
+            ->assertDontSee($otherWorker->full_name);
+    }
+
     public function test_admin_can_create_worker_with_company_connections(): void
     {
         $response = $this->actingAs($this->admin)->post(route('users.store'), [

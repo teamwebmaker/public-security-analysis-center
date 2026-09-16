@@ -13,8 +13,10 @@ use App\Models\Task;
 use App\Models\TaskOccurrenceStatus;
 use App\Models\User;
 use App\Policies\UserConnectionPolicy;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class UserController extends CrudController
 {
@@ -30,12 +32,76 @@ class UserController extends CrudController
         'companies',
         'workerCompanies',
         'branches',
+        'services',
         'tasks',
         'tasks.service',
         'tasks.latestOccurrence',
         'tasks.latestOccurrence.status',
     ];
 	protected array $localScopes = ['withoutAdmins'];
+
+	public function index(Request $request): View
+	{
+		$search = trim((string) $request->query('search'));
+		$roleId = $this->positiveInteger($request->query('role_id'));
+		$companyId = $this->positiveInteger($request->query('company_id'));
+
+		$query = User::query()
+			->withoutAdmins()
+			->with($this->modelRelations)
+			->when($search !== '', function ($query) use ($search) {
+				$like = "%{$search}%";
+
+				$query->where(function ($query) use ($like) {
+					$query->where('full_name', 'LIKE', $like)
+						->orWhere('email', 'LIKE', $like)
+						->orWhere('phone', 'LIKE', $like)
+						->orWhereHas('role', fn($role) => $role
+							->where('display_name', 'LIKE', $like))
+						->orWhereHas('companies', fn($company) => $company
+							->where('name', 'LIKE', $like))
+						->orWhereHas('workerCompanies', fn($company) => $company
+							->where('name', 'LIKE', $like))
+						->orWhereHas('branches', function ($branch) use ($like) {
+							$branch->where('name', 'LIKE', $like)
+								->orWhereHas('company', fn($company) => $company
+									->where('name', 'LIKE', $like));
+						});
+				});
+			})
+			->when($roleId !== null, fn($query) => $query->where('role_id', $roleId))
+			->when($companyId !== null, function ($query) use ($companyId) {
+				$query->where(function ($query) use ($companyId) {
+					$query->whereHas('companies', fn($company) => $company->whereKey($companyId))
+						->orWhereHas('workerCompanies', fn($company) => $company->whereKey($companyId))
+						->orWhereHas('branches', fn($branch) => $branch->where('company_id', $companyId));
+				});
+			})
+			->orderByDesc($this->getOrderBy());
+
+		return view('admin.users.index', [
+			'users' => $query
+				->paginate($this->perPage)
+				->appends($request->query()),
+			'userFilterOptions' => [
+				'roles' => Role::query()
+					->where('name', '!=', User::ADMIN_ROLE)
+					->orderBy('display_name')
+					->pluck('display_name', 'id')
+					->all(),
+				'companies' => Company::query()
+					->orderBy('name')
+					->pluck('name', 'id')
+					->all(),
+			],
+			'resourceName' => $this->resourceName,
+		]);
+	}
+
+	private function positiveInteger(mixed $value): ?int
+	{
+		return ctype_digit((string) $value) && (int) $value > 0 ? (int) $value : null;
+	}
 
 
 
