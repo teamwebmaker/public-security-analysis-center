@@ -152,6 +152,7 @@ class WorkerCompanyTaskCreationTest extends TestCase
         $this->actingAs($this->worker)
             ->get(route('management.worker.tasks.create'))
             ->assertOk()
+            ->assertSee('გადახდის ბოლო ვადა')
             ->assertSee($this->allowedBranch->name)
             ->assertDontSee($this->otherBranch->name);
     }
@@ -202,6 +203,7 @@ class WorkerCompanyTaskCreationTest extends TestCase
             'service_id' => $this->service->id,
             'branch_id' => $branch->id,
             'is_recurring' => '0',
+            'due_date' => now()->addDays(10)->toDateString(),
             'requires_document' => '0',
         ];
     }
