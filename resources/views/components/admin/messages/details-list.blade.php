@@ -8,6 +8,12 @@
     $class = $badgeClasses[$message->subject] ?? '';
 @endphp
 <ul class="list-group list-group-flush mb-3">
+    @if ($message->type === 'payment')
+        <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
+            <span>ტიპი:</span>
+            <span class="badge bg-success">💰 გადახდა</span>
+        </li>
+    @endif
     @if ($message->subject)
         <li class="list-group-item d-flex justify-content-between bg-transparent flex-wrap align-items-center">
             <span>დანიშნულება:</span>
