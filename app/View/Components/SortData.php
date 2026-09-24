@@ -18,7 +18,7 @@ class SortData extends Component
     public function __construct(
         string $name,
         array $options = [],
-        string $selected = 'newest',
+        string|array|null $selected = 'newest',
         string $class = ''
     ) {
         $this->name = $name;
@@ -26,7 +26,12 @@ class SortData extends Component
             'newest' => __('static.sort.newest'),
             'oldest' => __('static.sort.oldest'),
         ];
-        $this->selected = $selected;
+        $defaultOption = array_key_exists('newest', $this->options)
+            ? 'newest'
+            : array_key_first($this->options);
+        $this->selected = is_string($selected) && array_key_exists($selected, $this->options)
+            ? $selected
+            : $defaultOption;
         $this->class = $class;
     }
 

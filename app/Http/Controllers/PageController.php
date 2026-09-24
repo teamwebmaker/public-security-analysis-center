@@ -20,7 +20,7 @@ class PageController extends Controller
 
     public function home(Request $request)
     {
-        $sortOrder = $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
+        $sortOrder = $this->sortOrder($request);
 
         $articles = Publication::select([
             "id",
@@ -76,8 +76,7 @@ class PageController extends Controller
 
     public function projects(Request $request): view
     {
-        $sortOrder =
-            $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
+        $sortOrder = $this->sortOrder($request);
 
         return view("pages.projects", [
             "projects" => Project::where("visibility", "1")
@@ -95,8 +94,7 @@ class PageController extends Controller
 
     public function publications(Request $request)
     {
-        $sortOrder =
-            $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
+        $sortOrder = $this->sortOrder($request);
         return view("pages.publications", [
             "publications" => Publication::where("visibility", "1")
                 ->orderBy("created_at", $sortOrder)
@@ -107,8 +105,7 @@ class PageController extends Controller
 
     public function programs(Request $request)
     {
-        $sortOrder =
-            $request->query("sort", "newest") === "oldest" ? "asc" : "desc";
+        $sortOrder = $this->sortOrder($request);
         return view("pages.programs", [
             "programs" => Program::orderBy("created_at", $sortOrder)->paginate(
                 perPage: 6
@@ -133,5 +130,10 @@ class PageController extends Controller
             "categories" => $categories,
             "partners" => Partner::all(),
         ]);
+    }
+
+    private function sortOrder(Request $request): string
+    {
+        return $request->query('sort') === 'oldest' ? 'asc' : 'desc';
     }
 }
