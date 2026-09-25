@@ -18,6 +18,7 @@ return [
         'base_url' => env('SENDERGE_BASE_URL', 'https://sender.ge/api'),
         'apikey' => env('SENDERGE_APIKEY'),
         'timeout' => (int) env('SENDERGE_TIMEOUT', 15),
+        'balance_cache_minutes' => (int) env('SENDERGE_BALANCE_CACHE_MINUTES', 15),
     ],
 
     'mailgun' => [

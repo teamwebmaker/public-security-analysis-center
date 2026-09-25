@@ -16,6 +16,17 @@ trait CreatesApplication
 
         $app->make(Kernel::class)->bootstrap();
 
+        // Test commands such as `migrate:fresh` must never use the local MySQL
+        // connection, even if a developer has generated Laravel's config cache.
+        $app['config']->set([
+            'app.env' => 'testing',
+            'database.default' => 'sqlite',
+            'database.connections.sqlite.database' => ':memory:',
+            'cache.default' => 'array',
+            'queue.default' => 'sync',
+            'session.driver' => 'array',
+        ]);
+
         return $app;
     }
 }

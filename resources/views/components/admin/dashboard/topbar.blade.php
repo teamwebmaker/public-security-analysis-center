@@ -58,14 +58,20 @@
                 return;
             }
 
-            const loadBalance = async () => {
+            const loadBalance = async (forceRefresh = false) => {
                 value.textContent = 'იტვირთება…';
                 value.classList.remove('text-danger');
                 value.classList.add('text-muted');
                 refreshButton.disabled = true;
 
                 try {
-                    const response = await fetch(@json(route('sms.balance')), {
+                    const url = new URL(@json(route('sms.balance')), window.location.origin);
+
+                    if (forceRefresh) {
+                        url.searchParams.set('refresh', '1');
+                    }
+
+                    const response = await fetch(url, {
                         headers: {
                             Accept: 'application/json',
                         },
@@ -92,7 +98,7 @@
                 }
             };
 
-            refreshButton.addEventListener('click', loadBalance);
+            refreshButton.addEventListener('click', () => loadBalance(true));
             loadBalance();
         });
     </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SmsLog;
 use App\Services\Sms\SenderGeClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -144,8 +145,22 @@ class SmsController extends Controller
     }
 
 
-    public function balance(SenderGeClient $sender)
+    public function balance(Request $request, SenderGeClient $sender)
     {
+        $cacheKey = 'senderge.sms-balance.current';
+        $lastKnownBalanceKey = 'senderge.sms-balance.last-known';
+        $cacheMinutes = max(1, (int) config('services.senderge.balance_cache_minutes', 15));
+        $forceRefresh = $request->boolean('refresh');
+        $cachedBalance = Cache::get($cacheKey);
+
+        if (! $forceRefresh && $this->isValidBalanceSnapshot($cachedBalance)) {
+            return response()->json([
+                'ok' => true,
+                ...$cachedBalance,
+                'cached' => true,
+            ]);
+        }
+
         try {
             $result = $sender->getBalance();
             $balance = data_get($result, 'data.data.0.balance');
@@ -155,21 +170,46 @@ class SmsController extends Controller
                 throw new \RuntimeException('Sender.Ge returned an invalid balance response.');
             }
 
-            return response()->json([
-                'ok' => true,
+            $snapshot = [
                 'balance' => (float) $balance,
                 'overdraft' => is_numeric($overdraft) ? (float) $overdraft : null,
+                'fetched_at' => now()->toIso8601String(),
+            ];
+
+            Cache::put($cacheKey, $snapshot, now()->addMinutes($cacheMinutes));
+            Cache::forever($lastKnownBalanceKey, $snapshot);
+
+            return response()->json([
+                'ok' => true,
+                ...$snapshot,
+                'cached' => false,
             ]);
         } catch (Throwable $e) {
             Log::warning('Unable to fetch Sender.Ge SMS balance.', [
                 'error' => $e->getMessage(),
             ]);
 
+            $lastKnownBalance = Cache::get($lastKnownBalanceKey);
+
+            if ($this->isValidBalanceSnapshot($lastKnownBalance)) {
+                return response()->json([
+                    'ok' => true,
+                    ...$lastKnownBalance,
+                    'cached' => true,
+                    'stale' => true,
+                ]);
+            }
+
             return response()->json([
                 'ok' => false,
                 'message' => 'SMS ბალანსის მიღება ვერ მოხერხდა.',
             ], 503);
         }
+    }
+
+    private function isValidBalanceSnapshot(mixed $snapshot): bool
+    {
+        return is_array($snapshot) && is_numeric($snapshot['balance'] ?? null);
     }
 
     public function report(Request $request, SenderGeClient $sender)
