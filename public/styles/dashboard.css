@@ -170,3 +170,13 @@ thead .sticky-col {
       display: block !important;
    }
 }
+
+@media (max-width: 575.98px) {
+   .topbar .user-profile-btn {
+      gap: 0;
+   }
+
+   .sms-balance {
+      border-right: 0 !important;
+   }
+}

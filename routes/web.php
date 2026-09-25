@@ -215,7 +215,7 @@ Route::prefix('admin')->group(function () {
 
         // Sms related routes
         Route::post('/sms/send', [SmsController::class, 'send'])->name('sms.send');
-        Route::get('/sms/balance', [SmsController::class, 'balance']);
+        Route::get('/sms/balance', [SmsController::class, 'balance'])->name('sms.balance');
         Route::get('/sms/report', [SmsController::class, 'report']);
 
         // Management related routes register users

@@ -6,6 +6,7 @@ use App\Models\SmsLog;
 use App\Services\Sms\SenderGeClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SmsController extends Controller
 {
@@ -145,7 +146,30 @@ class SmsController extends Controller
 
     public function balance(SenderGeClient $sender)
     {
-        return response()->json($sender->getBalance());
+        try {
+            $result = $sender->getBalance();
+            $balance = data_get($result, 'data.data.0.balance');
+            $overdraft = data_get($result, 'data.data.0.overdraft');
+
+            if (! ($result['ok'] ?? false) || ! is_numeric($balance)) {
+                throw new \RuntimeException('Sender.Ge returned an invalid balance response.');
+            }
+
+            return response()->json([
+                'ok' => true,
+                'balance' => (float) $balance,
+                'overdraft' => is_numeric($overdraft) ? (float) $overdraft : null,
+            ]);
+        } catch (Throwable $e) {
+            Log::warning('Unable to fetch Sender.Ge SMS balance.', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'ok' => false,
+                'message' => 'SMS ბალანსის მიღება ვერ მოხერხდა.',
+            ], 503);
+        }
     }
 
     public function report(Request $request, SenderGeClient $sender)
