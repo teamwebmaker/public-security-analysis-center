@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Services\Messages\MessageStoreService;
+use App\Services\Sms\SmsFailureSystemNotifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class SmsLog extends Model
 {
@@ -48,39 +46,46 @@ class SmsLog extends Model
     protected static function booted(): void
     {
         static::created(function (SmsLog $smsLog): void {
-            $pending = self::statusNumber('pending') ?? 0;
             $undelivered = self::statusNumber('undelivered') ?? 2;
-            $status = (int) $smsLog->status;
-
-            if (!in_array($status, [$pending, $undelivered], true)) {
+            if ((int) $smsLog->status !== $undelivered) {
                 return;
             }
 
-            $lines = [
-                "SMS ლოგი შეიქმნა სტატუსით: " . self::statusName($status),
-                "ლოგის ID: #{$smsLog->id}",
-                "ნომერი: {$smsLog->destination}",
-                "ტიპი: " . self::smsnoTypeName((int) $smsLog->smsno),
-                "პროვაიდერი: {$smsLog->provider}",
-                "შეტყობინება: {$smsLog->content}",
-            ];
+            self::reportUndelivered($smsLog);
+        });
 
-            try {
-                app(MessageStoreService::class)->createAndDispatch([
-                    'source' => 'system',
-                    'subject' => "SMS სტატუსი: " . self::statusName($status),
-                    'message' => implode("\n", $lines),
-                ]);
-            } catch (Throwable $e) {
-                Log::error('Failed to create system message for sms_logs created event', [
-                    'sms_log_id' => $smsLog->id,
-                    'status' => $status,
-                    'error' => $e->getMessage(),
-                ]);
+        static::updated(function (SmsLog $smsLog): void {
+            $undelivered = self::statusNumber('undelivered') ?? 2;
+            if (! $smsLog->wasChanged('status') || (int) $smsLog->status !== $undelivered) {
+                return;
             }
+
+            self::reportUndelivered($smsLog);
         });
     }
 
+    private static function reportUndelivered(SmsLog $smsLog): void
+    {
+        $reason = data_get($smsLog->provider_response, 'data.message')
+            ?? data_get($smsLog->provider_response, 'data.data.0.message')
+            ?? data_get($smsLog->provider_response, 'data.0.message')
+            ?? 'პროვაიდერმა SMS ვერ მიაწოდა.';
+        $reason = is_scalar($reason) && trim((string) $reason) !== ''
+            ? trim((string) $reason)
+            : 'პროვაიდერმა SMS ვერ მიაწოდა.';
+
+        app(SmsFailureSystemNotifier::class)->report(
+            'SMS ვერ გაიგზავნა',
+            [
+                'SMS ვერ გაიგზავნა ან ვერ მიეწოდა.',
+                'მოვლენა: ' . ($smsLog->event_type ?: '—'),
+                "ნომერი: {$smsLog->destination}",
+                'პროვაიდერი: ' . ($smsLog->provider ?: '—'),
+                "მიზეზი: {$reason}",
+            ],
+            ['sms_log_id' => $smsLog->id]
+        );
+    }
 
     /**
      * name → number

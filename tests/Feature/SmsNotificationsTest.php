@@ -7,6 +7,7 @@ use App\Jobs\SendUpcomingPaymentReminders;
 use App\Models\AdminNumber;
 use App\Models\Branch;
 use App\Models\Company;
+use App\Models\Message;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\SmsLog;
@@ -114,6 +115,89 @@ class SmsNotificationsTest extends TestCase
                 ->value('content')
         );
         Http::assertSentCount(2);
+    }
+
+    public function test_pending_sms_log_does_not_create_a_system_message_but_undelivered_one_does(): void
+    {
+        $pending = SmsLog::create([
+            'provider' => 'sender_ge',
+            'destination' => '500000001',
+            'content' => 'Test SMS',
+            'event_type' => 'task_assigned',
+            'entity_id' => 100,
+            'recipient_type' => 'worker',
+            'smsno' => 2,
+            'status' => SmsLog::statusNumber('pending'),
+        ]);
+
+        $this->assertDatabaseCount('messages', 0);
+
+        $pending->update([
+            'status' => SmsLog::statusNumber('undelivered'),
+            'provider_response' => ['data' => ['message' => 'Provider rejected the SMS']],
+        ]);
+
+        $this->assertDatabaseHas('messages', [
+            'source' => 'system',
+            'subject' => 'SMS ვერ გაიგზავნა',
+        ]);
+        $this->assertStringContainsString(
+            'Provider rejected the SMS',
+            Message::query()->where('subject', 'SMS ვერ გაიგზავნა')->value('message')
+        );
+    }
+
+    public function test_task_sms_reports_when_branch_has_no_responsible_person(): void
+    {
+        ['branch' => $branch, 'task' => $task] = $this->createTaskContext();
+        $occurrence = TaskOccurrence::create([
+            'task_id' => $task->id,
+            'branch_id_snapshot' => $task->branch_id,
+            'branch_name_snapshot' => $task->branch_name_snapshot,
+            'service_id_snapshot' => $task->service_id,
+            'service_name_snapshot' => $task->service_name_snapshot,
+            'due_date' => Carbon::now('Asia/Tbilisi')->addDays(5)->toDateString(),
+            'status_id' => $this->statusId('pending'),
+            'requires_document' => false,
+            'payment_status' => 'unpaid',
+            'visibility' => '1',
+        ]);
+
+        $branch->users()->detach();
+
+        app(ResponsiblePersonTaskSmsNotifier::class)->notifyTaskAssigned($occurrence);
+
+        $this->assertDatabaseHas('messages', [
+            'source' => 'system',
+            'subject' => 'პასუხისმგებელი პირები ვერ მოიძებნა',
+        ]);
+    }
+
+    public function test_task_sms_reports_when_responsible_person_is_not_authorized_for_service(): void
+    {
+        ['task' => $task, 'service' => $service, 'responsiblePerson' => $responsiblePerson] = $this->createTaskContext();
+        $occurrence = TaskOccurrence::create([
+            'task_id' => $task->id,
+            'branch_id_snapshot' => $task->branch_id,
+            'branch_name_snapshot' => $task->branch_name_snapshot,
+            'service_id_snapshot' => $task->service_id,
+            'service_name_snapshot' => $task->service_name_snapshot,
+            'due_date' => Carbon::now('Asia/Tbilisi')->addDays(5)->toDateString(),
+            'status_id' => $this->statusId('pending'),
+            'requires_document' => false,
+            'payment_status' => 'unpaid',
+            'visibility' => '1',
+        ]);
+
+        $responsiblePerson->services()->detach($service);
+
+        app(ResponsiblePersonTaskSmsNotifier::class)->notifyTaskAssigned($occurrence);
+
+        $this->assertDatabaseHas('messages', [
+            'source' => 'system',
+            'subject' => 'პასუხისმგებელი პირისთვის SMS ვერ გაიგზავნა',
+        ]);
+        $this->assertSame(0, SmsLog::query()->where('event_type', 'task_assigned')->count());
     }
 
     public function test_admin_numbers_receive_sms_when_worker_starts_task(): void

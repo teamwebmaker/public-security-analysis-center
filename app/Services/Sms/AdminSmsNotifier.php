@@ -11,8 +11,10 @@ use Throwable;
 
 class AdminSmsNotifier
 {
-    public function __construct(private SmsLogService $smsLogService)
-    {
+    public function __construct(
+        private SmsLogService $smsLogService,
+        private SmsFailureSystemNotifier $failureNotifier
+    ) {
     }
 
     /**
@@ -64,7 +66,12 @@ class AdminSmsNotifier
         $message = $this->buildResponsiblePersonOverdueMessage($responsiblePerson, $occurrenceIds);
         $recipientType = 'admin';
 
-        foreach ($this->adminDestinations() as $destination) {
+        $destinations = $this->adminDestinations();
+        if (empty($destinations)) {
+            $this->reportMissingAdminDestination($eventType, $occurrenceIds);
+        }
+
+        foreach ($destinations as $destination) {
             try {
                 $unsentIds = array_values(array_filter(
                     $occurrenceIds,
@@ -116,7 +123,12 @@ class AdminSmsNotifier
         $recipientType = 'admin';
         $smsno = SmsLog::smsnoTypeNumber('information') ?? 2;
 
-        foreach ($this->adminDestinations() as $destination) {
+        $destinations = $this->adminDestinations();
+        if (empty($destinations)) {
+            $this->reportMissingAdminDestination($eventType, [$entityId]);
+        }
+
+        foreach ($destinations as $destination) {
             try {
                 $alreadySent = $this->smsLogService->alreadySent(
                     $destination,
@@ -170,6 +182,25 @@ class AdminSmsNotifier
             ->unique()
             ->values()
             ->all();
+    }
+
+    /**
+     * @param array<int, int|string> $entityIds
+     */
+    private function reportMissingAdminDestination(string $eventType, array $entityIds): void
+    {
+        $ids = implode(', ', array_map(fn ($id) => "#{$id}", $entityIds));
+
+        $this->failureNotifier->report(
+            'ადმინისტრატორის SMS ვერ გაიგზავნა',
+            [
+                'ადმინისტრატორისთვის SMS ვერ გაიგზავნა.',
+                "მოვლენა: {$eventType}",
+                'მიზეზი: ადმინისტრატორის ტელეფონის ნომერი არ არის მითითებული.',
+                "საქმეები: {$ids}",
+            ],
+            ['event_type' => $eventType, 'entity_ids' => $entityIds]
+        );
     }
 
     private function buildTaskStartedMessage(TaskOccurrence $occurrence, User $worker): string

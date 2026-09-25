@@ -10,8 +10,10 @@ use Throwable;
 
 class OrderSmsNotifier
 {
-    public function __construct(private SmsLogService $smsLogService)
-    {
+    public function __construct(
+        private SmsLogService $smsLogService,
+        private SmsFailureSystemNotifier $failureNotifier
+    ) {
     }
 
     public function notifyCreated(Order $order, ?Collection $participants = null): void
@@ -19,11 +21,19 @@ class OrderSmsNotifier
         $order->loadMissing('branch');
         $participants ??= $order->userParticipants()->with('user.role')->get();
 
+        $missingRecipients = [];
+
         foreach ($participants as $participant) {
             $participant->loadMissing('user.role');
             $user = $participant->user;
 
-            if (!$user || trim((string) $user->phone) === '') {
+            if (! $user) {
+                $missingRecipients[] = 'მონაწილებელი მომხმარებელი ვერ მოიძებნა';
+                continue;
+            }
+
+            if (trim((string) $user->phone) === '') {
+                $missingRecipients[] = "ტელეფონი არ არის მითითებული: {$user->full_name}";
                 continue;
             }
 
@@ -52,6 +62,17 @@ class OrderSmsNotifier
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+
+        if ($missingRecipients !== []) {
+            $this->failureNotifier->report(
+                'ბრძანების SMS ვერ გაიგზავნა',
+                array_merge([
+                    'ბრძანების მონაწილეებისთვის SMS სრულად ვერ გაიგზავნა.',
+                    "ბრძანება: #{$order->id} ({$order->title})",
+                ], array_values(array_unique($missingRecipients))),
+                ['order_id' => $order->id, 'event_type' => 'order_created']
+            );
         }
     }
 

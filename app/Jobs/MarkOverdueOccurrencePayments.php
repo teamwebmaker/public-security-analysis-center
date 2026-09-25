@@ -121,7 +121,8 @@ class MarkOverdueOccurrencePayments implements ShouldQueue
                      $smsLogService,
                      $eventType,
                      fn(array $occurrenceIds) => $this->buildOverdueMessage(occurrenceIds: $occurrenceIds),
-                     'Sending overdue SMS'
+                     'Sending overdue SMS',
+                     reportSkips: false
                   );
                   $skippedSummary = $this->mergeSkippedSummary($skippedSummary, $chunkSummary['skipped'] ?? []);
                } catch (\Throwable $e) {

@@ -98,7 +98,8 @@ class SendUpcomingPaymentReminders implements ShouldQueue
                      [],
                      [
                         'due_date' => $reminderDate,
-                     ]
+                     ],
+                     reportSkips: false
                   );
                   $skippedSummary = $this->mergeSkippedSummary($skippedSummary, $chunkSummary['skipped'] ?? []);
                } catch (\Throwable $e) {

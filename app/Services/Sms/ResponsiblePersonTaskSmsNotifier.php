@@ -10,7 +10,8 @@ class ResponsiblePersonTaskSmsNotifier
 {
     public function __construct(
         private SmsLogService $smsLogService,
-        private ResponsiblePersonSmsSender $smsSender
+        private ResponsiblePersonSmsSender $smsSender,
+        private SmsFailureSystemNotifier $failureNotifier
     ) {
     }
 
@@ -61,6 +62,7 @@ class ResponsiblePersonTaskSmsNotifier
 
         $byUser = [];
         $metaByOccurrenceId = [];
+        $missingResponsiblePersonOccurrences = [];
 
         foreach ($occurrenceCollection as $occurrence) {
             $metaByOccurrenceId[(int) $occurrence->id] = [
@@ -76,6 +78,10 @@ class ResponsiblePersonTaskSmsNotifier
                     'occurrence_id' => $occurrence->id,
                     'branch_id' => $occurrence->task?->branch?->id,
                 ]);
+                $missingResponsiblePersonOccurrences[] = [
+                    'id' => (int) $occurrence->id,
+                    'branch' => trim((string) ($occurrence->branch_name_snapshot ?? '—')),
+                ];
                 continue;
             }
 
@@ -84,6 +90,22 @@ class ResponsiblePersonTaskSmsNotifier
                 $byUser[$user->id]['occurrence_ids'][] = $occurrence->id;
                 $byUser[$user->id]['occurrence_service_ids'][$occurrence->id] = $occurrence->service_id_snapshot;
             }
+        }
+
+        if (!empty($missingResponsiblePersonOccurrences)) {
+            $list = collect($missingResponsiblePersonOccurrences)
+                ->map(fn (array $item) => "#{$item['id']} ({$item['branch']})")
+                ->implode(', ');
+            $this->failureNotifier->report(
+                'პასუხისმგებელი პირები ვერ მოიძებნა',
+                [
+                    'საქმესთან დაკავშირებული SMS ვერ გაიგზავნა.',
+                    "მოვლენა: {$eventType}",
+                    "საქმეები: {$list}",
+                    'მიზეზი: ფილიალზე პასუხისმგებელი პირი არ არის მიბმული.',
+                ],
+                ['event_type' => $eventType]
+            );
         }
 
         if (empty($byUser)) {

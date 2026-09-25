@@ -10,8 +10,10 @@ use Throwable;
 
 class IncidentSmsNotifier
 {
-    public function __construct(private SmsLogService $smsLogService)
-    {
+    public function __construct(
+        private SmsLogService $smsLogService,
+        private SmsFailureSystemNotifier $failureNotifier
+    ) {
     }
 
     public function notifyCreated(
@@ -23,10 +25,18 @@ class IncidentSmsNotifier
         $userParticipants ??= $incident->userParticipants()->with('user.role')->get();
         $externalParticipants ??= $incident->externalParticipants()->get();
 
+        $missingRecipients = [];
+
         foreach ($userParticipants as $participant) {
             $participant->loadMissing('user.role');
             $user = $participant->user;
-            if (!$user || trim((string) $user->phone) === '') {
+            if (! $user) {
+                $missingRecipients[] = 'მონაწილებელი მომხმარებელი ვერ მოიძებნა';
+                continue;
+            }
+
+            if (trim((string) $user->phone) === '') {
+                $missingRecipients[] = "ტელეფონი არ არის მითითებული: {$user->full_name}";
                 continue;
             }
 
@@ -50,6 +60,17 @@ class IncidentSmsNotifier
                 'incident_created',
                 $incident->id,
                 'external_person'
+            );
+        }
+
+        if ($missingRecipients !== []) {
+            $this->failureNotifier->report(
+                'ინციდენტის SMS ვერ გაიგზავნა',
+                array_merge([
+                    'ინციდენტის სისტემური მონაწილეებისთვის SMS სრულად ვერ გაიგზავნა.',
+                    "ინციდენტი: #{$incident->id} ({$incident->title})",
+                ], array_values(array_unique($missingRecipients))),
+                ['incident_id' => $incident->id, 'event_type' => 'incident_created']
             );
         }
     }

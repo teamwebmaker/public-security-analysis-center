@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Log;
 class ResponsiblePersonSmsSender
 {
     public function __construct(
-        private AdminSmsNotifier $adminSmsNotifier
+        private AdminSmsNotifier $adminSmsNotifier,
+        private SmsFailureSystemNotifier $failureNotifier
     ) {
     }
 
@@ -24,7 +25,8 @@ class ResponsiblePersonSmsSender
         array $logContext = [],
         array $recipientLogContext = [],
         string $recipientType = 'responsible_person',
-        ?int $smsno = null
+        ?int $smsno = null,
+        bool $reportSkips = true
     ): array {
 
         $smsno = $smsno ?? SmsLog::smsnoTypeNumber('information') ?? 2;
@@ -161,9 +163,36 @@ class ResponsiblePersonSmsSender
             ], $recipientLogContext));
         }
 
+        if ($reportSkips && (!empty($skippedSummary['missing_phone']) || !empty($skippedSummary['not_authorized']))) {
+            $this->reportSkippedRecipients($eventType, $skippedSummary);
+        }
+
         return [
             'sent' => $sentSummary,
             'skipped' => $skippedSummary,
         ];
+    }
+
+    private function reportSkippedRecipients(string $eventType, array $skippedSummary): void
+    {
+        $lines = ['პასუხისმგებელი პირისთვის SMS ვერ გაიგზავნა.', "მოვლენა: {$eventType}"];
+
+        foreach ($skippedSummary['missing_phone'] ?? [] as $entry) {
+            $name = trim((string) ($entry['full_name'] ?? 'უცნობი'));
+            $ids = implode(', ', array_map(fn ($id) => "#{$id}", $entry['occurrence_ids'] ?? []));
+            $lines[] = "ტელეფონი არ არის მითითებული: {$name}" . ($ids ? " ({$ids})" : '');
+        }
+
+        foreach ($skippedSummary['not_authorized'] ?? [] as $entry) {
+            $name = trim((string) ($entry['full_name'] ?? 'უცნობი'));
+            $ids = implode(', ', array_map(fn ($id) => "#{$id}", $entry['occurrence_ids'] ?? []));
+            $lines[] = "სერვისზე SMS ავტორიზაცია არ აქვს: {$name}" . ($ids ? " ({$ids})" : '');
+        }
+
+        $this->failureNotifier->report(
+            'პასუხისმგებელი პირისთვის SMS ვერ გაიგზავნა',
+            $lines,
+            ['event_type' => $eventType]
+        );
     }
 }
