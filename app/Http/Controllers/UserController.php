@@ -7,16 +7,20 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Branch;
 use App\Models\Company;
+use App\Models\IncidentUserParticipant;
+use App\Models\OrderUserParticipant;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\Task;
 use App\Models\TaskOccurrenceStatus;
+use App\Models\TaskWorkerInvitation;
 use App\Models\User;
 use App\Policies\UserConnectionPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserController extends CrudController
 {
@@ -102,6 +106,175 @@ class UserController extends CrudController
 	{
 		return ctype_digit((string) $value) && (int) $value > 0 ? (int) $value : null;
 	}
+
+    /**
+     * Compact, role-aware data for the administrator dashboard user modal.
+     */
+    public function dashboardSummary(User $user)
+    {
+        $user->load('role:id,name,display_name');
+        $taskScope = $this->dashboardTaskScope($user);
+        $activeTaskCount = (clone $taskScope)
+            ->whereHas('latestOccurrenceWithoutVisibility.status', fn (Builder $query) => $query
+                ->whereIn('name', Task::ACTIVE_OCCURRENCE_STATUSES))
+            ->count();
+        $completedTaskCount = (clone $taskScope)
+            ->whereHas('latestOccurrenceWithoutVisibility.status', fn (Builder $query) => $query
+                ->where('name', 'completed'))
+            ->count();
+
+        $tasks = (clone $taskScope)
+            ->with([
+                'branch.company:id,name',
+                'service:id,title',
+                'latestOccurrenceWithoutVisibility.status:id,name,display_name',
+            ])
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get()
+            ->map(function (Task $task): array {
+                $occurrence = $task->latestOccurrenceWithoutVisibility;
+
+                return [
+                    'id' => $task->id,
+                    'service' => $task->service_name_snapshot
+                        ?: data_get($task->service?->title, 'ka')
+                        ?: data_get($task->service?->title, 'en')
+                        ?: '—',
+                    'branch' => $task->branch?->name ?: $task->branch_name_snapshot ?: '—',
+                    'company' => $task->branch?->company?->name ?: '—',
+                    'status' => $occurrence?->status?->name ?: 'unknown',
+                    'status_label' => $occurrence?->status?->display_name ?: 'უცნობი',
+                    'due_date' => $occurrence?->due_date?->format('d.m.Y') ?: null,
+                    'updated_at' => $task->updated_at?->format('d.m.Y H:i') ?: null,
+                    'occurrences_url' => route('tasks.index', [
+                        'occurrences_task_id' => $task->id,
+                    ]),
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'full_name' => $user->full_name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'is_active' => (bool) $user->is_active,
+                'created_at' => $user->created_at?->format('d.m.Y'),
+                'role' => [
+                    'name' => $user->role?->name ?? 'unknown',
+                    'display_name' => $user->role?->display_name ?? 'როლი უცნობია',
+                ],
+            ],
+            'stats' => $this->dashboardStats($user, $activeTaskCount, $completedTaskCount),
+            'connections' => $this->dashboardConnections($user),
+            'tasks' => $tasks,
+            'links' => [
+                'edit_user' => route('users.edit', $user),
+                'tasks' => route('tasks.index', ['filter' => ['search' => $user->full_name]]),
+            ],
+        ]);
+    }
+
+    private function dashboardTaskScope(User $user): Builder
+    {
+        return match ($user->getRoleName()) {
+            'worker' => Task::query()->whereHas(
+                'users',
+                fn (Builder $query) => $query->whereKey($user->id)
+            ),
+            'company_leader' => Task::query()->whereHas(
+                'branch.company.users',
+                fn (Builder $query) => $query->whereKey($user->id)
+            ),
+            'responsible_person' => Task::query()->whereHas(
+                'branch.users',
+                fn (Builder $query) => $query->whereKey($user->id)
+            ),
+            default => Task::query()->whereRaw('1 = 0'),
+        };
+    }
+
+    /**
+     * @return array<int, array{label: string, value: int, icon: string, tone: string}>
+     */
+    private function dashboardStats(User $user, int $activeTaskCount, int $completedTaskCount): array
+    {
+        $role = $user->getRoleName();
+        $unsignedDocuments = IncidentUserParticipant::query()
+            ->where('user_id', $user->id)
+            ->whereNull('signed_at')
+            ->count()
+            + OrderUserParticipant::query()
+                ->where('user_id', $user->id)
+                ->whereNull('signed_at')
+                ->count();
+
+        $stat = fn (string $label, int $value, string $icon, string $tone): array => compact(
+            'label',
+            'value',
+            'icon',
+            'tone'
+        );
+
+        return match ($role) {
+            'worker' => [
+                $stat('აქტიური საქმეები', $activeTaskCount, 'bi-list-check', 'primary'),
+                $stat('დასრულებული საქმეები', $completedTaskCount, 'bi-check2-circle', 'success'),
+                $stat('მოლოდინში მოწვევები', TaskWorkerInvitation::query()
+                    ->where('invited_worker_id', $user->id)
+                    ->where('status', TaskWorkerInvitation::STATUS_PENDING)
+                    ->count(), 'bi-person-plus', 'warning'),
+                $stat('დაკავშირებული კომპანიები', $user->workerCompanies()->count(), 'bi-buildings', 'secondary'),
+            ],
+            'company_leader' => [
+                $stat('აქტიური საქმეები', $activeTaskCount, 'bi-list-check', 'primary'),
+                $stat('დასრულებული საქმეები', $completedTaskCount, 'bi-check2-circle', 'success'),
+                $stat('ხელმოწერის მოლოდინში', $unsignedDocuments, 'bi-pen', 'warning'),
+                $stat('კომპანიები', $user->companies()->count(), 'bi-buildings', 'secondary'),
+            ],
+            'responsible_person' => [
+                $stat('აქტიური საქმეები', $activeTaskCount, 'bi-list-check', 'primary'),
+                $stat('დასრულებული საქმეები', $completedTaskCount, 'bi-check2-circle', 'success'),
+                $stat('ხელმოწერის მოლოდინში', $unsignedDocuments, 'bi-pen', 'warning'),
+                $stat('ფილიალები', $user->branches()->count(), 'bi-diagram-3', 'secondary'),
+                $stat('სერვისები', $user->services()->count(), 'bi-briefcase', 'info'),
+            ],
+            default => [],
+        };
+    }
+
+    /**
+     * @return array{label: string, total: int, items: array<int, string>}
+     */
+    private function dashboardConnections(User $user): array
+    {
+        return match ($user->getRoleName()) {
+            'company_leader' => [
+                'label' => 'დაკავშირებული კომპანიები',
+                'total' => $user->companies()->count(),
+                'items' => $user->companies()->orderBy('name')->limit(6)->pluck('name')->all(),
+            ],
+            'responsible_person' => [
+                'label' => 'დაკავშირებული ფილიალები',
+                'total' => $user->branches()->count(),
+                'items' => $user->branches()
+                    ->with('company:id,name')
+                    ->orderBy('name')
+                    ->limit(6)
+                    ->get()
+                    ->map(fn (Branch $branch) => "{$branch->name} — " . ($branch->company?->name ?? '—'))
+                    ->all(),
+            ],
+            'worker' => [
+                'label' => 'საქმის შექმნის კომპანიები',
+                'total' => $user->workerCompanies()->count(),
+                'items' => $user->workerCompanies()->orderBy('name')->limit(6)->pluck('name')->all(),
+            ],
+            default => ['label' => 'კავშირები', 'total' => 0, 'items' => []],
+        };
+    }
 
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -96,7 +97,7 @@ class AdminController extends Controller
         });
 
 
-        $users = QueryBuilder::for(User::class)
+        $usersQuery = QueryBuilder::for(User::class)
             ->withoutAdmins()
             ->allowedFilters([
                 AllowedFilter::callback('search', function ($query, $value) {
@@ -104,19 +105,28 @@ class AdminController extends Controller
                         $q->where('full_name', 'LIKE', "%{$value}%")
                             ->orWhere('phone', 'LIKE', "%{$value}%")
                             ->orWhere('email', 'LIKE', "%{$value}%")
-                            ->orWhereHas('role', fn($q) => $q->where('name', 'LIKE', "%{$value}%"));
+                        ->orWhereHas('role', fn($q) => $q->where('name', 'LIKE', "%{$value}%"));
                     });
                 }),
+                AllowedFilter::exact('role_id'),
             ])
-            ->with(['role:id,name,display_name'])
+            ->with(['role:id,name,display_name']);
+
+        $userTotal = (clone $usersQuery)->count();
+        $users = (clone $usersQuery)
             ->latest()
             ->take(10)
-            ->get(['id', 'full_name', 'phone', 'email', 'role_id']);
+            ->get(['id', 'full_name', 'phone', 'email', 'role_id', 'is_active']);
 
         return view('admin.dashboard.index', [
             'dashboardData' => $dashboardData,
             'users' => $users,
-
+            'userTotal' => $userTotal,
+            'userRoles' => Role::query()
+                ->where('name', '!=', User::ADMIN_ROLE)
+                ->orderBy('display_name')
+                ->pluck('display_name', 'id')
+                ->all(),
         ]);
     }
 

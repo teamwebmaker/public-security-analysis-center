@@ -219,6 +219,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/sms/report', [SmsController::class, 'report']);
 
         // Management related routes register users
+        Route::get('users/{user}/dashboard-summary', [UserController::class, 'dashboardSummary'])
+            ->name('users.dashboard-summary');
         Route::resource('users', UserController::class);
         Route::resource('companies', CompanyController::class)->except('show');
         Route::resource('economic_activities_types', EconomicActivityTypeController::class)
