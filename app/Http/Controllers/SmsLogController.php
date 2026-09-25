@@ -269,12 +269,17 @@ class SmsLogController extends CrudController
                 AllowedFilter::callback('search', function ($query, $value) {
                     $value = is_array($value) ? $value[0] : $value;
                     $like = '%' . $value . '%';
+                    $smsLogId = ctype_digit((string) $value) ? (int) $value : null;
 
-                    $query->where(function ($q) use ($like) {
+                    $query->where(function ($q) use ($like, $smsLogId) {
                         $q->where('provider', 'LIKE', $like)
                             ->orWhere('destination', 'LIKE', $like)
                             ->orWhere('provider_message_id', 'LIKE', $like)
                             ->orWhere('content', 'LIKE', $like);
+
+                        if ($smsLogId !== null) {
+                            $q->orWhereKey($smsLogId);
+                        }
                     });
                 }),
                 AllowedFilter::exact('status'),

@@ -305,6 +305,8 @@ Route::prefix('admin')->group(function () {
         Route::resource('messages', MessagesController::class)->only(['index', 'destroy']);
         Route::patch('messages/{message}/mark-read', [MessagesController::class, 'markRead'])
             ->name('messages.mark-read');
+        Route::post('messages/mark-all-read', [MessagesController::class, 'markAllRead'])
+            ->name('messages.mark-all-read');
         Route::post('sms_logs/sync-statuses', [SmsLogController::class, 'syncStatuses'])
             ->name('sms_logs.sync-statuses');
         Route::resource('sms_logs', SmsLogController::class)->except('show');

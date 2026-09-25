@@ -47,6 +47,14 @@ class TaskOccurrencePaymentProofManager
                     'email' => 'undefined',
                     'subject' => 'გადახდის დამადასტურებელი დოკუმენტი აიტვირთა',
                     'message' => $this->systemMessage($taskOccurrence, $uploader, $uploadedAt),
+                    'action_url' => route('tasks.index', [
+                        'occurrences_task_id' => $taskOccurrence->task_id,
+                    ], false),
+                    'action_label' => 'საქმის გახსნა',
+                    'context' => [
+                        'task_id' => $taskOccurrence->task_id,
+                        'task_occurrence_id' => $taskOccurrence->id,
+                    ],
                 ]);
             });
         } catch (Throwable $e) {

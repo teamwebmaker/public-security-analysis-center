@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
@@ -43,9 +44,15 @@ class SendMessageNotificationJob implements ShouldQueue
         $subscriptions = PushSubscription::approved()->get();
 
         // Prepare notification payload
+        $typeLabel = $this->message->type === 'payment'
+            ? '💰 გადახდის შეტყობინება'
+            : ($this->message->source === 'system' ? '⚙️ სისტემური შეტყობინება' : '📩 ახალი შეტყობინება');
+        $subject = trim((string) ($this->message->subject ?: 'თემის გარეშე'));
+        $preview = Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) $this->message->message))), 110);
+
         $data = json_encode([
-            'title' => 'ახალი შეტყობინება',
-            'body' => 'ახალი შეტყობინება ' . ($this->message->full_name ?? 'უცნობი') . '-სგან, თემა: ' . ($this->message->subject ?? 'არ არის მითითებული'),
+            'title' => $typeLabel,
+            'body' => $subject . ($preview ? "\n{$preview}" : ''),
             // Keep URL origin-agnostic so click opens under the current app origin/scope.
             'url' => ltrim(route('messages.index', ['message' => $this->message->id], false), '/'),
         ]);

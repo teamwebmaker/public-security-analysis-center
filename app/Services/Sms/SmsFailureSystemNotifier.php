@@ -29,11 +29,21 @@ class SmsFailureSystemNotifier
         }
 
         try {
-            $this->messageStoreService->createAndDispatch([
+            $payload = [
                 'source' => 'system',
                 'subject' => $subject,
                 'message' => $message,
-            ]);
+                'context' => $context,
+            ];
+
+            if (! empty($context['sms_log_id'])) {
+                $payload['action_url'] = route('sms_logs.index', [
+                    'filter' => ['search' => (string) $context['sms_log_id']],
+                ], false);
+                $payload['action_label'] = 'SMS ლოგის გახსნა';
+            }
+
+            $this->messageStoreService->createAndDispatch($payload);
         } catch (Throwable $e) {
             Log::error('Failed to create SMS failure system message', [
                 'subject' => $subject,

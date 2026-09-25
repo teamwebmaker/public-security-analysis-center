@@ -81,6 +81,16 @@ class MessageStoreService
             'type' => $validated['type'],
         ];
 
+        if ($this->messagesTableHasColumn('action_url')) {
+            $payload['action_url'] = $validated['action_url'];
+        }
+        if ($this->messagesTableHasColumn('action_label')) {
+            $payload['action_label'] = $validated['action_label'];
+        }
+        if ($this->messagesTableHasColumn('context')) {
+            $payload['context'] = $validated['context'];
+        }
+
         // Compatibility with environments where messages.source migration is missing.
         if (!$this->messagesTableHasColumn('source')) {
             unset($payload['source']);
@@ -155,6 +165,17 @@ class MessageStoreService
         if ($validated['email'] === '') {
             $validated['email'] = $validated['source'] === 'system' ? 'undefined' : 'unknown@example.invalid';
         }
+
+        $actionUrl = trim((string) ($validated['action_url'] ?? ''));
+        $validated['action_url'] = str_starts_with($actionUrl, '/') && ! str_starts_with($actionUrl, '//')
+            ? $actionUrl
+            : null;
+        $validated['action_label'] = $validated['action_url']
+            ? trim((string) ($validated['action_label'] ?? 'გახსნა'))
+            : null;
+        $validated['context'] = is_array($validated['context'] ?? null)
+            ? $validated['context']
+            : null;
 
         return $validated;
     }

@@ -3,7 +3,7 @@
         <i class="bi bi-list fs-3 "></i>
     </button>
 
-    <div class="d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
+    <div class="topbar-inner d-flex align-items-center w-100 justify-content-between px-2 px-sm-4">
         <div class="d-flex align-items-center gap-2 gap-sm-4">
             <a href="{{ route('admin.dashboard.page') }}" class=" user-profile-btn text-decoration-none">
                 <i class="bi bi-columns-gap fs-5" style="rotate: 90deg;"></i>
@@ -16,14 +16,14 @@
         </div>
         @php
             use App\Models\Message;
-            $hasUnreadMessages = Message::whereNull('read_at')->exists();
+            $unreadMessagesCount = Message::whereNull('read_at')->count();
         @endphp
 
         <div class="d-flex align-items-center gap-1 gap-sm-2 flex-shrink-0">
             <div class="sms-balance d-flex align-items-center gap-1 border-end pe-1 pe-sm-2 me-0 me-sm-1 flex-shrink-0 text-nowrap" title="Sender.Ge SMS ბალანსი">
                 <i class="bi bi-chat-dots-fill text-primary"></i>
                 <span class="small fw-semibold text-muted d-none d-sm-inline">SMS:</span>
-                <span id="sms-balance-value" class="small fw-semibold text-muted" aria-live="polite">იტვირთება…</span>
+                <span id="sms-balance-value" class="sms-balance-value small fw-semibold text-muted" aria-live="polite">იტვირთება…</span>
                 <button id="sms-balance-refresh" type="button" class="btn btn-sm btn-link text-secondary p-0" aria-label="SMS ბალანსის განახლება" title="განახლება">
                     <i class="bi bi-arrow-clockwise"></i>
                 </button>
@@ -32,9 +32,10 @@
             <!-- Messages -->
             <div class="position-relative">
                 <x-ui.link-icon route="messages.index" icon="mailbox2-flag " />
-                @if ($hasUnreadMessages)
-                    <span
-                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                @if ($unreadMessagesCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light" aria-label="{{ $unreadMessagesCount }} წასაკითხი შეტყობინება">
+                        {{ $unreadMessagesCount > 99 ? '99+' : $unreadMessagesCount }}
+                    </span>
                 @endif
             </div>
 
